@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -14,6 +14,7 @@ import { visuallyHidden } from '@mui/utils'
 interface TableProps {
   columns: any[]
   rows: any[]
+  actions: string[]
 }
 
 interface EnhancedTableProps {
@@ -24,6 +25,7 @@ interface EnhancedTableProps {
   orderBy: string
   rowCount: number
   columns: any[]
+  hasAction: boolean
 }
 
 const descendingComparator = (a: any, b: any, orderBy: any) => {
@@ -47,22 +49,19 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) {
-      return order
-    }
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map((el) => el[0])
-}
-
 const EnhancedTableHead = (props: EnhancedTableProps) => {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, columns } = props
+  const {
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+    columns,
+    hasAction,
+  } = props
+  // tslint:disable-next-line:no-console
+  console.log(hasAction)
   const createSortHandler = (property: any) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property)
   }
@@ -101,15 +100,21 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             </TableSortLabel>
           </TableCell>
         ))}
+        {/*{hasAction && <TableCell padding={'normal'} />}*/}
       </TableRow>
     </TableHead>
   )
 }
 
-const TableComponent = ({ rows, columns }: TableProps) => {
-  const [order, setOrder] = React.useState<Order>('asc')
-  const [orderBy, setOrderBy] = React.useState<any>('id')
-  const [selected, setSelected] = React.useState<readonly string[]>([])
+const TableComponent = ({ rows, columns, actions }: TableProps) => {
+  const [order, setOrder] = useState<Order>('asc')
+  const [orderBy, setOrderBy] = useState<any>('id')
+  const [selected, setSelected] = useState<string[]>([])
+
+  useEffect(() => {
+    // tslint:disable-next-line:no-console
+    console.log(selected)
+  }, [selected])
   const isSelected = (name: string) => selected.indexOf(name) !== -1
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: any) => {
@@ -129,8 +134,9 @@ const TableComponent = ({ rows, columns }: TableProps) => {
 
   const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
     const selectedIndex = selected.indexOf(id)
-    let newSelected: readonly string[] = []
-
+    let newSelected: string[] = []
+    // tslint:disable-next-line:no-console
+    console.log(selectedIndex)
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id)
     } else if (selectedIndex === 0) {
@@ -143,6 +149,8 @@ const TableComponent = ({ rows, columns }: TableProps) => {
         selected.slice(selectedIndex + 1)
       )
     }
+    // tslint:disable-next-line:no-console
+    console.log(newSelected)
 
     setSelected(newSelected)
   }
@@ -160,11 +168,12 @@ const TableComponent = ({ rows, columns }: TableProps) => {
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
               columns={columns}
+              hasAction={actions.length > 0}
             />
             <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
+              {rows
+                .slice()
+                .sort(getComparator(order, orderBy))
                 // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id.toString() || '')
@@ -173,14 +182,13 @@ const TableComponent = ({ rows, columns }: TableProps) => {
                   return (
                     <TableRow
                       hover={true}
-                      onClick={useCallback(
-                        (event: React.MouseEvent<unknown>) => handleClick(event, row.id.toString()),
-                        []
-                      )}
+                      onClick={(event: React.MouseEvent<unknown>) =>
+                        handleClick(event, row.id.toString())
+                      }
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -193,7 +201,7 @@ const TableComponent = ({ rows, columns }: TableProps) => {
                         />
                       </TableCell>
                       {columns.map((column) => (
-                        <TableCell key={`cell-${row[column.field]}-${row.id}`}>
+                        <TableCell key={`cell-${column.field}-${row.id}`}>
                           {row[column.field]}
                         </TableCell>
                       ))}

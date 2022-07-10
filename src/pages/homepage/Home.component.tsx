@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { Button, Box } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { GridColDef } from '@mui/x-data-grid'
@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add'
 import TableComponent from '../../modules/Table/Table.component'
 // import { Student } from '../../models/student';
 import { students } from '../../mockData/students'
+import StudentDialogComponent from '../../modules/student-dialog/StudentDialog.component'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'Id' },
@@ -22,15 +23,30 @@ const columns: GridColDef[] = [
 const HomeComponent = () => {
   const classes = useStyles()
   const newStudents = students.map((value, index) => ({ id: index, ...value }))
+  const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
+  console.log('homepage')
+  const handleAddStudent = (data: any) => {
+    console.log(data)
+  }
   return (
     <div className={classes.home}>
       <Box className={classes.title}>
         <h1>Thông Tin Thiếu Nhi</h1>
-        <Button variant="outlined" startIcon={<AddIcon />}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={useCallback(() => setOpenStudentDialog(true), [])}
+        >
           Add
         </Button>
       </Box>
-      <TableComponent columns={columns} rows={newStudents} />
+      <TableComponent columns={columns} rows={newStudents} actions={['EDIT', 'DELETE']} />
+      <StudentDialogComponent
+        isOpen={isOpenStudentDialog}
+        onClose={useCallback(() => setOpenStudentDialog(false), [])}
+        actionType={'ADD'}
+        onAddStudent={handleAddStudent}
+      />
     </div>
   )
 }
