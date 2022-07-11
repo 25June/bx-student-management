@@ -8,19 +8,23 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
-import Checkbox from '@mui/material/Checkbox'
+// import Checkbox from '@mui/material/Checkbox'
 import { visuallyHidden } from '@mui/utils'
+import IconButton from '@mui/material/IconButton'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 interface TableProps {
   columns: any[]
   rows: any[]
   actions: string[]
+  onClickAction: (data: any, type: string) => void
 }
 
 interface EnhancedTableProps {
-  numSelected: number
+  // numSelected: number
   onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
+  // onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
   order: Order
   orderBy: string
   rowCount: number
@@ -51,10 +55,10 @@ function getComparator<Key extends keyof any>(
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
   const {
-    onSelectAllClick,
+    // onSelectAllClick,
     order,
     orderBy,
-    numSelected,
+    // numSelected,
     rowCount,
     onRequestSort,
     columns,
@@ -69,17 +73,17 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
+        {/*<TableCell padding="checkbox">*/}
+        {/*  <Checkbox*/}
+        {/*    color="primary"*/}
+        {/*    indeterminate={numSelected > 0 && numSelected < rowCount}*/}
+        {/*    checked={rowCount > 0 && numSelected === rowCount}*/}
+        {/*    onChange={onSelectAllClick}*/}
+        {/*    inputProps={{*/}
+        {/*      'aria-label': 'select all desserts',*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*</TableCell>*/}
         {columns.map((column: any) => (
           <TableCell
             key={column.field}
@@ -100,22 +104,17 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             </TableSortLabel>
           </TableCell>
         ))}
-        {/*{hasAction && <TableCell padding={'normal'} />}*/}
+        {hasAction && <TableCell padding={'normal'} />}
       </TableRow>
     </TableHead>
   )
 }
 
-const TableComponent = ({ rows, columns, actions }: TableProps) => {
+const TableComponent = ({ rows, columns, actions, onClickAction }: TableProps) => {
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState<any>('id')
-  const [selected, setSelected] = useState<string[]>([])
-
-  useEffect(() => {
-    // tslint:disable-next-line:no-console
-    console.log(selected)
-  }, [selected])
-  const isSelected = (name: string) => selected.indexOf(name) !== -1
+  // const [selected, setSelected] = useState<string[]>([])
+  // const isSelected = (name: string) => selected.indexOf(name) !== -1
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: any) => {
     const isAsc = orderBy === property && order === 'asc'
@@ -123,48 +122,53 @@ const TableComponent = ({ rows, columns, actions }: TableProps) => {
     setOrderBy(property)
   }
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id.toString())
-      setSelected(newSelecteds)
-      return
-    }
-    setSelected([])
-  }
+  // const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.checked) {
+  //     const newSelecteds = rows.map((n) => n.id.toString())
+  //     setSelected(newSelecteds)
+  //     return
+  //   }
+  //   setSelected([])
+  // }
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
-    const selectedIndex = selected.indexOf(id)
-    let newSelected: string[] = []
-    // tslint:disable-next-line:no-console
-    console.log(selectedIndex)
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id)
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      )
-    }
-    // tslint:disable-next-line:no-console
-    console.log(newSelected)
-
-    setSelected(newSelected)
-  }
+  // const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
+  //   const selectedIndex = selected.indexOf(id)
+  //   let newSelected: string[] = []
+  //   // tslint:disable-next-line:no-console
+  //   console.log(selectedIndex)
+  //   if (selectedIndex === -1) {
+  //     newSelected = newSelected.concat(selected, id)
+  //   } else if (selectedIndex === 0) {
+  //     newSelected = newSelected.concat(selected.slice(1))
+  //   } else if (selectedIndex === selected.length - 1) {
+  //     newSelected = newSelected.concat(selected.slice(0, -1))
+  //   } else if (selectedIndex > 0) {
+  //     newSelected = newSelected.concat(
+  //       selected.slice(0, selectedIndex),
+  //       selected.slice(selectedIndex + 1)
+  //     )
+  //   }
+  //   // tslint:disable-next-line:no-console
+  //   console.log(newSelected)
+  //
+  //   setSelected(newSelected)
+  // }
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>
+          <Table
+            stickyHeader={true}
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+            size={'medium'}
+          >
             <EnhancedTableHead
-              numSelected={selected.length}
+              // numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
+              // onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
               columns={columns}
@@ -176,35 +180,55 @@ const TableComponent = ({ rows, columns, actions }: TableProps) => {
                 .sort(getComparator(order, orderBy))
                 // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.id.toString() || '')
-                  const labelId = `enhanced-table-checkbox-${index}`
+                  // const isItemSelected = isSelected(row.id.toString() || '')
+                  // const labelId = `enhanced-table-checkbox-${index}`
 
                   return (
                     <TableRow
                       hover={true}
-                      onClick={(event: React.MouseEvent<unknown>) =>
-                        handleClick(event, row.id.toString())
-                      }
+                      // onClick={(event: React.MouseEvent<unknown>) =>
+                      //   handleClick(event, row.id.toString())
+                      // }
                       role="checkbox"
-                      aria-checked={isItemSelected}
+                      // aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
-                      selected={isItemSelected}
+                      // selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
+                      {/*<TableCell padding="checkbox">*/}
+                      {/*  <Checkbox*/}
+                      {/*    color="primary"*/}
+                      {/*    checked={isItemSelected}*/}
+                      {/*    inputProps={{*/}
+                      {/*      'aria-labelledby': labelId,*/}
+                      {/*    }}*/}
+                      {/*  />*/}
+                      {/*</TableCell>*/}
                       {columns.map((column) => (
                         <TableCell key={`cell-${column.field}-${row.id}`}>
                           {row[column.field]}
                         </TableCell>
                       ))}
+                      <TableCell>
+                        <IconButton
+                          aria-label="Edit student"
+                          component="span"
+                          onClick={() => onClickAction(row, 'EDIT')}
+                          size="small"
+                          color="info"
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          aria-label="Remove student"
+                          component="span"
+                          onClick={() => console.log('remove')}
+                          size="small"
+                          color="error"
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   )
                 })}

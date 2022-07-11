@@ -3,9 +3,10 @@ import { Button, Box } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { GridColDef } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
+import EditIcon from '@mui/icons-material/Edit'
 import TableComponent from '../../modules/Table/Table.component'
-// import { Student } from '../../models/student';
-import { students } from '../../mockData/students'
+// import { Student } from '../../models/student'
+import { students as MockStudents } from '../../mockData/students'
 import StudentDialogComponent from '../../modules/student-dialog/StudentDialog.component'
 
 const columns: GridColDef[] = [
@@ -20,13 +21,78 @@ const columns: GridColDef[] = [
   { field: 'phone2', headerName: 'Father phone' },
 ]
 
+const formatDate = (date: Date): string => {
+  const day = date.getDate()
+  const month = date.getMonth()
+  return `${day < 10 ? '0' + day : day}.${month < 10 ? '0' + month : month}.${date.getFullYear()}`
+}
+
+const formatPhone = (phone: string): string => {
+  const splitNumber = phone.split('')
+  splitNumber[3] = splitNumber[3] + '.'
+  splitNumber[6] = splitNumber[6] + '.'
+  return splitNumber.join('')
+}
+
+const formatFullName = (fullName: string) => {
+  const lastBlankSpace = fullName.lastIndexOf(' ')
+  const firstName = fullName.slice(lastBlankSpace).toUpperCase()
+  const lastName = fullName.slice(0, lastBlankSpace)
+  return { firstName, lastName }
+}
+
 const HomeComponent = () => {
   const classes = useStyles()
-  const newStudents = students.map((value, index) => ({ id: index, ...value }))
+  const [students, setStudents] = useState(
+    MockStudents.map((value, index) => ({ id: index, ...value }))
+  )
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
+  const [actionType, setActionType] = useState<string>('ADD')
+  const [actionData, setActionData] = useState({})
+  const openStudentDialog = (type: string): void => {
+    setActionType(type)
+    setOpenStudentDialog(true)
+  }
   console.log('homepage')
-  const handleAddStudent = (data: any) => {
-    console.log(data)
+
+  const handleClickAction = (data: any, type: string) => {
+    if (type === 'EDIT') {
+      console.log(data)
+      setActionData(data)
+      openStudentDialog(type)
+    }
+    if (type === 'DELETE') {
+      console.log('DELETE')
+    }
+  }
+  const handleSave = (data: any) => {
+    if (actionType === 'ADD') {
+      setStudents(
+        students.concat({
+          ...data,
+          id: students.length,
+          birthday: formatDate(data.birthday),
+          phone1: formatPhone(data.phone1),
+          phone2: formatPhone(data.phone2),
+          ...formatFullName(data.fullName),
+        })
+      )
+    } else {
+      setStudents(
+        students.map((student: any) => {
+          if (student.id === data.id) {
+            return {
+              ...data,
+              birthday: formatDate(data.birthday),
+              phone1: formatPhone(data.phone1),
+              phone2: formatPhone(data.phone2),
+              ...formatFullName(data.fullName),
+            }
+          }
+          return student
+        })
+      )
+    }
   }
   return (
     <div className={classes.home}>
@@ -35,17 +101,23 @@ const HomeComponent = () => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={useCallback(() => setOpenStudentDialog(true), [])}
+          onClick={useCallback(() => openStudentDialog('ADD'), [])}
         >
           Add
         </Button>
       </Box>
-      <TableComponent columns={columns} rows={newStudents} actions={['EDIT', 'DELETE']} />
+      <TableComponent
+        columns={columns}
+        rows={students}
+        actions={['EDIT', 'DELETE']}
+        onClickAction={handleClickAction}
+      />
       <StudentDialogComponent
         isOpen={isOpenStudentDialog}
         onClose={useCallback(() => setOpenStudentDialog(false), [])}
-        actionType={'ADD'}
-        onAddStudent={handleAddStudent}
+        actionType={actionType}
+        actionData={actionData}
+        onSave={handleSave}
       />
     </div>
   )

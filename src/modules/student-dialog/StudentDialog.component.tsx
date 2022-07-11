@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Dialog,
@@ -16,13 +16,22 @@ interface StudentDialogComponent {
   isOpen: boolean
   onClose: () => void
   actionType: string
-  onAddStudent?: (data: any) => void
+  onSave: (data: any) => void
+  actionData: any
 }
+
+const formatDate = (date: string): Date => {
+  const splitDate = date.split('.').map((unit: string) => Number(unit))
+  console.log(new Date(splitDate[2], splitDate[1], splitDate[0]))
+  return new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+}
+
 const StudentDialogComponent = ({
   isOpen,
   onClose,
   actionType,
-  onAddStudent,
+  onSave,
+  actionData,
 }: StudentDialogComponent) => {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -35,18 +44,28 @@ const StudentDialogComponent = ({
   const [phone1, setPhone1] = useState<string>('')
   const [phone2, setPhone2] = useState<string>('')
 
-  const addStudent = (): void => {
-    if (onAddStudent) {
-      onAddStudent({
-        saintName,
-        fullName,
-        birthday,
-        address,
-        grade,
-        phone1,
-        phone2,
-      })
+  useEffect(() => {
+    if (actionType === 'EDIT') {
+      setSaintName(actionData.saintName)
+      setFullName(`${actionData.lastName} ${actionData.firstName}`)
+      setBirthday(formatDate(actionData.birthday))
+      setAddress(actionData.address)
+      setGrade(Number(actionData.grade))
+      setPhone1(actionData.phone1 ? actionData.phone1.replaceAll('.', '') : '')
+      setPhone2(actionData.phone2 ? actionData.phone2.replaceAll('.', '') : '')
     }
+  }, [actionData, actionType])
+
+  const save = (): void => {
+    onSave({
+      saintName,
+      fullName,
+      birthday,
+      address,
+      grade,
+      phone1,
+      phone2,
+    })
     onClose()
   }
   return (
@@ -57,12 +76,10 @@ const StudentDialogComponent = ({
       aria-labelledby="responsive-dialog-title"
     >
       <DialogTitle id="responsive-dialog-title">
-        Them Thong Tin Thieu Nhi
+        {actionType === 'EDIT' ? 'Sua Thong Tin Thieu Nhi' : 'Them Thong Tin Thieu Nhi'}
       </DialogTitle>
       <DialogContent dividers={true}>
-        <DialogContentText>
-          Xin dien vao nhung o trong duoi day!
-        </DialogContentText>
+        <DialogContentText>Xin dien vao nhung o trong duoi day!</DialogContentText>
         <TextField
           id="outlined-SaintName"
           label="Ten Thanh"
@@ -70,6 +87,7 @@ const StudentDialogComponent = ({
           margin="normal"
           fullWidth={true}
           onChange={(event) => setSaintName(event.target.value)}
+          value={saintName}
         />
         <TextField
           id="outlined-FullName"
@@ -78,6 +96,7 @@ const StudentDialogComponent = ({
           margin="normal"
           fullWidth={true}
           onChange={(event) => setFullName(event.target.value)}
+          value={fullName}
         />
         <TextField
           id="outlined-Birthday"
@@ -88,6 +107,7 @@ const StudentDialogComponent = ({
           fullWidth={true}
           InputLabelProps={{ shrink: true }}
           onChange={(event) => setBirthday(new Date(event.target.value))}
+          value={birthday}
         />
         <TextField
           id="outlined-Address"
@@ -96,6 +116,7 @@ const StudentDialogComponent = ({
           margin="normal"
           fullWidth={true}
           onChange={(event) => setAddress(event.target.value)}
+          value={address}
         />
         <TextField
           id="outlined-Grade"
@@ -106,6 +127,7 @@ const StudentDialogComponent = ({
           fullWidth={true}
           InputLabelProps={{ shrink: true }}
           onChange={(event) => setGrade(Number(event.target.value))}
+          value={grade}
         />
         <TextField
           id="outlined-Phone1"
@@ -116,6 +138,7 @@ const StudentDialogComponent = ({
           fullWidth={true}
           InputLabelProps={{ shrink: true }}
           onChange={(event) => setPhone1(event.target.value)}
+          value={phone1}
         />
         <TextField
           id="outlined-Phone2"
@@ -126,13 +149,14 @@ const StudentDialogComponent = ({
           fullWidth={true}
           InputLabelProps={{ shrink: true }}
           onChange={(event) => setPhone2(event.target.value)}
+          value={phone2}
         />
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px' }}>
         <Button autoFocus={true} onClick={onClose} variant="outlined">
           Huy
         </Button>
-        <Button onClick={addStudent} autoFocus={true} variant="contained">
+        <Button onClick={save} autoFocus={true} variant="contained">
           Luu
         </Button>
       </DialogActions>
