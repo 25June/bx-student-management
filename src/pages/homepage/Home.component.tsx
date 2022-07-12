@@ -21,10 +21,10 @@ const columns: GridColDef[] = [
   { field: 'phone2', headerName: 'Father phone' },
 ]
 
-const formatDate = (date: Date): string => {
-  const day = date.getDate()
-  const month = date.getMonth()
-  return `${day < 10 ? '0' + day : day}.${month < 10 ? '0' + month : month}.${date.getFullYear()}`
+const formatDate = (date: string): string => {
+  // format yyyy-MM-dd
+  const splitDate = date.split('-')
+  return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`
 }
 
 const formatPhone = (phone: string): string => {

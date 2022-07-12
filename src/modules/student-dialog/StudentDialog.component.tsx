@@ -20,9 +20,8 @@ interface StudentDialogComponent {
   actionData: any
 }
 
-const formatDate = (date: string): Date => {
+const convertStringToDate = (date: string): Date => {
   const splitDate = date.split('.').map((unit: string) => Number(unit))
-  console.log(new Date(splitDate[2], splitDate[1], splitDate[0]))
   return new Date(splitDate[2], splitDate[1], splitDate[0])
 }
 
@@ -44,7 +43,7 @@ const StudentDialogComponent = ({
 
   const [saintName, setSaintName] = useState<string>('')
   const [fullName, setFullName] = useState<string>('')
-  const [birthday, setBirthday] = useState<Date>(new Date())
+  const [birthday, setBirthday] = useState<string>('')
   const [address, setAddress] = useState<string>('')
   const [grade, setGrade] = useState<number>(1)
   const [phone1, setPhone1] = useState<string>('')
@@ -54,7 +53,7 @@ const StudentDialogComponent = ({
     if (actionType === 'EDIT') {
       setSaintName(actionData.saintName)
       setFullName(`${actionData.lastName} ${actionData.firstName}`)
-      setBirthday(formatDate(actionData.birthday))
+      setBirthday(actionData.birthday)
       setAddress(actionData.address)
       setGrade(Number(actionData.grade))
       setPhone1(actionData.phone1 ? actionData.phone1.replaceAll('.', '') : '')
@@ -64,6 +63,7 @@ const StudentDialogComponent = ({
 
   const save = (): void => {
     onSave({
+      ...actionData,
       saintName,
       fullName,
       birthday,
@@ -112,8 +112,8 @@ const StudentDialogComponent = ({
           margin="normal"
           fullWidth={true}
           InputLabelProps={{ shrink: true }}
-          onChange={(event) => setBirthday(new Date(event.target.value))}
-          value={convertDateToString(birthday)}
+          onChange={(event) => setBirthday(event.target.value)}
+          defaultValue={birthday}
         />
         <TextField
           id="outlined-Address"
