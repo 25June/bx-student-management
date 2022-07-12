@@ -23,7 +23,13 @@ interface StudentDialogComponent {
 const formatDate = (date: string): Date => {
   const splitDate = date.split('.').map((unit: string) => Number(unit))
   console.log(new Date(splitDate[2], splitDate[1], splitDate[0]))
-  return new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+  return new Date(splitDate[2], splitDate[1], splitDate[0])
+}
+
+const convertDateToString = (date: Date): string => {
+  const months = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth()
+  const days = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+  return `${date.getFullYear()}-${months}-${days}`
 }
 
 const StudentDialogComponent = ({
@@ -107,7 +113,7 @@ const StudentDialogComponent = ({
           fullWidth={true}
           InputLabelProps={{ shrink: true }}
           onChange={(event) => setBirthday(new Date(event.target.value))}
-          value={birthday}
+          value={convertDateToString(birthday)}
         />
         <TextField
           id="outlined-Address"
