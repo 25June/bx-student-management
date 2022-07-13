@@ -113,7 +113,7 @@ const StudentDialogComponent = ({
           fullWidth={true}
           InputLabelProps={{ shrink: true }}
           onChange={(event) => setBirthday(event.target.value)}
-          defaultValue={birthday}
+          value={birthday}
         />
         <TextField
           id="outlined-Address"

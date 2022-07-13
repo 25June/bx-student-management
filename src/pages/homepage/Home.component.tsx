@@ -20,32 +20,73 @@ const columns: GridColDef[] = [
   { field: 'phone1', headerName: 'Mother phone' },
   { field: 'phone2', headerName: 'Father phone' },
 ]
+const mockDataFormatFirstName = (firstName: string): string => {
+  const name = firstName.toLowerCase()
+  return name.charAt(0).toUpperCase() + name.slice(1)
+}
+
+const mockDataFormatBirthday = (birthday: string): string => {
+  if (birthday) {
+    const splitBirthday = birthday.split('.')
+    return `${splitBirthday[2]}-${splitBirthday[1]}-${splitBirthday[0]}`
+  }
+  return ''
+}
+
+const mockDataFormatPhone = (phone: string): string => (phone ? phone.replaceAll('.', '') : '')
+
+const formatMockData = () => {
+  return MockStudents.map((student: any, index: number) => {
+    return {
+      ...student,
+      firstName: mockDataFormatFirstName(student.firstName),
+      birthday: mockDataFormatBirthday(student.birthday),
+      phone1: mockDataFormatPhone(student.phone1),
+      phone2: mockDataFormatPhone(student.phone2),
+      id: `student-${index}`,
+    }
+  })
+}
 
 const formatDate = (date: string): string => {
   // format yyyy-MM-dd
-  const splitDate = date.split('-')
-  return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`
+  if (date) {
+    const splitDate = date.split('-')
+    return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`
+  }
+  return ''
 }
 
 const formatPhone = (phone: string): string => {
-  const splitNumber = phone.split('')
-  splitNumber[3] = splitNumber[3] + '.'
-  splitNumber[6] = splitNumber[6] + '.'
-  return splitNumber.join('')
+  if (phone) {
+    const splitNumber = phone.split('')
+    splitNumber[3] = splitNumber[3] + '.'
+    splitNumber[6] = splitNumber[6] + '.'
+    return splitNumber.join('')
+  }
+  return ''
 }
 
 const formatFullName = (fullName: string) => {
   const lastBlankSpace = fullName.lastIndexOf(' ')
-  const firstName = fullName.slice(lastBlankSpace).toUpperCase()
+  const firstName = fullName.slice(lastBlankSpace)
   const lastName = fullName.slice(0, lastBlankSpace)
   return { firstName, lastName }
 }
 
+const formatStudentTable = (students: any[]) => {
+  return students.map((student: any) => ({
+    ...student,
+    firstName: student.firstName.toUpperCase(),
+    birthday: formatDate(student.birthday),
+    phone1: formatPhone(student.phone1),
+    phone2: formatPhone(student.phone2),
+  }))
+}
+
 const HomeComponent = () => {
   const classes = useStyles()
-  const [students, setStudents] = useState(
-    MockStudents.map((value, index) => ({ id: index, ...value }))
-  )
+  const [students, setStudents] = useState(formatMockData())
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
   const [actionType, setActionType] = useState<string>('ADD')
   const [actionData, setActionData] = useState({})
@@ -53,12 +94,16 @@ const HomeComponent = () => {
     setActionType(type)
     setOpenStudentDialog(true)
   }
-  console.log('homepage')
+
+  const closeStudentDialog = (): void => {
+    setActionType('ADD')
+    setActionData({})
+    setOpenStudentDialog(false)
+  }
 
   const handleClickAction = (data: any, type: string) => {
     if (type === 'EDIT') {
-      console.log(data)
-      setActionData(data)
+      setActionData(students.find((student: any) => student.id === data.id))
       openStudentDialog(type)
     }
     if (type === 'DELETE') {
@@ -71,9 +116,6 @@ const HomeComponent = () => {
         students.concat({
           ...data,
           id: students.length,
-          birthday: formatDate(data.birthday),
-          phone1: formatPhone(data.phone1),
-          phone2: formatPhone(data.phone2),
           ...formatFullName(data.fullName),
         })
       )
@@ -83,9 +125,6 @@ const HomeComponent = () => {
           if (student.id === data.id) {
             return {
               ...data,
-              birthday: formatDate(data.birthday),
-              phone1: formatPhone(data.phone1),
-              phone2: formatPhone(data.phone2),
               ...formatFullName(data.fullName),
             }
           }
@@ -108,13 +147,13 @@ const HomeComponent = () => {
       </Box>
       <TableComponent
         columns={columns}
-        rows={students}
+        rows={formatStudentTable(students)}
         actions={['EDIT', 'DELETE']}
         onClickAction={handleClickAction}
       />
       <StudentDialogComponent
         isOpen={isOpenStudentDialog}
-        onClose={useCallback(() => setOpenStudentDialog(false), [])}
+        onClose={useCallback(() => closeStudentDialog(), [])}
         actionType={actionType}
         actionData={actionData}
         onSave={handleSave}
