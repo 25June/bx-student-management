@@ -2,24 +2,26 @@ import React, { useState, useCallback } from 'react'
 import { Button, Box } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { GridColDef } from '@mui/x-data-grid'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import TableComponent from '../../modules/Table/Table.component'
-// import { Student } from '../../models/student'
 import { students as MockStudents } from '../../mockData/students'
 import StudentDialogComponent from '../../modules/student-dialog/StudentDialog.component'
+import { StudentActionType } from '../../constant/common'
+import Snackbar from '@mui/material/Snackbar'
+// import { Student } from '../../models/student'
+import Alert from '@mui/material/Alert'
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'Id' },
-  { field: 'saintName', headerName: 'Saint name' },
-  { field: 'lastName', headerName: 'Last name' },
-  { field: 'firstName', headerName: 'First name' },
-  { field: 'birthday', headerName: 'Birthday' },
-  { field: 'address', headerName: 'Address' },
-  { field: 'grade', headerName: 'Grade' },
-  { field: 'phone1', headerName: 'Mother phone' },
-  { field: 'phone2', headerName: 'Father phone' },
+  { field: 'saintName', headerName: 'Tên Thánh' },
+  { field: 'lastName', headerName: 'Họ' },
+  { field: 'firstName', headerName: 'Tên' },
+  { field: 'birthday', headerName: 'Ngày Sinh' },
+  { field: 'address', headerName: 'Địa Chỉ' },
+  { field: 'grade', headerName: 'Văn Hoá' },
+  { field: 'phone1', headerName: 'Điện Thoại Mẹ' },
+  { field: 'phone2', headerName: 'Điện Thoại Cha' },
 ]
+
 const mockDataFormatFirstName = (firstName: string): string => {
   const name = firstName.toLowerCase()
   return name.charAt(0).toUpperCase() + name.slice(1)
@@ -69,26 +71,30 @@ const formatPhone = (phone: string): string => {
 
 const formatFullName = (fullName: string) => {
   const lastBlankSpace = fullName.lastIndexOf(' ')
-  const firstName = fullName.slice(lastBlankSpace)
-  const lastName = fullName.slice(0, lastBlankSpace)
+  const firstName = fullName.slice(lastBlankSpace).trim()
+  const lastName = fullName.slice(0, lastBlankSpace).trim()
   return { firstName, lastName }
 }
 
 const formatStudentTable = (students: any[]) => {
-  return students.map((student: any) => ({
-    ...student,
-    firstName: student.firstName.toUpperCase(),
-    birthday: formatDate(student.birthday),
-    phone1: formatPhone(student.phone1),
-    phone2: formatPhone(student.phone2),
-  }))
+  return students
+    .map((student: any) => ({
+      ...student,
+      firstName: student.firstName.toUpperCase(),
+      birthday: formatDate(student.birthday),
+      phone1: formatPhone(student.phone1),
+      phone2: formatPhone(student.phone2),
+    }))
+    .sort((a, b) => a.firstName.localeCompare(b.firstName))
 }
 
 const HomeComponent = () => {
   const classes = useStyles()
   const [students, setStudents] = useState(formatMockData())
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
-  const [actionType, setActionType] = useState<string>('ADD')
+  const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
+  const [snackBarMessage, setSnackBarMessage] = useState<string>('')
+  const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState({})
   const openStudentDialog = (type: string): void => {
     setActionType(type)
@@ -96,68 +102,92 @@ const HomeComponent = () => {
   }
 
   const closeStudentDialog = (): void => {
-    setActionType('ADD')
-    setActionData({})
     setOpenStudentDialog(false)
+    setTimeout(() => {
+      setActionType('')
+      setActionData({})
+    }, 0)
+  }
+
+  const openSnackBar = (message: string) => {
+    setSnackBarMessage(message)
+    setOpenSnackbar(true)
   }
 
   const handleClickAction = (data: any, type: string) => {
-    if (type === 'EDIT') {
-      setActionData(students.find((student: any) => student.id === data.id))
-      openStudentDialog(type)
-    }
-    if (type === 'DELETE') {
-      console.log('DELETE')
-    }
+    setActionData(students.find((student: any) => student.id === data.id))
+    openStudentDialog(type)
   }
   const handleSave = (data: any) => {
-    if (actionType === 'ADD') {
-      setStudents(
-        students.concat({
-          ...data,
-          id: students.length,
-          ...formatFullName(data.fullName),
-        })
-      )
-    } else {
-      setStudents(
-        students.map((student: any) => {
-          if (student.id === data.id) {
-            return {
+    switch (actionType) {
+      case StudentActionType.ADD_NEW_STUDENT:
+        openSnackBar(`Thêm Thiếu Nhi ${data.fullName} Thành Công`)
+        return setStudents(
+          students
+            .concat({
               ...data,
+              id: students.length,
               ...formatFullName(data.fullName),
+              fullName: undefined,
+            })
+            .sort((a, b) => a.firstName.localeCompare(b.firstName))
+        )
+      case StudentActionType.EDIT_STUDENT:
+        openSnackBar(`Cập Nhật Thiếu Nhi ${data.fullName} Thành Công`)
+        return setStudents(
+          students.map((student: any) => {
+            if (student.id === data.id) {
+              return {
+                ...data,
+                ...formatFullName(data.fullName),
+              }
             }
-          }
-          return student
-        })
-      )
+            return student
+          })
+        )
+      case StudentActionType.DELETE_STUDENT:
+        openSnackBar(
+          `Xoá Thiếu Nhi ${data.fullName || data.lastName + ' ' + data.firstName} Thành Công`
+        )
+        return setStudents(students.filter((student: any) => student.id !== data.id))
+      default:
+        return
     }
   }
+  console.log(students)
   return (
     <div className={classes.home}>
       <Box className={classes.title}>
         <h1>Thông Tin Thiếu Nhi</h1>
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
-          onClick={useCallback(() => openStudentDialog('ADD'), [])}
+          startIcon={<PersonAddIcon />}
+          onClick={useCallback(() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT), [])}
         >
-          Add
+          Thêm Thiếu Nhi
         </Button>
       </Box>
       <TableComponent
         columns={columns}
         rows={formatStudentTable(students)}
-        actions={['EDIT', 'DELETE']}
         onClickAction={handleClickAction}
       />
       <StudentDialogComponent
         isOpen={isOpenStudentDialog}
-        onClose={useCallback(() => closeStudentDialog(), [])}
+        onClose={() => closeStudentDialog()}
         actionType={actionType}
         actionData={actionData}
         onSave={handleSave}
       />
+      <Snackbar
+        open={isOpenSnackbar}
+        autoHideDuration={5000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+          {snackBarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

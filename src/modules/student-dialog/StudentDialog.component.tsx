@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { StudentActionType } from '../../constant/common'
 
 interface StudentDialogComponent {
   isOpen: boolean
@@ -29,6 +30,16 @@ const convertDateToString = (date: Date): string => {
   const months = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth()
   const days = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
   return `${date.getFullYear()}-${months}-${days}`
+}
+
+const getButtonColor = (type: string): any => {
+  if (type === StudentActionType.ADD_NEW_STUDENT) {
+    return 'primary'
+  }
+  if (type === StudentActionType.EDIT_STUDENT) {
+    return 'warning'
+  }
+  return 'error'
 }
 
 const StudentDialogComponent = ({
@@ -50,7 +61,7 @@ const StudentDialogComponent = ({
   const [phone2, setPhone2] = useState<string>('')
 
   useEffect(() => {
-    if (actionType === 'EDIT') {
+    if (actionType === StudentActionType.EDIT_STUDENT) {
       setSaintName(actionData.saintName)
       setFullName(`${actionData.lastName} ${actionData.firstName}`)
       setBirthday(actionData.birthday)
@@ -59,8 +70,18 @@ const StudentDialogComponent = ({
       setPhone1(actionData.phone1 ? actionData.phone1.replaceAll('.', '') : '')
       setPhone2(actionData.phone2 ? actionData.phone2.replaceAll('.', '') : '')
     }
+    return removeState
   }, [actionData, actionType])
 
+  const removeState = () => {
+    setSaintName('')
+    setFullName('')
+    setBirthday('')
+    setAddress('')
+    setGrade(1)
+    setPhone1('')
+    setPhone2('')
+  }
   const save = (): void => {
     onSave({
       ...actionData,
@@ -82,88 +103,103 @@ const StudentDialogComponent = ({
       aria-labelledby="responsive-dialog-title"
     >
       <DialogTitle id="responsive-dialog-title">
-        {actionType === 'EDIT' ? 'Sua Thong Tin Thieu Nhi' : 'Them Thong Tin Thieu Nhi'}
+        {actionType === StudentActionType.EDIT_STUDENT && 'Cập nhật thông tin thiếu nhi'}
+        {actionType === StudentActionType.ADD_NEW_STUDENT && 'Thêm thông tin thiếu nhi'}
+        {actionType === StudentActionType.DELETE_STUDENT && 'Xoá thông tin thiếu nhi'}
       </DialogTitle>
       <DialogContent dividers={true}>
-        <DialogContentText>Xin dien vao nhung o trong duoi day!</DialogContentText>
-        <TextField
-          id="outlined-SaintName"
-          label="Ten Thanh"
-          helperText="Ex: Maria, Giuse, Anna"
-          margin="normal"
-          fullWidth={true}
-          onChange={(event) => setSaintName(event.target.value)}
-          value={saintName}
-        />
-        <TextField
-          id="outlined-FullName"
-          label="Ho va Ten"
-          helperText="Ex: Nguyen Van A"
-          margin="normal"
-          fullWidth={true}
-          onChange={(event) => setFullName(event.target.value)}
-          value={fullName}
-        />
-        <TextField
-          id="outlined-Birthday"
-          label="Ngay Sinh"
-          type="date"
-          helperText="Ngay/Thang/Nam"
-          margin="normal"
-          fullWidth={true}
-          InputLabelProps={{ shrink: true }}
-          onChange={(event) => setBirthday(event.target.value)}
-          value={birthday}
-        />
-        <TextField
-          id="outlined-Address"
-          label="Dia Chi"
-          helperText="Ex: 231/83/13T Duong Ba Trac, p1, q8"
-          margin="normal"
-          fullWidth={true}
-          onChange={(event) => setAddress(event.target.value)}
-          value={address}
-        />
-        <TextField
-          id="outlined-Grade"
-          label="Lop"
-          helperText="Ex: 1, 2, 3, 4, 5"
-          margin="normal"
-          type="number"
-          fullWidth={true}
-          InputLabelProps={{ shrink: true }}
-          onChange={(event) => setGrade(Number(event.target.value))}
-          value={grade}
-        />
-        <TextField
-          id="outlined-Phone1"
-          label="Phone 1"
-          helperText="Ex: 0973173484"
-          margin="normal"
-          type="number"
-          fullWidth={true}
-          InputLabelProps={{ shrink: true }}
-          onChange={(event) => setPhone1(event.target.value)}
-          value={phone1}
-        />
-        <TextField
-          id="outlined-Phone2"
-          label="Phone 2"
-          helperText="Ex: 0973173484"
-          margin="normal"
-          type="number"
-          fullWidth={true}
-          InputLabelProps={{ shrink: true }}
-          onChange={(event) => setPhone2(event.target.value)}
-          value={phone2}
-        />
+        {actionType === StudentActionType.DELETE_STUDENT ? (
+          <DialogContentText>
+            {`Bạn có chắc chắn muốn xoá thông tin thiếu nhi ${actionData.lastName} ${actionData.firstName}`}
+          </DialogContentText>
+        ) : (
+          <>
+            <DialogContentText>Xin dien vao nhung o trong duoi day!</DialogContentText>
+            <TextField
+              id="outlined-SaintName"
+              label="Ten Thanh"
+              helperText="Ex: Maria, Giuse, Anna"
+              margin="normal"
+              fullWidth={true}
+              onChange={(event) => setSaintName(event.target.value)}
+              value={saintName}
+            />
+            <TextField
+              id="outlined-FullName"
+              label="Ho va Ten"
+              helperText="Ex: Nguyen Van A"
+              margin="normal"
+              fullWidth={true}
+              onChange={(event) => setFullName(event.target.value)}
+              value={fullName}
+            />
+            <TextField
+              id="outlined-Birthday"
+              label="Ngay Sinh"
+              type="date"
+              helperText="Ngay/Thang/Nam"
+              margin="normal"
+              fullWidth={true}
+              InputLabelProps={{ shrink: true }}
+              onChange={(event) => setBirthday(event.target.value)}
+              value={birthday}
+            />
+            <TextField
+              id="outlined-Address"
+              label="Dia Chi"
+              helperText="Ex: 231/83/13T Duong Ba Trac, p1, q8"
+              margin="normal"
+              fullWidth={true}
+              onChange={(event) => setAddress(event.target.value)}
+              value={address}
+            />
+            <TextField
+              id="outlined-Grade"
+              label="Lop"
+              helperText="Ex: 1, 2, 3, 4, 5"
+              margin="normal"
+              type="number"
+              fullWidth={true}
+              InputLabelProps={{ shrink: true }}
+              onChange={(event) => setGrade(Number(event.target.value))}
+              value={grade}
+            />
+            <TextField
+              id="outlined-Phone1"
+              label="Phone 1"
+              helperText="Ex: 0973173484"
+              margin="normal"
+              type="number"
+              fullWidth={true}
+              InputLabelProps={{ shrink: true }}
+              onChange={(event) => setPhone1(event.target.value)}
+              value={phone1}
+            />
+            <TextField
+              id="outlined-Phone2"
+              label="Phone 2"
+              helperText="Ex: 0973173484"
+              margin="normal"
+              type="number"
+              fullWidth={true}
+              InputLabelProps={{ shrink: true }}
+              onChange={(event) => setPhone2(event.target.value)}
+              value={phone2}
+            />
+          </>
+        )}
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px' }}>
         <Button autoFocus={true} onClick={onClose} variant="outlined">
-          Huy
+          Huỷ
         </Button>
-        <Button onClick={save} autoFocus={true} variant="contained">
-          Luu
+        <Button
+          onClick={save}
+          autoFocus={true}
+          variant="contained"
+          color={getButtonColor(actionType)}
+        >
+          {actionType === StudentActionType.DELETE_STUDENT ? 'Xoá' : 'Lưu'}
         </Button>
       </DialogActions>
     </Dialog>

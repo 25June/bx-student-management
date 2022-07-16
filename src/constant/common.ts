@@ -1,0 +1,5 @@
+export enum StudentActionType {
+  ADD_NEW_STUDENT = 'ADD_NEW_STUDENT',
+  EDIT_STUDENT = 'EDIT_STUDENT',
+  DELETE_STUDENT = 'DELETE_STUDENT',
+}
