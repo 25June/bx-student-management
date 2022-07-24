@@ -6,10 +6,15 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import TableComponent from '../../modules/Table/Table.component'
 import { students as MockStudents } from '../../mockData/students'
 import StudentDialogComponent from '../../modules/student-dialog/StudentDialog.component'
+import CardComponent from '../../modules/card/Card.component'
 import { StudentActionType } from '../../constant/common'
 import Snackbar from '@mui/material/Snackbar'
 // import { Student } from '../../models/student'
 import Alert from '@mui/material/Alert'
+import TableRowsIcon from '@mui/icons-material/TableRows'
+import StyleIcon from '@mui/icons-material/Style'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 
 const columns: GridColDef[] = [
   { field: 'saintName', headerName: 'Tên Thánh' },
@@ -96,6 +101,16 @@ const HomeComponent = () => {
   const [snackBarMessage, setSnackBarMessage] = useState<string>('')
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState({})
+
+  const [displayType, setDisplayType] = React.useState<string | null>('card')
+
+  const handleChangeDisplay = (
+    event: React.MouseEvent<HTMLElement>,
+    newDisplayType: string | null
+  ) => {
+    setDisplayType(newDisplayType)
+  }
+
   const openStudentDialog = (type: string): void => {
     setActionType(type)
     setOpenStudentDialog(true)
@@ -118,11 +133,11 @@ const HomeComponent = () => {
     setActionData(students.find((student: any) => student.id === data.id))
     openStudentDialog(type)
   }
+
   const handleSave = (data: any) => {
     switch (actionType) {
       case StudentActionType.ADD_NEW_STUDENT:
-        openSnackBar(`Thêm Thiếu Nhi ${data.fullName} Thành Công`)
-        return setStudents(
+        setStudents(
           students
             .concat({
               ...data,
@@ -132,9 +147,10 @@ const HomeComponent = () => {
             })
             .sort((a, b) => a.firstName.localeCompare(b.firstName))
         )
+        openSnackBar(`Thêm Thiếu Nhi ${data.fullName} Thành Công`)
+        break
       case StudentActionType.EDIT_STUDENT:
-        openSnackBar(`Cập Nhật Thiếu Nhi ${data.fullName} Thành Công`)
-        return setStudents(
+        setStudents(
           students.map((student: any) => {
             if (student.id === data.id) {
               return {
@@ -145,13 +161,17 @@ const HomeComponent = () => {
             return student
           })
         )
+        openSnackBar(`Cập Nhật Thiếu Nhi ${data.fullName} Thành Công`)
+        break
       case StudentActionType.DELETE_STUDENT:
+        setStudents(students.filter((student: any) => student.id !== data.id))
         openSnackBar(
           `Xoá Thiếu Nhi ${data.fullName || data.lastName + ' ' + data.firstName} Thành Công`
         )
-        return setStudents(students.filter((student: any) => student.id !== data.id))
+        break
       default:
-        return
+        console.log('can not match action type ' + actionType)
+        break
     }
   }
   console.log(students)
@@ -167,11 +187,36 @@ const HomeComponent = () => {
           Thêm Thiếu Nhi
         </Button>
       </Box>
-      <TableComponent
-        columns={columns}
-        rows={formatStudentTable(students)}
-        onClickAction={handleClickAction}
-      />
+      <Box className={classes.toggle}>
+        <ToggleButtonGroup
+          value={displayType}
+          exclusive={true}
+          onChange={handleChangeDisplay}
+          aria-label="toggle-display"
+        >
+          <ToggleButton value="table" aria-label="display-table" size="small">
+            <TableRowsIcon />
+          </ToggleButton>
+          <ToggleButton value="card" aria-label="display-card" size="small">
+            <StyleIcon />
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+      {displayType === 'table' ? (
+        <TableComponent
+          columns={columns}
+          rows={formatStudentTable(students)}
+          onClickAction={handleClickAction}
+        />
+      ) : (
+        <Box className={classes.cards}>
+          {students.map((student: any) => (
+            <Box margin={1} key={student.id}>
+              <CardComponent student={student} onClickAction={handleClickAction} />
+            </Box>
+          ))}
+        </Box>
+      )}
       <StudentDialogComponent
         isOpen={isOpenStudentDialog}
         onClose={() => closeStudentDialog()}
@@ -200,6 +245,19 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  toggle: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  cards: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  card: {
+    margin: 1,
   },
 })
 export default HomeComponent
