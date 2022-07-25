@@ -211,7 +211,7 @@ const HomeComponent = () => {
       ) : (
         <Box className={classes.cards}>
           {students.map((student: any) => (
-            <Box margin={1} key={student.id}>
+            <Box mb={4} ml={1} mr={1} key={student.id}>
               <CardComponent student={student} onClickAction={handleClickAction} />
             </Box>
           ))}
@@ -254,7 +254,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   card: {
     margin: 1,

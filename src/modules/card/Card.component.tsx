@@ -28,16 +28,21 @@ const CardComponent = ({
         alt="student-girl"
         sx={{ padding: 1 }}
       />
-      <CardContent sx={{ height: 80 }}>
+      <CardContent sx={{ height: 120 }}>
+        <Typography gutterBottom={true} variant="h5" component="div">
+          {student.saintName}
+        </Typography>
         <Typography gutterBottom={true} variant="h5" component="div">
           {fullName}
         </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ display: 'flex', justifyContent: 'space-around' }}>
         <Button
           startIcon={<EditIcon />}
           size="small"
           onClick={() => onClickAction(student, StudentActionType.EDIT_STUDENT)}
+          color="warning"
+          variant="outlined"
         >
           Sửa
         </Button>
@@ -45,6 +50,8 @@ const CardComponent = ({
           startIcon={<DeleteIcon />}
           size="small"
           onClick={() => onClickAction(student, StudentActionType.DELETE_STUDENT)}
+          color="error"
+          variant="outlined"
         >
           Xoá
         </Button>
