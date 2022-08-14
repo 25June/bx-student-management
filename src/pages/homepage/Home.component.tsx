@@ -15,6 +15,7 @@ import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import RightPanelComponent from '../../modules/right-panel/RightPanel.component'
 
 const columns: GridColDef[] = [
   { field: 'saintName', headerName: 'Tên Thánh' },
@@ -101,6 +102,8 @@ const HomeComponent = () => {
   const [snackBarMessage, setSnackBarMessage] = useState<string>('')
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState({})
+  const [isOpenRightPanel, setOpenRightPanel] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState()
 
   const [displayType, setDisplayType] = React.useState<string | null>('card')
 
@@ -130,8 +133,17 @@ const HomeComponent = () => {
   }
 
   const handleClickAction = (data: any, type: string) => {
-    setActionData(students.find((student: any) => student.id === data.id))
-    openStudentDialog(type)
+    if (type === StudentActionType.VIEW_STUDENT) {
+      setSelectedStudent(data)
+      setOpenRightPanel(true)
+    } else {
+      setActionData(students.find((student: any) => student.id === data.id))
+      openStudentDialog(type)
+    }
+  }
+
+  const handleClosePanel = () => {
+    setOpenRightPanel(false)
   }
 
   const handleSave = (data: any) => {
@@ -174,7 +186,6 @@ const HomeComponent = () => {
         break
     }
   }
-  console.log(students)
   return (
     <div className={classes.home}>
       <Box className={classes.title}>
@@ -215,6 +226,11 @@ const HomeComponent = () => {
               <CardComponent student={student} onClickAction={handleClickAction} />
             </Box>
           ))}
+          <RightPanelComponent
+            isOpen={isOpenRightPanel}
+            data={selectedStudent}
+            onClose={handleClosePanel}
+          />
         </Box>
       )}
       <StudentDialogComponent

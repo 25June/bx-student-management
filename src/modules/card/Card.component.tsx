@@ -47,6 +47,15 @@ const CardComponent = ({
           Sửa
         </Button>
         <Button
+          startIcon={<EditIcon />}
+          size="small"
+          onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+          color="warning"
+          variant="outlined"
+        >
+          Xem Thông Tin
+        </Button>
+        <Button
           startIcon={<DeleteIcon />}
           size="small"
           onClick={() => onClickAction(student, StudentActionType.DELETE_STUDENT)}
