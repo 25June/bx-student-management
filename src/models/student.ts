@@ -1,14 +1,16 @@
+export interface Phone {
+  name: string
+  number: string
+}
 export interface Student {
   id: string
   saintName: string
   firstName: string
-  middleName: string
   lastName: string
-  avatar: string | null
-  gender: boolean
-  birthday: Date
+  avatar?: string | null
+  gender?: boolean
+  birthday: string
   grade: string
   address: string
-  phone: string[]
-  class: { id: string; name: string }
+  phone: Phone[]
 }

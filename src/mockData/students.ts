@@ -7,7 +7,7 @@ export const students = [
     address: '1041/85/7 T.X.Soạn P. T.Hưng, Q.7',
     grade: '5',
     phone2: '0932.500.546',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Maria',
@@ -18,7 +18,7 @@ export const students = [
     grade: '5',
     phone1: '0909.328.161',
     phone2: '0971.525.403',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Phêrô',
@@ -29,7 +29,7 @@ export const students = [
     grade: '8',
     phone1: '0387.735.381',
     phone2: '0977.435.664',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Phêrô',
@@ -39,7 +39,7 @@ export const students = [
     address: '154/19/35 Âu Dương Lân, P3, Q8',
     grade: '8',
     phone2: '0908.656.584',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Giuse',
@@ -49,7 +49,7 @@ export const students = [
     address: '181/51 Âu Dương Lân, P.2, Q.8',
     grade: '6',
     phone1: '0393.593.167',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Maria',
@@ -59,7 +59,7 @@ export const students = [
     address: '503/15 Trần Xuân Soạn, P.Tân Hưng, Q.7',
     grade: '5',
     phone2: '0798.111.845',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Giuse',
@@ -70,7 +70,7 @@ export const students = [
     grade: '6',
     phone1: '0935.144.466',
     phone2: '0906.252.454',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Micaen',
@@ -80,7 +80,7 @@ export const students = [
     address: '181/51 Âu Dương Lân, P.2, Q.8',
     grade: '6',
     phone1: '0393.593.167',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Đa Minh',
@@ -90,9 +90,9 @@ export const students = [
     address: '495/6 D.B.Trạc, P1, Q8',
     grade: '6',
     phone2: '0905.682.729',
-    gender: 'male',
+    gender: false,
   },
-  { saintName: 'Phê-rô', lastName: 'Uông Vũ Quang', firstName: 'HUY', gender: 'male' },
+  { saintName: 'Phê-rô', lastName: 'Uông Vũ Quang', firstName: 'HUY', gender: false },
   {
     saintName: 'Anphongsô',
     lastName: 'Vũ Nguyễn Long Duy',
@@ -102,7 +102,7 @@ export const students = [
     grade: '8',
     phone1: '0934.290.172',
     phone2: '0907.170.964',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Giuse',
@@ -112,7 +112,7 @@ export const students = [
     address: '154/43/16 Â.D.Lân, P3, Q8',
     grade: '6',
     phone2: '0903.775.872',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Anna',
@@ -122,7 +122,7 @@ export const students = [
     address: '90/43 Dương Bá Trạc P2, Q.8',
     grade: '5',
     phone2: '0908.756.493',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Isave',
@@ -133,7 +133,7 @@ export const students = [
     grade: '5',
     phone1: '0917.767.778',
     phone2: '0948.363.654',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Phêrô',
@@ -143,7 +143,7 @@ export const students = [
     address: 'C19/7A12 Ấp 4B, Bình Hưng, Bình Chánh',
     grade: '5',
     phone2: '0987.789.661',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Magarita',
@@ -154,7 +154,7 @@ export const students = [
     grade: '5',
     phone1: '0917.767.778',
     phone2: '0948.363.654',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Maria',
@@ -164,7 +164,7 @@ export const students = [
     address: 'L04/L9/35 Âu Dương Lân, P3, Q8',
     grade: '5',
     phone2: '0797.628.530',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Anna',
@@ -174,7 +174,7 @@ export const students = [
     address: '202 Dương Bá Trạc, P.2, Q.8',
     grade: '6',
     phone2: '0933.736.078',
-    gender: 'female',
+    gender: true,
   },
   { lastName: 'Khôi', firstName: '\u001dNGUYÊN' },
   {
@@ -186,7 +186,7 @@ export const students = [
     grade: '5',
     phone1: '0982.178.240',
     phone2: '0333.050.014',
-    gender: 'male',
+    gender: false,
   },
   {
     saintName: 'Isave',
@@ -196,7 +196,7 @@ export const students = [
     address: '154/220 Âu Dương Lân P.3 Q.8',
     grade: '5',
     phone2: '0909.077.459',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Phêrô',
@@ -206,7 +206,7 @@ export const students = [
     address: '202 Dương Bá Trạc, P.2, Q.8',
     grade: '5',
     phone2: '0933.736.078',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Isabela',
@@ -217,7 +217,7 @@ export const students = [
     grade: '5',
     phone1: '903,042,256',
     phone2: '0907.877.695',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Catarina',
@@ -227,7 +227,7 @@ export const students = [
     address: '47/2/2 Nguyễn Thị Tần, P.2, Q.8',
     grade: '7',
     phone2: '0908.662.725',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Maria',
@@ -237,7 +237,7 @@ export const students = [
     address: '90/55 Dương Bá Trạc, P2, Q8',
     grade: '9',
     phone2: '0986.831.601',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'J.Phaxica',
@@ -248,7 +248,7 @@ export const students = [
     grade: '5',
     phone1: '0917.840.260',
     phone2: '0907.987.053',
-    gender: 'female',
+    gender: true,
   },
   {
     saintName: 'Maria',
@@ -259,6 +259,6 @@ export const students = [
     grade: '5',
     phone1: '0937.373.900',
     phone2: '0935.499.755',
-    gender: 'female',
+    gender: true,
   },
 ]

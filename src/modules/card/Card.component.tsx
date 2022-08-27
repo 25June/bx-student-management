@@ -8,14 +8,14 @@ import Typography from '@mui/material/Typography'
 import studentGirlLogo from '../../static/images/cards/student-girl.png'
 import studentBoyLogo from '../../static/images/cards/student-boy.png'
 import { StudentActionType } from '../../constant/common'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import { Student } from '../../models/student'
 
 const CardComponent = ({
   student,
   onClickAction,
 }: {
-  student: any
+  student: Student
   onClickAction: (student: any, actionType: string) => void
 }) => {
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
@@ -24,7 +24,7 @@ const CardComponent = ({
       <CardMedia
         component="img"
         height="300"
-        src={student.gender === 'female' ? studentGirlLogo : studentBoyLogo}
+        src={student.gender ? studentGirlLogo : studentBoyLogo}
         alt="student-girl"
         sx={{ padding: 1 }}
       />
@@ -38,31 +38,13 @@ const CardComponent = ({
       </CardContent>
       <CardActions sx={{ display: 'flex', justifyContent: 'space-around' }}>
         <Button
-          startIcon={<EditIcon />}
-          size="small"
-          onClick={() => onClickAction(student, StudentActionType.EDIT_STUDENT)}
-          color="warning"
-          variant="outlined"
-        >
-          Sửa
-        </Button>
-        <Button
-          startIcon={<EditIcon />}
+          startIcon={<VisibilityIcon />}
           size="small"
           onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
           color="warning"
           variant="outlined"
         >
           Xem Thông Tin
-        </Button>
-        <Button
-          startIcon={<DeleteIcon />}
-          size="small"
-          onClick={() => onClickAction(student, StudentActionType.DELETE_STUDENT)}
-          color="error"
-          variant="outlined"
-        >
-          Xoá
         </Button>
       </CardActions>
     </Card>
