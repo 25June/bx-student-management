@@ -83,25 +83,48 @@ const StudentDialogComponent = ({
 
   const onSubmit = (data: StudentForm) => {
     const { firstName, lastName } = splitFullName(data.fullName)
-    const student: Omit<Student, 'id'> = {
-      saintName: data.saintName,
-      firstName,
-      lastName,
-      birthday: data.birthday,
-      address: data.address,
-      grade: data.grade.toString(),
-      phone: [
-        {
-          name: 'Father',
-          number: data.phone1,
-        },
-        {
-          name: 'Mother',
-          number: data.phone2,
-        },
-      ],
+    if (actionType !== StudentActionType.ADD_NEW_STUDENT && actionData) {
+      const student: Student = {
+        id: actionData.id,
+        saintName: data.saintName,
+        firstName,
+        lastName,
+        birthday: data.birthday,
+        address: data.address,
+        grade: data.grade.toString(),
+        phone: [
+          {
+            name: 'Father',
+            number: data.phone1,
+          },
+          {
+            name: 'Mother',
+            number: data.phone2,
+          },
+        ],
+      }
+      onSave(student)
+    } else {
+      const student: Omit<Student, 'id'> = {
+        saintName: data.saintName,
+        firstName,
+        lastName,
+        birthday: data.birthday,
+        address: data.address,
+        grade: data.grade.toString(),
+        phone: [
+          {
+            name: 'Father',
+            number: data.phone1,
+          },
+          {
+            name: 'Mother',
+            number: data.phone2,
+          },
+        ],
+      }
+      onSave(student)
     }
-    onSave(student)
     onClose()
   }
 
