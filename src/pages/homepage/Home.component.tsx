@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react'
 import { Button, Box, Snackbar, Alert, ToggleButtonGroup } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 import { GridColDef } from '@mui/x-data-grid'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import TableComponent from '../../modules/Table/Table.component'
@@ -28,7 +27,6 @@ const columns: GridColDef[] = [
 ]
 
 const HomeComponent = () => {
-  const classes = useStyles()
   const [students, setStudents] = useState<Student[]>(formatMockData(MockStudents))
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
   const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
@@ -119,8 +117,8 @@ const HomeComponent = () => {
     }
   }
   return (
-    <div className={classes.home}>
-      <Box className={classes.title}>
+    <Box width={'100%'}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>Thông Tin Thiếu Nhi</h1>
         <Box display={'flex'}>
           <Button
@@ -131,7 +129,7 @@ const HomeComponent = () => {
           >
             Thêm Thiếu Nhi
           </Button>
-          <Box className={classes.toggle}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ToggleButtonGroup
               value={displayType}
               exclusive={true}
@@ -155,7 +153,14 @@ const HomeComponent = () => {
           onClickAction={handleClickAction}
         />
       ) : (
-        <Box className={classes.cards}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+          }}
+        >
           {students.map((student: any) => (
             <Box mb={4} ml={1} mr={1} key={student.id}>
               <CardComponent student={student} onClickAction={handleClickAction} />
@@ -185,31 +190,8 @@ const HomeComponent = () => {
           {snackBarMessage}
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   )
 }
 
-const useStyles = makeStyles({
-  home: {
-    width: '100%',
-  },
-  title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  toggle: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  cards: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  card: {
-    margin: 1,
-  },
-})
 export default HomeComponent

@@ -9,7 +9,6 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "5.8.4",
     "@mui/styled-engine": "^5.8.0",
-    "@mui/styles": "^5.8.4",
     "@mui/x-data-grid": "^5.12.3",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.3.0",
