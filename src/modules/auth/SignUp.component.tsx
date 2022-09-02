@@ -1,10 +1,11 @@
 import { Controller, useForm } from 'react-hook-form'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Alert,
   AlertProps,
   Box,
   Button,
+  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -12,11 +13,17 @@ import {
   Snackbar,
   TextField,
   Typography,
+  FormControl,
+  Link,
 } from '@mui/material'
 import { createUserWithEmailAndPassword, UserCredential } from 'firebase/auth'
 import { auth } from '../../firebase'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Visibility from '@mui/icons-material/Visibility'
+import { Router } from '../../routes'
+import { Link as RouterLink } from 'react-router-dom'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type SignUpForm = {
   email: string
@@ -24,17 +31,25 @@ type SignUpForm = {
   confirmPassword: string
 }
 
+const SignUpValidationSchema = yup.object().shape({
+  email: yup.string().email('Please enter correct email').required('Email is required'),
+  password: yup.string().required('Password is required'),
+  confirmPassword: yup.string().required('Confirm Password is required'),
+})
+
 const SignUpComponent = () => {
-  const { control, handleSubmit } = useForm<SignUpForm>({
+  const { control, handleSubmit, watch, getValues } = useForm<SignUpForm>({
     defaultValues: {
       email: '',
       password: '',
       confirmPassword: '',
     },
+    resolver: yupResolver(SignUpValidationSchema),
   })
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false)
+  const [passwordMatch, setPasswordMatch] = useState<boolean>(true)
   const [snackBarContent, setSnackbarContent] = useState<{
     severity: AlertProps['severity']
     message: string
@@ -42,6 +57,12 @@ const SignUpComponent = () => {
     severity: 'success',
     message: '',
   })
+
+  useEffect(() => {
+    if (getValues('password') !== getValues('confirmPassword')) {
+      setPasswordMatch(false)
+    }
+  }, [watch('confirmPassword')])
 
   const onSubmit = (values: SignUpForm) => {
     if (values.password !== values.confirmPassword) {
@@ -73,23 +94,32 @@ const SignUpComponent = () => {
   }
 
   return (
-    <Box>
-      <Box width={500} border={'1px solid #F0F0F0'} padding={2}>
-        <Typography variant={'h3'}>Đăng ký</Typography>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100vw',
+        height: '100vh',
+      }}
+    >
+      <Box sx={{ width: 500, border: '1px solid #F0F0F0', padding: 2, borderRadius: 5 }}>
+        <Typography variant={'h3'}>Sign up</Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
             rules={{ required: true }}
             control={control}
             name={'email'}
-            render={({ field }) => {
+            render={({ field, fieldState }) => {
               return (
                 <TextField
-                  label={'Nhập email'}
+                  label={'Email'}
                   variant={'outlined'}
-                  helperText={'abc@gmail.com'}
+                  helperText={fieldState.error ? fieldState.error.message || '' : 'abc@gmail.com'}
                   margin={'normal'}
                   type={'email'}
                   fullWidth={true}
+                  error={!!fieldState.error}
                   {...field}
                 />
               )
@@ -99,14 +129,17 @@ const SignUpComponent = () => {
             rules={{ required: true }}
             control={control}
             name={'password'}
-            render={({ field }) => {
+            render={({ field, fieldState }) => {
               return (
-                <>
-                  <InputLabel htmlFor={'outlined-adornment-password'}>Mật khẩu</InputLabel>
+                <FormControl variant={'outlined'} fullWidth={true} margin={'dense'}>
+                  <InputLabel error={!!fieldState.error} htmlFor={'outlined-adornment-password'}>
+                    Password
+                  </InputLabel>
                   <OutlinedInput
                     id={'outlined-adornment-password'}
                     type={showPassword ? 'text' : 'password'}
                     fullWidth={true}
+                    label={'Password'}
                     {...field}
                     endAdornment={
                       <InputAdornment position="end">
@@ -121,7 +154,10 @@ const SignUpComponent = () => {
                       </InputAdornment>
                     }
                   />
-                </>
+                  <FormHelperText variant={'outlined'} error={!!fieldState.error}>
+                    {fieldState.error ? fieldState.error.message : ''}
+                  </FormHelperText>
+                </FormControl>
               )
             }}
           />
@@ -129,16 +165,20 @@ const SignUpComponent = () => {
             rules={{ required: true }}
             control={control}
             name={'confirmPassword'}
-            render={({ field }) => {
+            render={({ field, fieldState }) => {
               return (
-                <>
-                  <InputLabel htmlFor={'outlined-adornment-confirm-password'}>
-                    Xác nhận lại mật khẩu
+                <FormControl variant={'outlined'} fullWidth={true} margin={'dense'}>
+                  <InputLabel
+                    error={!!fieldState.error}
+                    htmlFor={'outlined-adornment-confirm-password'}
+                  >
+                    Confirm password
                   </InputLabel>
                   <OutlinedInput
                     id={'outlined-adornment-confirm-password'}
                     type={showConfirmPassword ? 'text' : 'password'}
                     fullWidth={true}
+                    label={'Confirm password'}
                     {...field}
                     endAdornment={
                       <InputAdornment position="end">
@@ -153,13 +193,32 @@ const SignUpComponent = () => {
                       </InputAdornment>
                     }
                   />
-                </>
+                  <FormHelperText variant={'outlined'} error={!!fieldState.error}>
+                    {!passwordMatch
+                      ? `Password don't match`
+                      : fieldState.error
+                      ? fieldState.error.message
+                      : ''}
+                  </FormHelperText>
+                </FormControl>
               )
             }}
           />
-          <Button type={'submit'} onSubmit={handleSubmit(onSubmit)}>
-            Đăng nhập
-          </Button>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginTop: 3,
+            }}
+          >
+            <Button type={'submit'} variant={'contained'} onSubmit={handleSubmit(onSubmit)}>
+              Sign up
+            </Button>
+            <Link component={RouterLink} to={Router.SIGN_IN}>
+              Sign in
+            </Link>
+          </Box>
         </form>
       </Box>
       <Snackbar open={openSnackbar} autoHideDuration={5000} onClose={() => setOpenSnackbar(false)}>

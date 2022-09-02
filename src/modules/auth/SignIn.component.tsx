@@ -26,24 +26,24 @@ import { Link as RouterLink } from 'react-router-dom'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-type SignUpForm = {
+type SignInForm = {
   email: string
   password: string
 }
 
-const SignUpValidationSchema = yup.object().shape({
+const SignInValidationSchema = yup.object().shape({
   email: yup.string().email('Please enter correct email').required('Email is required'),
   password: yup.string().required('Password is required'),
 })
 
 const SignInComponent = () => {
   const navigate = useNavigate()
-  const { control, handleSubmit, reset } = useForm<SignUpForm>({
+  const { control, handleSubmit, reset } = useForm<SignInForm>({
     defaultValues: {
       email: '',
       password: '',
     },
-    resolver: yupResolver(SignUpValidationSchema),
+    resolver: yupResolver(SignInValidationSchema),
   })
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false)
@@ -59,7 +59,7 @@ const SignInComponent = () => {
     return () => reset()
   }, [reset])
 
-  const onSubmit = (values: SignUpForm) => {
+  const onSubmit = (values: SignInForm) => {
     console.log(values)
     signInWithEmailAndPassword(auth, values.email, values.password)
       .then(({ user }: UserCredential) => {
