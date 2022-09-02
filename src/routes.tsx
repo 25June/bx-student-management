@@ -1,6 +1,13 @@
 import React from 'react'
 import LayoutComponent from './modules/layout/Layout.component'
-import AuthComponent from './modules/auth/Auth.component'
+import SignUpComponent from './modules/auth/SignUp.component'
+import SignInComponent from './modules/auth/SignIn.component'
+
+export const Router = {
+  SIGN_UP: '/sign-up',
+  SIGN_IN: '/sign-in',
+  HOME: '/',
+}
 
 const ROUTES = [
   {
@@ -10,8 +17,13 @@ const ROUTES = [
   },
   {
     name: 'SignIn',
-    component: <AuthComponent />,
-    path: '/signIn',
+    component: <SignInComponent />,
+    path: '/sign-in',
+  },
+  {
+    name: 'SignUp',
+    component: <SignUpComponent />,
+    path: '/sign-up',
   },
 ]
 
