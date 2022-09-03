@@ -1,19 +1,22 @@
 import React, { useState, useCallback } from 'react'
 import { Button, Box, Snackbar, Alert, ToggleButtonGroup } from '@mui/material'
 import { GridColDef } from '@mui/x-data-grid'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import TableComponent from '../../modules/Table/Table.component'
 import { students as MockStudents } from '../../mockData/students'
-import StudentDialogComponent from '../../modules/student-dialog/StudentDialog.component'
-import CardComponent from '../../modules/card/Card.component'
 import { StudentActionType } from '../../constant/common'
 import { Student } from '../../models/student'
+import { formatMockData } from '../../utils/common'
+import { formatStudentTable } from '../../utils/formatDataForTable'
+import {
+  LayoutComponent,
+  RightPanelComponent,
+  StudentDialogComponent,
+  CardComponent,
+  TableComponent,
+} from '../../modules/index'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
-import RightPanelComponent from '../../modules/right-panel/RightPanel.component'
-import { formatMockData } from '../../utils/common'
-import { formatStudentTable } from '../../utils/formatDataForTable'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 const columns: GridColDef[] = [
   { field: 'saintName', headerName: 'Tên Thánh' },
@@ -117,8 +120,15 @@ const HomeComponent = () => {
     }
   }
   return (
-    <Box width={'100%'}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <LayoutComponent>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
         <h1>Thông Tin Thiếu Nhi</h1>
         <Box display={'flex'}>
           <Button
@@ -190,7 +200,7 @@ const HomeComponent = () => {
           {snackBarMessage}
         </Alert>
       </Snackbar>
-    </Box>
+    </LayoutComponent>
   )
 }
 
