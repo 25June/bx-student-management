@@ -32,7 +32,7 @@ export const formatStudentTable = (students: Student[]) => {
       ...student,
       firstName: student.firstName.toUpperCase(),
       birthday: formatDate(student.birthday),
-      phone: student.phone.map((p: Phone) => ({
+      phones: student.phones.map((p: Phone) => ({
         ...p,
         number: p.number ? formatPhone(p.number) : '',
       })),

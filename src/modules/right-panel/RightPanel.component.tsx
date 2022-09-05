@@ -101,24 +101,56 @@ const RightPanelComponent = ({
               sx={{ width: '45%' }}
             />
           </Box>
-          <Box mb={2} width={'100%'}>
+          <Box
+            sx={{
+              width: '100%',
+              marginBottom: 2,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <TextField
-              id={'phone1'}
-              label={'Phone 1'}
+              id={'phone-name-1'}
+              label={'Name'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phone[0].number}
+              value={data.phones[0].number}
+              sx={{ width: '100%' }}
+              variant={'standard'}
+            />
+            <TextField
+              id={'phone-number-2'}
+              label={'Number'}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{ readOnly: true }}
+              value={data.phones[0].number}
               sx={{ width: '100%' }}
               variant={'standard'}
             />
           </Box>
-          <Box mb={2} width={'100%'}>
+          <Box
+            sx={{
+              width: '100%',
+              marginBottom: 2,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <TextField
-              id={'phone2'}
-              label={'Phone 2'}
+              id={'phone-name-1'}
+              label={'Name'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phone[1].number}
+              value={data.phones[0].number}
+              sx={{ width: '100%' }}
+              variant={'standard'}
+            />
+            <TextField
+              id={'phone-number-2'}
+              label={'Number'}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{ readOnly: true }}
+              value={data.phones[0].number}
               sx={{ width: '100%' }}
               variant={'standard'}
             />

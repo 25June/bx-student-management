@@ -27,9 +27,9 @@ export const formatMockData = (mockStudents: any[]): Student[] => {
       ...student,
       firstName: mockDataFormatFirstName(student.firstName),
       birthday: mockDataFormatBirthday(student.birthday),
-      phone: [
-        { name: 'Father', number: mockDataFormatPhone(student.phone1) },
-        { name: 'Mother', number: mockDataFormatPhone(student.phone2) },
+      phones: [
+        { name: 'Cha', number: mockDataFormatPhone(student.phone1) },
+        { name: 'Mẹ', number: mockDataFormatPhone(student.phone2) },
       ],
       id: `student-${index}`,
     } as Student

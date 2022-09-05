@@ -25,14 +25,19 @@ interface StudentDialogComponent {
   actionData?: Student | null
 }
 
+type Phone = {
+  name: string
+  number: string
+}
+
 type StudentForm = {
   saintName: string
   fullName: string
   birthday: string
   address: string
   grade: string
-  phone1: string
-  phone2: string
+  phone1: Phone
+  phone2: Phone
 }
 
 const StudentDefaultValue = {
@@ -41,8 +46,8 @@ const StudentDefaultValue = {
   birthday: '',
   address: '',
   grade: '1',
-  phone1: '',
-  phone2: '',
+  phone1: {},
+  phone2: {},
 }
 
 const getButtonColor = (type: string): ButtonProps['color'] => {
@@ -74,8 +79,8 @@ const StudentDialogComponent = ({
       setValue('birthday', actionData.birthday)
       setValue('address', actionData.address)
       setValue('grade', actionData.grade)
-      setValue('phone1', actionData.phone[0].number)
-      setValue('phone2', actionData.phone[1].number)
+      setValue('phone1', actionData.phones[0])
+      setValue('phone2', actionData.phones[1])
     }
     return () => reset()
   }, [actionType, actionData])
@@ -92,16 +97,7 @@ const StudentDialogComponent = ({
         birthday: data.birthday,
         address: data.address,
         grade: data.grade.toString(),
-        phone: [
-          {
-            name: 'Father',
-            number: data.phone1,
-          },
-          {
-            name: 'Mother',
-            number: data.phone2,
-          },
-        ],
+        phones: [data.phone1, data.phone2],
       }
       onSave(student)
     } else {
@@ -112,16 +108,7 @@ const StudentDialogComponent = ({
         birthday: data.birthday,
         address: data.address,
         grade: data.grade.toString(),
-        phone: [
-          {
-            name: 'Father',
-            number: data.phone1,
-          },
-          {
-            name: 'Mother',
-            number: data.phone2,
-          },
-        ],
+        phones: [data.phone1, data.phone2],
       }
       onSave(student)
     }
@@ -231,40 +218,80 @@ const StudentDialogComponent = ({
                   />
                 )}
               />
-              <Controller
-                rules={{ required: true }}
-                control={control}
-                name={'phone1'}
-                render={({ field }) => (
-                  <TextField
-                    id="outlined-Phone1"
-                    label="Phone 1"
-                    helperText="Ex: 0973173484"
-                    margin="normal"
-                    type="number"
-                    fullWidth={true}
-                    InputLabelProps={{ shrink: true }}
-                    {...field}
-                  />
-                )}
-              />
-              <Controller
-                rules={{ required: false }}
-                control={control}
-                name={'phone2'}
-                render={({ field }) => (
-                  <TextField
-                    id="outlined-Phone2"
-                    label="Phone 2"
-                    helperText="Ex: 0973173484"
-                    margin="normal"
-                    type="number"
-                    fullWidth={true}
-                    InputLabelProps={{ shrink: true }}
-                    {...field}
-                  />
-                )}
-              />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name={'phone1.name'}
+                  render={({ field }) => (
+                    <TextField
+                      id={`outlined-name-phone1`}
+                      label="Tên"
+                      helperText="Ex: Cha"
+                      margin="normal"
+                      type="text"
+                      fullWidth={true}
+                      InputLabelProps={{ shrink: true }}
+                      {...field}
+                    />
+                  )}
+                />
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name={'phone1.number'}
+                  render={({ field }) => (
+                    <TextField
+                      sx={{ marginLeft: 1 }}
+                      id={`outlined-number-phone1`}
+                      label="Sdt"
+                      helperText="Ex: 0973173484"
+                      margin="normal"
+                      type="number"
+                      fullWidth={true}
+                      InputLabelProps={{ shrink: true }}
+                      {...field}
+                    />
+                  )}
+                />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name={'phone2.name'}
+                  render={({ field }) => (
+                    <TextField
+                      id={`outlined-name-phone2`}
+                      label="Tên"
+                      helperText="Ex: Mẹ"
+                      margin="normal"
+                      type="text"
+                      fullWidth={true}
+                      InputLabelProps={{ shrink: true }}
+                      {...field}
+                    />
+                  )}
+                />
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name={'phone2.number'}
+                  render={({ field }) => (
+                    <TextField
+                      sx={{ marginLeft: 1 }}
+                      id={`outlined-number-phone2`}
+                      label="Sdt"
+                      helperText="Ex: 0973173484"
+                      margin="normal"
+                      type="number"
+                      fullWidth={true}
+                      InputLabelProps={{ shrink: true }}
+                      {...field}
+                    />
+                  )}
+                />
+              </Box>
             </form>
           </>
         )}

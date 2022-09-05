@@ -12,5 +12,5 @@ export interface Student {
   birthday: string
   grade: string
   address: string
-  phone: Phone[]
+  phones: Phone[]
 }

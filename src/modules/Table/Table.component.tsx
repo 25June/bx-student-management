@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StudentActionType } from '../../constant/common'
+import { Phone } from '../../models/student'
 
 interface TableProps {
   columns: any[]
@@ -120,11 +121,28 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
                 .map((row) => {
                   return (
                     <TableRow hover={true} role="checkbox" tabIndex={-1} key={row.id}>
-                      {columns.map((column) => (
-                        <TableCell key={`cell-${column.field}-${row.id}`}>
-                          {row[column.field]}
-                        </TableCell>
-                      ))}
+                      {columns.map((column) => {
+                        if (column.field === 'phones') {
+                          return (
+                            <TableCell key={`cell-${column.field}-${row.id}`}>
+                              {row[column.field].map((phone: Phone) => {
+                                if (phone.number) {
+                                  return (
+                                    <Box
+                                      key={phone.number}
+                                    >{`${phone.name} - ${phone.number}`}</Box>
+                                  )
+                                }
+                              })}
+                            </TableCell>
+                          )
+                        }
+                        return (
+                          <TableCell key={`cell-${column.field}-${row.id}`}>
+                            {row[column.field]}
+                          </TableCell>
+                        )
+                      })}
                       <TableCell>
                         <Tooltip title="Sửa thông tin" placement="top">
                           <IconButton

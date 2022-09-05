@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react'
 import { Button, Box, Snackbar, Alert, ToggleButtonGroup } from '@mui/material'
-import { GridColDef } from '@mui/x-data-grid'
 import { students as MockStudents } from '../../mockData/students'
 import { StudentActionType } from '../../constant/common'
 import { Student } from '../../models/student'
@@ -18,15 +17,14 @@ import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
-const columns: GridColDef[] = [
+const columns = [
   { field: 'saintName', headerName: 'Tên Thánh' },
   { field: 'lastName', headerName: 'Họ' },
   { field: 'firstName', headerName: 'Tên' },
   { field: 'birthday', headerName: 'Ngày Sinh' },
   { field: 'address', headerName: 'Địa Chỉ' },
   { field: 'grade', headerName: 'Văn Hoá' },
-  { field: 'phone1', headerName: 'Điện Thoại Mẹ' },
-  { field: 'phone2', headerName: 'Điện Thoại Cha' },
+  { field: 'phones', headerName: 'Điện Thoại' },
 ]
 
 const HomeComponent = () => {
