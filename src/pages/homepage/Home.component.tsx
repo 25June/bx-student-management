@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { Button, Box, Snackbar, Alert, ToggleButtonGroup } from '@mui/material'
+import { Button, Box, Snackbar, Alert, ToggleButtonGroup, AlertProps } from '@mui/material'
 import { students as MockStudents } from '../../mockData/students'
 import { StudentActionType } from '../../constant/common'
 import { Student } from '../../models/student'
@@ -16,6 +16,7 @@ import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { useAddNewStudent } from '../../services/student'
 
 const columns = [
   { field: 'saintName', headerName: 'Tên Thánh' },
@@ -31,12 +32,15 @@ const HomeComponent = () => {
   const [students, setStudents] = useState<Student[]>(formatMockData(MockStudents))
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
   const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
+
   const [snackBarMessage, setSnackBarMessage] = useState<string>('')
+  const [snackBarSeverity, setSnackBarSeverity] = useState<AlertProps['severity']>('success')
+
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState<Student | null>()
   const [isOpenRightPanel, setOpenRightPanel] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>()
-
+  const addNewStudent = useAddNewStudent()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
 
   const handleChangeDisplay = (
@@ -92,7 +96,16 @@ const HomeComponent = () => {
             })
             .sort((a, b) => a.firstName.localeCompare(b.firstName))
         )
-        openSnackBar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`)
+        addNewStudent({
+          dataInput: data,
+          onSuccess: () =>
+            openSnackBar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`),
+          onError: () => {
+            setSnackBarSeverity('error')
+            openSnackBar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`)
+          },
+          onComplete: () => console.log('complete request'),
+        })
         break
       case StudentActionType.EDIT_STUDENT:
         setStudents(
@@ -194,7 +207,11 @@ const HomeComponent = () => {
         autoHideDuration={5000}
         onClose={() => setOpenSnackbar(false)}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackBarSeverity}
+          sx={{ width: '100%' }}
+        >
           {snackBarMessage}
         </Alert>
       </Snackbar>

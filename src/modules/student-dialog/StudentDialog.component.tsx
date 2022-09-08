@@ -46,8 +46,14 @@ const StudentDefaultValue = {
   birthday: '',
   address: '',
   grade: '1',
-  phone1: {},
-  phone2: {},
+  phone1: {
+    name: '',
+    number: '',
+  },
+  phone2: {
+    name: '',
+    number: '',
+  },
 }
 
 const getButtonColor = (type: string): ButtonProps['color'] => {
@@ -220,7 +226,6 @@ const StudentDialogComponent = ({
               />
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'phone1.name'}
                   render={({ field }) => (
@@ -237,7 +242,6 @@ const StudentDialogComponent = ({
                   )}
                 />
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'phone1.number'}
                   render={({ field }) => (
