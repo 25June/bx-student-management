@@ -114,7 +114,7 @@ const RightPanelComponent = ({
               label={'Name'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phones[0].number}
+              value={data.phones[0].name}
               sx={{ width: '100%' }}
               variant={'standard'}
             />
@@ -141,7 +141,7 @@ const RightPanelComponent = ({
               label={'Name'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phones[0].number}
+              value={data.phones[0].name}
               sx={{ width: '100%' }}
               variant={'standard'}
             />

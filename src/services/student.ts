@@ -2,6 +2,9 @@ import { app } from '../firebase'
 import { useState, useEffect } from 'react'
 import {
   addDoc,
+  setDoc,
+  doc,
+  deleteDoc,
   QueryDocumentSnapshot,
   DocumentData,
   query,
@@ -23,7 +26,10 @@ export const useGetStudents = () => {
       queryStudents,
       (snapshot) => {
         setStudents(
-          snapshot.docs.map((data: QueryDocumentSnapshot<DocumentData>) => data.data() as Student)
+          snapshot.docs.map(
+            (data: QueryDocumentSnapshot<DocumentData>) =>
+              ({ ...data.data(), id: data.id } as Student)
+          )
         )
       },
       (error) => {
@@ -46,6 +52,56 @@ export const useAddNewStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: AddNewStudentParams) => {
     console.log(dataInput)
     addDoc(collection(db, StudentCollection), dataInput)
+      .then((value) => {
+        console.info(value)
+        onSuccess()
+      })
+      .catch((error) => {
+        console.error(error)
+        onError()
+      })
+      .finally(() => {
+        onComplete()
+      })
+  }
+}
+
+interface UpdateStudentParams {
+  dataInput: Student
+  onSuccess: () => void
+  onError: () => void
+  onComplete: () => void
+}
+
+export const useUpdateStudent = () => {
+  return ({ dataInput, onSuccess, onError, onComplete }: UpdateStudentParams) => {
+    console.log(dataInput)
+    setDoc(doc(db, StudentCollection, dataInput.id), dataInput)
+      .then((value) => {
+        console.info(value)
+        onSuccess()
+      })
+      .catch((error) => {
+        console.error(error)
+        onError()
+      })
+      .finally(() => {
+        onComplete()
+      })
+  }
+}
+
+interface DeleteStudentParams {
+  dataInput: Student
+  onSuccess: () => void
+  onError: () => void
+  onComplete: () => void
+}
+
+export const useDeleteStudent = () => {
+  return ({ dataInput, onSuccess, onError, onComplete }: DeleteStudentParams) => {
+    console.log(dataInput)
+    deleteDoc(doc(db, StudentCollection, dataInput.id))
       .then((value) => {
         console.info(value)
         onSuccess()

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Button, Box, Snackbar, Alert, ToggleButtonGroup, AlertProps } from '@mui/material'
 import { students as MockStudents } from '../../mockData/students'
 import { StudentActionType } from '../../constant/common'
@@ -16,7 +16,12 @@ import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import { useAddNewStudent } from '../../services/student'
+import {
+  useAddNewStudent,
+  useGetStudents,
+  useUpdateStudent,
+  useDeleteStudent,
+} from '../../services/student'
 
 const columns = [
   { field: 'saintName', headerName: 'Tên Thánh' },
@@ -40,8 +45,17 @@ const HomeComponent = () => {
   const [actionData, setActionData] = useState<Student | null>()
   const [isOpenRightPanel, setOpenRightPanel] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>()
-  const addNewStudent = useAddNewStudent()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
+
+  const addNewStudent = useAddNewStudent()
+  const updateStudent = useUpdateStudent()
+  const deleteStudent = useDeleteStudent()
+  const { students: dbStudents } = useGetStudents()
+  useEffect(() => {
+    if (dbStudents) {
+      setStudents([...dbStudents, ...students])
+    }
+  }, [dbStudents])
 
   const handleChangeDisplay = (
     event: React.MouseEvent<HTMLElement>,
@@ -119,11 +133,29 @@ const HomeComponent = () => {
             return student
           })
         )
-        openSnackBar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`)
+        updateStudent({
+          dataInput: data as Student,
+          onSuccess: () =>
+            openSnackBar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`),
+          onError: () => {
+            setSnackBarSeverity('error')
+            openSnackBar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`)
+          },
+          onComplete: () => console.log('complete request'),
+        })
         break
       case StudentActionType.DELETE_STUDENT:
         setStudents(students.filter((student: Student) => student.id !== (data as Student).id))
-        openSnackBar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`)
+        deleteStudent({
+          dataInput: data as Student,
+          onSuccess: () =>
+            openSnackBar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`),
+          onError: () => {
+            setSnackBarSeverity('error')
+            openSnackBar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`)
+          },
+          onComplete: () => console.log('complete request'),
+        })
         break
       default:
         console.log('can not match action type ' + actionType)

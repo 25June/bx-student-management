@@ -2,29 +2,12 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import { TopBarComponent } from '../index'
 import DrawerComponent from '../drawer/Drawer.component'
-import { useEffect } from 'react'
-import { queryClasses } from '../../services/firestore'
-import { getAuth } from 'firebase/auth'
-import { getDocs } from 'firebase/firestore'
-import { useGetStudents } from '../../services/student'
 
 export const drawerWidth = 240
 
 const LayoutComponent = (props: any) => {
-  const auth = getAuth()
   const [isOpen, setOpen] = React.useState(false)
-  const { students } = useGetStudents()
-  console.log(students)
-  useEffect(() => {
-    console.log('abc')
-    auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        getDocs(queryClasses).then((snapshots) => {
-          console.log(snapshots.docs.map((doc) => doc.data()))
-        })
-      }
-    })
-  }, [])
+
   return (
     <Box sx={{ display: 'flex' }}>
       <TopBarComponent isOpen={isOpen} setOpen={setOpen} />
