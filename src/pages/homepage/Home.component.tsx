@@ -2,15 +2,16 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Button, Box, Snackbar, Alert, ToggleButtonGroup, AlertProps } from '@mui/material'
 import { students as MockStudents } from '../../mockData/students'
 import { StudentActionType } from '../../constant/common'
-import { Student } from '../../models/student'
+import { Score, ScoreBook, Student } from '../../models/student'
 import { formatMockData } from '../../utils/common'
 import { formatStudentTable } from '../../utils/formatDataForTable'
 import {
   LayoutComponent,
-  RightPanelComponent,
+  InfoPanelComponent,
   StudentDialogComponent,
   CardComponent,
   TableComponent,
+  ScoreBookPanelComponent,
 } from '../../modules/index'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
@@ -22,6 +23,7 @@ import {
   useUpdateStudent,
   useDeleteStudent,
 } from '../../services/student'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 const columns = [
   { field: 'saintName', headerName: 'Tên Thánh' },
@@ -33,7 +35,31 @@ const columns = [
   { field: 'phones', headerName: 'Điện Thoại' },
 ]
 
+const defaultScore: Score = {
+  updatedDate: Date.now(),
+  point: 10,
+}
+const defaultScoreBook: ScoreBook = {
+  score5: {
+    date1: defaultScore,
+    date2: defaultScore,
+  },
+  score15: {
+    date1: defaultScore,
+    date2: defaultScore,
+  },
+  score45: {
+    date1: defaultScore,
+    date2: defaultScore,
+  },
+  score60: {
+    date1: defaultScore,
+    date2: defaultScore,
+  },
+}
+
 const HomeComponent = () => {
+  const mobile = useMediaQuery('(max-width:900px)')
   const [students, setStudents] = useState<Student[]>(formatMockData(MockStudents))
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
   const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
@@ -44,6 +70,7 @@ const HomeComponent = () => {
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState<Student | null>()
   const [isOpenRightPanel, setOpenRightPanel] = useState(false)
+  const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
 
@@ -83,20 +110,29 @@ const HomeComponent = () => {
   }
 
   const handleClickAction = (data: Student, type: string) => {
+    if (type === StudentActionType.VIEW_SCORE_BOOK) {
+      setSelectedStudent(data)
+      setOpenScoreBook(true)
+      return
+    }
     if (type === StudentActionType.VIEW_STUDENT) {
       setSelectedStudent(data)
       setOpenRightPanel(true)
-    } else {
-      const student = students.find((std: Student) => std.id === data.id)
-      if (student) {
-        setActionData(student)
-        openStudentDialog(type)
-      }
+      return
+    }
+    const student = students.find((std: Student) => std.id === data.id)
+    if (student) {
+      setActionData(student)
+      openStudentDialog(type)
     }
   }
 
   const handleClosePanel = () => {
     setOpenRightPanel(false)
+  }
+
+  const handleCloseScoreBook = () => {
+    setOpenScoreBook(false)
   }
 
   const handleSave = (data: Student | Omit<Student, 'id'>) => {
@@ -169,11 +205,14 @@ const HomeComponent = () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexDirection: mobile ? 'column' : 'row',
           width: '100%',
         }}
       >
-        <h1>Thông Tin Thiếu Nhi</h1>
-        <Box display={'flex'}>
+        <Box component={'h1'} sx={{ paddingLeft: 1, paddingRight: 1 }}>
+          Thông Tin Thiếu Nhi
+        </Box>
+        <Box display={'flex'} sx={{ paddingLeft: 1, paddingRight: 1 }}>
           <Button
             variant="contained"
             startIcon={<PersonAddIcon />}
@@ -212,6 +251,8 @@ const HomeComponent = () => {
             flexDirection: 'row',
             flexWrap: 'wrap',
             justifyContent: 'space-around',
+            paddingLeft: 1,
+            paddingRight: 1,
           }}
         >
           {students.map((student: any) => (
@@ -219,10 +260,17 @@ const HomeComponent = () => {
               <CardComponent student={student} onClickAction={handleClickAction} />
             </Box>
           ))}
-          <RightPanelComponent
+          <InfoPanelComponent
             isOpen={isOpenRightPanel}
             data={selectedStudent}
             onClose={handleClosePanel}
+            onClickAction={handleClickAction}
+          />
+          <ScoreBookPanelComponent
+            isOpen={isOpenScoreBook}
+            studentInfo={selectedStudent}
+            scoreBook={defaultScoreBook}
+            onClose={handleCloseScoreBook}
             onClickAction={handleClickAction}
           />
         </Box>

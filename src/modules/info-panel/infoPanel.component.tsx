@@ -8,19 +8,14 @@ import { StudentActionType } from '../../constant/common'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Student } from '../../models/student'
 
-interface RightPanelComponentProps {
+interface InfoPanelComponentProps {
   isOpen: boolean
   data: Student
   onClose: () => void
   onClickAction: (student: any, actionType: string) => void
 }
 
-const RightPanelComponent = ({
-  isOpen,
-  data,
-  onClose,
-  onClickAction,
-}: RightPanelComponentProps) => {
+const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelComponentProps) => {
   if (!data) {
     return null
   }
@@ -37,8 +32,9 @@ const RightPanelComponent = ({
       open={isOpen}
       onClose={onClose}
       onKeyDown={onClose}
+      sx={{ width: '100%', maxWidth: 375 }}
     >
-      <Box pt={9} pr={2} pl={2} mb={5} sx={{ width: 400 }}>
+      <Box pt={9} pr={2} pl={2} mb={5}>
         <Box display={'flex'} alignItems={'center'} mb={2}>
           <Button color={'primary'} onClick={onClose} startIcon={<KeyboardBackspaceIcon />}>
             Back
@@ -181,4 +177,4 @@ const RightPanelComponent = ({
   )
 }
 
-export default RightPanelComponent
+export default InfoPanelComponent

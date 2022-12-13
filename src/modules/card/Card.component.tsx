@@ -41,6 +41,15 @@ const CardComponent = ({
         >
           Xem Thông Tin
         </Button>
+        <Button
+          startIcon={<VisibilityIcon />}
+          size="small"
+          onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
+          color="warning"
+          variant="outlined"
+        >
+          Xem Bang Diem
+        </Button>
       </CardActions>
     </Card>
   )
