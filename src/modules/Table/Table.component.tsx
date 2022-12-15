@@ -15,8 +15,8 @@ import { visuallyHidden } from '@mui/utils'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { StudentActionType } from '../../constant/common'
-import { Phone } from '../../models/student'
+import { StudentActionType } from 'constant'
+import { Phone } from 'models'
 
 interface TableProps {
   columns: any[]
@@ -43,10 +43,7 @@ const descendingComparator = (a: any, b: any, orderBy: string) => {
 
 type Order = 'asc' | 'desc'
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: string
-): (a: any, b: any) => number {
+function getComparator(order: Order, orderBy: string): (a: any, b: any) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
@@ -133,6 +130,7 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
                                     >{`${phone.name} - ${phone.number}`}</Box>
                                   )
                                 }
+                                return null
                               })}
                             </TableCell>
                           )

@@ -1,4 +1,4 @@
-import { Student, Phone } from '../models/student'
+import { Student, Phone } from 'models'
 
 const formatDate = (date: string): string => {
   // format yyyy-MM-dd

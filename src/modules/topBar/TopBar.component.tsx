@@ -9,7 +9,7 @@ import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar/AppBar'
 import { styled } from '@mui/material/styles'
 import MuiAppBar from '@mui/material/AppBar'
 import { drawerWidth } from '../layout/Layout.component'
-import { Router } from '../../routes'
+import { Router } from 'routes'
 
 interface TopBarComponentProps {
   isOpen: boolean

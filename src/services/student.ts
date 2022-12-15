@@ -12,7 +12,7 @@ import {
   collection,
   onSnapshot,
 } from 'firebase/firestore'
-import { Student } from '../models/student'
+import { Student } from 'models'
 
 const db = getFirestore(app)
 const StudentCollection = 'student'
@@ -37,7 +37,7 @@ export const useGetStudents = () => {
         setStudents(null)
       }
     )
-  }, [db])
+  }, [])
   return { students, isLoading: typeof students === 'undefined' }
 }
 

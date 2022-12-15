@@ -1,6 +1,6 @@
 import React from 'react'
 import HomeComponent from './pages/homepage/Home.component'
-import { SignUpComponent, SignInComponent } from './modules/index'
+import { SignUpComponent, SignInComponent } from 'modules/index'
 
 export const Router = {
   SIGN_UP: '/sign-up',

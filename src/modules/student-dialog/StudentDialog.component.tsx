@@ -13,11 +13,11 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { StudentActionType } from '../../constant/common'
-import { Student } from '../../models/student'
-import { splitFullName } from '../../utils/formatDataForTable'
+import { StudentActionType } from 'constant'
+import { Student } from 'models'
+import { splitFullName } from 'utils'
 
-interface StudentDialogComponent {
+interface StudentDialogComponentProps {
   isOpen: boolean
   onClose: () => void
   actionType: string
@@ -72,7 +72,7 @@ const StudentDialogComponent = ({
   actionType,
   onSave,
   actionData,
-}: StudentDialogComponent) => {
+}: StudentDialogComponentProps) => {
   const theme = useTheme()
   const { handleSubmit, control, setValue, reset } = useForm<StudentForm>({
     defaultValues: StudentDefaultValue,
@@ -89,7 +89,7 @@ const StudentDialogComponent = ({
       setValue('phone2', actionData.phones[1])
     }
     return () => reset()
-  }, [actionType, actionData])
+  }, [actionType, actionData, reset, setValue])
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const onSubmit = (data: StudentForm) => {

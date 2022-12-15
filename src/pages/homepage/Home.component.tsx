@@ -1,29 +1,24 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, lazy } from 'react'
 import { Button, Box, Snackbar, Alert, ToggleButtonGroup, AlertProps } from '@mui/material'
 import { students as MockStudents } from '../../mockData/students'
-import { StudentActionType } from '../../constant/common'
-import { Score, ScoreBook, Student } from '../../models/student'
-import { formatMockData } from '../../utils/common'
-import { formatStudentTable } from '../../utils/formatDataForTable'
-import {
-  LayoutComponent,
-  InfoPanelComponent,
-  StudentDialogComponent,
-  CardComponent,
-  TableComponent,
-  ScoreBookPanelComponent,
-} from '../../modules/index'
+import { StudentActionType } from 'constant'
+import { Score, ScoreBook, Student } from 'models'
+import { formatMockData, formatStudentTable } from 'utils'
+import { LayoutComponent } from 'modules/index'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import {
-  useAddNewStudent,
-  useGetStudents,
-  useUpdateStudent,
-  useDeleteStudent,
-} from '../../services/student'
+import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } from 'services'
 import useMediaQuery from '@mui/material/useMediaQuery'
+
+const InfoPanelComponent = lazy(() => import('modules/info-panel/infoPanel.component'))
+const TableComponent = lazy(() => import('modules/Table/Table.component'))
+const ScoreBookPanelComponent = lazy(
+  () => import('modules/score-book-panel/ScoreBookPanel.component')
+)
+const StudentDialogComponent = lazy(() => import('modules/student-dialog/StudentDialog.component'))
+const CardComponent = lazy(() => import('modules/card/Card.component'))
 
 const columns = [
   { field: 'saintName', headerName: 'Tên Thánh' },
@@ -36,6 +31,7 @@ const columns = [
 ]
 
 const defaultScore: Score = {
+  index: 1,
   updatedDate: Date.now(),
   point: 10,
 }
@@ -82,6 +78,7 @@ const HomeComponent = () => {
     if (dbStudents) {
       setStudents([...dbStudents, ...students])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dbStudents])
 
   const handleChangeDisplay = (
@@ -255,7 +252,7 @@ const HomeComponent = () => {
             paddingRight: 1,
           }}
         >
-          {students.map((student: any) => (
+          {students.map((student: Student) => (
             <Box mb={4} ml={1} mr={1} key={student.id}>
               <CardComponent student={student} onClickAction={handleClickAction} />
             </Box>

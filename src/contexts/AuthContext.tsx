@@ -43,7 +43,7 @@ export const AuthContextProvider = (props: any) => {
       }
       setStatus(AuthContextStatus.FINISH)
     })
-  }, [])
+  }, [auth])
 
   return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
 }

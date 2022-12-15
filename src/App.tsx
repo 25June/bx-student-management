@@ -1,8 +1,8 @@
 import React from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import ROUTES from './routes'
-import { AuthContextProvider } from './contexts/AuthContext'
+import ROUTES from 'routes'
+import { AuthContextProvider } from 'contexts/AuthContext'
 import { PrivateComponent } from './modules/index'
 
 function App() {

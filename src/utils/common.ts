@@ -1,4 +1,4 @@
-import { Student } from '../models/student'
+import { Student } from 'models'
 
 export const convertStringToDate = (date: string) => {
   const [day, month, year] = date.split('.')

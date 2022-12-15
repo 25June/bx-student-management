@@ -1,12 +1,12 @@
 import React from 'react'
 import { Box, TextField, Button } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
-import studentBoyLogo from '../../static/images/cards/student-boy.png'
+import studentBoyLogo from 'static/images/cards/student-boy.png'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import EditIcon from '@mui/icons-material/Edit'
-import { StudentActionType } from '../../constant/common'
+import { StudentActionType } from 'constant'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Student } from '../../models/student'
+import { Student } from 'models'
 
 interface InfoPanelComponentProps {
   isOpen: boolean

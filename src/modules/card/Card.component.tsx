@@ -1,10 +1,10 @@
 import React from 'react'
 import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@mui/material'
-import studentGirlLogo from '../../static/images/cards/student-girl.png'
-import studentBoyLogo from '../../static/images/cards/student-boy.png'
-import { StudentActionType } from '../../constant/common'
+import studentGirlLogo from 'static/images/cards/student-girl.png'
+import studentBoyLogo from 'static/images/cards/student-boy.png'
+import { StudentActionType } from 'constant'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import { Student } from '../../models/student'
+import { Student } from 'models'
 
 const CardComponent = ({
   student,

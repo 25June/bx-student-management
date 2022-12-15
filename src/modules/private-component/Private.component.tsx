@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { AuthContextStatus, useAuthentication } from '../../contexts/AuthContext'
+import { AuthContextStatus, useAuthentication } from 'contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { Router } from '../../routes'
+import { Router } from 'routes'
 
 const PrivateComponent = ({ component }: { component: React.ReactElement }) => {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -16,7 +16,7 @@ const PrivateComponent = ({ component }: { component: React.ReactElement }) => {
       }
       setLoading(false)
     }
-  }, [auth])
+  }, [auth, navigate])
   if (isLoading) {
     return null
   }
