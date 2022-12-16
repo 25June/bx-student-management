@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, lazy } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button, Box, Snackbar, Alert, ToggleButtonGroup, AlertProps } from '@mui/material'
 import { students as MockStudents } from '../../mockData/students'
 import { StudentActionType } from 'constant'
@@ -9,8 +10,10 @@ import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import ImportExportIcon from '@mui/icons-material/ImportExport'
 import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } from 'services'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { Router } from 'routes'
 
 const InfoPanelComponent = lazy(() => import('modules/info-panel/infoPanel.component'))
 const TableComponent = lazy(() => import('modules/Table/Table.component'))
@@ -55,6 +58,7 @@ const defaultScoreBook: ScoreBook = {
 }
 
 const HomeComponent = () => {
+  const navigate = useNavigate()
   const mobile = useMediaQuery('(max-width:900px)')
   const [students, setStudents] = useState<Student[]>(formatMockData(MockStudents))
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
@@ -195,6 +199,11 @@ const HomeComponent = () => {
         break
     }
   }
+
+  const navigateToImportPage = () => {
+    navigate(Router.IMPORT)
+  }
+
   return (
     <LayoutComponent>
       <Box
@@ -217,6 +226,14 @@ const HomeComponent = () => {
             sx={{ marginRight: 2 }}
           >
             Thêm Thiếu Nhi
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<ImportExportIcon />}
+            onClick={navigateToImportPage}
+            sx={{ marginRight: 2 }}
+          >
+            Import
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ToggleButtonGroup

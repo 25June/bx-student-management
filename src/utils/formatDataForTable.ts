@@ -21,6 +21,12 @@ export const formatPhone = (phone: string): string => {
 
 export const splitFullName = (fullName: string) => {
   const lastBlankSpace = fullName.lastIndexOf(' ')
+  if (lastBlankSpace === -1) {
+    return {
+      firstName: fullName,
+      lastName: '',
+    }
+  }
   const firstName = fullName.slice(lastBlankSpace).trim()
   const lastName = fullName.slice(0, lastBlankSpace).trim()
   return { firstName, lastName }

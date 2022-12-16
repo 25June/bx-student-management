@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import ROUTES from 'routes'
 import { AuthContextProvider } from 'contexts/AuthContext'
-import { PrivateComponent } from './modules/index'
+import { PrivateComponent, FallbackComponent } from './modules/index'
 
 function App() {
   return (
@@ -18,9 +18,11 @@ function App() {
                   path={route.path}
                   element={
                     route.isPrivate ? (
-                      <PrivateComponent component={route.component} />
+                      <Suspense fallback={<FallbackComponent />}>
+                        <PrivateComponent component={route.component} />
+                      </Suspense>
                     ) : (
-                      route.component
+                      <Suspense fallback={<FallbackComponent />}>{route.component}</Suspense>
                     )
                   }
                 />

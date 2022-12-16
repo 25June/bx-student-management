@@ -3,6 +3,7 @@ import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import { Toolbar, IconButton, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
 import MenuIcon from '@mui/icons-material/Menu'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar/AppBar'
@@ -64,20 +65,14 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" noWrap={true} component="div">
-          Giáo Lý Bình Xuyên
-        </Typography>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleSignOut}
-          edge="start"
-          sx={{
-            marginRight: 5,
-          }}
-        >
-          <ExitToAppIcon />
-        </IconButton>
+        <Box width={'100%'} display={'flex'} justifyContent={'space-between'}>
+          <Typography variant="h6" noWrap={true} component="div">
+            Giáo Lý Bình Xuyên
+          </Typography>
+          <IconButton color="inherit" aria-label="open drawer" onClick={handleSignOut} edge="start">
+            <ExitToAppIcon />
+          </IconButton>
+        </Box>
       </Toolbar>
     </AppBar>
   )

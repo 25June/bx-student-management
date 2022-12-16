@@ -57,12 +57,14 @@ const SignUpComponent = () => {
     severity: 'success',
     message: '',
   })
+  const watchConfirmPassword = watch('confirmPassword')
 
   useEffect(() => {
     if (getValues('password') !== getValues('confirmPassword')) {
       setPasswordMatch(false)
     }
-  }, [watch('confirmPassword')])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchConfirmPassword])
 
   const onSubmit = (values: SignUpForm) => {
     if (values.password !== values.confirmPassword) {

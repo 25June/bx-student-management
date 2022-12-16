@@ -1,10 +1,13 @@
-import React from 'react'
-import HomeComponent from './pages/homepage/Home.component'
-import { SignUpComponent, SignInComponent } from 'modules/index'
+import React, { lazy } from 'react'
 
+const HomeComponent = lazy(() => import('pages/homepage/Home.component'))
+const ImportComponent = lazy(() => import('pages/import/Import.component'))
+const SignUpComponent = lazy(() => import('modules/auth/SignUp.component'))
+const SignInComponent = lazy(() => import('modules/auth/SignIn.component'))
 export const Router = {
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
+  IMPORT: '/import',
   HOME: '/',
 }
 
@@ -13,6 +16,12 @@ const ROUTES = [
     name: 'Homepage',
     component: <HomeComponent />,
     path: Router.HOME,
+    isPrivate: true,
+  },
+  {
+    name: 'Import',
+    component: <ImportComponent />,
+    path: Router.IMPORT,
     isPrivate: true,
   },
   {

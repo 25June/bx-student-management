@@ -9,6 +9,7 @@ import SignInComponent from './auth/SignIn.component'
 import SignUpComponent from './auth/SignUp.component'
 import PrivateComponent from './private-component/Private.component'
 import ScoreBookPanelComponent from './score-book-panel/ScoreBookPanel.component'
+import FallbackComponent from './fallback/Fallback.component'
 
 export {
   TopBarComponent,
@@ -22,4 +23,5 @@ export {
   SignUpComponent,
   PrivateComponent,
   ScoreBookPanelComponent,
+  FallbackComponent,
 }

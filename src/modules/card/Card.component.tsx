@@ -39,7 +39,7 @@ const CardComponent = ({
           color="warning"
           variant="outlined"
         >
-          Xem Thông Tin
+          Thông Tin
         </Button>
         <Button
           startIcon={<VisibilityIcon />}
@@ -48,7 +48,7 @@ const CardComponent = ({
           color="warning"
           variant="outlined"
         >
-          Xem Bang Diem
+          Bang Diem
         </Button>
       </CardActions>
     </Card>
