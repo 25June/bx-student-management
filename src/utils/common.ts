@@ -10,16 +10,17 @@ export const mockDataFormatFirstName = (firstName: string): string => {
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
-export const mockDataFormatBirthday = (birthday: string): string => {
+export const mockDataFormatBirthday = (birthday?: string): string => {
   if (birthday) {
     const splitBirthday = birthday.split('.')
+    console.log(`${splitBirthday[2]}-${splitBirthday[1]}-${splitBirthday[0]}`)
     return `${splitBirthday[2]}-${splitBirthday[1]}-${splitBirthday[0]}`
   }
   return ''
 }
 
 export const mockDataFormatPhone = (phone: string): string =>
-  phone ? phone.replaceAll('.', '') : ''
+  phone ? phone.toString().replaceAll('.', '') : ''
 
 export const formatMockData = (mockStudents: any[]): Student[] => {
   return mockStudents.map((student: any, index: number) => {

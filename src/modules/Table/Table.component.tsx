@@ -21,7 +21,7 @@ import { Phone } from 'models'
 interface TableProps {
   columns: any[]
   rows: any[]
-  onClickAction: (data: any, type: string) => void
+  onClickAction?: (data: any, type: string) => void
 }
 
 interface EnhancedTableProps {
@@ -142,29 +142,32 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
                         )
                       })}
                       <TableCell>
-                        <Tooltip title="Sửa thông tin" placement="top">
-                          <IconButton
-                            aria-label="Edit student"
-                            component="span"
-                            onClick={() => onClickAction(row, StudentActionType.EDIT_STUDENT)}
-                            size="small"
-                            color="warning"
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Xoá thông tin">
-                          <IconButton
-                            aria-label="Remove student"
-                            component="span"
-                            onClick={() => onClickAction(row, StudentActionType.DELETE_STUDENT)}
-                            size="small"
-                            color="error"
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+                        {onClickAction ? (
+                          <>
+                            <Tooltip title="Sửa thông tin" placement="top">
+                              <IconButton
+                                aria-label="Edit student"
+                                component="span"
+                                onClick={() => onClickAction(row, StudentActionType.EDIT_STUDENT)}
+                                size="small"
+                                color="warning"
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Xoá thông tin">
+                              <IconButton
+                                aria-label="Remove student"
+                                component="span"
+                                onClick={() => onClickAction(row, StudentActionType.DELETE_STUDENT)}
+                                size="small"
+                                color="error"
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </>
+                        ) : null}
                       </TableCell>
                     </TableRow>
                   )

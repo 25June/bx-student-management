@@ -14,6 +14,7 @@ import ImportExportIcon from '@mui/icons-material/ImportExport'
 import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } from 'services'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Router } from 'routes'
+import { studentColumns } from 'modules/Table/helpers'
 
 const InfoPanelComponent = lazy(() => import('modules/info-panel/infoPanel.component'))
 const TableComponent = lazy(() => import('modules/Table/Table.component'))
@@ -22,16 +23,6 @@ const ScoreBookPanelComponent = lazy(
 )
 const StudentDialogComponent = lazy(() => import('modules/student-dialog/StudentDialog.component'))
 const CardComponent = lazy(() => import('modules/card/Card.component'))
-
-const columns = [
-  { field: 'saintName', headerName: 'Tên Thánh' },
-  { field: 'lastName', headerName: 'Họ' },
-  { field: 'firstName', headerName: 'Tên' },
-  { field: 'birthday', headerName: 'Ngày Sinh' },
-  { field: 'address', headerName: 'Địa Chỉ' },
-  { field: 'grade', headerName: 'Văn Hoá' },
-  { field: 'phones', headerName: 'Điện Thoại' },
-]
 
 const defaultScore: Score = {
   index: 1,
@@ -254,7 +245,7 @@ const HomeComponent = () => {
       </Box>
       {displayType === 'table' ? (
         <TableComponent
-          columns={columns}
+          columns={studentColumns}
           rows={formatStudentTable(students)}
           onClickAction={handleClickAction}
         />
