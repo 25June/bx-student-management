@@ -11,6 +11,7 @@ import {
   getFirestore,
   collection,
   onSnapshot,
+  writeBatch,
 } from 'firebase/firestore'
 import { Student } from 'models'
 
@@ -63,6 +64,34 @@ export const useAddNewStudent = () => {
       .finally(() => {
         onComplete()
       })
+  }
+}
+
+interface BatchAddStudentsParams {
+  students: Omit<Student, 'id'>[]
+  onSuccess: () => void
+  onError: () => void
+  onComplete: () => void
+}
+
+export const useBatchAddStudents = () => {
+  return async ({ students, onSuccess, onError, onComplete }: BatchAddStudentsParams) => {
+    const batch = writeBatch(db)
+    students.forEach((student) => {
+      const docRef = doc(collection(db, StudentCollection))
+      batch.set(docRef, student)
+    })
+    await batch
+      .commit()
+      .then((value) => {
+        console.table(value)
+        onSuccess()
+      })
+      .catch((error) => {
+        console.error(error)
+        onError()
+      })
+      .finally(() => onComplete())
   }
 }
 

@@ -13,7 +13,6 @@ export const mockDataFormatFirstName = (firstName: string): string => {
 export const mockDataFormatBirthday = (birthday?: string): string => {
   if (birthday) {
     const splitBirthday = birthday.split('.')
-    console.log(`${splitBirthday[2]}-${splitBirthday[1]}-${splitBirthday[0]}`)
     return `${splitBirthday[2]}-${splitBirthday[1]}-${splitBirthday[0]}`
   }
   return ''
@@ -23,14 +22,14 @@ export const mockDataFormatPhone = (phone: string): string =>
   phone ? phone.toString().replaceAll('.', '') : ''
 
 export const formatMockData = (mockStudents: any[]): Student[] => {
-  return mockStudents.map((student: any, index: number) => {
+  return mockStudents.map(({ phone1, phone2, ...student }: any, index: number) => {
     return {
       ...student,
       firstName: mockDataFormatFirstName(student.firstName),
       birthday: mockDataFormatBirthday(student.birthday),
       phones: [
-        { name: 'Cha', number: mockDataFormatPhone(student.phone1) },
-        { name: 'Mẹ', number: mockDataFormatPhone(student.phone2) },
+        { name: 'Cha', number: mockDataFormatPhone(phone1) },
+        { name: 'Mẹ', number: mockDataFormatPhone(phone2) },
       ],
       id: `student-${index}`,
     } as Student

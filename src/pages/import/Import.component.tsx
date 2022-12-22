@@ -15,6 +15,7 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { BaseClasses } from 'constant/common'
+import { useBatchAddStudents } from 'services/student'
 
 type ImportProps = {
   value: string
@@ -33,6 +34,7 @@ const ImportComponent = () => {
     },
     resolver: yupResolver(ImportSchema),
   })
+  const addStudents = useBatchAddStudents()
 
   useEffect(() => {
     return () => reset()
@@ -55,7 +57,13 @@ const ImportComponent = () => {
 
   const saveData = () => {
     // call hook
-    console.log(value)
+    const formatValueBeforeAdd = value.map(({ id, ...student }: { id: string }) => student)
+    return addStudents({
+      students: formatValueBeforeAdd,
+      onSuccess: () => console.log('success'),
+      onError: () => console.log('error'),
+      onComplete: () => console.log('completed'),
+    })
   }
 
   const handleChangeClass = (e: SelectChangeEvent) => {
