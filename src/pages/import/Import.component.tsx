@@ -16,6 +16,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { BaseClasses } from 'constant/common'
 import { useBatchAddStudents } from 'services/student'
+import { Class, Student } from 'models'
+import { SnackbarComponent } from 'modules'
+import { AlertColor } from '@mui/material'
 
 type ImportProps = {
   value: string
@@ -26,8 +29,12 @@ const ImportSchema = yup.object().shape({
 })
 
 const ImportComponent = () => {
-  const [value, setValue] = useState<any>()
-  const [classObj, setClassObj] = useState<any>(BaseClasses[0].value)
+  const [value, setValue] = useState<Student[]>([])
+  const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
+  const [snackBarMessage, setSnackBarMessage] = useState<string>('')
+  const [snackBarSeverity, setSnackBarSeverity] = useState<AlertColor>('success')
+
+  const [classObj, setClassObj] = useState<Class>(BaseClasses[0])
   const { control, handleSubmit, reset } = useForm<ImportProps>({
     defaultValues: {
       value: '',
@@ -57,18 +64,36 @@ const ImportComponent = () => {
 
   const saveData = () => {
     // call hook
-    const formatValueBeforeAdd = value.map(({ id, ...student }: { id: string }) => student)
+    const formatValueBeforeAdd: Omit<Student, 'id'>[] = value.map(
+      ({ id, ...student }: Student) => ({
+        ...student,
+        class: classObj,
+      })
+    )
     return addStudents({
       students: formatValueBeforeAdd,
-      onSuccess: () => console.log('success'),
-      onError: () => console.log('error'),
+      onSuccess: () => {
+        setOpenSnackbar(true)
+        setSnackBarMessage('Add success')
+        setSnackBarSeverity('success')
+      },
+      onError: () => {
+        setOpenSnackbar(true)
+        setSnackBarMessage('Add Error')
+        setSnackBarSeverity('error')
+      },
       onComplete: () => console.log('completed'),
     })
   }
 
   const handleChangeClass = (e: SelectChangeEvent) => {
     console.log(e)
-    setClassObj(e.target.value as string)
+    const selectedClass = BaseClasses.find((c: Class) => c.id === (e.target.value as string))
+    if (typeof selectedClass === 'undefined') {
+      console.error('Error at Selected class')
+      return
+    }
+    setClassObj(selectedClass || BaseClasses[0])
   }
 
   return (
@@ -101,19 +126,19 @@ const ImportComponent = () => {
               Parse
             </Button>
           </form>
-          {value && <TableComponent columns={studentColumns} rows={value} />}
+          {value.length !== 0 && <TableComponent columns={studentColumns} rows={value} />}
           <Box mt={2} mb={2}>
             <FormControl fullWidth={true}>
               <InputLabel id="select-classes">Lớp</InputLabel>
               <Select
                 labelId="select-classes-label"
                 id="select-classes-label-id"
-                value={classObj}
+                value={classObj.id}
                 label="Lớp"
                 onChange={handleChangeClass}
               >
-                {BaseClasses.map((c: any) => (
-                  <MenuItem value={c.value} key={c.value}>
+                {BaseClasses.map((c: Class) => (
+                  <MenuItem value={c.id} key={c.name}>
                     {c.name}
                   </MenuItem>
                 ))}
@@ -125,6 +150,14 @@ const ImportComponent = () => {
           </Button>
         </Box>
       </Box>
+      {isOpenSnackbar && (
+        <SnackbarComponent
+          severity={snackBarSeverity}
+          message={snackBarMessage}
+          isOpen={isOpenSnackbar}
+          close={() => setOpenSnackbar(false)}
+        />
+      )}
     </LayoutComponent>
   )
 }

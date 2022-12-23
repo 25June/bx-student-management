@@ -1,3 +1,5 @@
+import { Class } from './class'
+
 export interface Phone {
   name: string
   number: string
@@ -13,4 +15,5 @@ export interface Student {
   grade: string
   address: string
   phones: Phone[]
+  class?: Class
 }

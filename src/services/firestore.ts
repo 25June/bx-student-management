@@ -8,4 +8,4 @@ const classRef = collection(db, 'class')
 export const queryClasses = query(classRef)
 
 // Student collection
-export const studentRef = collection(db, 'student')
+export const studentRef = collection(db, 'students')

@@ -1,10 +1,8 @@
-import React, { useState, useCallback, useEffect, lazy } from 'react'
+import React, { useState, lazy } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Box, Snackbar, Alert, ToggleButtonGroup, AlertProps } from '@mui/material'
-import { students as MockStudents } from '../../mockData/students'
+import { Button, Box, ToggleButtonGroup, AlertColor } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Score, ScoreBook, Student } from 'models'
-import { formatMockData, formatStudentTable } from 'utils'
 import { LayoutComponent } from 'modules/index'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
@@ -15,6 +13,7 @@ import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } 
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Router } from 'routes'
 import { studentColumns } from 'modules/Table/helpers'
+import { SnackbarComponent } from 'modules'
 
 const InfoPanelComponent = lazy(() => import('modules/info-panel/infoPanel.component'))
 const TableComponent = lazy(() => import('modules/Table/Table.component'))
@@ -51,12 +50,11 @@ const defaultScoreBook: ScoreBook = {
 const HomeComponent = () => {
   const navigate = useNavigate()
   const mobile = useMediaQuery('(max-width:900px)')
-  const [students, setStudents] = useState<Student[]>(formatMockData(MockStudents))
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
   const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
 
   const [snackBarMessage, setSnackBarMessage] = useState<string>('')
-  const [snackBarSeverity, setSnackBarSeverity] = useState<AlertProps['severity']>('success')
+  const [snackBarSeverity, setSnackBarSeverity] = useState<AlertColor>('success')
 
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState<Student | null>()
@@ -68,13 +66,11 @@ const HomeComponent = () => {
   const addNewStudent = useAddNewStudent()
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
-  const { students: dbStudents } = useGetStudents()
-  useEffect(() => {
-    if (dbStudents) {
-      setStudents([...dbStudents, ...students])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dbStudents])
+  const { students } = useGetStudents()
+
+  if (!students) {
+    return null
+  }
 
   const handleChangeDisplay = (
     event: React.MouseEvent<HTMLElement>,
@@ -130,14 +126,6 @@ const HomeComponent = () => {
   const handleSave = (data: Student | Omit<Student, 'id'>) => {
     switch (actionType) {
       case StudentActionType.ADD_NEW_STUDENT:
-        setStudents(
-          students
-            .concat({
-              ...data,
-              id: students.length.toString(),
-            })
-            .sort((a, b) => a.firstName.localeCompare(b.firstName))
-        )
         addNewStudent({
           dataInput: data,
           onSuccess: () =>
@@ -150,17 +138,6 @@ const HomeComponent = () => {
         })
         break
       case StudentActionType.EDIT_STUDENT:
-        setStudents(
-          students.map((student: Student) => {
-            if (student.id === (data as Student).id) {
-              if (selectedStudent && selectedStudent.id === (data as Student).id) {
-                setSelectedStudent(data as Student)
-              }
-              return data as Student
-            }
-            return student
-          })
-        )
         updateStudent({
           dataInput: data as Student,
           onSuccess: () =>
@@ -173,7 +150,6 @@ const HomeComponent = () => {
         })
         break
       case StudentActionType.DELETE_STUDENT:
-        setStudents(students.filter((student: Student) => student.id !== (data as Student).id))
         deleteStudent({
           dataInput: data as Student,
           onSuccess: () =>
@@ -213,7 +189,7 @@ const HomeComponent = () => {
           <Button
             variant="contained"
             startIcon={<PersonAddIcon />}
-            onClick={useCallback(() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT), [])}
+            onClick={() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT)}
             sx={{ marginRight: 2 }}
           >
             Thêm Thiếu Nhi
@@ -246,7 +222,7 @@ const HomeComponent = () => {
       {displayType === 'table' ? (
         <TableComponent
           columns={studentColumns}
-          rows={formatStudentTable(students)}
+          rows={students}
           onClickAction={handleClickAction}
         />
       ) : (
@@ -287,19 +263,14 @@ const HomeComponent = () => {
         actionData={actionData}
         onSave={handleSave}
       />
-      <Snackbar
-        open={isOpenSnackbar}
-        autoHideDuration={5000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
+      {isOpenSnackbar && (
+        <SnackbarComponent
           severity={snackBarSeverity}
-          sx={{ width: '100%' }}
-        >
-          {snackBarMessage}
-        </Alert>
-      </Snackbar>
+          message={snackBarMessage}
+          isOpen={isOpenSnackbar}
+          close={() => setOpenSnackbar(false)}
+        />
+      )}
     </LayoutComponent>
   )
 }

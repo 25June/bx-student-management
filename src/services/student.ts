@@ -16,7 +16,7 @@ import {
 import { Student } from 'models'
 
 const db = getFirestore(app)
-const StudentCollection = 'student'
+const StudentCollection = 'students'
 const studentRef = collection(db, StudentCollection)
 
 export const useGetStudents = () => {

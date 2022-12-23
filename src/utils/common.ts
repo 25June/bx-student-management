@@ -22,16 +22,18 @@ export const mockDataFormatPhone = (phone: string): string =>
   phone ? phone.toString().replaceAll('.', '') : ''
 
 export const formatMockData = (mockStudents: any[]): Student[] => {
-  return mockStudents.map(({ phone1, phone2, ...student }: any, index: number) => {
-    return {
-      ...student,
-      firstName: mockDataFormatFirstName(student.firstName),
-      birthday: mockDataFormatBirthday(student.birthday),
-      phones: [
-        { name: 'Cha', number: mockDataFormatPhone(phone1) },
-        { name: 'Mẹ', number: mockDataFormatPhone(phone2) },
-      ],
-      id: `student-${index}`,
-    } as Student
-  })
+  return mockStudents
+    .filter((student) => student)
+    .map(({ phone1, phone2, ...student }: any, index: number) => {
+      return {
+        ...student,
+        firstName: mockDataFormatFirstName(student.firstName),
+        birthday: mockDataFormatBirthday(student.birthday),
+        phones: [
+          { name: 'Cha', number: mockDataFormatPhone(phone1) },
+          { name: 'Mẹ', number: mockDataFormatPhone(phone2) },
+        ],
+        id: `student-${index}`,
+      } as Student
+    })
 }
