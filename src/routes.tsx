@@ -8,7 +8,7 @@ export const Router = {
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
   IMPORT: '/import',
-  HOME: '/',
+  HOME: '/home',
 }
 
 const ROUTES = [

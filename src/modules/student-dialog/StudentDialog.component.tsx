@@ -16,6 +16,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { StudentActionType } from 'constant'
 import { Student } from 'models'
 import { splitFullName } from 'utils'
+import { formatDate, formatPhoneWithoutDot } from 'utils/formatDataForTable'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -82,7 +83,7 @@ const StudentDialogComponent = ({
       console.log(actionData)
       setValue('saintName', actionData.saintName)
       setValue('fullName', `${actionData.lastName} ${actionData.firstName}`)
-      setValue('birthday', actionData.birthday)
+      setValue('birthday', formatDate(actionData.birthday))
       setValue('address', actionData.address)
       setValue('grade', actionData.grade)
       setValue('phone1', actionData.phones[0])
@@ -255,6 +256,7 @@ const StudentDialogComponent = ({
                       fullWidth={true}
                       InputLabelProps={{ shrink: true }}
                       {...field}
+                      value={formatPhoneWithoutDot(field.value)}
                     />
                   )}
                 />
@@ -292,6 +294,7 @@ const StudentDialogComponent = ({
                       fullWidth={true}
                       InputLabelProps={{ shrink: true }}
                       {...field}
+                      value={formatPhoneWithoutDot(field.value)}
                     />
                   )}
                 />

@@ -1,27 +1,23 @@
-import React, { useState, lazy } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
 import { Button, Box, ToggleButtonGroup, AlertColor } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Score, ScoreBook, Student } from 'models'
-import { LayoutComponent } from 'modules/index'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import ImportExportIcon from '@mui/icons-material/ImportExport'
 import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } from 'services'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { Router } from 'routes'
 import { studentColumns } from 'modules/Table/helpers'
-import { SnackbarComponent } from 'modules'
-
-const InfoPanelComponent = lazy(() => import('modules/info-panel/infoPanel.component'))
-const TableComponent = lazy(() => import('modules/Table/Table.component'))
-const ScoreBookPanelComponent = lazy(
-  () => import('modules/score-book-panel/ScoreBookPanel.component')
-)
-const StudentDialogComponent = lazy(() => import('modules/student-dialog/StudentDialog.component'))
-const CardComponent = lazy(() => import('modules/card/Card.component'))
+import {
+  SnackbarComponent,
+  InfoPanelComponent,
+  TableComponent,
+  ScoreBookPanelComponent,
+  StudentDialogComponent,
+  CardComponent,
+  LayoutComponent,
+} from 'modules'
 
 const defaultScore: Score = {
   index: 1,
@@ -48,7 +44,6 @@ const defaultScoreBook: ScoreBook = {
 }
 
 const HomeComponent = () => {
-  const navigate = useNavigate()
   const mobile = useMediaQuery('(max-width:900px)')
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
   const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
@@ -67,10 +62,6 @@ const HomeComponent = () => {
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
   const { students } = useGetStudents()
-
-  if (!students) {
-    return null
-  }
 
   const handleChangeDisplay = (
     event: React.MouseEvent<HTMLElement>,
@@ -108,7 +99,7 @@ const HomeComponent = () => {
       setOpenRightPanel(true)
       return
     }
-    const student = students.find((std: Student) => std.id === data.id)
+    const student = (students || []).find((std: Student) => std.id === data.id)
     if (student) {
       setActionData(student)
       openStudentDialog(type)
@@ -167,10 +158,6 @@ const HomeComponent = () => {
     }
   }
 
-  const navigateToImportPage = () => {
-    navigate(Router.IMPORT)
-  }
-
   return (
     <LayoutComponent>
       <Box
@@ -194,14 +181,6 @@ const HomeComponent = () => {
           >
             Thêm Thiếu Nhi
           </Button>
-          <Button
-            variant="contained"
-            startIcon={<ImportExportIcon />}
-            onClick={navigateToImportPage}
-            sx={{ marginRight: 2 }}
-          >
-            Import
-          </Button>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ToggleButtonGroup
               value={displayType}
@@ -222,7 +201,7 @@ const HomeComponent = () => {
       {displayType === 'table' ? (
         <TableComponent
           columns={studentColumns}
-          rows={students}
+          rows={students || []}
           onClickAction={handleClickAction}
         />
       ) : (
@@ -236,7 +215,7 @@ const HomeComponent = () => {
             paddingRight: 1,
           }}
         >
-          {students.map((student: Student) => (
+          {(students || []).map((student: Student) => (
             <Box mb={4} ml={1} mr={1} key={student.id}>
               <CardComponent student={student} onClickAction={handleClickAction} />
             </Box>

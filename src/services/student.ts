@@ -12,6 +12,7 @@ import {
   collection,
   onSnapshot,
   writeBatch,
+  limit,
 } from 'firebase/firestore'
 import { Student } from 'models'
 
@@ -22,7 +23,7 @@ const studentRef = collection(db, StudentCollection)
 export const useGetStudents = () => {
   const [students, setStudents] = useState<Student[] | null>()
   useEffect(() => {
-    const queryStudents = query(studentRef)
+    const queryStudents = query(studentRef, limit(20))
     onSnapshot(
       queryStudents,
       (snapshot) => {

@@ -1,20 +1,29 @@
 import { Student, Phone } from 'models'
 
-const formatDate = (date: string): string => {
-  // format yyyy-MM-dd
+export const formatDate = (date: string): string => {
+  // from DD.MM.YYYY to yyyy-MM-dd
+  console.log(date)
   if (date) {
-    const splitDate = date.split('-')
-    return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`
+    const splitDate = date.split('.')
+    return `${splitDate[2]}-${splitDate[1]}-${splitDate[0]}`
   }
   return ''
 }
 
 export const formatPhone = (phone: string): string => {
+  // from 0973173484 to 0973.173.484
   if (phone) {
     const splitNumber = phone.split('')
     splitNumber[3] = splitNumber[3] + '.'
     splitNumber[6] = splitNumber[6] + '.'
     return splitNumber.join('')
+  }
+  return ''
+}
+
+export const formatPhoneWithoutDot = (phone: string): string => {
+  if (phone) {
+    return phone.replaceAll('.', '')
   }
   return ''
 }
@@ -37,10 +46,10 @@ export const formatStudentTable = (students: Student[]) => {
     .map((student: Student) => ({
       ...student,
       firstName: student.firstName.toUpperCase(),
-      birthday: formatDate(student.birthday),
+      birthday: student.birthday,
       phones: student.phones.map((p: Phone) => ({
         ...p,
-        number: p.number ? formatPhone(p.number) : '',
+        number: p.number || '',
       })),
     }))
     .sort((a, b) => a.firstName.localeCompare(b.firstName))

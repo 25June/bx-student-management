@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { StudentActionType } from 'constant'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Student } from 'models'
+import { formatDate } from 'utils/formatDataForTable'
 
 interface InfoPanelComponentProps {
   isOpen: boolean
@@ -55,7 +56,7 @@ const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelC
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
               type={'date'}
-              value={data.birthday}
+              value={formatDate(data.birthday)}
               variant={'standard'}
               sx={{ width: '100%' }}
             />

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Box,
   List,
@@ -13,17 +14,20 @@ import {
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import CoPresentIcon from '@mui/icons-material/CoPresent'
 import ListAltIcon from '@mui/icons-material/ListAlt'
+import ImportExportIcon from '@mui/icons-material/ImportExport'
 import MuiDrawer from '@mui/material/Drawer'
 import { drawerWidth } from '../layout/Layout.component'
+import { Router } from 'routes'
 
 interface DrawerComponentProps {
   isOpen: boolean
 }
 
 const Menu = {
-  LIST: { text: 'Danh Sách', icon: <ListAltIcon /> },
-  DILIGENT: { text: 'Điểm Chuyên Cần', icon: <CoPresentIcon /> },
-  SCORE: { text: 'Điểm Học Tập', icon: <AssignmentIcon /> },
+  LIST: { text: 'Danh Sách', icon: <ListAltIcon />, to: Router.HOME },
+  DILIGENT: { text: 'Điểm Chuyên Cần', icon: <CoPresentIcon />, to: Router.IMPORT },
+  SCORE: { text: 'Điểm Học Tập', icon: <AssignmentIcon />, to: Router.IMPORT },
+  IMPORT: { text: 'Import', icon: <ImportExportIcon />, to: Router.IMPORT },
 }
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -65,13 +69,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 )
 
 const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
+  const navigate = useNavigate()
   return (
     <Drawer variant="permanent" open={isOpen}>
       <Box pt={8}>
         <List>
-          {Object.values(Menu).map(({ text, icon }, index) => (
+          {Object.values(Menu).map(({ text, icon, to }, index) => (
             <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
               <ListItemButton
+                onClick={() => navigate(to)}
                 sx={{
                   minHeight: 48,
                   justifyContent: isOpen ? 'initial' : 'center',
