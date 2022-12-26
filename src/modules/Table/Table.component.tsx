@@ -11,6 +11,7 @@ import {
   Paper,
   Tooltip,
 } from '@mui/material'
+import cn from 'classnames'
 import { visuallyHidden } from '@mui/utils'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
@@ -116,8 +117,21 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
                 .slice()
                 .sort(getComparator(order, orderBy))
                 .map((row) => {
+                  console.log(row)
                   return (
-                    <TableRow hover={true} role="checkbox" tabIndex={-1} key={row.id}>
+                    <TableRow
+                      hover={true}
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.id}
+                      className={cn({
+                        'kt-linear-background': row.class?.id.includes('kt') || false,
+                        'rl-linear-background': row.class?.id.includes('rl') || false,
+                        'ts-linear-background': row.class?.id.includes('ts') || false,
+                        'db-linear-background': row.class?.id.includes('db') || false,
+                        'vd-linear-background': row.class?.id.includes('vd') || false,
+                      })}
+                    >
                       {columns.map((column) => {
                         if (column.field === 'phones') {
                           return (

@@ -10,13 +10,17 @@ import {
   TextField,
   Box,
   ButtonProps,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+  Switch,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { StudentActionType } from 'constant'
 import { Student } from 'models'
 import { splitFullName } from 'utils'
-import { formatDate, formatPhoneWithoutDot } from 'utils/formatDataForTable'
+import { formatDate, formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -39,6 +43,7 @@ type StudentForm = {
   grade: string
   phone1: Phone
   phone2: Phone
+  gender: boolean
 }
 
 const StudentDefaultValue = {
@@ -47,6 +52,7 @@ const StudentDefaultValue = {
   birthday: '',
   address: '',
   grade: '1',
+  gender: false,
   phone1: {
     name: '',
     number: '',
@@ -83,11 +89,18 @@ const StudentDialogComponent = ({
       console.log(actionData)
       setValue('saintName', actionData.saintName)
       setValue('fullName', `${actionData.lastName} ${actionData.firstName}`)
-      setValue('birthday', formatDate(actionData.birthday))
+      setValue('birthday', formatDate(actionData.birthday, false))
       setValue('address', actionData.address)
+      setValue('gender', !!actionData.gender)
       setValue('grade', actionData.grade)
-      setValue('phone1', actionData.phones[0])
-      setValue('phone2', actionData.phones[1])
+      setValue('phone1', {
+        ...actionData.phones[0],
+        number: formatPhoneWithoutDot(actionData.phones[0].number),
+      })
+      setValue('phone2', {
+        ...actionData.phones[1],
+        number: formatPhoneWithoutDot(actionData.phones[1].number),
+      })
     }
     return () => reset()
   }, [actionType, actionData, reset, setValue])
@@ -101,10 +114,14 @@ const StudentDialogComponent = ({
         saintName: data.saintName,
         firstName,
         lastName,
-        birthday: data.birthday,
+        birthday: formatDate(data.birthday, true),
         address: data.address,
-        grade: data.grade.toString(),
-        phones: [data.phone1, data.phone2],
+        grade: data.grade,
+        phones: [
+          { ...data.phone1, number: formatPhone(data.phone1.number) },
+          { ...data.phone2, number: formatPhone(data.phone2.number) },
+        ],
+        gender: data.gender,
       }
       onSave(student)
     } else {
@@ -112,10 +129,14 @@ const StudentDialogComponent = ({
         saintName: data.saintName,
         firstName,
         lastName,
-        birthday: data.birthday,
+        birthday: formatDate(data.birthday, true),
         address: data.address,
-        grade: data.grade.toString(),
-        phones: [data.phone1, data.phone2],
+        grade: data.grade,
+        phones: [
+          { ...data.phone1, number: formatPhone(data.phone1.number) },
+          { ...data.phone2, number: formatPhone(data.phone2.number) },
+        ],
+        gender: data.gender,
       }
       onSave(student)
     }
@@ -143,21 +164,38 @@ const StudentDialogComponent = ({
           <>
             <DialogContentText>Xin dien vao nhung o trong duoi day!</DialogContentText>
             <form onSubmit={handleSubmit((data) => console.log(data))}>
-              <Controller
-                rules={{ required: true }}
-                control={control}
-                name={'saintName'}
-                render={({ field }) => (
-                  <TextField
-                    id="outlined-SaintName"
-                    label="Ten Thanh"
-                    helperText="Ex: Maria, Giuse, Anna"
-                    margin="normal"
-                    fullWidth={true}
-                    {...field}
-                  />
-                )}
-              />
+              <Box display={'flex'} justifyContent={'space-between'} gap={1}>
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name={'saintName'}
+                  render={({ field }) => (
+                    <TextField
+                      sx={{ maxWidth: '70%' }}
+                      id="outlined-SaintName"
+                      label="Tên thánh"
+                      helperText="Ex: Maria, Giuse, Anna"
+                      margin="normal"
+                      fullWidth={true}
+                      {...field}
+                    />
+                  )}
+                />
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name={'gender'}
+                  render={({ field }) => (
+                    <FormControl component="fieldset" variant="standard" sx={{ width: '25%' }}>
+                      <FormLabel component="legend">Giới tính</FormLabel>
+                      <FormControlLabel
+                        control={<Switch {...field} checked={field.value} name="gender" />}
+                        label={field.value ? 'Nữ' : 'Nam'}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Box>
               <Controller
                 rules={{ required: true }}
                 control={control}
@@ -165,7 +203,7 @@ const StudentDialogComponent = ({
                 render={({ field }) => (
                   <TextField
                     id="outlined-FullName"
-                    label="Ho va Ten"
+                    label="Họ và Tên"
                     helperText="Ex: Nguyen Van A"
                     margin="normal"
                     fullWidth={true}
@@ -263,7 +301,6 @@ const StudentDialogComponent = ({
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'phone2.name'}
                   render={({ field }) => (
@@ -280,7 +317,6 @@ const StudentDialogComponent = ({
                   )}
                 />
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'phone2.number'}
                   render={({ field }) => (

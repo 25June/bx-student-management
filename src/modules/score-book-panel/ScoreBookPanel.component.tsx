@@ -45,7 +45,7 @@ const ScoreItem = ({ point }: ScoreItemProps) => {
 
 interface ScoreBookPanelComponentProps {
   isOpen: boolean
-  studentInfo: Student
+  studentInfo?: Student
   scoreBook: ScoreBook
   onClose: () => void
   onClickAction: (student: any, actionType: string) => void

@@ -1,0 +1,21 @@
+$color-kt: #EEB0AC;
+$color-rl: #9EC545;
+$color-ts: #268AFF;
+$color-db: #F5E866;
+$color-vd: #DB5F40;
+
+.kt-linear-background {
+  background: linear-gradient(90deg, rgba(238,176,172,1) 0%, rgba(255,255,255,1) 50%);
+}
+.rl-linear-background {
+  background: linear-gradient(90deg, rgba(158,197,69,1) 0%, rgba(255,255,255,1) 50%);
+}
+.ts-linear-background {
+  background: linear-gradient(90deg, rgba(38,138,255,1) 0%, rgba(255,255,255,1) 50%);
+}
+.db-linear-background {
+  background: linear-gradient(90deg, rgba(245,232,102,1) 0%, rgba(255,255,255,1) 50%);
+}
+.vd-linear-background {
+  background: linear-gradient(90deg, rgba(219,95,64,1) 0%, rgba(255,255,255,1) 50%);
+}

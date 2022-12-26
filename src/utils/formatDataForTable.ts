@@ -1,8 +1,15 @@
 import { Student, Phone } from 'models'
 
-export const formatDate = (date: string): string => {
+export const formatDate = (date: string, forDataSave: boolean): string => {
+  if (forDataSave) {
+    // from yyyy-MM-dd to DD.MM.YYYY
+    if (date) {
+      const splitDate = date.split('-')
+      return `${splitDate[2]}.${splitDate[1]}.${splitDate[0]}`
+    }
+    return ''
+  }
   // from DD.MM.YYYY to yyyy-MM-dd
-  console.log(date)
   if (date) {
     const splitDate = date.split('.')
     return `${splitDate[2]}-${splitDate[1]}-${splitDate[0]}`
@@ -49,7 +56,7 @@ export const formatStudentTable = (students: Student[]) => {
       birthday: student.birthday,
       phones: student.phones.map((p: Phone) => ({
         ...p,
-        number: p.number || '',
+        number: formatPhone(p.number) || '',
       })),
     }))
     .sort((a, b) => a.firstName.localeCompare(b.firstName))

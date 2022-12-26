@@ -11,18 +11,23 @@ import { formatDate } from 'utils/formatDataForTable'
 
 interface InfoPanelComponentProps {
   isOpen: boolean
-  data: Student
+  studentInfo?: Student
   onClose: () => void
   onClickAction: (student: any, actionType: string) => void
 }
 
-const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelComponentProps) => {
-  if (!data) {
+const InfoPanelComponent = ({
+  isOpen,
+  studentInfo,
+  onClose,
+  onClickAction,
+}: InfoPanelComponentProps) => {
+  if (!studentInfo) {
     return null
   }
 
   const handleRemoveStudent = () => {
-    onClickAction(data, StudentActionType.DELETE_STUDENT)
+    onClickAction(studentInfo, StudentActionType.DELETE_STUDENT)
     onClose()
   }
 
@@ -44,19 +49,19 @@ const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelC
         <Box component={'img'} src={studentBoyLogo} alt={'image-detail'} sx={{ width: '100%' }} />
         <Box>
           <Box textAlign={'center'} component={'h2'} margin={0}>
-            {data.saintName}
+            {studentInfo.saintName}
           </Box>
           <Box textAlign={'center'} component={'h1'} mt={0}>
-            {`${data.lastName} ${data.firstName}`}
+            {`${studentInfo.lastName} ${studentInfo.firstName}`}
           </Box>
           <Box mb={2} width={'100%'}>
             <TextField
               id={'birthday'}
-              label={'Birthday'}
+              label={'Ngày sinh'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
               type={'date'}
-              value={formatDate(data.birthday)}
+              value={formatDate(studentInfo.birthday, false)}
               variant={'standard'}
               sx={{ width: '100%' }}
             />
@@ -64,10 +69,10 @@ const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelC
           <Box mb={2} width={'100%'}>
             <TextField
               id={'address'}
-              label={'Address'}
+              label={'Địa chỉ'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.address}
+              value={studentInfo.address}
               variant={'standard'}
               sx={{ width: '100%' }}
             />
@@ -81,19 +86,19 @@ const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelC
           >
             <TextField
               id={'grade'}
-              label={'Grade'}
+              label={'Văn hoá'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.grade}
+              value={studentInfo.grade}
               variant={'standard'}
               sx={{ width: '45%' }}
             />
             <TextField
               id={'gender'}
-              label={'Gender'}
+              label={'Giới tính'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={'Male'}
+              value={studentInfo.gender ? 'Nữ' : 'Nam'}
               variant={'standard'}
               sx={{ width: '45%' }}
             />
@@ -108,19 +113,19 @@ const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelC
           >
             <TextField
               id={'phone-name-1'}
-              label={'Name'}
+              label={'Tên'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phones[0].name}
+              value={studentInfo.phones[0].name}
               sx={{ width: '100%' }}
               variant={'standard'}
             />
             <TextField
               id={'phone-number-2'}
-              label={'Number'}
+              label={'Số điện thoại'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phones[0].number}
+              value={studentInfo.phones[0].number}
               sx={{ width: '100%' }}
               variant={'standard'}
             />
@@ -135,19 +140,19 @@ const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelC
           >
             <TextField
               id={'phone-name-1'}
-              label={'Name'}
+              label={'Tên'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phones[0].name}
+              value={studentInfo.phones[1].name}
               sx={{ width: '100%' }}
               variant={'standard'}
             />
             <TextField
               id={'phone-number-2'}
-              label={'Number'}
+              label={'Số điện thoại'}
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
-              value={data.phones[0].number}
+              value={studentInfo.phones[1].number}
               sx={{ width: '100%' }}
               variant={'standard'}
             />
@@ -156,7 +161,7 @@ const InfoPanelComponent = ({ isOpen, data, onClose, onClickAction }: InfoPanelC
             <Button
               startIcon={<EditIcon />}
               size="small"
-              onClick={() => onClickAction(data, StudentActionType.EDIT_STUDENT)}
+              onClick={() => onClickAction(studentInfo, StudentActionType.EDIT_STUDENT)}
               color="warning"
               variant="outlined"
             >

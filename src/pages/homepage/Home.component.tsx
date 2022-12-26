@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Box, ToggleButtonGroup, AlertColor } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Score, ScoreBook, Student } from 'models'
@@ -55,13 +55,22 @@ const HomeComponent = () => {
   const [actionData, setActionData] = useState<Student | null>()
   const [isOpenRightPanel, setOpenRightPanel] = useState(false)
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState<any>()
+  const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
 
   const addNewStudent = useAddNewStudent()
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
   const { students } = useGetStudents()
+
+  useEffect(() => {
+    if (selectedStudent && students) {
+      const newData = students.find((student: Student) => student.id === selectedStudent.id)
+      if (newData) {
+        setSelectedStudent(newData)
+      }
+    }
+  }, [students, selectedStudent])
 
   const handleChangeDisplay = (
     event: React.MouseEvent<HTMLElement>,
@@ -222,7 +231,7 @@ const HomeComponent = () => {
           ))}
           <InfoPanelComponent
             isOpen={isOpenRightPanel}
-            data={selectedStudent}
+            studentInfo={selectedStudent}
             onClose={handleClosePanel}
             onClickAction={handleClickAction}
           />
