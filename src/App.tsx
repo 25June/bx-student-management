@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import './App.css'
+import 'App.scss'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import ROUTES from 'routes'
 import { AuthContextProvider } from 'contexts/AuthContext'

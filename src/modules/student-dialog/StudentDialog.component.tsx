@@ -166,7 +166,6 @@ const StudentDialogComponent = ({
             <form onSubmit={handleSubmit((data) => console.log(data))}>
               <Box display={'flex'} justifyContent={'space-between'} gap={1}>
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'saintName'}
                   render={({ field }) => (
@@ -182,7 +181,6 @@ const StudentDialogComponent = ({
                   )}
                 />
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'gender'}
                   render={({ field }) => (
@@ -197,7 +195,6 @@ const StudentDialogComponent = ({
                 />
               </Box>
               <Controller
-                rules={{ required: true }}
                 control={control}
                 name={'fullName'}
                 render={({ field }) => (
@@ -213,7 +210,6 @@ const StudentDialogComponent = ({
               />
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'birthday'}
                   render={({ field }) => (
@@ -230,7 +226,6 @@ const StudentDialogComponent = ({
                   )}
                 />
                 <Controller
-                  rules={{ required: true }}
                   control={control}
                   name={'grade'}
                   render={({ field }) => (
@@ -249,7 +244,6 @@ const StudentDialogComponent = ({
                 />
               </Box>
               <Controller
-                rules={{ required: true }}
                 control={control}
                 name={'address'}
                 render={({ field }) => (

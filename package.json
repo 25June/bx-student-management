@@ -26,6 +26,7 @@
     "react-intl": "^6.2.5",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "sass": "^1.57.1",
     "serve": "^14.0.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.3.0",

@@ -2,9 +2,7 @@ import { app } from '../firebase'
 import { useState, useEffect } from 'react'
 import {
   addDoc,
-  setDoc,
   doc,
-  deleteDoc,
   QueryDocumentSnapshot,
   DocumentData,
   query,
@@ -13,6 +11,8 @@ import {
   onSnapshot,
   writeBatch,
   limit,
+  serverTimestamp,
+  updateDoc,
 } from 'firebase/firestore'
 import { Student } from 'models'
 
@@ -23,7 +23,7 @@ const studentRef = collection(db, StudentCollection)
 export const useGetStudents = () => {
   const [students, setStudents] = useState<Student[] | null>()
   useEffect(() => {
-    const queryStudents = query(studentRef, limit(20))
+    const queryStudents = query(studentRef, limit(100))
     onSnapshot(
       queryStudents,
       (snapshot) => {
@@ -52,8 +52,11 @@ interface AddNewStudentParams {
 
 export const useAddNewStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: AddNewStudentParams) => {
-    console.log(dataInput)
-    addDoc(collection(db, StudentCollection), dataInput)
+    const data = {
+      ...dataInput,
+      createdDate: serverTimestamp(),
+    }
+    addDoc(collection(db, StudentCollection), data)
       .then((value) => {
         console.info(value)
         onSuccess()
@@ -106,7 +109,8 @@ interface UpdateStudentParams {
 export const useUpdateStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: UpdateStudentParams) => {
     console.log(dataInput)
-    setDoc(doc(db, StudentCollection, dataInput.id), dataInput)
+    const ref = doc(db, StudentCollection, dataInput.id)
+    updateDoc(ref, { updatedDate: serverTimestamp(), ...dataInput })
       .then((value) => {
         console.info(value)
         onSuccess()
@@ -131,7 +135,8 @@ interface DeleteStudentParams {
 export const useDeleteStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: DeleteStudentParams) => {
     console.log(dataInput)
-    deleteDoc(doc(db, StudentCollection, dataInput.id))
+    const ref = doc(db, StudentCollection, dataInput.id)
+    updateDoc(ref, { isDeleted: true, updatedDate: serverTimestamp() })
       .then((value) => {
         console.info(value)
         onSuccess()

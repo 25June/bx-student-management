@@ -1,21 +1,52 @@
-$color-kt: #EEB0AC;
-$color-rl: #9EC545;
-$color-ts: #268AFF;
-$color-db: #F5E866;
-$color-vd: #DB5F40;
+$color-kt: #F6E0F3;
+$color-rl: #C8F69B;
+$color-ts: #B3EEFF;
+$color-db: #FFEEA5;
+$color-vd: #C99689;
+
+//Name: Pink Lace
+//Hex: #F6E0F3
+//RGB: (246, 224, 243)
+//CMYK: 0, 0.089, 0.012, 0.035
+
+//Name: Rosy Brown
+//Hex: #C99689
+//RGB: (201, 150, 137)
+//CMYK: 0, 0.253, 0.318, 0.211
+
+//Name: Menthol
+//Hex: #C8F69B
+//RGB: (200, 246, 155)
+//CMYK: 0.186, 0, 0.369, 0.035
+
+//Name: Medium Champagne
+//Hex: #FFEEA5
+//RGB: (255, 238, 165)
+//CMYK: 0, 0.066, 0.352, 0
+
+
+//Name: Melon
+//Hex: #FFB1AF
+//RGB: (255, 177, 175)
+//CMYK: 0, 0.305, 0.313, 0
+
+//Name: Diamond
+//Hex: #B3EEFF
+//RGB: (179, 238, 255)
+//CMYK: 0.298, 0.066, 0, 0
 
 .kt-linear-background {
-  background: linear-gradient(90deg, rgba(238,176,172,1) 0%, rgba(255,255,255,1) 50%);
+  background: linear-gradient(90deg, rgba(246, 224, 243,1) 0%, rgba(255,255,255,1) 2%);
 }
 .rl-linear-background {
-  background: linear-gradient(90deg, rgba(158,197,69,1) 0%, rgba(255,255,255,1) 50%);
+  background: linear-gradient(90deg, rgba(200, 246, 155,1) 0%, rgba(255,255,255,1) 2%);
 }
 .ts-linear-background {
-  background: linear-gradient(90deg, rgba(38,138,255,1) 0%, rgba(255,255,255,1) 50%);
+  background: linear-gradient(90deg, rgba(179, 238, 255,1) 0%, rgba(255,255,255,1) 2%);
 }
-.db-linear-background {
-  background: linear-gradient(90deg, rgba(245,232,102,1) 0%, rgba(255,255,255,1) 50%);
+.bd-linear-background {
+  background: linear-gradient(90deg, rgba(255, 238, 165,1) 0%, rgba(255,255,255,1) 2%);
 }
 .vd-linear-background {
-  background: linear-gradient(90deg, rgba(219,95,64,1) 0%, rgba(255,255,255,1) 50%);
+  background: linear-gradient(90deg, rgba(201, 150, 137,1) 0%, rgba(255,255,255,1) 2%);
 }

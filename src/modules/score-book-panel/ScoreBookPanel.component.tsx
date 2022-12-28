@@ -26,6 +26,7 @@ const ScoreItem = ({ point }: ScoreItemProps) => {
         id={'lan-1'}
         label={'Lan 1'}
         type={'number'}
+        inputMode={'numeric'}
         size={'small'}
         variant={'outlined'}
         sx={{ width: '70%' }}
@@ -74,7 +75,7 @@ const ScoreBookPanelComponent = ({
   return (
     <MuiDrawer
       variant="temporary"
-      anchor={'bottom'}
+      anchor={'right'}
       open={isOpen}
       onClose={onClose}
       sx={{ width: '100%', maxWidth: 375 }}

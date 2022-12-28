@@ -116,19 +116,18 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
               {rows
                 .slice()
                 .sort(getComparator(order, orderBy))
-                .map((row) => {
-                  console.log(row)
+                .map((row, index) => {
+                  console.log(row.class?.id.includes('kt'))
                   return (
                     <TableRow
                       hover={true}
-                      role="checkbox"
-                      tabIndex={-1}
+                      tabIndex={index}
                       key={row.id}
                       className={cn({
                         'kt-linear-background': row.class?.id.includes('kt') || false,
                         'rl-linear-background': row.class?.id.includes('rl') || false,
                         'ts-linear-background': row.class?.id.includes('ts') || false,
-                        'db-linear-background': row.class?.id.includes('db') || false,
+                        'bd-linear-background': row.class?.id.includes('bd') || false,
                         'vd-linear-background': row.class?.id.includes('vd') || false,
                       })}
                     >
