@@ -83,7 +83,7 @@ export const useBatchAddStudents = () => {
     const batch = writeBatch(db)
     students.forEach((student) => {
       const docRef = doc(collection(db, StudentCollection))
-      batch.set(docRef, student)
+      batch.set(docRef, { ...student, isDeleted: false, createdDate: serverTimestamp() })
     })
     await batch
       .commit()

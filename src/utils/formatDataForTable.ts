@@ -30,7 +30,7 @@ export const formatPhone = (phone: string): string => {
 
 export const formatPhoneWithoutDot = (phone: string): string => {
   if (phone) {
-    return phone.replaceAll('.', '')
+    return phone.replaceAll('.', '').trim()
   }
   return ''
 }

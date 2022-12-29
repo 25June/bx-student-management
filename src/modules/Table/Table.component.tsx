@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {
   Box,
+  Typography,
   Table,
   TableBody,
   TableCell,
@@ -16,8 +17,11 @@ import { visuallyHidden } from '@mui/utils'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { StudentActionType } from 'constant'
-import { Phone } from 'models'
+import { Phone, Student } from 'models'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 
 interface TableProps {
   columns: any[]
@@ -90,12 +94,29 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<any>('firstName')
 
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [open, setOpen] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState<Student>()
+
+  const handleClickMenu = (event: React.MouseEvent<HTMLButtonElement>, row: Student) => {
+    setAnchorEl(event.currentTarget)
+    setOpen(true)
+    setSelectedStudent(row)
+  }
+
+  const handleClickActions = (method: StudentActionType) => {
+    if (onClickAction) {
+      onClickAction(selectedStudent, method)
+    }
+    setOpen(false)
+  }
+
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: any) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
   }
-
+  console.log('render')
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -117,7 +138,6 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
                 .slice()
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {
-                  console.log(row.class?.id.includes('kt'))
                   return (
                     <TableRow
                       hover={true}
@@ -155,32 +175,16 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
                         )
                       })}
                       <TableCell>
-                        {onClickAction ? (
-                          <>
-                            <Tooltip title="Sửa thông tin" placement="top">
-                              <IconButton
-                                aria-label="Edit student"
-                                component="span"
-                                onClick={() => onClickAction(row, StudentActionType.EDIT_STUDENT)}
-                                size="small"
-                                color="warning"
-                              >
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Xoá thông tin">
-                              <IconButton
-                                aria-label="Remove student"
-                                component="span"
-                                onClick={() => onClickAction(row, StudentActionType.DELETE_STUDENT)}
-                                size="small"
-                                color="error"
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </>
-                        ) : null}
+                        <Tooltip title={'Menu'}>
+                          <IconButton
+                            aria-label={'Menu'}
+                            onClick={(e) => handleClickMenu(e, row)}
+                            size={'small'}
+                            color={'primary'}
+                          >
+                            <MoreVertIcon fontSize={'small'} />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   )
@@ -189,6 +193,24 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
           </Table>
         </TableContainer>
       </Paper>
+      <Menu open={open} anchorEl={anchorEl} onClose={() => setOpen(false)}>
+        <MenuItem onClick={() => handleClickActions(StudentActionType.EDIT_STUDENT)}>
+          <Box display={'flex'} alignItems={'center'} gap={2}>
+            <EditIcon fontSize="small" color={'warning'} />
+            <Typography color={'#ed6c02'} fontSize={'0.875rem'}>
+              Cập nhật thông tin
+            </Typography>
+          </Box>
+        </MenuItem>
+        <MenuItem onClick={() => handleClickActions(StudentActionType.DELETE_STUDENT)}>
+          <Box display={'flex'} alignItems={'center'} gap={2}>
+            <DeleteIcon fontSize="small" color={'error'} />
+            <Typography color={'#d32f2f'} fontSize={'0.875rem'}>
+              Xoá thông tin
+            </Typography>
+          </Box>
+        </MenuItem>
+      </Menu>
     </Box>
   )
 }
