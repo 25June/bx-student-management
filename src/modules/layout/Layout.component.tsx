@@ -12,7 +12,7 @@ const LayoutComponent = (props: any) => {
     <Box sx={{ display: 'flex' }}>
       <TopBarComponent isOpen={isOpen} setOpen={setOpen} />
       <DrawerComponent isOpen={isOpen} />
-      <Box component="main" sx={{ flexGrow: 1, pt: 8, pb: 3 }}>
+      <Box component="main" sx={{ pt: 8, pb: 3, width: 'calc(100% - 65px)' }}>
         {props.children}
       </Box>
     </Box>

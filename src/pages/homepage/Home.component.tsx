@@ -175,13 +175,12 @@ const HomeComponent = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           flexDirection: mobile ? 'column' : 'row',
-          width: '100%',
         }}
       >
-        <Box component={'h1'} sx={{ paddingLeft: 1, paddingRight: 1 }}>
+        <Box component={mobile ? 'h3' : 'h1'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
           Thông Tin Thiếu Nhi
         </Box>
-        <Box display={'flex'} sx={{ paddingLeft: 1, paddingRight: 1 }}>
+        <Box display={'flex'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
           <Button
             variant="contained"
             startIcon={<PersonAddIcon />}

@@ -118,9 +118,12 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
   }
   console.log('render')
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
+    <Box p={2}>
+      <Paper>
+        <TableContainer
+          sx={{ maxHeight: 'calc(100vh - 240px)', width: '100%', overflow: 'auto' }}
+          component={Paper}
+        >
           <Table
             stickyHeader={true}
             sx={{ minWidth: 750 }}
