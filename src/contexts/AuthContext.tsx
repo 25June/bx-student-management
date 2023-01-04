@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from 'react'
 import { getAuth, User } from 'firebase/auth'
 
 interface AuthContextProps {
@@ -21,7 +21,7 @@ const authContextDefaultValues = {
 
 const AuthContext = createContext<AuthContextProps>(authContextDefaultValues)
 
-export const AuthContextProvider = (props: any) => {
+export const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const auth = getAuth()
   const [isSignedIn, setSignedIn] = useState<boolean>(false)
   const [user, setUser] = useState<User | null>(null)
@@ -45,7 +45,7 @@ export const AuthContextProvider = (props: any) => {
     })
   }, [auth])
 
-  return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export const useAuthentication = () => {
