@@ -9,7 +9,7 @@ export interface Student {
   saintName: string
   firstName: string
   lastName: string
-  avatar?: string | null
+  avatarPath?: string
   gender?: boolean
   birthday: string
   grade: string

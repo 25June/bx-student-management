@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Dialog,
@@ -21,6 +21,8 @@ import { StudentActionType } from 'constant'
 import { Student } from 'models'
 import { splitFullName } from 'utils'
 import { formatDate, formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
+import { removeImage, uploadAvatar, uploadProgress } from 'services'
+import { LinearWithValueLabelComponent } from 'modules'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -44,6 +46,8 @@ type StudentForm = {
   phone1: Phone
   phone2: Phone
   gender: boolean
+  avatar?: File | null
+  avatarPath?: string
 }
 
 const StudentDefaultValue = {
@@ -61,6 +65,8 @@ const StudentDefaultValue = {
     name: '',
     number: '',
   },
+  avatar: null,
+  avatarPath: '',
 }
 
 const getButtonColor = (type: string): ButtonProps['color'] => {
@@ -84,9 +90,9 @@ const StudentDialogComponent = ({
   const { handleSubmit, control, setValue, reset } = useForm<StudentForm>({
     defaultValues: StudentDefaultValue,
   })
+  const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   useEffect(() => {
     if (actionType !== StudentActionType.ADD_NEW_STUDENT && actionData) {
-      console.log(actionData)
       setValue('saintName', actionData.saintName)
       setValue('fullName', `${actionData.lastName} ${actionData.firstName}`)
       setValue('birthday', formatDate(actionData.birthday, false))
@@ -101,13 +107,20 @@ const StudentDialogComponent = ({
         ...actionData.phones[1],
         number: formatPhoneWithoutDot(actionData.phones[1].number),
       })
+      setValue('avatarPath', actionData.avatarPath)
     }
     return () => reset()
   }, [actionType, actionData, reset, setValue])
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const onSubmit = (data: StudentForm) => {
+  const onSubmit = async (data: StudentForm) => {
+    let downloadPath
     const { firstName, lastName } = splitFullName(data.fullName)
+    if (data.avatar) {
+      // do upload file
+      downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
+      console.log({ downloadPath })
+    }
     if (actionType !== StudentActionType.ADD_NEW_STUDENT && actionData) {
       const student: Student = {
         id: actionData.id,
@@ -122,8 +135,12 @@ const StudentDialogComponent = ({
           { ...data.phone2, number: formatPhone(data.phone2.number) },
         ],
         gender: data.gender,
+        avatarPath: downloadPath || data.avatarPath,
       }
       onSave(student)
+      if (downloadPath && data.avatarPath) {
+        removeImage(data.avatarPath)
+      }
     } else {
       const student: Omit<Student, 'id'> = {
         saintName: data.saintName,
@@ -137,9 +154,11 @@ const StudentDialogComponent = ({
           { ...data.phone2, number: formatPhone(data.phone2.number) },
         ],
         gender: data.gender,
+        avatarPath: downloadPath || undefined,
       }
       onSave(student)
     }
+    setUploadImageProgress(0)
     onClose()
   }
 
@@ -164,6 +183,26 @@ const StudentDialogComponent = ({
           <>
             <DialogContentText>Xin dien vao nhung o trong duoi day!</DialogContentText>
             <form onSubmit={handleSubmit((data) => console.log(data))}>
+              <Box>
+                <TextField
+                  sx={{ maxWidth: '100%' }}
+                  id="outlined-avatar"
+                  label="Ảnh đại diện"
+                  helperText="Chỉ upload ảnh .jpg, .png"
+                  InputLabelProps={{ shrink: true }}
+                  margin="normal"
+                  fullWidth={true}
+                  type={'file'}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    if (event.target.files?.[0]) {
+                      setValue('avatar', event.target.files[0])
+                    }
+                  }}
+                />
+                {uploadImageProgress ? (
+                  <LinearWithValueLabelComponent progress={uploadImageProgress} />
+                ) : null}
+              </Box>
               <Box display={'flex'} justifyContent={'space-between'} gap={1}>
                 <Controller
                   control={control}
@@ -215,7 +254,7 @@ const StudentDialogComponent = ({
                   render={({ field }) => (
                     <TextField
                       id="outlined-Birthday"
-                      label="Ngay Sinh"
+                      label="Ngày Sinh"
                       type="date"
                       helperText="Ngay/Thang/Nam"
                       margin="normal"

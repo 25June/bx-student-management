@@ -37,3 +37,10 @@ export const formatMockData = (mockStudents: any[]): Student[] => {
       } as Student
     })
 }
+
+export const buildImageUrl = (imagePath: string) => {
+  const prefix = 'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/'
+  const postfix = '?alt=media&token=23812601-6493-46bc-b0fc-3d1164216a17'
+  const formatImage = imagePath.replaceAll('/', '%2F');
+  return prefix + formatImage + postfix;
+}

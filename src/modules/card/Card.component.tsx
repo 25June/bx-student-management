@@ -5,6 +5,7 @@ import studentBoyLogo from 'static/images/cards/student-boy.png'
 import { StudentActionType } from 'constant'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Student } from 'models'
+import { buildImageUrl } from 'utils/common'
 
 const CardComponent = ({
   student,
@@ -14,15 +15,14 @@ const CardComponent = ({
   onClickAction: (student: any, actionType: string) => void
 }) => {
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
+  const avatar = student.avatarPath
+    ? buildImageUrl(student.avatarPath)
+    : student.gender
+    ? studentGirlLogo
+    : studentBoyLogo
   return (
     <Card sx={{ maxWidth: 300 }}>
-      <CardMedia
-        component="img"
-        height="300"
-        src={student.gender ? studentGirlLogo : studentBoyLogo}
-        alt="student-girl"
-        sx={{ padding: 1 }}
-      />
+      <CardMedia component="img" height="300" src={avatar} alt="student-girl" sx={{ padding: 1 }} />
       <CardContent sx={{ height: 120 }}>
         <Typography gutterBottom={true} variant="h5" component="div">
           {student.saintName}
