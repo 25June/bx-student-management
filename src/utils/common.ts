@@ -1,4 +1,6 @@
 import { Student } from 'models'
+import studentGirlLogo from 'static/images/cards/student-girl.png'
+import studentBoyLogo from 'static/images/cards/student-boy.png'
 
 export const convertStringToDate = (date: string) => {
   const [day, month, year] = date.split('.')
@@ -38,9 +40,12 @@ export const formatMockData = (mockStudents: any[]): Student[] => {
     })
 }
 
-export const buildImageUrl = (imagePath: string) => {
+export const buildImageUrl = (imagePath?: string, gender?: boolean) => {
+  if (!imagePath) {
+    return gender ? studentGirlLogo : studentBoyLogo
+  }
   const prefix = 'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/'
   const postfix = '?alt=media&token=23812601-6493-46bc-b0fc-3d1164216a17'
-  const formatImage = imagePath.replaceAll('/', '%2F');
-  return prefix + formatImage + postfix;
+  const formatImage = imagePath.replaceAll('/', '%2F')
+  return prefix + formatImage + postfix
 }

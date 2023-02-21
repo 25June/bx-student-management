@@ -26,4 +26,12 @@ const LinearWithValueLabelComponent = ({ progress }: { progress: number }) => {
   )
 }
 
-export default LinearWithValueLabelComponent
+const LinearProgressComponent = ({ progress }: { progress: number }) => {
+  return (
+    <Box sx={{ width: '100%' }}>
+      <LinearProgress color="primary" variant="determinate" value={progress || 90} />
+    </Box>
+  )
+}
+
+export { LinearWithValueLabelComponent, LinearProgressComponent }

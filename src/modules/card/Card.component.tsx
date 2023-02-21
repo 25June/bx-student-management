@@ -1,7 +1,5 @@
 import React from 'react'
 import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@mui/material'
-import studentGirlLogo from 'static/images/cards/student-girl.png'
-import studentBoyLogo from 'static/images/cards/student-boy.png'
 import { StudentActionType } from 'constant'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Student } from 'models'
@@ -15,14 +13,10 @@ const CardComponent = ({
   onClickAction: (student: any, actionType: string) => void
 }) => {
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
-  const avatar = student.avatarPath
-    ? buildImageUrl(student.avatarPath)
-    : student.gender
-    ? studentGirlLogo
-    : studentBoyLogo
+  const avatar = buildImageUrl(student.avatarPath, student.gender)
   return (
-    <Card sx={{ maxWidth: 300 }}>
-      <CardMedia component="img" height="300" src={avatar} alt="student-girl" sx={{ padding: 1 }} />
+    <Card sx={{ maxWidth: 300, minWidth: 300 }}>
+      <CardMedia component="img" height="300" src={avatar} alt="student-girl" />
       <CardContent sx={{ height: 120 }}>
         <Typography gutterBottom={true} variant="h5" component="div">
           {student.saintName}
@@ -48,7 +42,7 @@ const CardComponent = ({
           color="warning"
           variant="outlined"
         >
-          Bang Diem
+          Bảng Điểm
         </Button>
       </CardActions>
     </Card>

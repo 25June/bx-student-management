@@ -175,6 +175,7 @@ const HomeComponent = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           flexDirection: mobile ? 'column' : 'row',
+          marginBottom: mobile ? 2 : 1,
         }}
       >
         <Box component={mobile ? 'h3' : 'h1'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
@@ -218,13 +219,14 @@ const HomeComponent = () => {
             display: 'flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
-            justifyContent: 'space-around',
+            justifyContent: 'center',
+            gap: 5,
             paddingLeft: 1,
             paddingRight: 1,
           }}
         >
           {(students || []).map((student: Student) => (
-            <Box mb={4} ml={1} mr={1} key={student.id}>
+            <Box key={student.id} sx={{ display: 'flex', columnGap: 16, rowGap: 16 }}>
               <CardComponent student={student} onClickAction={handleClickAction} />
             </Box>
           ))}

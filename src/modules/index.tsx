@@ -12,7 +12,10 @@ import ScoreBookPanelComponent from './score-book-panel/ScoreBookPanel.component
 import FallbackComponent from './fallback/Fallback.component'
 import SnackbarComponent from './snackbar/Snackbar.component'
 import ImageBoxComponent from 'modules/image-box/ImageBox.component'
-import LinearWithValueLabelComponent from 'modules/progress-bar/LinearProgressWithLabel.component'
+import {
+  LinearWithValueLabelComponent,
+  LinearProgressComponent,
+} from 'modules/progress-bar/LinearProgressWithLabel.component'
 
 export {
   TopBarComponent,
@@ -30,4 +33,5 @@ export {
   SnackbarComponent,
   ImageBoxComponent,
   LinearWithValueLabelComponent,
+  LinearProgressComponent,
 }

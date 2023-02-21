@@ -1,13 +1,13 @@
 import React from 'react'
 import { Box, TextField, Button } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
-import studentBoyLogo from 'static/images/cards/student-boy.png'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import EditIcon from '@mui/icons-material/Edit'
 import { StudentActionType } from 'constant'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Student } from 'models'
 import { formatDate } from 'utils/formatDataForTable'
+import { ImageBoxComponent } from 'modules'
 
 interface InfoPanelComponentProps {
   isOpen: boolean
@@ -46,7 +46,7 @@ const InfoPanelComponent = ({
             Back
           </Button>
         </Box>
-        <Box component={'img'} src={studentBoyLogo} alt={'image-detail'} sx={{ width: '100%' }} />
+        <ImageBoxComponent imagePath={studentInfo.avatarPath} gender={studentInfo.gender} />
         <Box>
           <Box textAlign={'center'} component={'h2'} margin={0}>
             {studentInfo.saintName}

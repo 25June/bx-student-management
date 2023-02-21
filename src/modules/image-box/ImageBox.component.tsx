@@ -1,9 +1,20 @@
 import React from 'react'
+import { buildImageUrl } from 'utils/common'
+import { Box } from '@mui/material'
 
-const ImageBoxComponent = (imagePath: string) => {
-  const prefix = 'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/'
+interface ImageBoxComponentProps {
+  imagePath?: string
+  gender?: boolean
+}
+
+const ImageBoxComponent = ({ imagePath, gender }: ImageBoxComponentProps) => {
   return (
-    <img src={`${prefix}/${imagePath}`} alt={imagePath} />
+    <Box
+      component={'img'}
+      src={buildImageUrl(imagePath, gender)}
+      alt={imagePath}
+      sx={{ width: '100%', maxWidth: 375, aspectRatio: '1/1', objectFit: 'cover' }}
+    />
   )
 }
 

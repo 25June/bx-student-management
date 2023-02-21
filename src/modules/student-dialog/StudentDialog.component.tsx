@@ -21,8 +21,8 @@ import { StudentActionType } from 'constant'
 import { Student } from 'models'
 import { splitFullName } from 'utils'
 import { formatDate, formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
-import { removeImage, uploadAvatar, uploadProgress } from 'services'
-import { LinearWithValueLabelComponent } from 'modules'
+import { removeImage, uploadAvatar } from 'services'
+import { ImageBoxComponent, LinearProgressComponent } from 'modules'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -87,7 +87,7 @@ const StudentDialogComponent = ({
   actionData,
 }: StudentDialogComponentProps) => {
   const theme = useTheme()
-  const { handleSubmit, control, setValue, reset } = useForm<StudentForm>({
+  const { handleSubmit, control, setValue, reset, formState } = useForm<StudentForm>({
     defaultValues: StudentDefaultValue,
   })
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
@@ -122,7 +122,7 @@ const StudentDialogComponent = ({
       console.log({ downloadPath })
     }
     if (actionType !== StudentActionType.ADD_NEW_STUDENT && actionData) {
-      const student: Student = {
+      const updatedStudent: Student = {
         id: actionData.id,
         saintName: data.saintName,
         firstName,
@@ -137,27 +137,29 @@ const StudentDialogComponent = ({
         gender: data.gender,
         avatarPath: downloadPath || data.avatarPath,
       }
-      onSave(student)
+      onSave(updatedStudent)
+      setUploadImageProgress(0)
+      onClose()
       if (downloadPath && data.avatarPath) {
         removeImage(data.avatarPath)
       }
-    } else {
-      const student: Omit<Student, 'id'> = {
-        saintName: data.saintName,
-        firstName,
-        lastName,
-        birthday: formatDate(data.birthday, true),
-        address: data.address,
-        grade: data.grade,
-        phones: [
-          { ...data.phone1, number: formatPhone(data.phone1.number) },
-          { ...data.phone2, number: formatPhone(data.phone2.number) },
-        ],
-        gender: data.gender,
-        avatarPath: downloadPath || undefined,
-      }
-      onSave(student)
+      return
     }
+    const newStudent: Omit<Student, 'id'> = {
+      saintName: data.saintName,
+      firstName,
+      lastName,
+      birthday: formatDate(data.birthday, true),
+      address: data.address,
+      grade: data.grade,
+      phones: [
+        { ...data.phone1, number: formatPhone(data.phone1.number) },
+        { ...data.phone2, number: formatPhone(data.phone2.number) },
+      ],
+      gender: data.gender,
+      avatarPath: downloadPath || undefined,
+    }
+    onSave(newStudent)
     setUploadImageProgress(0)
     onClose()
   }
@@ -181,7 +183,6 @@ const StudentDialogComponent = ({
           </DialogContentText>
         ) : (
           <>
-            <DialogContentText>Xin dien vao nhung o trong duoi day!</DialogContentText>
             <form onSubmit={handleSubmit((data) => console.log(data))}>
               <Box>
                 <TextField
@@ -193,15 +194,16 @@ const StudentDialogComponent = ({
                   margin="normal"
                   fullWidth={true}
                   type={'file'}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    if (event.target.files?.[0]) {
-                      setValue('avatar', event.target.files[0])
-                    }
-                  }}
                 />
-                {uploadImageProgress ? (
-                  <LinearWithValueLabelComponent progress={uploadImageProgress} />
-                ) : null}
+
+                {actionData?.avatarPath && (
+                  <Box textAlign={'center'}>
+                    <ImageBoxComponent
+                      imagePath={actionData.avatarPath}
+                      gender={actionData.gender}
+                    />
+                  </Box>
+                )}
               </Box>
               <Box display={'flex'} justifyContent={'space-between'} gap={1}>
                 <Controller
@@ -372,7 +374,12 @@ const StudentDialogComponent = ({
           </>
         )}
       </DialogContent>
-      <DialogActions sx={{ padding: '16px 24px' }}>
+      <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
+        {formState.isSubmitting && (
+          <Box sx={{ width: '100%', position: 'absolute', top: 0, left: 0 }}>
+            <LinearProgressComponent progress={uploadImageProgress} />
+          </Box>
+        )}
         <Button autoFocus={true} onClick={onClose} variant="outlined">
           Huỷ
         </Button>
