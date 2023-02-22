@@ -157,7 +157,7 @@ const StudentDialogComponent = ({
         { ...data.phone2, number: formatPhone(data.phone2.number) },
       ],
       gender: data.gender,
-      avatarPath: downloadPath || undefined,
+      avatarPath: downloadPath || '',
     }
     onSave(newStudent)
     setUploadImageProgress(0)

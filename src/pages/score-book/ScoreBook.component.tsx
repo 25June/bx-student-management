@@ -1,11 +1,10 @@
 import Box from '@mui/material/Box'
-import { AlertColor, Button } from '@mui/material'
+import { Button } from '@mui/material'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import { StudentActionType } from 'constant'
 import {
   LayoutComponent,
   ScoreBookPanelComponent,
-  SnackbarComponent,
   StudentDialogComponent,
   TableComponent,
 } from 'modules'
@@ -14,11 +13,11 @@ import { Score, ScoreBook, Student } from 'models'
 import React, { useEffect, useState } from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useGetStudents } from 'services'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 const defaultScore: Score = {
-  index: 1,
   updatedDate: Date.now(),
-  point: 10,
+  score: 10,
 }
 const defaultScoreBook: ScoreBook = {
   score5: {
@@ -42,13 +41,10 @@ const defaultScoreBook: ScoreBook = {
 const ScoreBookComponent = () => {
   const mobile = useMediaQuery('(max-width:900px)')
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
-  const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
 
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState<Student | null>()
 
-  const [snackBarMessage, setSnackBarMessage] = useState<string>('')
-  const [snackBarSeverity, setSnackBarSeverity] = useState<AlertColor>('success')
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const { students } = useGetStudents()
@@ -64,11 +60,6 @@ const ScoreBookComponent = () => {
       setActionType('')
       setActionData(null)
     }, 0)
-  }
-
-  const openSnackBar = (message: string) => {
-    setSnackBarMessage(message)
-    setOpenSnackbar(true)
   }
 
   const handleClickAction = (data: Student, type: string) => {
@@ -141,14 +132,6 @@ const ScoreBookComponent = () => {
           console.log('save')
         }}
       />
-      {isOpenSnackbar && (
-        <SnackbarComponent
-          severity={snackBarSeverity}
-          message={snackBarMessage}
-          isOpen={isOpenSnackbar}
-          close={() => setOpenSnackbar(false)}
-        />
-      )}
     </LayoutComponent>
   )
 }

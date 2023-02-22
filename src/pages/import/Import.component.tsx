@@ -17,8 +17,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { BaseClasses } from 'constant/common'
 import { useBatchAddStudents } from 'services/student'
 import { Class, Student } from 'models'
-import { SnackbarComponent } from 'modules'
-import { AlertColor } from '@mui/material'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 type ImportProps = {
   value: string
@@ -30,9 +29,7 @@ const ImportSchema = yup.object().shape({
 
 const ImportComponent = () => {
   const [value, setValue] = useState<Student[]>([])
-  const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
-  const [snackBarMessage, setSnackBarMessage] = useState<string>('')
-  const [snackBarSeverity, setSnackBarSeverity] = useState<AlertColor>('success')
+  const { showSnackbar } = useSnackbarContext()
 
   const [classObj, setClassObj] = useState<Class>(BaseClasses[0])
   const { control, handleSubmit, reset } = useForm<ImportProps>({
@@ -73,14 +70,10 @@ const ImportComponent = () => {
     return addStudents({
       students: formatValueBeforeAdd,
       onSuccess: () => {
-        setOpenSnackbar(true)
-        setSnackBarMessage('Add success')
-        setSnackBarSeverity('success')
+        showSnackbar('Add success', 'success')
       },
       onError: () => {
-        setOpenSnackbar(true)
-        setSnackBarMessage('Add Error')
-        setSnackBarSeverity('error')
+        showSnackbar('Add Error', 'error')
       },
       onComplete: () => console.log('completed'),
     })
@@ -150,14 +143,6 @@ const ImportComponent = () => {
           </Button>
         </Box>
       </Box>
-      {isOpenSnackbar && (
-        <SnackbarComponent
-          severity={snackBarSeverity}
-          message={snackBarMessage}
-          isOpen={isOpenSnackbar}
-          close={() => setOpenSnackbar(false)}
-        />
-      )}
     </LayoutComponent>
   )
 }

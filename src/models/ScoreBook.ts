@@ -1,7 +1,6 @@
 export interface Score {
   updatedDate: number
-  point: number
-  index: number
+  score: number
 }
 
 export interface ScoreBook {

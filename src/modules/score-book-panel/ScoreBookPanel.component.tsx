@@ -16,10 +16,10 @@ import ClearIcon from '@mui/icons-material/Clear'
 import { averageScore } from './helpers'
 
 interface ScoreItemProps {
-  point: Score
+  score: Score
 }
 
-const ScoreItem = ({ point }: ScoreItemProps) => {
+const ScoreItem = ({ score }: ScoreItemProps) => {
   return (
     <>
       <TextField
@@ -30,7 +30,7 @@ const ScoreItem = ({ point }: ScoreItemProps) => {
         size={'small'}
         variant={'outlined'}
         sx={{ width: '70%' }}
-        defaultValue={point.point}
+        defaultValue={score.score}
       />
       <Box display={'flex'} gap={1}>
         <IconButton aria-label="Save">
@@ -57,7 +57,6 @@ const ScoreBookPanelComponent = ({
   scoreBook,
   studentInfo,
   onClose,
-  onClickAction,
 }: ScoreBookPanelComponentProps) => {
   const [expanded, setExpanded] = useState<string | boolean>(false)
 
@@ -109,9 +108,9 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.point}`}
+                    key={`score5-${index}-${point.score}`}
                   >
-                    <ScoreItem point={point} />
+                    <ScoreItem score={point} />
                   </Box>
                 ))}
               </AccordionDetails>
@@ -130,9 +129,9 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.point}`}
+                    key={`score5-${index}-${point.score}`}
                   >
-                    <ScoreItem point={point} />
+                    <ScoreItem score={point} />
                   </Box>
                 ))}
               </AccordionDetails>
@@ -151,9 +150,9 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.point}`}
+                    key={`score5-${index}-${point.score}`}
                   >
-                    <ScoreItem point={point} />
+                    <ScoreItem score={point} />
                   </Box>
                 ))}
               </AccordionDetails>
@@ -172,9 +171,9 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.point}`}
+                    key={`score5-${index}-${point.score}`}
                   >
-                    <ScoreItem point={point} />
+                    <ScoreItem score={point} />
                   </Box>
                 ))}
               </AccordionDetails>

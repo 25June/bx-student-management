@@ -8,6 +8,13 @@ export enum StudentActionType {
   VIEW_SCORE_BOOK = 'VIEW_SCORE_BOOK',
 }
 
+export enum AssessmentActionType {
+  ADD_NEW_ASSESSMENT = 'ADD_NEW_ASSESSMENT',
+  EDIT_ASSESSMENT = 'EDIT_ASSESSMENT',
+  DELETE_ASSESSMENT = 'DELETE_ASSESSMENT',
+  VIEW_ASSESSMENT = 'VIEW_ASSESSMENT',
+}
+
 export const BaseClasses: Class[] = [
   { id: 'kt1', name: 'Khai Tâm 1' },
   { id: 'kt2', name: 'Khai Tâm 2' },

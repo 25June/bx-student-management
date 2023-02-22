@@ -5,11 +5,13 @@ const ImportComponent = lazy(() => import('pages/import/Import.component'))
 const SignUpComponent = lazy(() => import('modules/auth/SignUp.component'))
 const SignInComponent = lazy(() => import('modules/auth/SignIn.component'))
 const ScoreBookComponent = lazy(() => import('pages/score-book/ScoreBook.component'))
+const AssessmentComponent = lazy(() => import('pages/assessment/Assessment.component'))
 export const Router = {
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
   IMPORT: '/import',
   SCORE_BOOK: '/score-book',
+  ASSESSMENT: '/assessment',
   HOME: '/',
 }
 
@@ -24,6 +26,12 @@ const ROUTES = [
     name: 'Score Book',
     component: <ScoreBookComponent />,
     path: Router.SCORE_BOOK,
+    isPrivate: true,
+  },
+  {
+    name: 'Assessment',
+    component: <AssessmentComponent />,
+    path: Router.ASSESSMENT,
     isPrivate: true,
   },
   {

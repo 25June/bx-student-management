@@ -15,6 +15,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment'
 import CoPresentIcon from '@mui/icons-material/CoPresent'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import ImportExportIcon from '@mui/icons-material/ImportExport'
+import ScoreIcon from '@mui/icons-material/Score'
 import MuiDrawer from '@mui/material/Drawer'
 import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
@@ -26,7 +27,8 @@ interface DrawerComponentProps {
 const Menu = {
   LIST: { text: 'Danh Sách', icon: <ListAltIcon />, to: Router.HOME },
   DILIGENT: { text: 'Điểm Chuyên Cần', icon: <CoPresentIcon />, to: Router.IMPORT },
-  SCORE: { text: 'Điểm Học Tập', icon: <AssignmentIcon />, to: Router.SCORE_BOOK },
+  SCORE: { text: 'Điểm Học Tập', icon: <ScoreIcon />, to: Router.SCORE_BOOK },
+  ASSESSMENT: { text: 'Bài Kiểm Tra', icon: <AssignmentIcon />, to: Router.ASSESSMENT },
   IMPORT: { text: 'Import', icon: <ImportExportIcon />, to: Router.IMPORT },
 }
 
@@ -74,7 +76,7 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
     <Drawer variant="permanent" open={isOpen}>
       <Box pt={8}>
         <List>
-          {Object.values(Menu).map(({ text, icon, to }, index) => (
+          {Object.values(Menu).map(({ text, icon, to }) => (
             <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
               <ListItemButton
                 onClick={() => navigate(to)}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Box, ToggleButtonGroup, AlertColor } from '@mui/material'
+import { Button, Box, ToggleButtonGroup } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Score, ScoreBook, Student } from 'models'
 import TableRowsIcon from '@mui/icons-material/TableRows'
@@ -10,7 +10,6 @@ import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } 
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { studentColumns } from 'modules/Table/helpers'
 import {
-  SnackbarComponent,
   InfoPanelComponent,
   TableComponent,
   ScoreBookPanelComponent,
@@ -18,11 +17,11 @@ import {
   CardComponent,
   LayoutComponent,
 } from 'modules'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 const defaultScore: Score = {
-  index: 1,
   updatedDate: Date.now(),
-  point: 10,
+  score: 10,
 }
 const defaultScoreBook: ScoreBook = {
   score5: {
@@ -46,10 +45,6 @@ const defaultScoreBook: ScoreBook = {
 const HomeComponent = () => {
   const mobile = useMediaQuery('(max-width:900px)')
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
-  const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
-
-  const [snackBarMessage, setSnackBarMessage] = useState<string>('')
-  const [snackBarSeverity, setSnackBarSeverity] = useState<AlertColor>('success')
 
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState<Student | null>()
@@ -62,6 +57,7 @@ const HomeComponent = () => {
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
   const { students } = useGetStudents()
+  const { showSnackbar } = useSnackbarContext()
 
   useEffect(() => {
     if (selectedStudent && students) {
@@ -90,11 +86,6 @@ const HomeComponent = () => {
       setActionType('')
       setActionData(null)
     }, 0)
-  }
-
-  const openSnackBar = (message: string) => {
-    setSnackBarMessage(message)
-    setOpenSnackbar(true)
   }
 
   const handleClickAction = (data: Student, type: string) => {
@@ -129,10 +120,9 @@ const HomeComponent = () => {
         addNewStudent({
           dataInput: data,
           onSuccess: () =>
-            openSnackBar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`),
+            showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success'),
           onError: () => {
-            setSnackBarSeverity('error')
-            openSnackBar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`)
+            showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
           },
           onComplete: () => console.log('complete request'),
         })
@@ -141,10 +131,12 @@ const HomeComponent = () => {
         updateStudent({
           dataInput: data as Student,
           onSuccess: () =>
-            openSnackBar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`),
+            showSnackbar(
+              `Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`,
+              'success'
+            ),
           onError: () => {
-            setSnackBarSeverity('error')
-            openSnackBar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`)
+            showSnackbar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
           },
           onComplete: () => console.log('complete request'),
         })
@@ -153,10 +145,9 @@ const HomeComponent = () => {
         deleteStudent({
           dataInput: data as Student,
           onSuccess: () =>
-            openSnackBar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`),
+            showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success'),
           onError: () => {
-            setSnackBarSeverity('error')
-            openSnackBar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`)
+            showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
           },
           onComplete: () => console.log('complete request'),
         })
@@ -252,14 +243,6 @@ const HomeComponent = () => {
         actionData={actionData}
         onSave={handleSave}
       />
-      {isOpenSnackbar && (
-        <SnackbarComponent
-          severity={snackBarSeverity}
-          message={snackBarMessage}
-          isOpen={isOpenSnackbar}
-          close={() => setOpenSnackbar(false)}
-        />
-      )}
     </LayoutComponent>
   )
 }
