@@ -11,11 +11,13 @@ import PrivateComponent from './private-component/Private.component'
 import ScoreBookPanelComponent from './score-book-panel/ScoreBookPanel.component'
 import FallbackComponent from './fallback/Fallback.component'
 import SnackbarComponent from './snackbar/Snackbar.component'
-import ImageBoxComponent from 'modules/image-box/ImageBox.component'
+import ImageBoxComponent from './image-box/ImageBox.component'
 import {
   LinearWithValueLabelComponent,
   LinearProgressComponent,
-} from 'modules/progress-bar/LinearProgressWithLabel.component'
+} from './progress-bar/LinearProgressWithLabel.component'
+import AssessmentTableComponent from './assessment-table/AssessmentTable.component'
+import AssessmentDialogComponent from './assessment-dialog/AssessmentDialog.component'
 
 export {
   TopBarComponent,
@@ -34,4 +36,6 @@ export {
   ImageBoxComponent,
   LinearWithValueLabelComponent,
   LinearProgressComponent,
+  AssessmentTableComponent,
+  AssessmentDialogComponent,
 }

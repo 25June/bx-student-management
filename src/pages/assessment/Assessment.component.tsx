@@ -4,9 +4,16 @@ import Box from '@mui/material/Box'
 import { Button } from '@mui/material'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import AssessmentDialogComponent from 'modules/assessment-dialog/AssessmentDialog.component'
+import { AssessmentDialogComponent, AssessmentTableComponent } from 'modules/index'
 import { Assessment } from 'models/assessment'
 import { AssessmentActionType } from 'constant'
+import {
+  useGetAssessments,
+  useAddNewAssessment,
+  useEditAssessment,
+  useDeleteAssessment,
+} from 'services'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 const AssessmentComponent = () => {
   const mobile = useMediaQuery('(max-width:900px)')
@@ -16,6 +23,14 @@ const AssessmentComponent = () => {
   const [actionType, setActionType] = useState<string>('')
   const [actionData, setActionData] = useState<Assessment | null>(null)
 
+  const { showSnackbar } = useSnackbarContext()
+
+  const { assessments } = useGetAssessments()
+  const addNewAssessment = useAddNewAssessment()
+  const editAssessment = useEditAssessment()
+  const deleteAssessment = useDeleteAssessment()
+  console.log({ assessments })
+
   const closeStudentDialog = (): void => {
     setOpenStudentDialog(false)
     setTimeout(() => {
@@ -24,51 +39,78 @@ const AssessmentComponent = () => {
     }, 0)
   }
 
-  const openStudentDialog = (type: string): void => {
-    setActionType(type)
+  const openStudentDialog = (data: Assessment | null, type: AssessmentActionType): void => {
+    switch (type) {
+      case AssessmentActionType.ADD_NEW_ASSESSMENT:
+        setActionType(type)
+        break
+      case AssessmentActionType.EDIT_ASSESSMENT:
+      case AssessmentActionType.DELETE_ASSESSMENT:
+        setActionData(data)
+        setActionType(type)
+        break
+    }
     setOpenStudentDialog(true)
   }
 
-  const handleSave = (data: Assessment | Omit<Assessment, 'id'> | string) => {
-    switch (actionType) {
+  const handleSave = (data: Assessment | Omit<Assessment, 'id'>, action: AssessmentActionType) => {
+    switch (action) {
       case AssessmentActionType.ADD_NEW_ASSESSMENT:
         console.log({ data })
-        // addNewStudent({
-        //   dataInput: data,
-        //   onSuccess: () =>
-        //     showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success'),
-        //   onError: () => {
-        //     showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
-        //   },
-        //   onComplete: () => console.log('complete request'),
-        // })
+        const newValue = data as Omit<Assessment, 'id'>
+        addNewAssessment({
+          dataInput: newValue,
+          onSuccess: () =>
+            showSnackbar(
+              `Thêm Bài Kiểm Tra ${newValue.type} Thành Công vào ${newValue.bookDate}`,
+              'success'
+            ),
+          onError: () => {
+            showSnackbar(
+              `Thêm Bài Kiểm Tra ${newValue.type} vào ${newValue.bookDate} Thất Bại`,
+              'error'
+            )
+          },
+          onComplete: () => console.log('complete request'),
+        })
         break
       case AssessmentActionType.EDIT_ASSESSMENT:
         console.log({ data })
-        // updateStudent({
-        //   dataInput: data as Student,
-        //   onSuccess: () =>
-        //     showSnackbar(
-        //       `Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`,
-        //       'success'
-        //     ),
-        //   onError: () => {
-        //     showSnackbar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
-        //   },
-        //   onComplete: () => console.log('complete request'),
-        // })
+        const value = data as Assessment
+        editAssessment({
+          dataInput: value,
+          onSuccess: () =>
+            showSnackbar(
+              `Cập Nhật Bài Kiểm Tra ${value.type} Thành Công vào ${value.bookDate}`,
+              'success'
+            ),
+          onError: () => {
+            showSnackbar(
+              `Cập Nhật Bài Kiểm Tra ${value.type} vào ${value.bookDate} Thất Bại`,
+              'error'
+            )
+          },
+          onComplete: () => console.log('complete request'),
+        })
         break
       case AssessmentActionType.DELETE_ASSESSMENT:
         console.log({ data })
-        // deleteStudent({
-        //   dataInput: data as Student,
-        //   onSuccess: () =>
-        //     showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success'),
-        //   onError: () => {
-        //     showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
-        //   },
-        //   onComplete: () => console.log('complete request'),
-        // })
+        const deleteValue = data as Assessment
+        deleteAssessment({
+          id: deleteValue.id,
+          onSuccess: () =>
+            showSnackbar(
+              `Xoá Bài Kiểm Tra ${deleteValue.type} Thành Công vào ${deleteValue.bookDate}`,
+              'success'
+            ),
+          onError: () => {
+            showSnackbar(
+              `Xoá Bài Kiểm Tra ${deleteValue.type} vào ${deleteValue.bookDate} Thất Bại`,
+              'error'
+            )
+          },
+          onComplete: () => console.log('complete request'),
+        })
         break
       default:
         console.log('can not match action type ' + actionType)
@@ -93,20 +135,28 @@ const AssessmentComponent = () => {
           <Button
             variant="contained"
             startIcon={<AssignmentIcon />}
-            onClick={() => openStudentDialog(AssessmentActionType.DELETE_ASSESSMENT)}
+            onClick={() => openStudentDialog(null, AssessmentActionType.ADD_NEW_ASSESSMENT)}
             sx={{ marginRight: 2 }}
           >
             Thêm Bài Kiểm Tra
           </Button>
         </Box>
       </Box>
-      <AssessmentDialogComponent
-        isOpen={isOpenStudentDialog}
-        onClose={() => closeStudentDialog()}
-        action={actionType}
-        data={actionData}
-        onSave={handleSave}
-      />
+      <Box p={2}>
+        {assessments && (
+          <AssessmentTableComponent rows={assessments} onClickAction={openStudentDialog} />
+        )}
+      </Box>
+      {isOpenStudentDialog && (
+        <AssessmentDialogComponent
+          key={actionData?.id || 'new'}
+          isOpen={isOpenStudentDialog}
+          onClose={() => closeStudentDialog()}
+          action={actionType}
+          data={actionData}
+          onSave={handleSave}
+        />
+      )}
     </LayoutComponent>
   )
 }

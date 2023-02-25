@@ -17,19 +17,40 @@ import { useTheme } from '@mui/material/styles'
 import { Assessment } from 'models/assessment'
 
 type AssessmentForm = {
-  createdDate: number
+  bookDate: string
   type: string
+  lesson: string
 }
 
-const AssessmentFormDefaultValue = {
-  createdDate: Date.now(),
-  type: 'KT5',
+const getToday = () => {
+  const now = new Date()
+
+  const day = ('0' + now.getDate()).slice(-2)
+  const month = ('0' + (now.getMonth() + 1)).slice(-2)
+
+  return now.getFullYear() + '-' + month + '-' + day
+}
+
+const AssessmentFormDefaultValue = (data: Assessment | null) => {
+  if (data) {
+    return {
+      bookDate: data.bookDate,
+      type: data.type,
+      lesson: data.lesson,
+    }
+  }
+
+  return {
+    bookDate: getToday(),
+    type: 'KT5',
+    lesson: '',
+  }
 }
 
 interface AssessmentDialogComponentProps {
   data: Assessment | null
   action: string
-  onSave: (data: Assessment | Omit<Assessment, 'id'> | string, action: AssessmentActionType) => void
+  onSave: (data: Assessment | Omit<Assessment, 'id'>, action: AssessmentActionType) => void
   onClose: () => void
   isOpen: boolean
 }
@@ -54,39 +75,44 @@ const AssessmentDialogComponent = ({
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const { handleSubmit, control, setValue, reset } = useForm<AssessmentForm>({
-    defaultValues: AssessmentFormDefaultValue,
+  const { handleSubmit, control, reset } = useForm<AssessmentForm>({
+    defaultValues: AssessmentFormDefaultValue(data),
   })
   useEffect(() => {
-    if (data && data.id) {
-      setValue('createdDate', data.createdDate)
-      setValue('type', data.type)
-    }
+    // if (data && data.id) {
+    //   setValue('bookDate', data.bookDate)
+    //   setValue('type', data.type)
+    // }
     return () => reset()
-  }, [action, data, reset, setValue])
+  }, [reset])
 
   const onSubmit = async (submitData: AssessmentForm) => {
     if (action === AssessmentActionType.EDIT_ASSESSMENT && data?.id) {
       const updatedAssessment: Assessment = {
         id: data.id,
         classId: '', // TODO Auto Add class by normal user create
-        createdDate: submitData.createdDate,
+        bookDate: submitData.bookDate,
         type: submitData.type,
+        lesson: submitData.lesson,
       }
       onSave(updatedAssessment, AssessmentActionType.EDIT_ASSESSMENT)
       onClose()
       return
     }
     if (data?.id) {
-      onSave(data.id, AssessmentActionType.DELETE_ASSESSMENT)
+      onSave(data, AssessmentActionType.DELETE_ASSESSMENT)
+      onClose()
+      return
     }
     const newAssessment: Omit<Assessment, 'id'> = {
       classId: '', // TODO Auto Add class by normal user create
-      createdDate: submitData.createdDate,
+      bookDate: submitData.bookDate,
       type: submitData.type,
+      lesson: submitData.lesson,
     }
     onSave(newAssessment, AssessmentActionType.ADD_NEW_ASSESSMENT)
     onClose()
+    return
   }
   return (
     <Dialog
@@ -100,64 +126,69 @@ const AssessmentDialogComponent = ({
         {action === AssessmentActionType.ADD_NEW_ASSESSMENT && 'Thêm thông tin bài kiểm tra'}
         {action === AssessmentActionType.DELETE_ASSESSMENT && 'Xoá thông tin bài kiểm tra'}
       </DialogTitle>
-      <DialogContent dividers={true}>
-        {action === AssessmentActionType.DELETE_ASSESSMENT && data?.id ? (
-          <DialogContentText>
-            {`Bạn có chắc chắn muốn xoá thông tin bài kiểm tra ${data.type} vào ngày ${new Date(
-              data.createdDate
-            ).toDateString()}`}
-          </DialogContentText>
-        ) : (
-          <>
-            <form onSubmit={handleSubmit((value) => console.log(value))}>
-              <Box display={'flex'} justifyContent={'space-between'} gap={1}>
-                <Controller
-                  control={control}
-                  name={'createdDate'}
-                  render={({ field }) => (
-                    <TextField
-                      id="outlined-createdDate"
-                      label="Ngày làm bài"
-                      type="date"
-                      helperText="Ngày / Tháng / Năm"
-                      margin="normal"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth={true}
-                      {...field}
-                    />
-                  )}
-                />
-                <Controller
-                  control={control}
-                  name={'type'}
-                  render={({ field }) => (
-                    <TextField
-                      id="outlined-type"
-                      label="Loại bài kiểm tra"
-                      margin="normal"
-                      fullWidth={true}
-                      {...field}
-                    />
-                  )}
-                />
-              </Box>
-            </form>
-          </>
-        )}
-      </DialogContent>
-      <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-        <Button autoFocus={true} onClick={onClose} variant="outlined">
-          Huỷ
-        </Button>
-        <Button
-          onClick={handleSubmit(onSubmit)}
-          autoFocus={true}
-          variant="contained"
-          color={getButtonColor(action)}
-        >
-          {action === AssessmentActionType.DELETE_ASSESSMENT ? 'Xoá' : 'Lưu'}
-        </Button>
-      </DialogActions>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent dividers={true}>
+          {action === AssessmentActionType.DELETE_ASSESSMENT && data?.id ? (
+            <DialogContentText>
+              {`Bạn có chắc chắn muốn xoá thông tin bài kiểm tra ${data.type} vào ngày ${data.bookDate}`}
+            </DialogContentText>
+          ) : (
+            <Box>
+              <Controller
+                control={control}
+                name={'lesson'}
+                render={({ field }) => (
+                  <TextField
+                    id="outlined-lesson"
+                    label="Bài kiểm tra"
+                    type="text"
+                    margin="normal"
+                    fullWidth={true}
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name={'type'}
+                render={({ field }) => (
+                  <TextField
+                    id="outlined-type"
+                    label="Loại bài kiểm tra"
+                    margin="normal"
+                    fullWidth={true}
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name={'bookDate'}
+                render={({ field }) => (
+                  <TextField
+                    id="outlined-bookDate"
+                    label="Ngày làm bài"
+                    type="date"
+                    helperText="Ngày / Tháng / Năm"
+                    margin="normal"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth={true}
+                    {...field}
+                  />
+                )}
+              />
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
+          <Button onClick={onClose} variant="outlined" type={'button'}>
+            Huỷ
+          </Button>
+          <Button variant="contained" color={getButtonColor(action)} type={'submit'}>
+            {action === AssessmentActionType.DELETE_ASSESSMENT ? 'Xoá' : 'Lưu'}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }

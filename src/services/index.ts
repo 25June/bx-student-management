@@ -1,6 +1,7 @@
 import { useUpdateStudent, useDeleteStudent, useAddNewStudent, useGetStudents } from './student'
 import { studentRef, queryClasses } from './firestore'
 import { uploadAvatar, uploadProgress, removeImage } from 'services/storage'
+import { useAddNewAssessment, useGetAssessments, useEditAssessment, useDeleteAssessment } from './assessment'
 
 export {
   useUpdateStudent,
@@ -12,4 +13,8 @@ export {
   uploadAvatar,
   uploadProgress,
   removeImage,
+  useAddNewAssessment,
+  useGetAssessments,
+  useEditAssessment,
+  useDeleteAssessment,
 }
