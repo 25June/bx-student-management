@@ -7,6 +7,7 @@ import {
   useEditAssessment,
   useDeleteAssessment,
 } from './assessment'
+import { useGetStudentScoreBooks } from 'services/scorebook'
 
 export {
   useUpdateStudent,
@@ -22,4 +23,5 @@ export {
   useGetAssessments,
   useEditAssessment,
   useDeleteAssessment,
+  useGetStudentScoreBooks,
 }

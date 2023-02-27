@@ -1,10 +1,10 @@
 import { Class } from './class'
 
-export interface Phone {
+export type Phone = {
   name: string
   number: string
 }
-export interface Student {
+export type Student = {
   id: string
   saintName: string
   firstName: string

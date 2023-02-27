@@ -8,18 +8,20 @@ import {
   StudentDialogComponent,
   TableComponent,
 } from 'modules'
-import { studentColumns } from 'modules/Table/helpers'
+import { ScoreBookColumns } from 'modules/Table/helpers'
 import { Score, ScoreBook, Student } from 'models'
 import React, { useEffect, useState } from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { useGetStudents } from 'services'
-import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { useGetStudents, useGetStudentScoreBooks } from 'services'
+import { getToday } from 'utils'
 
 const defaultScore: Score = {
-  updatedDate: Date.now(),
+  bookDate: getToday(),
   score: 10,
 }
 const defaultScoreBook: ScoreBook = {
+  id: '',
+  studentId: '',
   score5: {
     date1: defaultScore,
     date2: defaultScore,
@@ -48,6 +50,7 @@ const ScoreBookComponent = () => {
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const { students } = useGetStudents()
+  const { studentScoreBooks } = useGetStudentScoreBooks()
 
   const openStudentDialog = (type: string): void => {
     setActionType(type)
@@ -112,8 +115,8 @@ const ScoreBookComponent = () => {
         </Box>
       </Box>
       <TableComponent
-        columns={studentColumns}
-        rows={students || []}
+        columns={ScoreBookColumns}
+        rows={studentScoreBooks || []}
         onClickAction={handleClickAction}
       />
       <ScoreBookPanelComponent

@@ -18,12 +18,15 @@ import {
   LayoutComponent,
 } from 'modules'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { getToday } from 'utils'
 
 const defaultScore: Score = {
-  updatedDate: Date.now(),
+  bookDate: getToday(),
   score: 10,
 }
 const defaultScoreBook: ScoreBook = {
+  studentId: '',
+  id: '',
   score5: {
     date1: defaultScore,
     date2: defaultScore,

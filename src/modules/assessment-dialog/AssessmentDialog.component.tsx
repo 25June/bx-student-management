@@ -15,20 +15,12 @@ import { Controller, useForm } from 'react-hook-form'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
 import { Assessment } from 'models/assessment'
+import { getToday } from 'utils'
 
 type AssessmentForm = {
   bookDate: string
   type: string
   lesson: string
-}
-
-const getToday = () => {
-  const now = new Date()
-
-  const day = ('0' + now.getDate()).slice(-2)
-  const month = ('0' + (now.getMonth() + 1)).slice(-2)
-
-  return now.getFullYear() + '-' + month + '-' + day
 }
 
 const AssessmentFormDefaultValue = (data: Assessment | null) => {

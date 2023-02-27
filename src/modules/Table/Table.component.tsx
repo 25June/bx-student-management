@@ -12,7 +12,6 @@ import {
   Paper,
   Tooltip,
 } from '@mui/material'
-import cn from 'classnames'
 import { visuallyHidden } from '@mui/utils'
 import IconButton from '@mui/material/IconButton'
 import EditIcon from '@mui/icons-material/Edit'
@@ -116,7 +115,7 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
   }
-  console.log('render')
+
   return (
     <Box p={2}>
       <Paper>
@@ -142,38 +141,11 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {
                   return (
-                    <TableRow
-                      hover={true}
-                      tabIndex={index}
-                      key={row.id}
-                      className={cn({
-                        'kt-linear-background': row.class?.id.includes('kt') || false,
-                        'rl-linear-background': row.class?.id.includes('rl') || false,
-                        'ts-linear-background': row.class?.id.includes('ts') || false,
-                        'bd-linear-background': row.class?.id.includes('bd') || false,
-                        'vd-linear-background': row.class?.id.includes('vd') || false,
-                      })}
-                    >
+                    <TableRow hover={true} tabIndex={index} key={row.id}>
                       {columns.map((column) => {
-                        if (column.field === 'phones') {
-                          return (
-                            <TableCell key={`cell-${column.field}-${row.id}`}>
-                              {row[column.field].map((phone: Phone) => {
-                                if (phone.number) {
-                                  return (
-                                    <Box
-                                      key={phone.number}
-                                    >{`${phone.name} - ${phone.number}`}</Box>
-                                  )
-                                }
-                                return null
-                              })}
-                            </TableCell>
-                          )
-                        }
                         return (
                           <TableCell key={`cell-${column.field}-${row.id}`}>
-                            {row[column.field]}
+                            {column.render(row[column.field])}
                           </TableCell>
                         )
                       })}

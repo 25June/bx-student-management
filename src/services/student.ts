@@ -23,8 +23,8 @@ const studentRef = collection(db, StudentCollection)
 export const useGetStudents = () => {
   const [students, setStudents] = useState<Student[] | null>()
   useEffect(() => {
-    const queryStudents = query(studentRef, limit(100))
-    onSnapshot(
+    const queryStudents = query(studentRef, limit(20))
+    const listener = onSnapshot(
       queryStudents,
       (snapshot) => {
         setStudents(
@@ -39,6 +39,7 @@ export const useGetStudents = () => {
         setStudents(null)
       }
     )
+    return () => listener()
   }, [])
   return { students, isLoading: typeof students === 'undefined' }
 }

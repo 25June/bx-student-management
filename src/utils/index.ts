@@ -4,6 +4,7 @@ import {
   mockDataFormatBirthday,
   mockDataFormatPhone,
   formatMockData,
+  getToday,
 } from './common'
 
 import { formatPhone, splitFullName, formatStudentTable } from './formatDataForTable'
@@ -17,4 +18,5 @@ export {
   formatPhone,
   splitFullName,
   formatStudentTable,
+  getToday,
 }
