@@ -16,4 +16,5 @@ export type Student = {
   address: string
   phones: Phone[]
   class?: Class
+  fullName?: string
 }

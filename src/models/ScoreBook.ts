@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore'
+import { Student } from 'models/student'
 
 export type Score = {
   updatedDate?: Timestamp
@@ -17,3 +18,5 @@ export type ScoreBook = {
   // for reporting chart
   schoolYear?: string
 }
+
+export type StudentScoreBooks = Student & ScoreBook

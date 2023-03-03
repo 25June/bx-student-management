@@ -14,18 +14,15 @@ import {
 } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
 import IconButton from '@mui/material/IconButton'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { StudentActionType } from 'constant'
-import { Phone, Student } from 'models'
+import { Student } from 'models'
 import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 
 interface TableProps {
   columns: any[]
   rows: any[]
   onClickAction?: (data: any, type: string) => void
+  renderActionMenu?: (onClickActions: (action: string) => void) => React.ReactElement
 }
 
 interface EnhancedTableProps {
@@ -89,7 +86,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
   )
 }
 
-const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
+const TableComponent = ({ rows, columns, onClickAction, renderActionMenu }: TableProps) => {
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<any>('firstName')
 
@@ -103,7 +100,7 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
     setSelectedStudent(row)
   }
 
-  const handleClickActions = (method: StudentActionType) => {
+  const handleClickActions = (method: string) => {
     if (onClickAction) {
       onClickAction(selectedStudent, method)
     }
@@ -169,22 +166,7 @@ const TableComponent = ({ rows, columns, onClickAction }: TableProps) => {
         </TableContainer>
       </Paper>
       <Menu open={open} anchorEl={anchorEl} onClose={() => setOpen(false)}>
-        <MenuItem onClick={() => handleClickActions(StudentActionType.EDIT_STUDENT)}>
-          <Box display={'flex'} alignItems={'center'} gap={2}>
-            <EditIcon fontSize="small" color={'warning'} />
-            <Typography color={'#ed6c02'} fontSize={'0.875rem'}>
-              Cập nhật thông tin
-            </Typography>
-          </Box>
-        </MenuItem>
-        <MenuItem onClick={() => handleClickActions(StudentActionType.DELETE_STUDENT)}>
-          <Box display={'flex'} alignItems={'center'} gap={2}>
-            <DeleteIcon fontSize="small" color={'error'} />
-            <Typography color={'#d32f2f'} fontSize={'0.875rem'}>
-              Xoá thông tin
-            </Typography>
-          </Box>
-        </MenuItem>
+        {renderActionMenu && renderActionMenu(handleClickActions)}
       </Menu>
     </Box>
   )

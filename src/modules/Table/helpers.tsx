@@ -1,6 +1,10 @@
 import { Phone, Score } from 'models'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
+import MenuItem from '@mui/material/MenuItem'
+import { ScoreBookActionType, StudentActionType } from 'constant'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 export const studentColumns = [
   { field: 'saintName', headerName: 'Tên Thánh', render: (data: string) => data },
@@ -34,6 +38,52 @@ const renderScore = (data: Record<string, Score>) => {
         <span key={`${score.bookDate}-${index}`}>{score.score}</span>
       ))}
     </Box>
+  )
+}
+
+export const renderStudentActions = (onClickActions: (action: string) => void) => {
+  return (
+    <div>
+      <MenuItem onClick={() => onClickActions(StudentActionType.EDIT_STUDENT)}>
+        <Box display={'flex'} alignItems={'center'} gap={2}>
+          <EditIcon fontSize="small" color={'warning'} />
+          <Typography color={'#ed6c02'} fontSize={'0.875rem'}>
+            Cập nhật thông tin
+          </Typography>
+        </Box>
+      </MenuItem>
+      <MenuItem onClick={() => onClickActions(StudentActionType.DELETE_STUDENT)}>
+        <Box display={'flex'} alignItems={'center'} gap={2}>
+          <DeleteIcon fontSize="small" color={'error'} />
+          <Typography color={'#d32f2f'} fontSize={'0.875rem'}>
+            Xoá thông tin
+          </Typography>
+        </Box>
+      </MenuItem>
+    </div>
+  )
+}
+
+export const renderScoreBookActions = (onClickActions: (action: string) => void) => {
+  return (
+    <div>
+      <MenuItem onClick={() => onClickActions(ScoreBookActionType.EDIT_SCORE_BOOK)}>
+        <Box display={'flex'} alignItems={'center'} gap={2}>
+          <EditIcon fontSize="small" color={'warning'} />
+          <Typography color={'#ed6c02'} fontSize={'0.875rem'}>
+            Cập nhật thông tin
+          </Typography>
+        </Box>
+      </MenuItem>
+      <MenuItem onClick={() => onClickActions(ScoreBookActionType.DELETE_SCORE_BOOK)}>
+        <Box display={'flex'} alignItems={'center'} gap={2}>
+          <DeleteIcon fontSize="small" color={'error'} />
+          <Typography color={'#d32f2f'} fontSize={'0.875rem'}>
+            Xoá thông tin
+          </Typography>
+        </Box>
+      </MenuItem>
+    </div>
   )
 }
 

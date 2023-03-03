@@ -179,7 +179,7 @@ const StudentDialogComponent = ({
       <DialogContent dividers={true}>
         {actionType === StudentActionType.DELETE_STUDENT && actionData ? (
           <DialogContentText>
-            {`Bạn có chắc chắn muốn xoá thông tin thiếu nhi ${actionData.lastName} ${actionData.firstName}`}
+            {`Bạn có chắc chắn muốn xoá thông tin thiếu nhi ${actionData.fullName}`}
           </DialogContentText>
         ) : (
           <>

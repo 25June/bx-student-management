@@ -18,6 +18,7 @@ import {
 } from './progress-bar/LinearProgressWithLabel.component'
 import AssessmentTableComponent from './assessment-table/AssessmentTable.component'
 import AssessmentDialogComponent from './assessment-dialog/AssessmentDialog.component'
+import ScoreBookDialogComponent from './score-book-dialog/ScoreBookDialog.component'
 
 export {
   TopBarComponent,
@@ -38,4 +39,5 @@ export {
   LinearProgressComponent,
   AssessmentTableComponent,
   AssessmentDialogComponent,
+  ScoreBookDialogComponent,
 }

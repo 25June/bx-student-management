@@ -8,7 +8,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } from 'services'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { studentColumns } from 'modules/Table/helpers'
+import { renderStudentActions, studentColumns } from 'modules/Table/helpers'
 import {
   InfoPanelComponent,
   TableComponent,
@@ -104,7 +104,10 @@ const HomeComponent = () => {
     }
     const student = (students || []).find((std: Student) => std.id === data.id)
     if (student) {
-      setActionData(student)
+      setActionData({
+        ...student,
+        fullName: student.lastName + ' ' + student.firstName,
+      })
       openStudentDialog(type)
     }
   }
@@ -206,6 +209,7 @@ const HomeComponent = () => {
           columns={studentColumns}
           rows={students || []}
           onClickAction={handleClickAction}
+          renderActionMenu={renderStudentActions}
         />
       ) : (
         <Box

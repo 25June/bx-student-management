@@ -1,3 +1,3 @@
-import { StudentActionType, AssessmentActionType } from './common'
+import { StudentActionType, AssessmentActionType, ScoreBookActionType } from './common'
 
-export { StudentActionType, AssessmentActionType }
+export { StudentActionType, AssessmentActionType, ScoreBookActionType }

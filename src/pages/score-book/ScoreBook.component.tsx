@@ -1,18 +1,18 @@
 import Box from '@mui/material/Box'
 import { Button } from '@mui/material'
 import AssignmentIcon from '@mui/icons-material/Assignment'
-import { StudentActionType } from 'constant'
+import { ScoreBookActionType } from 'constant'
 import {
   LayoutComponent,
   ScoreBookPanelComponent,
-  StudentDialogComponent,
+  ScoreBookDialogComponent,
   TableComponent,
 } from 'modules'
-import { ScoreBookColumns } from 'modules/Table/helpers'
-import { Score, ScoreBook, Student } from 'models'
+import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
+import { Score, ScoreBook, StudentScoreBooks } from 'models'
 import React, { useEffect, useState } from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { useGetStudents, useGetStudentScoreBooks } from 'services'
+import { useGetStudentScoreBooks } from 'services'
 import { getToday } from 'utils'
 
 const defaultScore: Score = {
@@ -42,36 +42,37 @@ const defaultScoreBook: ScoreBook = {
 
 const ScoreBookComponent = () => {
   const mobile = useMediaQuery('(max-width:900px)')
-  const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
+  const [isOpenScoreBookDialog, setOpenScoreBookDialog] = useState<boolean>(false)
 
   const [actionType, setActionType] = useState<string>('')
-  const [actionData, setActionData] = useState<Student | null>()
+  const [actionData, setActionData] = useState<StudentScoreBooks | null>()
 
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState<Student>()
-  const { students } = useGetStudents()
+  const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
   const { studentScoreBooks } = useGetStudentScoreBooks()
 
   const openStudentDialog = (type: string): void => {
     setActionType(type)
-    setOpenStudentDialog(true)
+    setOpenScoreBookDialog(true)
   }
 
-  const closeStudentDialog = (): void => {
-    setOpenStudentDialog(false)
+  const closeScoreBookDialog = (): void => {
+    setOpenScoreBookDialog(false)
     setTimeout(() => {
       setActionType('')
       setActionData(null)
     }, 0)
   }
 
-  const handleClickAction = (data: Student, type: string) => {
-    if (type === StudentActionType.VIEW_SCORE_BOOK) {
-      setSelectedStudent(data)
+  const handleClickAction = (data: StudentScoreBooks, type: string) => {
+    if (type === ScoreBookActionType.VIEW_SCORE_BOOK) {
+      setSelectedScoreBook(data)
       setOpenScoreBook(true)
       return
     }
-    const student = (students || []).find((std: Student) => std.id === data.id)
+    const student = (studentScoreBooks || []).find(
+      (std: StudentScoreBooks) => std.studentId === data.studentId
+    )
     if (student) {
       setActionData(student)
       openStudentDialog(type)
@@ -83,13 +84,15 @@ const ScoreBookComponent = () => {
   }
 
   useEffect(() => {
-    if (selectedStudent && students) {
-      const newData = students.find((student: Student) => student.id === selectedStudent.id)
+    if (selectedScoreBook && studentScoreBooks) {
+      const newData = studentScoreBooks.find(
+        (student: StudentScoreBooks) => student.studentId === selectedScoreBook.studentId
+      )
       if (newData) {
-        setSelectedStudent(newData)
+        setSelectedScoreBook(newData)
       }
     }
-  }, [students, selectedStudent])
+  }, [studentScoreBooks, setSelectedScoreBook])
   return (
     <LayoutComponent>
       <Box
@@ -107,7 +110,7 @@ const ScoreBookComponent = () => {
           <Button
             variant="contained"
             startIcon={<AssignmentIcon />}
-            onClick={() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT)}
+            onClick={() => openStudentDialog(ScoreBookActionType.ADD_NEW_SCORE_BOOK)}
             sx={{ marginRight: 2 }}
           >
             Thêm Bài Kiểm Tra
@@ -118,19 +121,20 @@ const ScoreBookComponent = () => {
         columns={ScoreBookColumns}
         rows={studentScoreBooks || []}
         onClickAction={handleClickAction}
+        renderActionMenu={renderScoreBookActions}
       />
       <ScoreBookPanelComponent
         isOpen={isOpenScoreBook}
-        studentInfo={selectedStudent}
+        studentInfo={{} as any}
         scoreBook={defaultScoreBook}
         onClose={handleCloseScoreBook}
         onClickAction={handleClickAction}
       />
-      <StudentDialogComponent
-        isOpen={isOpenStudentDialog}
-        onClose={() => closeStudentDialog()}
-        actionType={actionType}
-        actionData={actionData}
+      <ScoreBookDialogComponent
+        isOpen={isOpenScoreBookDialog}
+        onClose={() => closeScoreBookDialog()}
+        action={actionType}
+        data={actionData}
         onSave={() => {
           console.log('save')
         }}

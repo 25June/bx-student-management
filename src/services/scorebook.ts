@@ -2,7 +2,7 @@ import { app } from '../firebase'
 import { v4 as uuidv4 } from 'uuid'
 import { useState, useEffect } from 'react'
 import { doc, getFirestore, collection, onSnapshot } from 'firebase/firestore'
-import { ScoreBook, Student } from 'models'
+import { ScoreBook, Student, StudentScoreBooks } from 'models'
 
 import { useGetStudents } from 'services/student'
 import { getToday } from 'utils'
@@ -80,8 +80,6 @@ const getScoreBook = (
     return
   })
 }
-
-type StudentScoreBooks = Student & ScoreBook
 
 const formatData = (student: Student) => {
   return (scoreBook: ScoreBook): StudentScoreBooks => {

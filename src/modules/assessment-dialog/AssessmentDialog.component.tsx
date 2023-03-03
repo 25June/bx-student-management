@@ -12,8 +12,6 @@ import {
 } from '@mui/material'
 import { AssessmentActionType } from 'constant'
 import { Controller, useForm } from 'react-hook-form'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
 import { Assessment } from 'models/assessment'
 import { getToday } from 'utils'
 
@@ -64,17 +62,10 @@ const AssessmentDialogComponent = ({
   onClose,
   isOpen,
 }: AssessmentDialogComponentProps) => {
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   const { handleSubmit, control, reset } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
   })
   useEffect(() => {
-    // if (data && data.id) {
-    //   setValue('bookDate', data.bookDate)
-    //   setValue('type', data.type)
-    // }
     return () => reset()
   }, [reset])
 
@@ -107,12 +98,7 @@ const AssessmentDialogComponent = ({
     return
   }
   return (
-    <Dialog
-      fullScreen={fullScreen}
-      open={isOpen}
-      onClose={onClose}
-      aria-labelledby="responsive-dialog-title"
-    >
+    <Dialog open={isOpen} onClose={onClose} aria-labelledby="responsive-dialog-title">
       <DialogTitle id="responsive-dialog-title">
         {action === AssessmentActionType.EDIT_ASSESSMENT && 'Cập nhật thông tin bài kiểm tra'}
         {action === AssessmentActionType.ADD_NEW_ASSESSMENT && 'Thêm thông tin bài kiểm tra'}

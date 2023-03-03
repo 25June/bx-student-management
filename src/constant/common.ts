@@ -15,6 +15,13 @@ export enum AssessmentActionType {
   VIEW_ASSESSMENT = 'VIEW_ASSESSMENT',
 }
 
+export enum ScoreBookActionType {
+  ADD_NEW_SCORE_BOOK = 'ADD_NEW_SCORE_BOOK',
+  EDIT_SCORE_BOOK = 'EDIT_SCORE_BOOK',
+  DELETE_SCORE_BOOK = 'DELETE_SCORE_BOOK',
+  VIEW_SCORE_BOOK = 'VIEW_SCORE_BOOK',
+}
+
 export const BaseClasses: Class[] = [
   { id: 'kt1', name: 'Khai Tâm 1' },
   { id: 'kt2', name: 'Khai Tâm 2' },
