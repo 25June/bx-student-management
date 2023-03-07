@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
   Box,
-  Typography,
   Table,
   TableBody,
   TableCell,
@@ -138,7 +137,7 @@ const TableComponent = ({ rows, columns, onClickAction, renderActionMenu }: Tabl
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {
                   return (
-                    <TableRow hover={true} tabIndex={index} key={row.id}>
+                    <TableRow hover={true} tabIndex={index} key={row.id} aria-label={row.id}>
                       {columns.map((column) => {
                         return (
                           <TableCell key={`cell-${column.field}-${row.id}`}>

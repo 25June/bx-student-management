@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Box, ToggleButtonGroup } from '@mui/material'
 import { StudentActionType } from 'constant'
-import { Score, ScoreBook, Student } from 'models'
+import { ScoreBook, Student } from 'models'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
@@ -18,30 +18,24 @@ import {
   LayoutComponent,
 } from 'modules'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
-import { getToday } from 'utils'
 
-const defaultScore: Score = {
-  bookDate: getToday(),
-  score: 10,
-}
 const defaultScoreBook: ScoreBook = {
-  studentId: '',
   id: '',
   score5: {
-    date1: defaultScore,
-    date2: defaultScore,
+    date1: 10,
+    date2: 10,
   },
   score15: {
-    date1: defaultScore,
-    date2: defaultScore,
+    date1: 10,
+    date2: 10,
   },
   score45: {
-    date1: defaultScore,
-    date2: defaultScore,
+    date1: 10,
+    date2: 10,
   },
   score60: {
-    date1: defaultScore,
-    date2: defaultScore,
+    date1: 10,
+    date2: 10,
   },
 }
 
@@ -125,8 +119,10 @@ const HomeComponent = () => {
       case StudentActionType.ADD_NEW_STUDENT:
         addNewStudent({
           dataInput: data,
-          onSuccess: () =>
-            showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success'),
+          onSuccess: () => {
+            showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success')
+            closeStudentDialog()
+          },
           onError: () => {
             showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
           },
@@ -136,11 +132,13 @@ const HomeComponent = () => {
       case StudentActionType.EDIT_STUDENT:
         updateStudent({
           dataInput: data as Student,
-          onSuccess: () =>
+          onSuccess: () => {
             showSnackbar(
               `Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`,
               'success'
-            ),
+            )
+            closeStudentDialog()
+          },
           onError: () => {
             showSnackbar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
           },
@@ -150,8 +148,10 @@ const HomeComponent = () => {
       case StudentActionType.DELETE_STUDENT:
         deleteStudent({
           dataInput: data as Student,
-          onSuccess: () =>
-            showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success'),
+          onSuccess: () => {
+            showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success')
+            closeStudentDialog()
+          },
           onError: () => {
             showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
           },

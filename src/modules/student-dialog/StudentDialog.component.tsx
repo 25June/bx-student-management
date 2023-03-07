@@ -139,7 +139,6 @@ const StudentDialogComponent = ({
       }
       onSave(updatedStudent)
       setUploadImageProgress(0)
-      onClose()
       if (downloadPath && data.avatarPath) {
         removeImage(data.avatarPath)
       }
@@ -161,7 +160,6 @@ const StudentDialogComponent = ({
     }
     onSave(newStudent)
     setUploadImageProgress(0)
-    onClose()
   }
 
   return (

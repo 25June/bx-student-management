@@ -1,6 +1,5 @@
 import React from 'react'
-import { Score, StudentScoreBooks, Assessment } from 'models'
-import { ScoreBookActionType } from 'constant'
+import { StudentScoreBooks, Assessment } from 'models'
 import {
   Box,
   IconButton,
@@ -16,26 +15,34 @@ import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import { useForm, Controller } from 'react-hook-form'
 import { useGetAssessments } from 'services'
+import { useGetStudentScoreBook, useSetNewStudentScore } from 'services/scorebook'
 
 interface ScoreBookDialogComponentProps {
   data?: StudentScoreBooks | null
-  action: string
-  onSave: (
-    data: StudentScoreBooks | Omit<ScoreBookActionType, 'id'>,
-    action: ScoreBookActionType
-  ) => void
   onClose: () => void
   isOpen: boolean
 }
 
-const ScoreForm = ({ data, assessment }: { data: Score; assessment: Assessment }) => {
+const ScoreForm = ({
+  data,
+  assessment,
+  onChangeData,
+}: {
+  data: number
+  assessment: Assessment
+  onChangeData: (submittedValue: { score: number }, assessmentId: string) => void
+}) => {
   const { handleSubmit, control, reset } = useForm<{ score: number }>({
-    defaultValues: data.score ? { score: data.score } : { score: 0 },
+    defaultValues: data ? { score: data } : { score: 0 },
   })
 
   const onSubmit = (value: { score: number }) => {
     console.log({ assessment })
     console.log(value)
+    const submittedValue = {
+      score: Number(value.score),
+    }
+    onChangeData(submittedValue, assessment.id)
   }
 
   return (
@@ -46,7 +53,7 @@ const ScoreForm = ({ data, assessment }: { data: Score; assessment: Assessment }
         render={({ field }) => (
           <TextField
             id="outlined-lesson"
-            label={data.bookDate}
+            label={assessment.bookDate}
             type="number"
             inputMode="numeric"
             margin="normal"
@@ -70,7 +77,7 @@ const ScoreForm = ({ data, assessment }: { data: Score; assessment: Assessment }
           aria-label="close"
           color={'error'}
           sx={{ border: '1px solid #d32f2f', borderRadius: '5px', top: 5 }}
-          onClick={() => reset({ score: data.score })}
+          onClick={() => reset({ score: data })}
         >
           <CloseIcon />
         </IconButton>
@@ -83,25 +90,25 @@ const ScoreDetail = ({
   title,
   data,
   assessments,
+  onChangeData,
 }: {
   title: string
-  data: Record<string, Score>
+  data: Record<string, number>
   assessments: Assessment[]
+  onChangeData: (submittedValue: { score: number }, assessmentId: string) => void
 }) => {
   return (
     <Box mb={2}>
       <Typography>{title}</Typography>
       {assessments.map((assessment) => {
-        let studentScore = Object.values(data).find(
-          (score) => score.bookDate === assessment.bookDate
+        return (
+          <ScoreForm
+            data={data[assessment.id]}
+            assessment={assessment}
+            key={assessment.id}
+            onChangeData={onChangeData}
+          />
         )
-        if (typeof studentScore === 'undefined') {
-          studentScore = {
-            bookDate: assessment.bookDate,
-            score: 0,
-          } as Score
-        }
-        return <ScoreForm data={studentScore} assessment={assessment} key={assessment.id} />
       })}
     </Box>
   )
@@ -109,8 +116,17 @@ const ScoreDetail = ({
 
 const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComponentProps) => {
   const { assessments, isLoading } = useGetAssessments()
+  const setStudentScore = useSetNewStudentScore()
+  const { studentScoreBook } = useGetStudentScoreBook(data?.id || '')
+  console.log({ studentScoreBook })
   if (isLoading || typeof assessments === 'undefined') {
     return null
+  }
+
+  const handleChangeData = (type: string) => (score: { score: number }, assessmentId: string) => {
+    if (data?.id) {
+      setStudentScore(data.id, type, score, assessmentId)
+    }
   }
   const groupAssessment = assessments.reduce(
     (acc, cur) => {
@@ -153,21 +169,25 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
           title={'Kiểm tra 5 phút'}
           data={data?.score5 || {}}
           assessments={groupAssessment.score5}
+          onChangeData={handleChangeData('score5')}
         />
         <ScoreDetail
           title={'Kiểm tra 15 phút'}
           data={data?.score15 || {}}
           assessments={groupAssessment.score15}
+          onChangeData={handleChangeData('score15')}
         />
         <ScoreDetail
           title={'Kiểm tra 45 phút'}
           data={data?.score45 || {}}
           assessments={groupAssessment.score45}
+          onChangeData={handleChangeData('score45')}
         />
         <ScoreDetail
           title={'Kiểm tra 60 phút'}
           data={data?.score60 || {}}
           assessments={groupAssessment.score60}
+          onChangeData={handleChangeData('score60')}
         />
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>

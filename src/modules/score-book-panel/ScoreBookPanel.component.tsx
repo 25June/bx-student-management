@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { Score, ScoreBook, Student } from 'models'
+import { ScoreBook, Student } from 'models'
 import MuiDrawer from '@mui/material/Drawer'
 import { Button, TextField } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
@@ -16,7 +16,7 @@ import ClearIcon from '@mui/icons-material/Clear'
 import { averageScore } from './helpers'
 
 interface ScoreItemProps {
-  score: Score
+  score: number
 }
 
 const ScoreItem = ({ score }: ScoreItemProps) => {
@@ -30,7 +30,7 @@ const ScoreItem = ({ score }: ScoreItemProps) => {
         size={'small'}
         variant={'outlined'}
         sx={{ width: '70%' }}
-        defaultValue={score.score}
+        defaultValue={score}
       />
       <Box display={'flex'} gap={1}>
         <IconButton aria-label="Save">
@@ -108,7 +108,7 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.score}`}
+                    key={`score5-${index}-${point}`}
                   >
                     <ScoreItem score={point} />
                   </Box>
@@ -129,7 +129,7 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.score}`}
+                    key={`score5-${index}-${point}`}
                   >
                     <ScoreItem score={point} />
                   </Box>
@@ -150,7 +150,7 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.score}`}
+                    key={`score5-${index}-${point}`}
                   >
                     <ScoreItem score={point} />
                   </Box>
@@ -171,7 +171,7 @@ const ScoreBookPanelComponent = ({
                   <Box
                     mb={2}
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point.score}`}
+                    key={`score5-${index}-${point}`}
                   >
                     <ScoreItem score={point} />
                   </Box>

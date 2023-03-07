@@ -1,4 +1,4 @@
-import { Phone, Score } from 'models'
+import { Phone } from 'models'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
 import MenuItem from '@mui/material/MenuItem'
@@ -31,11 +31,13 @@ export const studentColumns = [
   },
 ]
 
-const renderScore = (data: Record<string, Score>) => {
+type ScoreProps = Record<string, number>
+
+const renderScore = (data: ScoreProps) => {
   return (
     <Box display={'flex'} gap={2}>
-      {Object.values(data).map((score, index) => (
-        <span key={`${score.bookDate}-${index}`}>{score.score}</span>
+      {Object.keys(data).map((key, index) => (
+        <span key={`${key}-${index}`}>{data[key]}</span>
       ))}
     </Box>
   )
@@ -94,21 +96,21 @@ export const ScoreBookColumns = [
   {
     field: 'score5',
     headerName: 'KT5',
-    render: (data: Record<string, Score>) => renderScore(data),
+    render: (data: ScoreProps = {}) => renderScore(data),
   },
   {
     field: 'score15',
     headerName: 'KT15',
-    render: (data: Record<string, Score>) => renderScore(data),
+    render: (data: ScoreProps = {}) => renderScore(data),
   },
   {
     field: 'score45',
     headerName: 'KT45',
-    render: (data: Record<string, Score>) => renderScore(data),
+    render: (data: ScoreProps = {}) => renderScore(data),
   },
   {
     field: 'score60',
     headerName: 'KT60',
-    render: (data: Record<string, Score>) => renderScore(data),
+    render: (data: ScoreProps = {}) => renderScore(data),
   },
 ]

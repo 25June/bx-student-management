@@ -9,11 +9,10 @@ export type Score = {
 
 export type ScoreBook = {
   id: string
-  studentId: string
-  score5: Record<string, Score>
-  score15: Record<string, Score>
-  score45: Record<string, Score>
-  score60: Record<string, Score>
+  score5: Record<string, number>
+  score15: Record<string, number>
+  score45: Record<string, number>
+  score60: Record<string, number>
   updatedDate?: Timestamp
   // for reporting chart
   schoolYear?: string
