@@ -99,7 +99,7 @@ export const useGetStudentScoreBook = (studentId: string) => {
 export const useSetNewStudentScore = () => {
   return (studentId: string, type: string, data: { score: number }, assessmentId: string) => {
     if (!(studentId || type || data)) {
-      return
+      return Promise.reject('Invalid Data')
     }
     console.log({ studentId, type, data })
     const reference = studentScoreBookRef(studentId)

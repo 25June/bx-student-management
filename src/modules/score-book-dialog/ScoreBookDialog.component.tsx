@@ -16,6 +16,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useForm, Controller } from 'react-hook-form'
 import { useGetAssessments } from 'services'
 import { useGetStudentScoreBook, useSetNewStudentScore } from 'services/scorebook'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 interface ScoreBookDialogComponentProps {
   data?: StudentScoreBooks | null
@@ -32,17 +33,26 @@ const ScoreForm = ({
   assessment: Assessment
   onChangeData: (submittedValue: { score: number }, assessmentId: string) => void
 }) => {
-  const { handleSubmit, control, reset } = useForm<{ score: number }>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isDirty, errors },
+    setError,
+  } = useForm<{ score: number }>({
     defaultValues: data ? { score: data } : { score: 0 },
   })
 
   const onSubmit = (value: { score: number }) => {
-    console.log({ assessment })
-    console.log(value)
+    if (isNaN(Number(value.score)) || Number(value.score) > 10) {
+      setError('score', { message: 'Invalid input' }, { shouldFocus: true })
+      return
+    }
     const submittedValue = {
       score: Number(value.score),
     }
     onChangeData(submittedValue, assessment.id)
+    reset()
   }
 
   return (
@@ -58,6 +68,8 @@ const ScoreForm = ({
             inputMode="numeric"
             margin="normal"
             fullWidth={true}
+            helperText={errors.score?.message}
+            error={!!errors.score}
             {...field}
           />
         )}
@@ -66,8 +78,9 @@ const ScoreForm = ({
         <IconButton
           aria-label="delete"
           color={'success'}
-          sx={{ border: '1px solid #2e7d32', borderRadius: '5px', top: 5 }}
+          sx={{ border: !isDirty ? 'none' : '1px solid #2e7d32', borderRadius: '5px', top: 5 }}
           onClick={handleSubmit(onSubmit)}
+          disabled={!isDirty}
         >
           <CheckIcon />
         </IconButton>
@@ -76,8 +89,9 @@ const ScoreForm = ({
         <IconButton
           aria-label="close"
           color={'error'}
-          sx={{ border: '1px solid #d32f2f', borderRadius: '5px', top: 5 }}
+          sx={{ border: !isDirty ? 'none' : '1px solid #d32f2f', borderRadius: '5px', top: 5 }}
           onClick={() => reset({ score: data })}
+          disabled={!isDirty}
         >
           <CloseIcon />
         </IconButton>
@@ -105,7 +119,7 @@ const ScoreDetail = ({
           <ScoreForm
             data={data[assessment.id]}
             assessment={assessment}
-            key={assessment.id}
+            key={`${assessment.id}_${data[assessment.id]}`}
             onChangeData={onChangeData}
           />
         )
@@ -118,7 +132,8 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
   const { assessments, isLoading } = useGetAssessments()
   const setStudentScore = useSetNewStudentScore()
   const { studentScoreBook } = useGetStudentScoreBook(data?.id || '')
-  console.log({ studentScoreBook })
+  console.log(studentScoreBook)
+  const { showSnackbar } = useSnackbarContext()
   if (isLoading || typeof assessments === 'undefined') {
     return null
   }
@@ -126,6 +141,8 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
   const handleChangeData = (type: string) => (score: { score: number }, assessmentId: string) => {
     if (data?.id) {
       setStudentScore(data.id, type, score, assessmentId)
+        .then(() => showSnackbar('Cập nhật thành công', 'success'))
+        .catch(() => showSnackbar('Cập nhật thất bại', 'error'))
     }
   }
   const groupAssessment = assessments.reduce(
@@ -167,25 +184,25 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
       <DialogContent dividers={true}>
         <ScoreDetail
           title={'Kiểm tra 5 phút'}
-          data={data?.score5 || {}}
+          data={studentScoreBook?.score5 || {}}
           assessments={groupAssessment.score5}
           onChangeData={handleChangeData('score5')}
         />
         <ScoreDetail
           title={'Kiểm tra 15 phút'}
-          data={data?.score15 || {}}
+          data={studentScoreBook?.score15 || {}}
           assessments={groupAssessment.score15}
           onChangeData={handleChangeData('score15')}
         />
         <ScoreDetail
           title={'Kiểm tra 45 phút'}
-          data={data?.score45 || {}}
+          data={studentScoreBook?.score45 || {}}
           assessments={groupAssessment.score45}
           onChangeData={handleChangeData('score45')}
         />
         <ScoreDetail
           title={'Kiểm tra 60 phút'}
-          data={data?.score60 || {}}
+          data={studentScoreBook?.score60 || {}}
           assessments={groupAssessment.score60}
           onChangeData={handleChangeData('score60')}
         />
