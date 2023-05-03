@@ -20,6 +20,7 @@ import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { Assessment } from 'models'
 import ScoreForm from 'modules/common/ScoreForm.component'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { groupAssessments } from 'modules/Table/helpers'
 
 interface ScoreBookPanelComponentProps {
   isOpen: boolean
@@ -43,39 +44,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
     }
   }
 
-  const groupAssessment = assessments.reduce(
-    (acc, cur) => {
-      switch (cur.type) {
-        case 'KT5':
-          return {
-            ...acc,
-            score5: [...acc.score5, cur],
-          }
-        case 'KT15':
-          return {
-            ...acc,
-            score15: [...acc.score15, cur],
-          }
-        case 'KT45':
-          return {
-            ...acc,
-            score45: [...acc.score45, cur],
-          }
-        case 'KT60':
-          return {
-            ...acc,
-            score60: [...acc.score60, cur],
-          }
-      }
-      return acc
-    },
-    {
-      score5: [] as Assessment[],
-      score15: [] as Assessment[],
-      score45: [] as Assessment[],
-      score60: [] as Assessment[],
-    }
-  )
+  const groupAssessment = groupAssessments(assessments)
 
   if (scoreBook === null) {
     initStudentScore(studentId)

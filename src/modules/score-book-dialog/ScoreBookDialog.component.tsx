@@ -13,6 +13,7 @@ import { useGetStudentScoreBook, useSetNewStudentScore } from 'services/scoreboo
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import ScoreForm from '../common/ScoreForm.component'
+import { groupAssessments } from 'modules/Table/helpers'
 
 interface ScoreBookDialogComponentProps {
   data?: StudentScoreBooks | null
@@ -64,39 +65,7 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
         .catch(() => showSnackbar('Cập nhật thất bại', 'error'))
     }
   }
-  const groupAssessment = assessments.reduce(
-    (acc, cur) => {
-      switch (cur.type) {
-        case 'KT5':
-          return {
-            ...acc,
-            score5: [...acc.score5, cur],
-          }
-        case 'KT15':
-          return {
-            ...acc,
-            score15: [...acc.score15, cur],
-          }
-        case 'KT45':
-          return {
-            ...acc,
-            score45: [...acc.score45, cur],
-          }
-        case 'KT60':
-          return {
-            ...acc,
-            score60: [...acc.score60, cur],
-          }
-      }
-      return acc
-    },
-    {
-      score5: [] as Assessment[],
-      score15: [] as Assessment[],
-      score45: [] as Assessment[],
-      score60: [] as Assessment[],
-    }
-  )
+  const groupAssessment = groupAssessments(assessments)
   return (
     <Dialog open={isOpen} onClose={onClose} aria-labelledby="responsive-dialog-title">
       <DialogTitle id="responsive-dialog-title">Cập nhật thông tin bài kiểm tra</DialogTitle>

@@ -23,9 +23,6 @@ export const useGetAssessments = () => {
   const [assessments, setAssessments] = useState<Assessment[]>()
   const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
-    if (assessments && assessments.length !== 0) {
-      return
-    }
     const queryAssessments = query(assessmentRef, limit(100))
     const listener = onSnapshot(queryAssessments, (snapshot) => {
       setAssessments(
@@ -33,15 +30,10 @@ export const useGetAssessments = () => {
           .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
           .filter((assessment) => !assessment.isDeleted)
       )
-      console.log(
-        snapshot.docs
-          .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
-          .filter((assessment) => !assessment.isDeleted)
-      )
       showSnackbar('Get Assessments Success', 'success')
     })
-    return () => listener()
-  }, [showSnackbar, assessments])
+    return listener
+  }, [showSnackbar])
   return { assessments, isLoading: typeof assessments === 'undefined' }
 }
 

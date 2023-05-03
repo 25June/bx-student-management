@@ -14,6 +14,8 @@ import { AssessmentActionType } from 'constant'
 import { Controller, useForm } from 'react-hook-form'
 import { Assessment } from 'models/assessment'
 import { getToday } from 'utils'
+import { useAddNewAssessment, useDeleteAssessment, useEditAssessment } from 'services'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 type AssessmentForm = {
   bookDate: string
@@ -40,7 +42,6 @@ const AssessmentFormDefaultValue = (data: Assessment | null) => {
 interface AssessmentDialogComponentProps {
   data: Assessment | null
   action: string
-  onSave: (data: Assessment | Omit<Assessment, 'id'>, action: AssessmentActionType) => void
   onClose: () => void
   isOpen: boolean
 }
@@ -58,10 +59,14 @@ const getButtonColor = (type: string): ButtonProps['color'] => {
 const AssessmentDialogComponent = ({
   data,
   action,
-  onSave,
   onClose,
   isOpen,
 }: AssessmentDialogComponentProps) => {
+  const addNewAssessment = useAddNewAssessment()
+  const editAssessment = useEditAssessment()
+  const deleteAssessment = useDeleteAssessment()
+  const { showSnackbar } = useSnackbarContext()
+
   const { handleSubmit, control, reset } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
   })
@@ -73,28 +78,68 @@ const AssessmentDialogComponent = ({
     if (action === AssessmentActionType.EDIT_ASSESSMENT && data?.id) {
       const updatedAssessment: Assessment = {
         id: data.id,
-        classId: '', // TODO Auto Add class by normal user create
+        classId: data.classId,
         bookDate: submitData.bookDate,
         type: submitData.type,
         lesson: submitData.lesson,
       }
-      onSave(updatedAssessment, AssessmentActionType.EDIT_ASSESSMENT)
-      onClose()
+      editAssessment({
+        dataInput: updatedAssessment,
+        onSuccess: () =>
+          showSnackbar(
+            `Cập Nhật Bài Kiểm Tra ${updatedAssessment.type} Thành Công vào ${updatedAssessment.bookDate}`,
+            'success'
+          ),
+        onError: () => {
+          showSnackbar(
+            `Cập Nhật Bài Kiểm Tra ${updatedAssessment.type} vào ${updatedAssessment.bookDate} Thất Bại`,
+            'error'
+          )
+        },
+        onComplete: onClose,
+      })
       return
     }
     if (data?.id) {
-      onSave(data, AssessmentActionType.DELETE_ASSESSMENT)
-      onClose()
+      const deleteValue = data as Assessment
+      deleteAssessment({
+        id: deleteValue.id,
+        onSuccess: () =>
+          showSnackbar(
+            `Xoá Bài Kiểm Tra ${deleteValue.type} Thành Công vào ${deleteValue.bookDate}`,
+            'success'
+          ),
+        onError: () => {
+          showSnackbar(
+            `Xoá Bài Kiểm Tra ${deleteValue.type} vào ${deleteValue.bookDate} Thất Bại`,
+            'error'
+          )
+        },
+        onComplete: onClose,
+      })
       return
     }
     const newAssessment: Omit<Assessment, 'id'> = {
-      classId: '', // TODO Auto Add class by normal user create
+      classId: '', // TODO Add more field class to the form
       bookDate: submitData.bookDate,
       type: submitData.type,
       lesson: submitData.lesson,
     }
-    onSave(newAssessment, AssessmentActionType.ADD_NEW_ASSESSMENT)
-    onClose()
+    addNewAssessment({
+      dataInput: newAssessment,
+      onSuccess: () =>
+        showSnackbar(
+          `Thêm Bài Kiểm Tra ${newAssessment.type} Thành Công vào ${newAssessment.bookDate}`,
+          'success'
+        ),
+      onError: () => {
+        showSnackbar(
+          `Thêm Bài Kiểm Tra ${newAssessment.type} vào ${newAssessment.bookDate} Thất Bại`,
+          'error'
+        )
+      },
+      onComplete: onClose,
+    })
     return
   }
   return (

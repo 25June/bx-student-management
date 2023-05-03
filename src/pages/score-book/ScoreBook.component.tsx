@@ -4,18 +4,21 @@ import AssignmentIcon from '@mui/icons-material/Assignment'
 import LayoutComponent from 'modules/layout/Layout.component'
 import TableComponent from 'modules/Table/Table.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
-import { ScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
+import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
 import { StudentScoreBooks } from 'models'
 import React, { useState } from 'react'
 import { useGetStudentScoreBooks } from 'services'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useIsMobile } from 'utils/common'
+import AssessmentDialogComponent from 'modules/assessment-dialog/AssessmentDialog.component'
+import { AssessmentActionType } from 'constant'
 
 const ScoreBookComponent = () => {
   const mobile = useIsMobile()
   const { students } = useStudentContext()
   const { studentScoreBooks: stuScoreBooks } = useGetStudentScoreBooks({ students })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
+  const [isOpenAssessmentDialog, openAssessmentDialog] = useState<boolean>(false)
 
   return (
     <LayoutComponent>
@@ -34,7 +37,7 @@ const ScoreBookComponent = () => {
           <Button
             variant="contained"
             startIcon={<AssignmentIcon />}
-            onClick={() => console.log('click on them bai kiem tra')}
+            onClick={() => openAssessmentDialog(true)}
             sx={{ marginRight: 2 }}
           >
             Thêm Bài Kiểm Tra
@@ -46,7 +49,7 @@ const ScoreBookComponent = () => {
           columns={ScoreBookColumns}
           rows={stuScoreBooks}
           onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
-          renderActionMenu={ScoreBookActions}
+          renderActionMenu={renderScoreBookActions}
         />
       )}
       {!!selectedScoreBook && (
@@ -54,6 +57,15 @@ const ScoreBookComponent = () => {
           isOpen={!!selectedScoreBook}
           onClose={() => setSelectedScoreBook(undefined)}
           data={selectedScoreBook}
+        />
+      )}
+      {isOpenAssessmentDialog && (
+        <AssessmentDialogComponent
+          key={'new'}
+          isOpen={isOpenAssessmentDialog}
+          onClose={() => openAssessmentDialog(false)}
+          action={AssessmentActionType.ADD_NEW_ASSESSMENT}
+          data={null}
         />
       )}
     </LayoutComponent>

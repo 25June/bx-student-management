@@ -85,7 +85,10 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
       {selectedRow && (
         <Menu open={open} anchorEl={anchorEl} onClose={() => setOpen(false)}>
           <MenuItem
-            onClick={() => onClickAction(selectedRow, AssessmentActionType.EDIT_ASSESSMENT)}
+            onClick={() => {
+              onClickAction(selectedRow, AssessmentActionType.EDIT_ASSESSMENT)
+              setOpen(false)
+            }}
           >
             <Box display={'flex'} alignItems={'center'} gap={2}>
               <EditIcon fontSize="small" color={'warning'} />
@@ -95,7 +98,10 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
             </Box>
           </MenuItem>
           <MenuItem
-            onClick={() => onClickAction(selectedRow, AssessmentActionType.DELETE_ASSESSMENT)}
+            onClick={() => {
+              onClickAction(selectedRow, AssessmentActionType.DELETE_ASSESSMENT)
+              setOpen(false)
+            }}
           >
             <Box display={'flex'} alignItems={'center'} gap={2}>
               <DeleteIcon fontSize="small" color={'error'} />

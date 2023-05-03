@@ -1,4 +1,4 @@
-import { Phone } from 'models'
+import { Assessment, Phone } from 'models'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
 import MenuItem from '@mui/material/MenuItem'
@@ -31,9 +31,45 @@ export const studentColumns = [
   },
 ]
 
+export const groupAssessments = (assessments: Assessment[]) => {
+  return assessments.reduce(
+    (acc, cur) => {
+      switch (cur.type) {
+        case 'KT5':
+          return {
+            ...acc,
+            score5: [...acc.score5, cur],
+          }
+        case 'KT15':
+          return {
+            ...acc,
+            score15: [...acc.score15, cur],
+          }
+        case 'KT45':
+          return {
+            ...acc,
+            score45: [...acc.score45, cur],
+          }
+        case 'KT60':
+          return {
+            ...acc,
+            score60: [...acc.score60, cur],
+          }
+      }
+      return acc
+    },
+    {
+      score5: [] as Assessment[],
+      score15: [] as Assessment[],
+      score45: [] as Assessment[],
+      score60: [] as Assessment[],
+    }
+  )
+}
+
 type ScoreProps = Record<string, number>
 
-const renderScore = (data: ScoreProps) => {
+const Score = ({ data }: { data: ScoreProps }) => {
   return (
     <Box display={'flex'} gap={2}>
       {Object.keys(data).map((key, index) => (
@@ -66,7 +102,7 @@ export const renderStudentActions = (onClickActions: (action: string) => void) =
   )
 }
 
-export const ScoreBookActions = (onClickActions: (action: string) => void) => {
+export const renderScoreBookActions = (onClickActions: (action: string) => void) => {
   return (
     <div>
       <MenuItem onClick={() => onClickActions(ScoreBookActionType.EDIT_SCORE_BOOK)}>
@@ -96,21 +132,21 @@ export const ScoreBookColumns = [
   {
     field: 'score5',
     headerName: 'KT5',
-    render: (data: ScoreProps = {}) => renderScore(data),
+    render: (data: ScoreProps = {}) => <Score data={data} />,
   },
   {
     field: 'score15',
     headerName: 'KT15',
-    render: (data: ScoreProps = {}) => renderScore(data),
+    render: (data: ScoreProps = {}) => <Score data={data} />,
   },
   {
     field: 'score45',
     headerName: 'KT45',
-    render: (data: ScoreProps = {}) => renderScore(data),
+    render: (data: ScoreProps = {}) => <Score data={data} />,
   },
   {
     field: 'score60',
     headerName: 'KT60',
-    render: (data: ScoreProps = {}) => renderScore(data),
+    render: (data: ScoreProps = {}) => <Score data={data} />,
   },
 ]

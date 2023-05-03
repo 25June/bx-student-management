@@ -10,7 +10,7 @@ import {
   collection,
   onSnapshot,
   writeBatch,
-  limit,
+  where,
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore'
@@ -25,10 +25,7 @@ export const useGetStudents = () => {
   const [students, setStudents] = useState<Student[] | null>()
   const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
-    if (students && students.length !== 0) {
-      return
-    }
-    const queryStudents = query(studentRef, limit(20))
+    const queryStudents = query(studentRef, where('class.id', '==', 'ts1a'))
     const listener = onSnapshot(
       queryStudents,
       (snapshot) => {
@@ -45,8 +42,8 @@ export const useGetStudents = () => {
         setStudents(null)
       }
     )
-    return () => listener()
-  }, [students, showSnackbar])
+    return listener
+  }, [showSnackbar])
   return { students, isLoading: typeof students === 'undefined' }
 }
 
