@@ -3,16 +3,16 @@ import { LayoutComponent } from 'modules'
 import Box from '@mui/material/Box'
 import { Button } from '@mui/material'
 import AssignmentIcon from '@mui/icons-material/Assignment'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { AssessmentDialogComponent, AssessmentTableComponent } from 'modules/index'
 import { Assessment } from 'models/assessment'
 import { AssessmentActionType } from 'constant'
 import { useAddNewAssessment, useEditAssessment, useDeleteAssessment } from 'services'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
+import { useIsMobile } from 'utils/common'
 
 const AssessmentComponent = () => {
-  const mobile = useMediaQuery('(max-width:900px)')
+  const mobile = useIsMobile()
 
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
 

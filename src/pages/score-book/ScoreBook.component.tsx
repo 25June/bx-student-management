@@ -1,51 +1,21 @@
 import Box from '@mui/material/Box'
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
 import AssignmentIcon from '@mui/icons-material/Assignment'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { ScoreBookActionType } from 'constant'
-import { LayoutComponent, ScoreBookDialogComponent, TableComponent } from 'modules'
-import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
+import LayoutComponent from 'modules/layout/Layout.component'
+import TableComponent from 'modules/Table/Table.component'
+import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
+import { ScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
 import { StudentScoreBooks } from 'models'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import { useGetStudentScoreBooks } from 'services'
 import { useStudentContext } from 'contexts/StudentContext'
+import { useIsMobile } from 'utils/common'
 
 const ScoreBookComponent = () => {
-  const mobile = useMediaQuery('(max-width:900px)')
-  const [isOpenScoreBookDialog, setOpenScoreBookDialog] = useState<boolean>(false)
-  const [actionData, setActionData] = useState<StudentScoreBooks | null>()
-  const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
-
+  const mobile = useIsMobile()
   const { students } = useStudentContext()
-  const { studentScoreBooks } = useGetStudentScoreBooks({ students })
-
-  const closeScoreBookDialog = useCallback((): void => {
-    setOpenScoreBookDialog(false)
-    setActionData(null)
-  }, [])
-
-  const handleClickAction = (data: StudentScoreBooks, type: string) => {
-    if (type === ScoreBookActionType.VIEW_SCORE_BOOK) {
-      setSelectedScoreBook(data)
-      return
-    }
-    const student = (studentScoreBooks || []).find((std: StudentScoreBooks) => std.id === data.id)
-    if (student) {
-      setActionData(student)
-      setOpenScoreBookDialog(true)
-    }
-  }
-
-  useEffect(() => {
-    if (selectedScoreBook && studentScoreBooks) {
-      const newData = studentScoreBooks.find(
-        (student: StudentScoreBooks) => student.id === selectedScoreBook.id
-      )
-      if (newData) {
-        setSelectedScoreBook(newData)
-      }
-    }
-  }, [studentScoreBooks, setSelectedScoreBook, selectedScoreBook])
+  const { studentScoreBooks: stuScoreBooks } = useGetStudentScoreBooks({ students })
+  const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
 
   return (
     <LayoutComponent>
@@ -64,26 +34,26 @@ const ScoreBookComponent = () => {
           <Button
             variant="contained"
             startIcon={<AssignmentIcon />}
-            onClick={() => setOpenScoreBookDialog(true)}
+            onClick={() => console.log('click on them bai kiem tra')}
             sx={{ marginRight: 2 }}
           >
             Thêm Bài Kiểm Tra
           </Button>
         </Box>
       </Box>
-      {studentScoreBooks && (
+      {stuScoreBooks.length !== 0 && (
         <TableComponent
           columns={ScoreBookColumns}
-          rows={studentScoreBooks}
-          onClickAction={handleClickAction}
-          renderActionMenu={renderScoreBookActions}
+          rows={stuScoreBooks}
+          onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
+          renderActionMenu={ScoreBookActions}
         />
       )}
-      {isOpenScoreBookDialog && (
+      {!!selectedScoreBook && (
         <ScoreBookDialogComponent
-          isOpen={isOpenScoreBookDialog}
-          onClose={() => closeScoreBookDialog()}
-          data={actionData}
+          isOpen={!!selectedScoreBook}
+          onClose={() => setSelectedScoreBook(undefined)}
+          data={selectedScoreBook}
         />
       )}
     </LayoutComponent>

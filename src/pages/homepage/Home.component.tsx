@@ -7,7 +7,6 @@ import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { useAddNewStudent, useUpdateStudent, useDeleteStudent } from 'services'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { renderStudentActions, studentColumns } from 'modules/Table/helpers'
 import {
   InfoPanelComponent,
@@ -19,9 +18,10 @@ import {
 } from 'modules'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useStudentContext } from 'contexts/StudentContext'
+import { useIsMobile } from 'utils/common'
 
 const HomeComponent = () => {
-  const mobile = useMediaQuery('(max-width:900px)')
+  const mobile = useIsMobile()
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
 
   const [actionType, setActionType] = useState<string>('')

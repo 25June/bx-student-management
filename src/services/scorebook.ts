@@ -1,5 +1,4 @@
 import { app } from '../firebase'
-import { v4 as uuidv4 } from 'uuid'
 import { useState, useEffect } from 'react'
 import { doc, getFirestore, collection, onSnapshot, setDoc } from 'firebase/firestore'
 import { Assessment, ScoreBook, Student, StudentScoreBooks } from 'models'
@@ -64,22 +63,10 @@ const initDefaultScoreBook = (assessments: Assessment[]) => {
 const getDefaultScoreBook = (studentId: string): ScoreBook => {
   return {
     id: studentId,
-    score5: {
-      [uuidv4()]: 0,
-      [uuidv4()]: 0,
-    },
-    score15: {
-      [uuidv4()]: 0,
-      [uuidv4()]: 0,
-    },
-    score45: {
-      [uuidv4()]: 0,
-      [uuidv4()]: 0,
-    },
-    score60: {
-      [uuidv4()]: 0,
-      [uuidv4()]: 0,
-    },
+    score5: {},
+    score15: {},
+    score45: {},
+    score60: {},
   }
 }
 
@@ -156,14 +143,11 @@ export const useInitStudentScore = () => {
     const reference = studentScoreBookRef(studentId)
     return setDoc(reference, initDefaultScoreBook(assessments))
       .then((res) => {
-        console.log(res)
-        console.log('success')
+        return res
       })
       .catch((error) => {
-        console.log(error)
-        console.log('error')
+        console.error(error)
       })
-      .finally(() => console.log('request complete'))
   }
 }
 

@@ -66,7 +66,7 @@ export const renderStudentActions = (onClickActions: (action: string) => void) =
   )
 }
 
-export const renderScoreBookActions = (onClickActions: (action: string) => void) => {
+export const ScoreBookActions = (onClickActions: (action: string) => void) => {
   return (
     <div>
       <MenuItem onClick={() => onClickActions(ScoreBookActionType.EDIT_SCORE_BOOK)}>

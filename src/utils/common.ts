@@ -1,4 +1,5 @@
 import { Student } from 'models'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import studentGirlLogo from 'static/images/cards/student-girl.png'
 import studentBoyLogo from 'static/images/cards/student-boy.png'
 
@@ -57,4 +58,8 @@ export const getToday = () => {
   const month = ('0' + (now.getMonth() + 1)).slice(-2)
 
   return now.getFullYear() + '-' + month + '-' + day
+}
+
+export const useIsMobile = (): boolean => {
+  return useMediaQuery('(max-width:900px)')
 }

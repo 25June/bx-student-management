@@ -52,7 +52,6 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
   const { assessments } = useAssessmentContext()
   const setStudentScore = useSetNewStudentScore()
   const { studentScoreBook } = useGetStudentScoreBook(data?.id || '')
-  console.log(studentScoreBook)
   const { showSnackbar } = useSnackbarContext()
   if (typeof assessments === 'undefined') {
     return null

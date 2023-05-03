@@ -15,14 +15,13 @@ import {
   FormControlLabel,
   Switch,
 } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { StudentActionType } from 'constant'
 import { Student } from 'models'
 import { splitFullName } from 'utils'
 import { formatDate, formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
 import { removeImage, uploadAvatar } from 'services'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules'
+import { useIsMobile } from 'utils/common'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -86,7 +85,6 @@ const StudentDialogComponent = ({
   onSave,
   actionData,
 }: StudentDialogComponentProps) => {
-  const theme = useTheme()
   const { handleSubmit, control, setValue, reset, formState } = useForm<StudentForm>({
     defaultValues: StudentDefaultValue,
   })
@@ -111,7 +109,7 @@ const StudentDialogComponent = ({
     }
     return () => reset()
   }, [actionType, actionData, reset, setValue])
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const fullScreen = useIsMobile()
 
   const onSubmit = async (data: StudentForm) => {
     let downloadPath
