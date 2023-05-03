@@ -9,8 +9,8 @@ const PrivateComponent = ({ component }: { component: React.ReactElement }) => {
   const navigate = useNavigate()
   useEffect(() => {
     if (auth.status === AuthContextStatus.FINISH) {
-      console.log('finish')
-      console.log(auth)
+      // console.log('finish')
+      // console.log(auth)
       if (!auth.isSignedIn) {
         navigate(Router.SIGN_IN)
       }

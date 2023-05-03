@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Box, ToggleButtonGroup } from '@mui/material'
 import { StudentActionType } from 'constant'
-import { ScoreBook, Student } from 'models'
+import { Student } from 'models'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import { useAddNewStudent, useGetStudents, useUpdateStudent, useDeleteStudent } from 'services'
+import { useAddNewStudent, useUpdateStudent, useDeleteStudent } from 'services'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { renderStudentActions, studentColumns } from 'modules/Table/helpers'
 import {
@@ -18,26 +18,7 @@ import {
   LayoutComponent,
 } from 'modules'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
-
-const defaultScoreBook: ScoreBook = {
-  id: '',
-  score5: {
-    date1: 10,
-    date2: 10,
-  },
-  score15: {
-    date1: 10,
-    date2: 10,
-  },
-  score45: {
-    date1: 10,
-    date2: 10,
-  },
-  score60: {
-    date1: 10,
-    date2: 10,
-  },
-}
+import { useStudentContext } from 'contexts/StudentContext'
 
 const HomeComponent = () => {
   const mobile = useMediaQuery('(max-width:900px)')
@@ -53,7 +34,7 @@ const HomeComponent = () => {
   const addNewStudent = useAddNewStudent()
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
-  const { students } = useGetStudents()
+  const { students } = useStudentContext()
   const { showSnackbar } = useSnackbarContext()
 
   useEffect(() => {
@@ -111,6 +92,7 @@ const HomeComponent = () => {
   }
 
   const handleCloseScoreBook = () => {
+    setSelectedStudent(undefined)
     setOpenScoreBook(false)
   }
 
@@ -234,13 +216,13 @@ const HomeComponent = () => {
             onClose={handleClosePanel}
             onClickAction={handleClickAction}
           />
-          <ScoreBookPanelComponent
-            isOpen={isOpenScoreBook}
-            studentInfo={selectedStudent}
-            scoreBook={defaultScoreBook}
-            onClose={handleCloseScoreBook}
-            onClickAction={handleClickAction}
-          />
+          {isOpenScoreBook && selectedStudent && (
+            <ScoreBookPanelComponent
+              isOpen={!!selectedStudent}
+              onClose={handleCloseScoreBook}
+              studentId={selectedStudent.id}
+            />
+          )}
         </Box>
       )}
       <StudentDialogComponent

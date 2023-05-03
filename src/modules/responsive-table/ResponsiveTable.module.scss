@@ -1,0 +1,62 @@
+.container {
+  margin-inline: auto;
+  width: min(900px, 100% - 3em);
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  color: #98BCB8;
+  border-collapse: collapse;
+}
+
+th, td, caption {
+  background: #FEE356;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+caption {
+  background: #945A37;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+th {
+  background: #945A37;
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+tr:nth-of-type(2n) {
+  background: #945A37;
+  opacity: 0.8;
+}
+
+@media (max-width: 690px) {
+  th {
+    display: none;
+  }
+  td {
+    display: grid;
+    grid-template-columns: 15ch auto;
+    padding: 0.25rem 0.5rem;
+  }
+
+  td:first-child {
+    padding-top: 1rem;
+  }
+  td:last-child {
+    padding-bottom: 1rem;
+  }
+
+  td:before {
+    content: attr(data-cell) ": ";
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+}

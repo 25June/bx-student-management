@@ -7,13 +7,9 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { AssessmentDialogComponent, AssessmentTableComponent } from 'modules/index'
 import { Assessment } from 'models/assessment'
 import { AssessmentActionType } from 'constant'
-import {
-  useGetAssessments,
-  useAddNewAssessment,
-  useEditAssessment,
-  useDeleteAssessment,
-} from 'services'
+import { useAddNewAssessment, useEditAssessment, useDeleteAssessment } from 'services'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { useAssessmentContext } from 'contexts/AssessmentContext'
 
 const AssessmentComponent = () => {
   const mobile = useMediaQuery('(max-width:900px)')
@@ -25,7 +21,7 @@ const AssessmentComponent = () => {
 
   const { showSnackbar } = useSnackbarContext()
 
-  const { assessments } = useGetAssessments()
+  const { assessments } = useAssessmentContext()
   const addNewAssessment = useAddNewAssessment()
   const editAssessment = useEditAssessment()
   const deleteAssessment = useDeleteAssessment()

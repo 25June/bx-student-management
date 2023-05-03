@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 import { app } from '../firebase'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 const db = getFirestore(app)
 const AssessmentCollection = 'assessments'
@@ -20,9 +21,13 @@ const assessmentRef = collection(db, AssessmentCollection)
 
 export const useGetAssessments = () => {
   const [assessments, setAssessments] = useState<Assessment[]>()
+  const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
+    if (assessments && assessments.length !== 0) {
+      return
+    }
     const queryAssessments = query(assessmentRef, limit(100))
-    onSnapshot(queryAssessments, (snapshot) => {
+    const listener = onSnapshot(queryAssessments, (snapshot) => {
       setAssessments(
         snapshot.docs
           .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
@@ -33,8 +38,10 @@ export const useGetAssessments = () => {
           .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
           .filter((assessment) => !assessment.isDeleted)
       )
+      showSnackbar('Get Assessments Success', 'success')
     })
-  }, [])
+    return () => listener()
+  }, [showSnackbar, assessments])
   return { assessments, isLoading: typeof assessments === 'undefined' }
 }
 

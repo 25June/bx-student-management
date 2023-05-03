@@ -22,9 +22,9 @@ export const SnackbarProvider = ({ children }: PropsWithChildren<{}>) => {
   const [snackBarSeverity, setSnackBarSeverity] = useState<AlertColor>('success')
   const [isOpenSnackbar, setOpenSnackbar] = useState<boolean>(false)
 
-  const showSnackbar = useCallback((message: string, severity: AlertColor) => {
+  const showSnackbar = useCallback((message: string, severity?: AlertColor) => {
     setSnackBarMessage(message)
-    setSnackBarSeverity(severity)
+    setSnackBarSeverity(severity || 'success')
     setOpenSnackbar(true)
   }, [])
 

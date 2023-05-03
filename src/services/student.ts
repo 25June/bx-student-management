@@ -15,6 +15,7 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 import { Student } from 'models'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 const db = getFirestore(app)
 const StudentCollection = 'students'
@@ -22,7 +23,11 @@ const studentRef = collection(db, StudentCollection)
 
 export const useGetStudents = () => {
   const [students, setStudents] = useState<Student[] | null>()
+  const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
+    if (students && students.length !== 0) {
+      return
+    }
     const queryStudents = query(studentRef, limit(20))
     const listener = onSnapshot(
       queryStudents,
@@ -33,6 +38,7 @@ export const useGetStudents = () => {
               ({ ...data.data(), id: data.id } as Student)
           )
         )
+        showSnackbar('Get Students Success', 'success')
       },
       (error) => {
         console.error(error)
@@ -40,8 +46,32 @@ export const useGetStudents = () => {
       }
     )
     return () => listener()
-  }, [])
+  }, [students, showSnackbar])
   return { students, isLoading: typeof students === 'undefined' }
+}
+
+export const useGetStudentById = (id: string) => {
+  const [student, setStudent] = useState<Student | null>()
+  useEffect(() => {
+    if (id) {
+      const queryStudents = doc(studentRef, id)
+      const listener = onSnapshot(
+        queryStudents,
+        (snapshot) => {
+          if (snapshot.exists()) {
+            const value = { ...snapshot.data(), id: snapshot.id } as Student
+            setStudent(value)
+          }
+        },
+        (error) => {
+          console.error(error)
+          setStudent(null)
+        }
+      )
+      return () => listener()
+    }
+  }, [id])
+  return { student, isLoading: typeof student === 'undefined' }
 }
 
 interface AddNewStudentParams {

@@ -1,75 +1,89 @@
 import Box from '@mui/material/Box'
-import { ScoreBook, Student } from 'models'
 import MuiDrawer from '@mui/material/Drawer'
-import { Button, TextField } from '@mui/material'
+import { Button } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import studentBoyLogo from 'static/images/cards/student-boy.png'
-import React, { useState } from 'react'
+import React from 'react'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import IconButton from '@mui/material/IconButton'
-import CheckIcon from '@mui/icons-material/Check'
-import ClearIcon from '@mui/icons-material/Clear'
 import { averageScore } from './helpers'
-
-interface ScoreItemProps {
-  score: number
-}
-
-const ScoreItem = ({ score }: ScoreItemProps) => {
-  return (
-    <>
-      <TextField
-        id={'lan-1'}
-        label={'Lan 1'}
-        type={'number'}
-        inputMode={'numeric'}
-        size={'small'}
-        variant={'outlined'}
-        sx={{ width: '70%' }}
-        defaultValue={score}
-      />
-      <Box display={'flex'} gap={1}>
-        <IconButton aria-label="Save">
-          <CheckIcon />
-        </IconButton>
-        <IconButton aria-label="delete">
-          <ClearIcon />
-        </IconButton>
-      </Box>
-    </>
-  )
-}
+import {
+  useGetStudentScoreBook,
+  useInitStudentScore,
+  useSetNewStudentScore,
+} from 'services/scorebook'
+import { useGetStudentById } from 'services/student'
+import { useAssessmentContext } from 'contexts/AssessmentContext'
+import { Assessment } from 'models'
+import ScoreForm from 'modules/common/ScoreForm.component'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 interface ScoreBookPanelComponentProps {
   isOpen: boolean
-  studentInfo?: Student
-  scoreBook: ScoreBook
+  studentId: string
   onClose: () => void
-  onClickAction: (student: any, actionType: string) => void
 }
 
-const ScoreBookPanelComponent = ({
-  isOpen,
-  scoreBook,
-  studentInfo,
-  onClose,
-}: ScoreBookPanelComponentProps) => {
-  const [expanded, setExpanded] = useState<string | boolean>(false)
+const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelComponentProps) => {
+  const { studentScoreBook: scoreBook } = useGetStudentScoreBook(studentId)
+  const { student: studentInfo } = useGetStudentById(studentId)
+  const initStudentScore = useInitStudentScore()
+  const { assessments } = useAssessmentContext()
+  const setStudentScore = useSetNewStudentScore()
+  const { showSnackbar } = useSnackbarContext()
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false)
+  const handleChangeData = (type: string) => (score: { score: number }, assessmentId: string) => {
+    if (studentId) {
+      setStudentScore(studentId, type, score, assessmentId)
+        .then(() => showSnackbar('Cập nhật thành công', 'success'))
+        .catch(() => showSnackbar('Cập nhật thất bại', 'error'))
+    }
   }
+
+  const groupAssessment = assessments.reduce(
+    (acc, cur) => {
+      switch (cur.type) {
+        case 'KT5':
+          return {
+            ...acc,
+            score5: [...acc.score5, cur],
+          }
+        case 'KT15':
+          return {
+            ...acc,
+            score15: [...acc.score15, cur],
+          }
+        case 'KT45':
+          return {
+            ...acc,
+            score45: [...acc.score45, cur],
+          }
+        case 'KT60':
+          return {
+            ...acc,
+            score60: [...acc.score60, cur],
+          }
+      }
+      return acc
+    },
+    {
+      score5: [] as Assessment[],
+      score15: [] as Assessment[],
+      score45: [] as Assessment[],
+      score60: [] as Assessment[],
+    }
+  )
+
+  if (scoreBook === null) {
+    initStudentScore(studentId)
+  }
+
   if (!scoreBook || !studentInfo) {
     return null
   }
-  const score5 = Object.values(scoreBook.score5)
-  const score15 = Object.values(scoreBook.score15)
-  const score45 = Object.values(scoreBook.score45)
-  const score60 = Object.values(scoreBook.score60)
 
   return (
     <MuiDrawer
@@ -94,90 +108,35 @@ const ScoreBookPanelComponent = ({
             {`${studentInfo.lastName} ${studentInfo.firstName}`}
           </Box>
           <Box>
-            <Accordion expanded={expanded === 'score5'} onChange={handleChange('score5')}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1bh-content"
-                id="panel1bh-header"
-              >
-                <Typography sx={{ width: '70%', flexShrink: 0 }}>TB Kiểm Tra 5': </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>{averageScore(score5)}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {score5.map((point, index) => (
-                  <Box
-                    mb={2}
-                    sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point}`}
+            {['score5', 'score15', 'score45', 'score60'].map((scoreType: string) => {
+              return (
+                <Accordion key={scoreType}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1bh-content"
+                    id="panel1bh-header"
                   >
-                    <ScoreItem score={point} />
-                  </Box>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-            <Accordion expanded={expanded === 'score15'} onChange={handleChange('score15')}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2bh-content"
-                id="panel2bh-header"
-              >
-                <Typography sx={{ width: '70%', flexShrink: 0 }}>TB Kiểm Tra 15': </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>{averageScore(score15)}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {score15.map((point, index) => (
-                  <Box
-                    mb={2}
-                    sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point}`}
-                  >
-                    <ScoreItem score={point} />
-                  </Box>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-            <Accordion expanded={expanded === 'score45'} onChange={handleChange('score45')}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel3bh-content"
-                id="panel3bh-header"
-              >
-                <Typography sx={{ width: '70%', flexShrink: 0 }}>TB Kiểm Tra 45':</Typography>
-                <Typography sx={{ color: 'text.secondary' }}>{averageScore(score45)}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {score45.map((point, index) => (
-                  <Box
-                    mb={2}
-                    sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point}`}
-                  >
-                    <ScoreItem score={point} />
-                  </Box>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-            <Accordion expanded={expanded === 'score60'} onChange={handleChange('score60')}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel4bh-content"
-                id="panel4bh-header"
-              >
-                <Typography sx={{ width: '70%', flexShrink: 0 }}>TB Kiểm Tra 60': </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>{averageScore(score60)}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {score60.map((point, index) => (
-                  <Box
-                    mb={2}
-                    sx={{ display: 'flex', justifyContent: 'space-between' }}
-                    key={`score5-${index}-${point}`}
-                  >
-                    <ScoreItem score={point} />
-                  </Box>
-                ))}
-              </AccordionDetails>
-            </Accordion>
+                    <Typography sx={{ width: '70%', flexShrink: 0 }}>TB {scoreType}: </Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>
+                      {averageScore(Object.values((scoreBook as any)[scoreType]))}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {(groupAssessment as any)[scoreType].map((assessment: Assessment) => {
+                      const score = (scoreBook as any)[scoreType]
+                      return (
+                        <ScoreForm
+                          data={score[assessment.id]}
+                          assessment={assessment}
+                          key={`${assessment.id}_${score[assessment.id]}`}
+                          onChangeData={handleChangeData(scoreType)}
+                        />
+                      )
+                    })}
+                  </AccordionDetails>
+                </Accordion>
+              )
+            })}
           </Box>
         </Box>
       </Box>
