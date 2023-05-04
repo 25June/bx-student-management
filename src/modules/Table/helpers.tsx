@@ -31,7 +31,14 @@ export const studentColumns = [
   },
 ]
 
-export const groupAssessments = (assessments: Assessment[]) => {
+export type GroupAssessmentProps = {
+  score5: Assessment[]
+  score15: Assessment[]
+  score45: Assessment[]
+  score60: Assessment[]
+}
+
+export const groupAssessments = (assessments: Assessment[]): GroupAssessmentProps => {
   return assessments.reduce(
     (acc, cur) => {
       switch (cur.type) {

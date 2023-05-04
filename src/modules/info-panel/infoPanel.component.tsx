@@ -173,6 +173,7 @@ const InfoPanelComponent = ({
               onClick={handleRemoveStudent}
               color="error"
               variant="outlined"
+              disabled={studentInfo.isDeleted}
             >
               Xoá
             </Button>

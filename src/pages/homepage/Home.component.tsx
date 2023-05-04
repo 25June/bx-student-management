@@ -6,7 +6,6 @@ import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import { useAddNewStudent, useUpdateStudent, useDeleteStudent } from 'services'
 import { renderStudentActions, studentColumns } from 'modules/Table/helpers'
 import {
   InfoPanelComponent,
@@ -16,7 +15,6 @@ import {
   CardComponent,
   LayoutComponent,
 } from 'modules'
-import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useIsMobile } from 'utils/common'
 
@@ -31,11 +29,7 @@ const HomeComponent = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
 
-  const addNewStudent = useAddNewStudent()
-  const updateStudent = useUpdateStudent()
-  const deleteStudent = useDeleteStudent()
   const { students } = useStudentContext()
-  const { showSnackbar } = useSnackbarContext()
 
   useEffect(() => {
     if (selectedStudent && students) {
@@ -95,57 +89,6 @@ const HomeComponent = () => {
     setSelectedStudent(undefined)
     setOpenScoreBook(false)
   }
-
-  const handleSave = (data: Student | Omit<Student, 'id'>) => {
-    switch (actionType) {
-      case StudentActionType.ADD_NEW_STUDENT:
-        addNewStudent({
-          dataInput: data,
-          onSuccess: () => {
-            showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success')
-            closeStudentDialog()
-          },
-          onError: () => {
-            showSnackbar(`Thêm Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
-          },
-          onComplete: () => console.log('complete request'),
-        })
-        break
-      case StudentActionType.EDIT_STUDENT:
-        updateStudent({
-          dataInput: data as Student,
-          onSuccess: () => {
-            showSnackbar(
-              `Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`,
-              'success'
-            )
-            closeStudentDialog()
-          },
-          onError: () => {
-            showSnackbar(`Cập Nhật Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
-          },
-          onComplete: () => console.log('complete request'),
-        })
-        break
-      case StudentActionType.DELETE_STUDENT:
-        deleteStudent({
-          dataInput: data as Student,
-          onSuccess: () => {
-            showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thành Công`, 'success')
-            closeStudentDialog()
-          },
-          onError: () => {
-            showSnackbar(`Xoá Thiếu Nhi ${data.lastName} ${data.firstName} Thất Bại`, 'error')
-          },
-          onComplete: () => console.log('complete request'),
-        })
-        break
-      default:
-        console.log('can not match action type ' + actionType)
-        break
-    }
-  }
-
   return (
     <LayoutComponent>
       <Box
@@ -230,7 +173,6 @@ const HomeComponent = () => {
         onClose={() => closeStudentDialog()}
         actionType={actionType}
         actionData={actionData}
-        onSave={handleSave}
       />
     </LayoutComponent>
   )

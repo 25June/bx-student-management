@@ -154,16 +154,15 @@ export const useUpdateStudent = () => {
 }
 
 interface DeleteStudentParams {
-  dataInput: Student
+  id: string
   onSuccess: () => void
   onError: () => void
   onComplete: () => void
 }
 
 export const useDeleteStudent = () => {
-  return ({ dataInput, onSuccess, onError, onComplete }: DeleteStudentParams) => {
-    console.log(dataInput)
-    const ref = doc(db, StudentCollection, dataInput.id)
+  return ({ id, onSuccess, onError, onComplete }: DeleteStudentParams) => {
+    const ref = doc(db, StudentCollection, id)
     updateDoc(ref, { isDeleted: true, updatedDate: serverTimestamp() })
       .then((value) => {
         console.info(value)

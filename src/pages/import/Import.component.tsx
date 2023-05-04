@@ -11,13 +11,12 @@ import React, { useEffect, useState } from 'react'
 import { formatMockData, formatStudentTable } from 'utils'
 import TableComponent from 'modules/Table/Table.component'
 import { studentColumns } from 'modules/Table/helpers'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { SelectChangeEvent } from '@mui/material/Select'
 import { BaseClasses } from 'constant/common'
 import { useBatchAddStudents } from 'services/student'
 import { Class, Student } from 'models'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
 
 type ImportProps = {
   value: string
@@ -80,7 +79,6 @@ const ImportComponent = () => {
   }
 
   const handleChangeClass = (e: SelectChangeEvent) => {
-    console.log(e)
     const selectedClass = BaseClasses.find((c: Class) => c.id === (e.target.value as string))
     if (typeof selectedClass === 'undefined') {
       console.error('Error at Selected class')
@@ -121,22 +119,7 @@ const ImportComponent = () => {
           </form>
           {value.length !== 0 && <TableComponent columns={studentColumns} rows={value} />}
           <Box mt={2} mb={2}>
-            <FormControl fullWidth={true}>
-              <InputLabel id="select-classes">Lớp</InputLabel>
-              <Select
-                labelId="select-classes-label"
-                id="select-classes-label-id"
-                value={classObj.id}
-                label="Lớp"
-                onChange={handleChangeClass}
-              >
-                {BaseClasses.map((c: Class) => (
-                  <MenuItem value={c.id} key={c.name}>
-                    {c.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <ClassDropdownComponent classObj={classObj} onChangeClass={handleChangeClass} />
           </Box>
           <Button onClick={saveData} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
             Confirm Save Date

@@ -9,177 +9,186 @@ import {
   Button,
   TextField,
   Box,
-  ButtonProps,
   FormControl,
   FormLabel,
   FormControlLabel,
   Switch,
 } from '@mui/material'
 import { StudentActionType } from 'constant'
-import { Student } from 'models'
+import { Class, Student } from 'models'
 import { splitFullName } from 'utils'
 import { formatDate, formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
-import { removeImage, uploadAvatar } from 'services'
+import {
+  removeImage,
+  uploadAvatar,
+  useAddNewStudent,
+  useDeleteStudent,
+  useUpdateStudent,
+} from 'services'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules'
 import { useIsMobile } from 'utils/common'
+import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
+import { SelectChangeEvent } from '@mui/material/Select'
+import { BaseClasses } from 'constant/common'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { getValues, StudentForm } from './helpers'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
   onClose: () => void
   actionType: string
-  onSave: (data: Omit<Student, 'id'>) => void
   actionData?: Student | null
 }
 
-type Phone = {
-  name: string
-  number: string
+interface RemoveStudentDialogProps {
+  handleSubmit: () => void
+  onClose: () => void
+  fullName?: string
 }
 
-type StudentForm = {
-  saintName: string
-  fullName: string
-  birthday: string
-  address: string
-  grade: string
-  phone1: Phone
-  phone2: Phone
-  gender: boolean
-  avatar?: File | null
-  avatarPath?: string
-}
-
-const StudentDefaultValue = {
-  saintName: '',
-  fullName: '',
-  birthday: '',
-  address: '',
-  grade: '1',
-  gender: false,
-  phone1: {
-    name: '',
-    number: '',
-  },
-  phone2: {
-    name: '',
-    number: '',
-  },
-  avatar: null,
-  avatarPath: '',
-}
-
-const getButtonColor = (type: string): ButtonProps['color'] => {
-  if (type === StudentActionType.ADD_NEW_STUDENT) {
-    return 'primary'
-  }
-  if (type === StudentActionType.EDIT_STUDENT) {
-    return 'warning'
-  }
-  return 'error'
+const RemoveStudentDialog = ({ handleSubmit, onClose, fullName }: RemoveStudentDialogProps) => {
+  return (
+    <React.Fragment>
+      <DialogTitle>Xoá thông tin thiếu nhi</DialogTitle>
+      <DialogContent dividers={true}>
+        <DialogContentText>
+          {`Bạn có chắc chắn muốn xoá thông tin thiếu nhi ${fullName}`}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
+        <Button autoFocus={true} onClick={onClose} variant="outlined">
+          Huỷ
+        </Button>
+        <Button onClick={handleSubmit} autoFocus={true} variant="contained" color={'error'}>
+          Xoá
+        </Button>
+      </DialogActions>
+    </React.Fragment>
+  )
 }
 
 const StudentDialogComponent = ({
   isOpen,
   onClose,
   actionType,
-  onSave,
   actionData,
 }: StudentDialogComponentProps) => {
+  const fullScreen = useIsMobile()
+  const { showSnackbar } = useSnackbarContext()
+
+  const addNewStudent = useAddNewStudent()
+  const updateStudent = useUpdateStudent()
+  const deleteStudent = useDeleteStudent()
   const { handleSubmit, control, setValue, reset, formState } = useForm<StudentForm>({
-    defaultValues: StudentDefaultValue,
+    defaultValues: getValues(actionData),
   })
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   useEffect(() => {
-    if (actionType !== StudentActionType.ADD_NEW_STUDENT && actionData) {
-      setValue('saintName', actionData.saintName)
-      setValue('fullName', `${actionData.lastName} ${actionData.firstName}`)
-      setValue('birthday', formatDate(actionData.birthday, false))
-      setValue('address', actionData.address)
-      setValue('gender', !!actionData.gender)
-      setValue('grade', actionData.grade)
-      setValue('phone1', {
-        ...actionData.phones[0],
-        number: formatPhoneWithoutDot(actionData.phones[0].number),
+    if (actionType === StudentActionType.EDIT_STUDENT) {
+      const stu: StudentForm = getValues(actionData)
+      Object.keys(stu).forEach((key: string) => {
+        setValue(key as keyof StudentForm, stu[key as keyof StudentForm])
       })
-      setValue('phone2', {
-        ...actionData.phones[1],
-        number: formatPhoneWithoutDot(actionData.phones[1].number),
-      })
-      setValue('avatarPath', actionData.avatarPath)
     }
     return () => reset()
   }, [actionType, actionData, reset, setValue])
-  const fullScreen = useIsMobile()
 
   const onSubmit = async (data: StudentForm) => {
-    let downloadPath
     const { firstName, lastName } = splitFullName(data.fullName)
-    if (data.avatar) {
-      // do upload file
-      downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
-      console.log({ downloadPath })
-    }
-    if (actionType !== StudentActionType.ADD_NEW_STUDENT && actionData) {
-      const updatedStudent: Student = {
+
+    if (actionType === StudentActionType.DELETE_STUDENT && actionData?.id) {
+      return deleteStudent({
         id: actionData.id,
-        saintName: data.saintName,
+        onSuccess: () =>
+          showSnackbar(`Xoá Thiếu Nhi ${lastName} ${firstName} Thành Công`, 'success'),
+        onError: () => showSnackbar(`Xoá Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
+        onComplete: onClose,
+      })
+    }
+
+    let downloadPath: string = ''
+    if (data.avatar) {
+      downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
+      delete data.avatar
+    }
+    if (actionType === StudentActionType.EDIT_STUDENT && actionData?.id) {
+      const updatedStudent: Student = {
+        ...data,
+        id: actionData.id,
         firstName,
         lastName,
         birthday: formatDate(data.birthday, true),
-        address: data.address,
-        grade: data.grade,
         phones: [
           { ...data.phone1, number: formatPhone(data.phone1.number) },
           { ...data.phone2, number: formatPhone(data.phone2.number) },
         ],
-        gender: data.gender,
-        avatarPath: downloadPath || data.avatarPath,
+        avatarPath: downloadPath || data.avatarPath || '',
       }
-      onSave(updatedStudent)
-      setUploadImageProgress(0)
-      if (downloadPath && data.avatarPath) {
-        removeImage(data.avatarPath)
-      }
-      return
+      return updateStudent({
+        dataInput: updatedStudent,
+        onSuccess: () =>
+          showSnackbar(`Cập Nhật Thiếu Nhi ${lastName} ${firstName} Thành Công`, 'success'),
+        onError: () =>
+          showSnackbar(`Cập Nhật Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
+        onComplete: () => {
+          setUploadImageProgress(0)
+          if (downloadPath && data.avatarPath) {
+            removeImage(data.avatarPath)
+          }
+          onClose()
+        },
+      })
     }
     const newStudent: Omit<Student, 'id'> = {
-      saintName: data.saintName,
+      ...data,
       firstName,
       lastName,
       birthday: formatDate(data.birthday, true),
-      address: data.address,
-      grade: data.grade,
       phones: [
         { ...data.phone1, number: formatPhone(data.phone1.number) },
         { ...data.phone2, number: formatPhone(data.phone2.number) },
       ],
-      gender: data.gender,
       avatarPath: downloadPath || '',
     }
-    onSave(newStudent)
-    setUploadImageProgress(0)
+    return addNewStudent({
+      dataInput: newStudent,
+      onSuccess: () =>
+        showSnackbar(`Thêm Thiếu Nhi ${lastName} ${firstName} Thành Công`, 'success'),
+      onError: () => showSnackbar(`Thêm Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
+      onComplete: () => {
+        setUploadImageProgress(0)
+        onClose()
+      },
+    })
+  }
+
+  const handleChangeClass = (event: SelectChangeEvent) => {
+    const selectedClass = BaseClasses.find((c: Class) => c.id === (event.target.value as string))
+    if (typeof selectedClass === 'undefined') {
+      console.error('Error at Selected class')
+      return
+    }
+    setValue('class', selectedClass || BaseClasses[0])
   }
 
   return (
-    <Dialog
-      fullScreen={fullScreen}
-      open={isOpen}
-      onClose={onClose}
-      aria-labelledby="responsive-dialog-title"
-    >
-      <DialogTitle id="responsive-dialog-title">
-        {actionType === StudentActionType.EDIT_STUDENT && 'Cập nhật thông tin thiếu nhi'}
-        {actionType === StudentActionType.ADD_NEW_STUDENT && 'Thêm thông tin thiếu nhi'}
-        {actionType === StudentActionType.DELETE_STUDENT && 'Xoá thông tin thiếu nhi'}
-      </DialogTitle>
-      <DialogContent dividers={true}>
-        {actionType === StudentActionType.DELETE_STUDENT && actionData ? (
-          <DialogContentText>
-            {`Bạn có chắc chắn muốn xoá thông tin thiếu nhi ${actionData.fullName}`}
-          </DialogContentText>
-        ) : (
-          <>
-            <form onSubmit={handleSubmit((data) => console.log(data))}>
+    <Dialog fullScreen={fullScreen} open={isOpen} onClose={onClose}>
+      {actionType === StudentActionType.DELETE_STUDENT && (
+        <RemoveStudentDialog
+          onClose={onClose}
+          handleSubmit={handleSubmit(onSubmit)}
+          fullName={actionData?.fullName}
+        />
+      )}
+      {actionType !== StudentActionType.DELETE_STUDENT && (
+        <>
+          <DialogTitle>
+            {actionType === StudentActionType.ADD_NEW_STUDENT
+              ? 'Thêm thông tin thiếu nhi'
+              : 'Cập nhật thông tin thiếu nhi'}
+          </DialogTitle>
+          <DialogContent dividers={true}>
+            <form>
               <Box>
                 <TextField
                   sx={{ maxWidth: '100%' }}
@@ -190,6 +199,11 @@ const StudentDialogComponent = ({
                   margin="normal"
                   fullWidth={true}
                   type={'file'}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    if (event.target.files?.[0]) {
+                      setValue('avatar', event.target.files[0])
+                    }
+                  }}
                 />
 
                 {actionData?.avatarPath && (
@@ -282,6 +296,16 @@ const StudentDialogComponent = ({
               </Box>
               <Controller
                 control={control}
+                name={'class'}
+                render={({ field }) => (
+                  <ClassDropdownComponent
+                    classObj={field.value}
+                    onChangeClass={handleChangeClass}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
                 name={'address'}
                 render={({ field }) => (
                   <TextField
@@ -367,27 +391,28 @@ const StudentDialogComponent = ({
                 />
               </Box>
             </form>
-          </>
-        )}
-      </DialogContent>
-      <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-        {formState.isSubmitting && (
-          <Box sx={{ width: '100%', position: 'absolute', top: 0, left: 0 }}>
-            <LinearProgressComponent progress={uploadImageProgress} />
-          </Box>
-        )}
-        <Button autoFocus={true} onClick={onClose} variant="outlined">
-          Huỷ
-        </Button>
-        <Button
-          onClick={handleSubmit(onSubmit)}
-          autoFocus={true}
-          variant="contained"
-          color={getButtonColor(actionType)}
-        >
-          {actionType === StudentActionType.DELETE_STUDENT ? 'Xoá' : 'Lưu'}
-        </Button>
-      </DialogActions>
+          </DialogContent>
+          <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
+            {formState.isSubmitting && (
+              <Box sx={{ width: '100%', position: 'absolute', top: 0, left: 0 }}>
+                <LinearProgressComponent progress={uploadImageProgress} />
+              </Box>
+            )}
+            <Button autoFocus={true} onClick={onClose} variant="outlined">
+              Huỷ
+            </Button>
+            <Button
+              type={'button'}
+              onClick={handleSubmit(onSubmit)}
+              autoFocus={true}
+              variant="contained"
+              color={actionType === StudentActionType.EDIT_STUDENT ? 'warning' : 'primary'}
+            >
+              Lưu
+            </Button>
+          </DialogActions>
+        </>
+      )}
     </Dialog>
   )
 }

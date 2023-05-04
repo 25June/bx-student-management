@@ -72,7 +72,7 @@ const getDefaultScoreBook = (studentId: string): ScoreBook => {
 
 const getScoreBook = (
   studentId: string,
-  addScoreBook: (scoreBook: ScoreBook) => any,
+  addScoreBook: (scoreBook: ScoreBook) => StudentScoreBooks,
   setStudentScoreBooks: (state: any) => void
 ) => {
   const query = doc(db, ScoreBookCollection, studentId)
@@ -142,12 +142,6 @@ export const useInitStudentScore = () => {
     }
     const reference = studentScoreBookRef(studentId)
     return setDoc(reference, initDefaultScoreBook(assessments))
-      .then((res) => {
-        return res
-      })
-      .catch((error) => {
-        console.error(error)
-      })
   }
 }
 
@@ -156,17 +150,7 @@ export const useSetNewStudentScore = () => {
     if (!(studentId || type || data)) {
       return Promise.reject('Invalid Data')
     }
-    console.log({ studentId, type, data })
     const reference = studentScoreBookRef(studentId)
     return setDoc(reference, { [type]: { [assessmentId]: data.score } }, { merge: true })
-      .then((res) => {
-        console.log(res)
-        console.log('success')
-      })
-      .catch((error) => {
-        console.log(error)
-        console.log('error')
-      })
-      .finally(() => console.log('request completed'))
   }
 }

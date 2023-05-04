@@ -17,10 +17,10 @@ import {
 } from 'services/scorebook'
 import { useGetStudentById } from 'services/student'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
-import { Assessment } from 'models'
+import { Assessment, ScoreBook } from 'models'
 import ScoreForm from 'modules/common/ScoreForm.component'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
-import { groupAssessments } from 'modules/Table/helpers'
+import { groupAssessments, GroupAssessmentProps } from 'modules/Table/helpers'
 
 interface ScoreBookPanelComponentProps {
   isOpen: boolean
@@ -78,6 +78,9 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
           </Box>
           <Box>
             {['score5', 'score15', 'score45', 'score60'].map((scoreType: string) => {
+              const scoreList = scoreBook[scoreType as keyof ScoreBook] as Record<string, number>
+              const assessmentByScoreType = groupAssessment[scoreType as keyof GroupAssessmentProps]
+              console.log({ scoreList, assessmentByScoreType })
               return (
                 <Accordion key={scoreType}>
                   <AccordionSummary
@@ -87,17 +90,16 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
                   >
                     <Typography sx={{ width: '70%', flexShrink: 0 }}>TB {scoreType}: </Typography>
                     <Typography sx={{ color: 'text.secondary' }}>
-                      {averageScore(Object.values((scoreBook as any)[scoreType]))}
+                      {averageScore(scoreList ? Object.values(scoreList) : [])}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    {(groupAssessment as any)[scoreType].map((assessment: Assessment) => {
-                      const score = (scoreBook as any)[scoreType]
+                    {assessmentByScoreType.map((assessment: Assessment) => {
                       return (
                         <ScoreForm
-                          data={score[assessment.id]}
+                          data={scoreList?.[assessment.id] || 0}
                           assessment={assessment}
-                          key={`${assessment.id}_${score[assessment.id]}`}
+                          key={`${assessment.id}_${scoreList?.[assessment.id] || 0}`}
                           onChangeData={handleChangeData(scoreType)}
                         />
                       )

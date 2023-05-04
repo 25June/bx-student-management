@@ -17,4 +17,5 @@ export type Student = {
   phones: Phone[]
   class?: Class
   fullName?: string
+  isDeleted?: boolean
 }
