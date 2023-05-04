@@ -1,4 +1,4 @@
-import { useContext, createContext, PropsWithChildren, useMemo, useEffect } from 'react'
+import { useContext, createContext, PropsWithChildren, useMemo } from 'react'
 import { useGetAssessments } from 'services'
 import { Assessment } from 'models'
 
@@ -8,8 +8,6 @@ const AssessmentContext = createContext(AssessmentDefaultValue)
 export const AssessmentProvider = ({ children }: PropsWithChildren) => {
   const { assessments } = useGetAssessments()
   const value = useMemo(() => {
-    console.log({ assessments })
-
     if (assessments) {
       return { assessments }
     }

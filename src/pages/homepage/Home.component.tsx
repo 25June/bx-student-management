@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Button, Box, ToggleButtonGroup } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Student } from 'models'
@@ -17,19 +17,25 @@ import {
 } from 'modules'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useIsMobile } from 'utils/common'
+import { getClass } from 'utils/getClassName'
+import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
+import { SelectChangeEvent } from '@mui/material/Select'
 
 const HomeComponent = () => {
   const mobile = useIsMobile()
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
 
   const [actionType, setActionType] = useState<string>('')
-  const [actionData, setActionData] = useState<Student | null>()
-  const [isOpenRightPanel, setOpenRightPanel] = useState(false)
+  const [isOpenInfoPanel, setOpenInfoPanel] = useState(false)
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
 
-  const { students } = useStudentContext()
+  const { students, setClassId, classId } = useStudentContext()
+
+  useEffect(() => {
+    setClassId('ts1a')
+  }, [setClassId])
 
   useEffect(() => {
     if (selectedStudent && students) {
@@ -54,10 +60,8 @@ const HomeComponent = () => {
 
   const closeStudentDialog = (): void => {
     setOpenStudentDialog(false)
-    setTimeout(() => {
-      setActionType('')
-      setActionData(null)
-    }, 0)
+    setActionType('')
+    setSelectedStudent(undefined)
   }
 
   const handleClickAction = (data: Student, type: string) => {
@@ -68,12 +72,12 @@ const HomeComponent = () => {
     }
     if (type === StudentActionType.VIEW_STUDENT) {
       setSelectedStudent(data)
-      setOpenRightPanel(true)
+      setOpenInfoPanel(true)
       return
     }
-    const student = (students || []).find((std: Student) => std.id === data.id)
+    const student = students.find((std: Student) => std.id === data.id)
     if (student) {
-      setActionData({
+      setSelectedStudent({
         ...student,
         fullName: student.lastName + ' ' + student.firstName,
       })
@@ -81,14 +85,11 @@ const HomeComponent = () => {
     }
   }
 
-  const handleClosePanel = () => {
-    setOpenRightPanel(false)
-  }
-
-  const handleCloseScoreBook = () => {
+  const handleCloseScoreBook = useCallback(() => {
     setSelectedStudent(undefined)
     setOpenScoreBook(false)
-  }
+  }, [])
+  const classObj = getClass(classId)
   return (
     <LayoutComponent>
       <Box
@@ -100,9 +101,23 @@ const HomeComponent = () => {
           marginBottom: mobile ? 2 : 1,
         }}
       >
-        <Box component={mobile ? 'h3' : 'h1'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
-          Thông Tin Thiếu Nhi
+        <Box
+          sx={{
+            padding: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2em',
+          }}
+        >
+          <Box component={mobile ? 'h5' : 'h4'}>Thông Tin Thiếu Nhi</Box>
+          <Box>
+            <ClassDropdownComponent
+              onChangeClass={(event: SelectChangeEvent) => setClassId(event.target.value)}
+              classObj={classObj}
+            />
+          </Box>
         </Box>
+
         <Box display={'flex'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
           <Button
             variant="contained"
@@ -113,12 +128,7 @@ const HomeComponent = () => {
             Thêm Thiếu Nhi
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <ToggleButtonGroup
-              value={displayType}
-              exclusive={true}
-              onChange={handleChangeDisplay}
-              aria-label="toggle-display"
-            >
+            <ToggleButtonGroup value={displayType} exclusive={true} onChange={handleChangeDisplay}>
               <ToggleButton value="table" aria-label="display-table" size="small">
                 <TableRowsIcon />
               </ToggleButton>
@@ -154,9 +164,9 @@ const HomeComponent = () => {
             </Box>
           ))}
           <InfoPanelComponent
-            isOpen={isOpenRightPanel}
+            isOpen={isOpenInfoPanel}
             studentInfo={selectedStudent}
-            onClose={handleClosePanel}
+            onClose={() => setOpenInfoPanel(false)}
             onClickAction={handleClickAction}
           />
           {isOpenScoreBook && selectedStudent && (
@@ -171,8 +181,8 @@ const HomeComponent = () => {
       <StudentDialogComponent
         isOpen={isOpenStudentDialog}
         onClose={() => closeStudentDialog()}
-        actionType={actionType}
-        actionData={actionData}
+        action={actionType}
+        student={selectedStudent}
       />
     </LayoutComponent>
   )

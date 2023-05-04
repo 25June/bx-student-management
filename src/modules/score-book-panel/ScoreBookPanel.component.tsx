@@ -46,13 +46,9 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
 
   const groupAssessment = groupAssessments(assessments)
 
-  if (scoreBook === null) {
-    initStudentScore(studentId)
-  }
+  if (scoreBook === null) initStudentScore(studentId)
 
-  if (!scoreBook || !studentInfo) {
-    return null
-  }
+  if (!scoreBook || !studentInfo) return null
 
   return (
     <MuiDrawer
@@ -80,7 +76,6 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
             {['score5', 'score15', 'score45', 'score60'].map((scoreType: string) => {
               const scoreList = scoreBook[scoreType as keyof ScoreBook] as Record<string, number>
               const assessmentByScoreType = groupAssessment[scoreType as keyof GroupAssessmentProps]
-              console.log({ scoreList, assessmentByScoreType })
               return (
                 <Accordion key={scoreType}>
                   <AccordionSummary

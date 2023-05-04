@@ -36,8 +36,8 @@ import { getValues, StudentForm } from './helpers'
 interface StudentDialogComponentProps {
   isOpen: boolean
   onClose: () => void
-  actionType: string
-  actionData?: Student | null
+  action: string
+  student?: Student
 }
 
 interface RemoveStudentDialogProps {
@@ -70,8 +70,8 @@ const RemoveStudentDialog = ({ handleSubmit, onClose, fullName }: RemoveStudentD
 const StudentDialogComponent = ({
   isOpen,
   onClose,
-  actionType,
-  actionData,
+  action,
+  student,
 }: StudentDialogComponentProps) => {
   const fullScreen = useIsMobile()
   const { showSnackbar } = useSnackbarContext()
@@ -80,25 +80,25 @@ const StudentDialogComponent = ({
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
   const { handleSubmit, control, setValue, reset, formState } = useForm<StudentForm>({
-    defaultValues: getValues(actionData),
+    defaultValues: getValues(student),
   })
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   useEffect(() => {
-    if (actionType === StudentActionType.EDIT_STUDENT) {
-      const stu: StudentForm = getValues(actionData)
+    if (action === StudentActionType.EDIT_STUDENT) {
+      const stu: StudentForm = getValues(student)
       Object.keys(stu).forEach((key: string) => {
         setValue(key as keyof StudentForm, stu[key as keyof StudentForm])
       })
     }
     return () => reset()
-  }, [actionType, actionData, reset, setValue])
+  }, [action, student, reset, setValue])
 
   const onSubmit = async (data: StudentForm) => {
     const { firstName, lastName } = splitFullName(data.fullName)
 
-    if (actionType === StudentActionType.DELETE_STUDENT && actionData?.id) {
+    if (action === StudentActionType.DELETE_STUDENT && student?.id) {
       return deleteStudent({
-        id: actionData.id,
+        id: student.id,
         onSuccess: () =>
           showSnackbar(`Xoá Thiếu Nhi ${lastName} ${firstName} Thành Công`, 'success'),
         onError: () => showSnackbar(`Xoá Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
@@ -111,10 +111,10 @@ const StudentDialogComponent = ({
       downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
       delete data.avatar
     }
-    if (actionType === StudentActionType.EDIT_STUDENT && actionData?.id) {
+    if (action === StudentActionType.EDIT_STUDENT && student?.id) {
       const updatedStudent: Student = {
         ...data,
-        id: actionData.id,
+        id: student.id,
         firstName,
         lastName,
         birthday: formatDate(data.birthday, true),
@@ -173,17 +173,17 @@ const StudentDialogComponent = ({
 
   return (
     <Dialog fullScreen={fullScreen} open={isOpen} onClose={onClose}>
-      {actionType === StudentActionType.DELETE_STUDENT && (
+      {action === StudentActionType.DELETE_STUDENT && (
         <RemoveStudentDialog
           onClose={onClose}
           handleSubmit={handleSubmit(onSubmit)}
-          fullName={actionData?.fullName}
+          fullName={student?.fullName}
         />
       )}
-      {actionType !== StudentActionType.DELETE_STUDENT && (
+      {action !== StudentActionType.DELETE_STUDENT && (
         <>
           <DialogTitle>
-            {actionType === StudentActionType.ADD_NEW_STUDENT
+            {action === StudentActionType.ADD_NEW_STUDENT
               ? 'Thêm thông tin thiếu nhi'
               : 'Cập nhật thông tin thiếu nhi'}
           </DialogTitle>
@@ -206,12 +206,9 @@ const StudentDialogComponent = ({
                   }}
                 />
 
-                {actionData?.avatarPath && (
+                {student?.avatarPath && (
                   <Box textAlign={'center'}>
-                    <ImageBoxComponent
-                      imagePath={actionData.avatarPath}
-                      gender={actionData.gender}
-                    />
+                    <ImageBoxComponent imagePath={student.avatarPath} gender={student.gender} />
                   </Box>
                 )}
               </Box>
@@ -406,7 +403,7 @@ const StudentDialogComponent = ({
               onClick={handleSubmit(onSubmit)}
               autoFocus={true}
               variant="contained"
-              color={actionType === StudentActionType.EDIT_STUDENT ? 'warning' : 'primary'}
+              color={action === StudentActionType.EDIT_STUDENT ? 'warning' : 'primary'}
             >
               Lưu
             </Button>

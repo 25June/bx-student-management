@@ -21,11 +21,11 @@ const db = getFirestore(app)
 const StudentCollection = 'students'
 const studentRef = collection(db, StudentCollection)
 
-export const useGetStudents = () => {
+export const useGetStudents = (classId: string = 'kt1') => {
   const [students, setStudents] = useState<Student[] | null>()
   const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
-    const queryStudents = query(studentRef, where('class.id', '==', 'ts1a'))
+    const queryStudents = query(studentRef, where('class.id', '==', classId))
     const listener = onSnapshot(
       queryStudents,
       (snapshot) => {
@@ -43,7 +43,7 @@ export const useGetStudents = () => {
       }
     )
     return listener
-  }, [showSnackbar])
+  }, [showSnackbar, classId])
   return { students, isLoading: typeof students === 'undefined' }
 }
 
