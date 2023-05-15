@@ -67,8 +67,8 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
   }
   const groupAssessment = groupAssessments(assessments)
   return (
-    <Dialog open={isOpen} onClose={onClose} aria-labelledby="responsive-dialog-title">
-      <DialogTitle id="responsive-dialog-title">Cập nhật thông tin bài kiểm tra</DialogTitle>
+    <Dialog open={isOpen} onClose={onClose} aria-labelledby="scorebook-dialog-title">
+      <DialogTitle id="scorebook-dialog-title">Cập nhật thông tin bài kiểm tra</DialogTitle>
       <DialogContent dividers={true}>
         <ScoreDetail
           title={'Kiểm tra 5 phút'}

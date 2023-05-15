@@ -16,6 +16,9 @@ import { Assessment } from 'models/assessment'
 import { getToday } from 'utils'
 import { useAddNewAssessment, useDeleteAssessment, useEditAssessment } from 'services'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { AssessmentEnum } from 'constant/common'
+import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
+import { SelectChangeEvent } from '@mui/material/Select'
 
 type AssessmentForm = {
   bookDate: string
@@ -34,7 +37,7 @@ const AssessmentFormDefaultValue = (data: Assessment | null) => {
 
   return {
     bookDate: getToday(),
-    type: 'KT5',
+    type: AssessmentEnum.KT5,
     lesson: '',
   }
 }
@@ -67,7 +70,7 @@ const AssessmentDialogComponent = ({
   const deleteAssessment = useDeleteAssessment()
   const { showSnackbar } = useSnackbarContext()
 
-  const { handleSubmit, control, reset } = useForm<AssessmentForm>({
+  const { handleSubmit, control, reset, setValue } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
   })
   useEffect(() => {
@@ -142,9 +145,14 @@ const AssessmentDialogComponent = ({
     })
     return
   }
+
+  const handleChangeAssessmentType = (event: SelectChangeEvent) => {
+    setValue('type', event.target.value)
+  }
+
   return (
-    <Dialog open={isOpen} onClose={onClose} aria-labelledby="responsive-dialog-title">
-      <DialogTitle id="responsive-dialog-title">
+    <Dialog open={isOpen} onClose={onClose} aria-labelledby="assessment-dialog-title">
+      <DialogTitle id="assessment-dialog-title">
         {action === AssessmentActionType.EDIT_ASSESSMENT && 'Cập nhật thông tin bài kiểm tra'}
         {action === AssessmentActionType.ADD_NEW_ASSESSMENT && 'Thêm thông tin bài kiểm tra'}
         {action === AssessmentActionType.DELETE_ASSESSMENT && 'Xoá thông tin bài kiểm tra'}
@@ -175,13 +183,12 @@ const AssessmentDialogComponent = ({
                 control={control}
                 name={'type'}
                 render={({ field }) => (
-                  <TextField
-                    id="outlined-type"
-                    label="Loại bài kiểm tra"
-                    margin="normal"
-                    fullWidth={true}
-                    {...field}
-                  />
+                  <Box mt={2} mb={2}>
+                    <AssessmentDropdownComponent
+                      assessmentType={field.value}
+                      onChangeAssessmentType={handleChangeAssessmentType}
+                    />
+                  </Box>
                 )}
               />
               <Controller

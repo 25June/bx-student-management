@@ -26,7 +26,7 @@ interface DrawerComponentProps {
 
 const Menu = {
   LIST: { text: 'Danh Sách', icon: <ListAltIcon />, to: Router.HOME },
-  DILIGENT: { text: 'Điểm Chuyên Cần', icon: <CoPresentIcon />, to: Router.IMPORT },
+  DILIGENT: { text: 'Điểm Chuyên Cần', icon: <CoPresentIcon />, to: Router.DILIGENT },
   SCORE: { text: 'Điểm Học Tập', icon: <ScoreIcon />, to: Router.SCORE_BOOK },
   ASSESSMENT: { text: 'Bài Kiểm Tra', icon: <AssignmentIcon />, to: Router.ASSESSMENT },
   IMPORT: { text: 'Import', icon: <ImportExportIcon />, to: Router.IMPORT },

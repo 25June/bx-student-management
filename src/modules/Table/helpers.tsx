@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { ScoreBookActionType, StudentActionType } from 'constant'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { AssessmentEnum } from 'constant/common'
 
 export const studentColumns = [
   { field: 'saintName', headerName: 'Tên Thánh', render: (data: string) => data },
@@ -42,22 +43,22 @@ export const groupAssessments = (assessments: Assessment[]): GroupAssessmentProp
   return assessments.reduce(
     (acc, cur) => {
       switch (cur.type) {
-        case 'KT5':
+        case AssessmentEnum.KT5:
           return {
             ...acc,
             score5: [...acc.score5, cur],
           }
-        case 'KT15':
+        case AssessmentEnum.KT15:
           return {
             ...acc,
             score15: [...acc.score15, cur],
           }
-        case 'KT45':
+        case AssessmentEnum.KT45:
           return {
             ...acc,
             score45: [...acc.score45, cur],
           }
-        case 'KT60':
+        case AssessmentEnum.KT60:
           return {
             ...acc,
             score60: [...acc.score60, cur],
@@ -79,8 +80,8 @@ type ScoreProps = Record<string, number>
 const Score = ({ data }: { data: ScoreProps }) => {
   return (
     <Box display={'flex'} gap={2}>
-      {Object.keys(data).map((key, index) => (
-        <span key={`${key}-${index}`}>{data[key]}</span>
+      {Object.keys(data).map((key) => (
+        <span key={key}>{data[key]}</span>
       ))}
     </Box>
   )
@@ -133,27 +134,27 @@ export const renderScoreBookActions = (onClickActions: (action: string) => void)
 }
 
 export const ScoreBookColumns = [
-  { field: 'saintName', headerName: 'Tên Thánh', render: (data: string) => data },
-  { field: 'lastName', headerName: 'Họ', render: (data: string) => data },
-  { field: 'firstName', headerName: 'Tên', render: (data: string) => data },
+  { field: 'saintName', headerName: 'Tên Thánh', render: (saintName: string) => saintName },
+  { field: 'lastName', headerName: 'Họ', render: (lastName: string) => lastName },
+  { field: 'firstName', headerName: 'Tên', render: (firstName: string) => firstName },
   {
     field: 'score5',
-    headerName: 'KT5',
-    render: (data: ScoreProps = {}) => <Score data={data} />,
+    headerName: AssessmentEnum.KT5,
+    render: (data: ScoreProps) => Object.keys(data)?.length !== 0 && <Score data={data} />,
   },
   {
     field: 'score15',
-    headerName: 'KT15',
-    render: (data: ScoreProps = {}) => <Score data={data} />,
+    headerName: AssessmentEnum.KT15,
+    render: (data: ScoreProps) => Object.keys(data)?.length !== 0 && <Score data={data} />,
   },
   {
     field: 'score45',
-    headerName: 'KT45',
-    render: (data: ScoreProps = {}) => <Score data={data} />,
+    headerName: AssessmentEnum.KT45,
+    render: (data: ScoreProps) => Object.keys(data)?.length !== 0 && <Score data={data} />,
   },
   {
     field: 'score60',
-    headerName: 'KT60',
-    render: (data: ScoreProps = {}) => <Score data={data} />,
+    headerName: AssessmentEnum.KT60,
+    render: (data: ScoreProps) => Object.keys(data)?.length !== 0 && <Score data={data} />,
   },
 ]

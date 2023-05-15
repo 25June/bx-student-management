@@ -1,12 +1,14 @@
 import { useContext, createContext, PropsWithChildren, useMemo } from 'react'
 import { useGetAssessments } from 'services'
 import { Assessment } from 'models'
+import { useClassContext } from 'contexts/ClassContext'
 
 const AssessmentDefaultValue = { assessments: [] } as { assessments: Assessment[] }
 const AssessmentContext = createContext(AssessmentDefaultValue)
 
 export const AssessmentProvider = ({ children }: PropsWithChildren) => {
-  const { assessments } = useGetAssessments()
+  const { classId } = useClassContext()
+  const { assessments } = useGetAssessments(classId)
   const value = useMemo(() => {
     if (assessments) {
       return { assessments }

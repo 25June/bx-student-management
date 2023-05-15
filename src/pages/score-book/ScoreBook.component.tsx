@@ -12,11 +12,13 @@ import { useStudentContext } from 'contexts/StudentContext'
 import { useIsMobile } from 'utils/common'
 import AssessmentDialogComponent from 'modules/assessment-dialog/AssessmentDialog.component'
 import { AssessmentActionType } from 'constant'
+import { useClassContext } from 'contexts/ClassContext'
 
 const ScoreBookComponent = () => {
   const mobile = useIsMobile()
   const { students } = useStudentContext()
-  const { studentScoreBooks: stuScoreBooks } = useGetStudentScoreBooks({ students })
+  const { classId } = useClassContext()
+  const { studentScoreBooks: stuScoreBooks } = useGetStudentScoreBooks({ students, classId })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
   const [isOpenAssessmentDialog, openAssessmentDialog] = useState<boolean>(false)
 
@@ -44,7 +46,7 @@ const ScoreBookComponent = () => {
           </Button>
         </Box>
       </Box>
-      {stuScoreBooks.length !== 0 && (
+      {stuScoreBooks && stuScoreBooks.length !== 0 && (
         <TableComponent
           columns={ScoreBookColumns}
           rows={stuScoreBooks}

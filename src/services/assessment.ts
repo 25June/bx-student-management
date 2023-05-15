@@ -5,35 +5,55 @@ import {
   collection,
   doc,
   getFirestore,
-  limit,
+  where,
   onSnapshot,
   query,
   serverTimestamp,
   updateDoc,
   Timestamp,
+  Unsubscribe,
 } from 'firebase/firestore'
 import { app } from '../firebase'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { useClassContext } from 'contexts/ClassContext'
 
 const db = getFirestore(app)
 const AssessmentCollection = 'assessments'
 const assessmentRef = collection(db, AssessmentCollection)
 
-export const useGetAssessments = () => {
+export const useGetAssessments = (classId: string) => {
   const [assessments, setAssessments] = useState<Assessment[]>()
+  const [listener, setListener] = useState<Unsubscribe>()
   const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
-    const queryAssessments = query(assessmentRef, limit(100))
-    const listener = onSnapshot(queryAssessments, (snapshot) => {
-      setAssessments(
-        snapshot.docs
-          .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
-          .filter((assessment) => !assessment.isDeleted)
-      )
-      showSnackbar('Get Assessments Success', 'success')
-    })
-    return listener
-  }, [showSnackbar])
+    if (classId) {
+      const queryAssessments = query(assessmentRef, where('classId', '==', classId))
+      const listenerData = onSnapshot(queryAssessments, (snapshot) => {
+        if (snapshot.empty) {
+          showSnackbar(`Get Assessments empty for class ${classId}`, 'warning')
+          setAssessments([])
+          return
+        }
+        setAssessments(
+          snapshot.docs
+            .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
+            .filter((assessment) => !assessment.isDeleted)
+        )
+        showSnackbar('Get Assessments Success', 'success')
+      })
+      setListener(() => listenerData)
+      return listenerData
+    }
+  }, [classId, showSnackbar])
+
+  useEffect(() => {
+    if (listener) {
+      console.log('unsubscribe assessment when classId change')
+      listener()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId])
+
   return { assessments, isLoading: typeof assessments === 'undefined' }
 }
 
@@ -45,11 +65,13 @@ interface AddNewAssessmentProps {
 }
 
 export const useAddNewAssessment = () => {
+  const { classId } = useClassContext()
   return ({ dataInput, onSuccess, onError, onComplete }: AddNewAssessmentProps) => {
     const time = serverTimestamp() as Timestamp
     const data = {
       ...dataInput,
       createdDate: time,
+      classId,
     }
     addDoc(collection(db, AssessmentCollection), data)
       .then((value) => {

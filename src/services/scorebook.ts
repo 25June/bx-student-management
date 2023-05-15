@@ -1,19 +1,29 @@
-import { app } from '../firebase'
+import { fireStoreDB } from '../firebase'
 import { useState, useEffect } from 'react'
-import { doc, getFirestore, collection, onSnapshot, setDoc } from 'firebase/firestore'
-import { Assessment, ScoreBook, Student, StudentScoreBooks } from 'models'
+import {
+  doc,
+  collection,
+  onSnapshot,
+  setDoc,
+  Unsubscribe,
+  where,
+  documentId,
+  query,
+} from 'firebase/firestore'
+import { Assessment, Student, StudentScoreBooks } from 'models'
+import { ScoreBook } from 'models/ScoreBook'
 
 import { useAssessmentContext } from 'contexts/AssessmentContext'
+import { AssessmentEnum } from 'constant/common'
 
-const db = getFirestore(app)
 const ScoreBookCollection = 'scoreBooks'
-const scoreBookRef = collection(db, ScoreBookCollection)
-const studentScoreBookRef = (studentId: string) => doc(db, ScoreBookCollection, studentId)
+const scoreBookRef = collection(fireStoreDB, ScoreBookCollection)
+const studentScoreBookRef = (studentId: string) => doc(fireStoreDB, ScoreBookCollection, studentId)
 
 const initDefaultScoreBook = (assessments: Assessment[]) => {
   return assessments.reduce(
     (acc, cur) => {
-      if (cur.type === 'KT5') {
+      if (cur.type === AssessmentEnum.KT5) {
         return {
           ...acc,
           score5: {
@@ -22,7 +32,7 @@ const initDefaultScoreBook = (assessments: Assessment[]) => {
           },
         }
       }
-      if (cur.type === 'KT15') {
+      if (cur.type === AssessmentEnum.KT15) {
         return {
           ...acc,
           score15: {
@@ -31,7 +41,7 @@ const initDefaultScoreBook = (assessments: Assessment[]) => {
           },
         }
       }
-      if (cur.type === 'KT45') {
+      if (cur.type === AssessmentEnum.KT45) {
         return {
           ...acc,
           score45: {
@@ -40,7 +50,7 @@ const initDefaultScoreBook = (assessments: Assessment[]) => {
           },
         }
       }
-      if (cur.type === 'KT60') {
+      if (cur.type === AssessmentEnum.KT60) {
         return {
           ...acc,
           score60: {
@@ -70,48 +80,112 @@ const getDefaultScoreBook = (studentId: string): ScoreBook => {
   }
 }
 
-const getScoreBook = (
-  studentId: string,
-  addScoreBook: (scoreBook: ScoreBook) => StudentScoreBooks,
-  setStudentScoreBooks: (state: any) => void
-) => {
-  const query = doc(db, ScoreBookCollection, studentId)
-  return onSnapshot(query, (snapshot) => {
-    let finalData: StudentScoreBooks
-    if (snapshot.exists()) {
-      finalData = addScoreBook({ ...snapshot.data(), id: snapshot.id } as ScoreBook)
-      setStudentScoreBooks((prevScoreBooks: Record<string, StudentScoreBooks>) => {
-        return { ...prevScoreBooks, [snapshot.id]: finalData }
-      })
+interface ChunkingFormatProps {
+  studentIds: string[]
+  studentSliceArr: Student[]
+  chunks: {
+    studentIds: string[]
+    studentSliceArr: Student[]
+  }[]
+}
+
+const ChunkingFormatDefaultValue = { studentIds: [], studentSliceArr: [], chunks: [] }
+const chunkingScoreBook = (students: Student[]) => {
+  return students.reduce(
+    (acc: ChunkingFormatProps, cur: Student, curIndex: number): ChunkingFormatProps => {
+      if (curIndex === students.length - 1) {
+        return {
+          studentIds: [],
+          studentSliceArr: [],
+          chunks: acc.chunks.concat({
+            studentSliceArr: [...acc.studentSliceArr, cur],
+            studentIds: [...acc.studentIds, cur.id],
+          }),
+        }
+      }
+      if (acc.studentSliceArr.length === 10) {
+        return {
+          studentIds: [cur.id],
+          studentSliceArr: [cur],
+          chunks: acc.chunks.concat({
+            studentSliceArr: acc.studentSliceArr,
+            studentIds: acc.studentIds,
+          }),
+        }
+      }
+      return {
+        ...acc,
+        studentIds: [...acc.studentIds, cur.id],
+        studentSliceArr: [...acc.studentSliceArr, cur],
+      }
+    },
+    ChunkingFormatDefaultValue
+  )
+}
+
+const getScoreBook = (students: Student[], setStudentScoreBooks: (state: any) => void) => {
+  const { chunks } = chunkingScoreBook(students)
+  return chunks.map(({ studentIds, studentSliceArr }) => {
+    const ScoreBookQuery = query(scoreBookRef, where(documentId(), 'in', studentIds))
+    return onSnapshot(ScoreBookQuery, (snapshot) => {
+      if (snapshot.docs) {
+        const studentScoreBooks = studentSliceArr.map((student: Student) => {
+          const scoreBook = snapshot.docs.find((data) => data.id === student.id)
+          if (scoreBook && scoreBook.exists()) {
+            return { ...scoreBook.data(), ...student, id: student.id }
+          }
+          return { ...getDefaultScoreBook(student.id), ...student, id: student.id }
+        })
+
+        setStudentScoreBooks((prevStudentScoreBooks: StudentScoreBooks[]) => {
+          if (!prevStudentScoreBooks || prevStudentScoreBooks.length === 0) {
+            return studentScoreBooks
+          }
+          if (prevStudentScoreBooks[0].class?.id !== studentScoreBooks[0].class?.id) {
+            return studentScoreBooks
+          }
+          return [...prevStudentScoreBooks, ...studentScoreBooks]
+        })
+        return
+      }
+      setStudentScoreBooks([])
       return
-    }
-    finalData = addScoreBook(getDefaultScoreBook(studentId))
-    setStudentScoreBooks((prevScoreBooks: Record<string, StudentScoreBooks>) => {
-      return { ...prevScoreBooks, [studentId]: finalData }
     })
-    return
   })
 }
 
-const formatData = (student: Student) => {
-  return (scoreBook: ScoreBook): StudentScoreBooks => {
-    return { ...student, ...scoreBook }
-  }
-}
+export const useGetStudentScoreBooks = ({
+  students,
+  classId,
+}: {
+  students: Student[]
+  classId: string
+}) => {
+  const [studentScoreBooks, setStudentScoreBooks] = useState<StudentScoreBooks[]>()
+  const [listeners, setListeners] = useState<Unsubscribe[]>()
 
-export const useGetStudentScoreBooks = ({ students }: { students: Student[] }) => {
-  const [studentScoreBooks, setStudentScoreBooks] = useState<Record<string, StudentScoreBooks>>({})
   useEffect(() => {
     if (students.length !== 0) {
-      const listeners = students.map((stu) => {
-        return getScoreBook(stu.id, formatData(stu), setStudentScoreBooks)
-      })
-      // unsubscribe step
-      return () => listeners.forEach((listener) => listener())
+      const listenerData = getScoreBook(students, setStudentScoreBooks)
+      setListeners(listenerData)
+      return () => {
+        console.log('unsubscribe scorebook when unmount')
+        listenerData.forEach((listener) => listener())
+      }
     }
   }, [students])
+
+  useEffect(() => {
+    if (listeners && studentScoreBooks) {
+      console.log('unsubscribe scorebook when class Id change: ')
+      listeners.forEach((listener) => listener())
+      setListeners(undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId])
+
   return {
-    studentScoreBooks: Object.values(studentScoreBooks),
+    studentScoreBooks,
     isLoading: typeof studentScoreBooks === 'undefined',
   }
 }
@@ -120,8 +194,8 @@ export const useGetStudentScoreBook = (studentId: string) => {
   const [studentScoreBook, setStudentScoreBook] = useState<ScoreBook | null>()
   useEffect(() => {
     if (studentId) {
-      const query = doc(scoreBookRef, studentId)
-      onSnapshot(query, (snapshot) => {
+      const studentScoreBookQuery = doc(scoreBookRef, studentId)
+      onSnapshot(studentScoreBookQuery, (snapshot) => {
         if (snapshot.exists()) {
           const value = { ...snapshot.data(), id: snapshot.id } as ScoreBook
           setStudentScoreBook(value)

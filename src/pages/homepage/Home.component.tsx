@@ -17,9 +17,7 @@ import {
 } from 'modules'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useIsMobile } from 'utils/common'
-import { getClass } from 'utils/getClassName'
-import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
-import { SelectChangeEvent } from '@mui/material/Select'
+import { useClassContext } from 'contexts/ClassContext'
 
 const HomeComponent = () => {
   const mobile = useIsMobile()
@@ -30,8 +28,8 @@ const HomeComponent = () => {
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
-
-  const { students, setClassId, classId } = useStudentContext()
+  const { setClassId } = useClassContext()
+  const { students } = useStudentContext()
 
   useEffect(() => {
     setClassId('ts1a')
@@ -89,7 +87,7 @@ const HomeComponent = () => {
     setSelectedStudent(undefined)
     setOpenScoreBook(false)
   }, [])
-  const classObj = getClass(classId)
+
   return (
     <LayoutComponent>
       <Box
@@ -106,15 +104,12 @@ const HomeComponent = () => {
             padding: 2,
             display: 'flex',
             alignItems: 'center',
-            gap: '2em',
+            flexDirection: mobile ? 'column' : 'row',
+            gap: mobile ? 2 : 1,
           }}
         >
-          <Box component={mobile ? 'h5' : 'h4'}>Thông Tin Thiếu Nhi</Box>
-          <Box>
-            <ClassDropdownComponent
-              onChangeClass={(event: SelectChangeEvent) => setClassId(event.target.value)}
-              classObj={classObj}
-            />
+          <Box component={mobile ? 'h3' : 'h2'} marginBottom={0}>
+            Thông Tin Thiếu Nhi
           </Box>
         </Box>
 
@@ -180,7 +175,7 @@ const HomeComponent = () => {
       )}
       <StudentDialogComponent
         isOpen={isOpenStudentDialog}
-        onClose={() => closeStudentDialog()}
+        onClose={closeStudentDialog}
         action={actionType}
         student={selectedStudent}
       />

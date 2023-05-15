@@ -1,4 +1,4 @@
-import { app } from '../firebase'
+import { fireStoreDB } from '../firebase'
 import { useState, useEffect } from 'react'
 import {
   addDoc,
@@ -6,45 +6,57 @@ import {
   QueryDocumentSnapshot,
   DocumentData,
   query,
-  getFirestore,
   collection,
   onSnapshot,
   writeBatch,
   where,
   serverTimestamp,
   updateDoc,
+  Unsubscribe,
 } from 'firebase/firestore'
 import { Student } from 'models'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 
-const db = getFirestore(app)
 const StudentCollection = 'students'
-const studentRef = collection(db, StudentCollection)
-
-export const useGetStudents = (classId: string = 'kt1') => {
+export const studentRef = collection(fireStoreDB, StudentCollection)
+export const useGetStudents = (classId: string) => {
   const [students, setStudents] = useState<Student[] | null>()
+  const [listener, setListener] = useState<Unsubscribe>()
   const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
-    const queryStudents = query(studentRef, where('class.id', '==', classId))
-    const listener = onSnapshot(
-      queryStudents,
-      (snapshot) => {
-        setStudents(
-          snapshot.docs.map(
-            (data: QueryDocumentSnapshot<DocumentData>) =>
-              ({ ...data.data(), id: data.id } as Student)
+    if (classId) {
+      const queryStudents = query(studentRef, where('class.id', '==', classId))
+      const listenerData = onSnapshot(
+        queryStudents,
+        (snapshot) => {
+          setStudents(
+            snapshot.docs.map(
+              (data: QueryDocumentSnapshot<DocumentData>) =>
+                ({ ...data.data(), id: data.id } as Student)
+            )
           )
-        )
-        showSnackbar('Get Students Success', 'success')
-      },
-      (error) => {
-        console.error(error)
-        setStudents(null)
-      }
-    )
-    return listener
+          showSnackbar('Get Students Success', 'success')
+        },
+        (error) => {
+          console.error(error)
+          setStudents(null)
+        }
+      )
+      setListener(() => listenerData)
+      return listenerData
+    }
   }, [showSnackbar, classId])
-  return { students, isLoading: typeof students === 'undefined' }
+
+  useEffect(() => {
+    if (listener && students) {
+      console.log('stop listener when class change')
+      listener()
+      setListener(undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId])
+
+  return { students, isLoading: typeof students === 'undefined', listener }
 }
 
 export const useGetStudentById = (id: string) => {
@@ -84,7 +96,7 @@ export const useAddNewStudent = () => {
       ...dataInput,
       createdDate: serverTimestamp(),
     }
-    addDoc(collection(db, StudentCollection), data)
+    addDoc(collection(fireStoreDB, StudentCollection), data)
       .then((value) => {
         console.info(value)
         onSuccess()
@@ -108,9 +120,9 @@ interface BatchAddStudentsParams {
 
 export const useBatchAddStudents = () => {
   return async ({ students, onSuccess, onError, onComplete }: BatchAddStudentsParams) => {
-    const batch = writeBatch(db)
+    const batch = writeBatch(fireStoreDB)
     students.forEach((student) => {
-      const docRef = doc(collection(db, StudentCollection))
+      const docRef = doc(collection(fireStoreDB, StudentCollection))
       batch.set(docRef, { ...student, isDeleted: false, createdDate: serverTimestamp() })
     })
     await batch
@@ -137,7 +149,7 @@ interface UpdateStudentParams {
 export const useUpdateStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: UpdateStudentParams) => {
     console.log(dataInput)
-    const ref = doc(db, StudentCollection, dataInput.id)
+    const ref = doc(fireStoreDB, StudentCollection, dataInput.id)
     updateDoc(ref, { updatedDate: serverTimestamp(), ...dataInput })
       .then((value) => {
         console.info(value)
@@ -162,7 +174,7 @@ interface DeleteStudentParams {
 
 export const useDeleteStudent = () => {
   return ({ id, onSuccess, onError, onComplete }: DeleteStudentParams) => {
-    const ref = doc(db, StudentCollection, id)
+    const ref = doc(fireStoreDB, StudentCollection, id)
     updateDoc(ref, { isDeleted: true, updatedDate: serverTimestamp() })
       .then((value) => {
         console.info(value)

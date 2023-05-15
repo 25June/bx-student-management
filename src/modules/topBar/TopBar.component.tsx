@@ -11,6 +11,9 @@ import { styled } from '@mui/material/styles'
 import MuiAppBar from '@mui/material/AppBar'
 import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
+import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
+import { useClassContext } from 'contexts/ClassContext'
+import { SelectChangeEvent } from '@mui/material/Select'
 
 interface TopBarComponentProps {
   isOpen: boolean
@@ -41,6 +44,7 @@ const AppBar = styled(MuiAppBar, {
 
 const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
   const navigate = useNavigate()
+  const { classObj, setClassId } = useClassContext()
   const handleDrawerOpen = () => {
     setOpen(!isOpen)
   }
@@ -49,6 +53,10 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
       console.info('sign out successfully')
       navigate(Router.SIGN_IN)
     })
+  }
+
+  const handleChangeClassId = (event: SelectChangeEvent) => {
+    setClassId(event.target.value)
   }
 
   return (
@@ -66,9 +74,18 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
           <MenuIcon />
         </IconButton>
         <Box width={'100%'} display={'flex'} justifyContent={'space-between'}>
-          <Typography variant="h6" noWrap={true} component="div">
-            Giáo Lý Bình Xuyên
-          </Typography>
+          <Box display={'flex'} gap={2}>
+            <Typography variant="h6" noWrap={true} component="div">
+              Giáo Lý Bình Xuyên
+            </Typography>
+            <Box maxWidth={200}>
+              <ClassDropdownComponent
+                classObj={classObj}
+                onChangeClass={handleChangeClassId}
+                size={'small'}
+              />
+            </Box>
+          </Box>
           <IconButton color="inherit" aria-label="open drawer" onClick={handleSignOut} edge="start">
             <ExitToAppIcon />
           </IconButton>

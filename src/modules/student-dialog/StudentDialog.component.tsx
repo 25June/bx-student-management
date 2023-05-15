@@ -310,6 +310,7 @@ const StudentDialogComponent = ({
                     label="Dia Chi"
                     helperText="Ex: 231/83/13T Duong Ba Trac, p1, q8"
                     margin="normal"
+                    multiline={true}
                     fullWidth={true}
                     {...field}
                   />

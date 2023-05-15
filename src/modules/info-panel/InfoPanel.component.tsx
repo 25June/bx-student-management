@@ -38,7 +38,9 @@ const InfoPanelComponent = ({
       open={isOpen}
       onClose={onClose}
       onKeyDown={onClose}
-      sx={{ width: '100%', maxWidth: 375 }}
+      sx={{
+        [`& .MuiDrawer-paper`]: { width: 350, boxSizing: 'border-box' },
+      }}
     >
       <Box pt={9} pr={2} pl={2} mb={5}>
         <Box display={'flex'} alignItems={'center'} mb={2}>
@@ -46,7 +48,13 @@ const InfoPanelComponent = ({
             Back
           </Button>
         </Box>
-        <ImageBoxComponent imagePath={studentInfo.avatarPath} gender={studentInfo.gender} />
+        <Box display={'flex'}>
+          <ImageBoxComponent
+            imagePath={studentInfo.avatarPath}
+            gender={studentInfo.gender}
+            maxWidth={200}
+          />
+        </Box>
         <Box>
           <Box textAlign={'center'} component={'h2'} margin={0}>
             {studentInfo.saintName}
@@ -75,6 +83,7 @@ const InfoPanelComponent = ({
               value={studentInfo.address}
               variant={'standard'}
               sx={{ width: '100%' }}
+              multiline={true}
             />
           </Box>
           <Box
