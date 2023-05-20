@@ -22,7 +22,7 @@ export enum ScoreBookActionType {
   VIEW_SCORE_BOOK = 'VIEW_SCORE_BOOK',
 }
 
-export enum DiligentActionType {
+export enum RollCallDateActionType {
   ADD_STUDY_DATE = 'ADD_STUDY_DATE',
   EDIT_STUDY_DATE = 'EDIT_STUDY_DATE',
 }

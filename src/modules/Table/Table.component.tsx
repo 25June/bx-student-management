@@ -52,9 +52,13 @@ function getComparator(order: Order, orderBy: string): (a: any, b: any) => numbe
 const EnhancedTableHead = (props: EnhancedTableProps) => {
   const { order, orderBy, onRequestSort, columns } = props
 
-  const createSortHandler = (property: any) => (event: React.MouseEvent<unknown>) => {
-    onRequestSort(event, property)
-  }
+  const createSortHandler =
+    (property: string, disableSort: boolean) => (event: React.MouseEvent<unknown>) => {
+      if (disableSort) {
+        return
+      }
+      onRequestSort(event, property)
+    }
 
   return (
     <TableHead>
@@ -68,7 +72,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             <TableSortLabel
               active={orderBy === column.field}
               direction={orderBy === column.field ? order : 'asc'}
-              onClick={createSortHandler(column.field)}
+              onClick={createSortHandler(column.field, column.disableSort)}
             >
               {column.headerName}
               {orderBy === column.field ? (

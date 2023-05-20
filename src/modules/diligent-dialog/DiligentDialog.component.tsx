@@ -2,37 +2,53 @@ import React, { useEffect } from 'react'
 import { Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { StudentActionType } from 'constant'
-import { DiligentActionType } from 'constant/common'
+import { useAddRollCallDate, useUpdateRollCallDate } from 'services/diligent'
+import { formatDateStoringDB } from 'utils/datetime'
+import { RollCallDateActionType } from 'constant/common'
 
 interface DiligentDialogComponentProps {
-  onClose: () => void
+  onClose: (refreshData?: boolean) => void
   isOpen: boolean
   action: string
-  studyDate?: string
+  rollCall?: {
+    id: string
+    date: string
+  }
 }
 
 const DiligentDialogComponent = ({
   onClose,
   isOpen,
   action,
-  studyDate,
+  rollCall,
 }: DiligentDialogComponentProps) => {
-  const { handleSubmit, control, setValue } = useForm<{ studyDate: string }>()
+  const { handleSubmit, control, setValue } = useForm<{ rollCallDate: string }>()
+  const addRollCallDate = useAddRollCallDate()
+  const updateRollCallDate = useUpdateRollCallDate()
+
   useEffect(() => {
-    if (studyDate) {
-      setValue('studyDate', studyDate)
+    if (rollCall && rollCall.date) {
+      setValue('rollCallDate', rollCall.date)
     }
-  }, [studyDate, setValue])
-  const onSubmit = (data: { studyDate: string }) => {
-    console.log(data)
+  }, [rollCall, setValue])
+
+  const onSubmit = (data: { rollCallDate: string }) => {
+    const formatDate = formatDateStoringDB(data.rollCallDate)
+
+    if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
+      updateRollCallDate({ date: formatDate, id: rollCall?.id || '' }).finally(() => onClose(true))
+      return
+    }
+    addRollCallDate({ date: formatDate }).finally(() => onClose(true))
   }
+
   return (
-    <Dialog open={isOpen} onClose={onClose} aria-labelledby="diligent-dialog-title">
+    <Dialog open={isOpen} onClose={() => onClose(false)} aria-labelledby="diligent-dialog-title">
       <DialogTitle id="diligent-dialog-title">Thêm Ngày Điểm Danh</DialogTitle>
       <DialogContent dividers={true}>
         <Controller
           control={control}
-          name={'studyDate'}
+          name={'rollCallDate'}
           render={({ field }) => (
             <TextField
               id="outlined-studyDate"
@@ -48,7 +64,7 @@ const DiligentDialogComponent = ({
         />
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-        <Button onClick={onClose} variant="outlined" type={'button'}>
+        <Button onClick={() => onClose(false)} variant="outlined" type={'button'}>
           Trở lại
         </Button>
         <Button
