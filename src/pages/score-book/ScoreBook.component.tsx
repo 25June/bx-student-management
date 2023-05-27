@@ -9,13 +9,12 @@ import { StudentScoreBooks } from 'models'
 import React, { useState } from 'react'
 import { useGetStudentScoreBooks } from 'services'
 import { useStudentContext } from 'contexts/StudentContext'
-import { useIsMobile } from 'utils/common'
 import AssessmentDialogComponent from 'modules/assessment-dialog/AssessmentDialog.component'
 import { AssessmentActionType } from 'constant'
 import { useClassContext } from 'contexts/ClassContext'
+import { Typography } from '@mui/material'
 
 const ScoreBookComponent = () => {
-  const mobile = useIsMobile()
   const { students } = useStudentContext()
   const { classId } = useClassContext()
   const { studentScoreBooks: stuScoreBooks } = useGetStudentScoreBooks({ students, classId })
@@ -24,52 +23,50 @@ const ScoreBookComponent = () => {
 
   return (
     <LayoutComponent>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexDirection: mobile ? 'column' : 'row',
-        }}
-      >
-        <Box component={mobile ? 'h3' : 'h1'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
-          Bảng Điểm
-        </Box>
-        <Box display={'flex'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
+      <Box p={2}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 4,
+            marginTop: 2,
+          }}
+        >
+          <Typography variant={'h1'}>Bảng Điểm</Typography>
           <Button
             variant="contained"
             startIcon={<AssignmentIcon />}
             onClick={() => openAssessmentDialog(true)}
-            sx={{ marginRight: 2 }}
           >
             Thêm Bài Kiểm Tra
           </Button>
         </Box>
+        {stuScoreBooks && stuScoreBooks.length !== 0 && (
+          <TableComponent
+            columns={ScoreBookColumns}
+            rows={stuScoreBooks}
+            onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
+            renderActionMenu={renderScoreBookActions}
+          />
+        )}
+        {!!selectedScoreBook && (
+          <ScoreBookDialogComponent
+            isOpen={!!selectedScoreBook}
+            onClose={() => setSelectedScoreBook(undefined)}
+            data={selectedScoreBook}
+          />
+        )}
+        {isOpenAssessmentDialog && (
+          <AssessmentDialogComponent
+            key={'new'}
+            isOpen={isOpenAssessmentDialog}
+            onClose={() => openAssessmentDialog(false)}
+            action={AssessmentActionType.ADD_NEW_ASSESSMENT}
+            data={null}
+          />
+        )}
       </Box>
-      {stuScoreBooks && stuScoreBooks.length !== 0 && (
-        <TableComponent
-          columns={ScoreBookColumns}
-          rows={stuScoreBooks}
-          onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
-          renderActionMenu={renderScoreBookActions}
-        />
-      )}
-      {!!selectedScoreBook && (
-        <ScoreBookDialogComponent
-          isOpen={!!selectedScoreBook}
-          onClose={() => setSelectedScoreBook(undefined)}
-          data={selectedScoreBook}
-        />
-      )}
-      {isOpenAssessmentDialog && (
-        <AssessmentDialogComponent
-          key={'new'}
-          isOpen={isOpenAssessmentDialog}
-          onClose={() => openAssessmentDialog(false)}
-          action={AssessmentActionType.ADD_NEW_ASSESSMENT}
-          data={null}
-        />
-      )}
     </LayoutComponent>
   )
 }

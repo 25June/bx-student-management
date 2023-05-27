@@ -1,24 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import LayoutComponent from 'modules/layout/Layout.component'
-import { Box, Button } from '@mui/material'
-import { useIsMobile } from 'utils/common'
+import { Box, Button, Typography } from '@mui/material'
 import { RollCallDateActionType } from 'constant/common'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import DiligentDialogComponent from 'modules/diligent-dialog/DiligentDialog.component'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
-import { useGetAttendanceByClassId, useGetRollCallDates } from 'services/diligent'
-import { renderAttendanceActions, attendanceColumns, renderDate } from 'modules/Table/helpers'
-import TableComponent from 'modules/Table/Table.component'
+import { useGetRollCallDates } from 'services/diligent'
 import { Student } from 'models'
 import { formatDisplayInput } from 'utils/datetime'
+import DiligentTableComponent from 'modules/diligent-table/DiligentTable.component'
+import EventIcon from '@mui/icons-material/Event'
 
 const DiligentComponent = () => {
-  const mobile = useIsMobile()
-
   const { students } = useStudentContext()
   const { classId } = useClassContext()
-  const { attendances, isLoading } = useGetAttendanceByClassId(classId)
   const getRollCallDates = useGetRollCallDates()
 
   const [rollCallDates, setRollCallDates] = useState<Record<string, string>>({})
@@ -41,10 +36,6 @@ const DiligentComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId])
 
-  if (isLoading) {
-    return null
-  }
-
   const handleOpenDiligentDialog = (date: string, id: string) => {
     setDialogData({
       rollCall: {
@@ -55,19 +46,13 @@ const DiligentComponent = () => {
     })
     openDiligentDialog(true)
   }
-  console.log({ attendances })
-  console.log({ rollCallDates })
-  const formatAttendances = students.map((stu: Student) => ({ ...stu, rollCallDates }))
-  const formatHeaderAttendance = {
-    field: 'rollCallDates',
-    headerName: renderDate(rollCallDates, true, handleOpenDiligentDialog),
-    render: () => renderDate({}, false),
-    disableSort: true,
-  }
 
-  const handleClickAction = (data: any, type: string) => {
-    setDialogData({ rollCallDate: data, action: type })
-  }
+  const formatAttendances = students.map((stu: Student) => {
+    return {
+      ...stu,
+      rollCalls: rollCallDates,
+    }
+  })
 
   const handleCloseDiligentDialog = (refreshData?: boolean) => {
     if (refreshData) {
@@ -80,24 +65,33 @@ const DiligentComponent = () => {
   }
   return (
     <LayoutComponent>
-      <Box>
-        <Box component={mobile ? 'h3' : 'h2'} marginBottom={2}>
-          Điểm Chuyên Cần
-        </Box>
-        <Button
-          variant="contained"
-          startIcon={<PersonAddIcon />}
-          onClick={() => openDiligentDialog(true)}
-          sx={{ marginRight: 2 }}
+      <Box p={2}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 4,
+            marginTop: 2,
+          }}
         >
-          Điểm Danh Ngày Học
-        </Button>
-        <TableComponent
-          columns={[...attendanceColumns, formatHeaderAttendance]}
-          rows={formatAttendances || []}
-          onClickAction={handleClickAction}
-          renderActionMenu={renderAttendanceActions}
-        />
+          <Typography variant={'h1'}>Điểm Chuyên Cần</Typography>
+          <Button
+            variant="contained"
+            startIcon={<EventIcon />}
+            onClick={() => openDiligentDialog(true)}
+            sx={{ marginRight: 2 }}
+          >
+            Thêm Ngày Học
+          </Button>
+        </Box>
+        <Box mt={2} mb={2}>
+          <DiligentTableComponent
+            rows={formatAttendances || []}
+            rollCalls={rollCallDates}
+            openDiligentDialog={handleOpenDiligentDialog}
+          />
+        </Box>
       </Box>
       <DiligentDialogComponent
         isOpen={isOpen}

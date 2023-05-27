@@ -48,8 +48,8 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
+      <Table stickyHeader={true} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             {tableColumns.map((col) => {

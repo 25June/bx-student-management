@@ -6,12 +6,11 @@ import {
   doc,
   getFirestore,
   where,
-  onSnapshot,
   query,
   serverTimestamp,
   updateDoc,
   Timestamp,
-  Unsubscribe,
+  getDocs,
 } from 'firebase/firestore'
 import { app } from '../firebase'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
@@ -23,12 +22,11 @@ const assessmentRef = collection(db, AssessmentCollection)
 
 export const useGetAssessments = (classId: string) => {
   const [assessments, setAssessments] = useState<Assessment[]>()
-  const [listener, setListener] = useState<Unsubscribe>()
   const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
     if (classId) {
       const queryAssessments = query(assessmentRef, where('classId', '==', classId))
-      const listenerData = onSnapshot(queryAssessments, (snapshot) => {
+      getDocs(queryAssessments).then((snapshot) => {
         if (snapshot.empty) {
           showSnackbar(`Get Assessments empty for class ${classId}`, 'warning')
           setAssessments([])
@@ -41,18 +39,8 @@ export const useGetAssessments = (classId: string) => {
         )
         showSnackbar('Get Assessments Success', 'success')
       })
-      setListener(() => listenerData)
-      return listenerData
     }
   }, [classId, showSnackbar])
-
-  useEffect(() => {
-    if (listener) {
-      console.log('unsubscribe assessment when classId change')
-      listener()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId])
 
   return { assessments, isLoading: typeof assessments === 'undefined' }
 }

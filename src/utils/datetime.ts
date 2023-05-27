@@ -12,6 +12,9 @@ export const formatDisplayTable = (date: string) => {
   return format(parse(date, fullDateHyphenFormat, new Date()), DayMonthSlashFormat)
 }
 
-export const formatDisplayInput = (date: string) => {
-  return format(parse(date, fullDateHyphenFormat, new Date()), fullDateInputHyphenFormat)
+export const formatDisplayInput = (date: string | Date) => {
+  if (typeof date === 'string') {
+    return format(parse(date, fullDateHyphenFormat, new Date()), fullDateInputHyphenFormat)
+  }
+  return format(date, fullDateInputHyphenFormat)
 }

@@ -32,6 +32,8 @@ import { SelectChangeEvent } from '@mui/material/Select'
 import { BaseClasses } from 'constant/common'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { getValues, StudentForm } from './helpers'
+import ClearIcon from '@mui/icons-material/Clear'
+import CheckIcon from '@mui/icons-material/Check'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -56,10 +58,22 @@ const RemoveStudentDialog = ({ handleSubmit, onClose, fullName }: RemoveStudentD
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-        <Button autoFocus={true} onClick={onClose} variant="outlined">
+        <Button
+          autoFocus={true}
+          onClick={onClose}
+          variant="outlined"
+          color={'neutral'}
+          startIcon={<ClearIcon />}
+        >
           Huỷ
         </Button>
-        <Button onClick={handleSubmit} autoFocus={true} variant="contained" color={'error'}>
+        <Button
+          onClick={handleSubmit}
+          autoFocus={true}
+          variant="contained"
+          color={'error'}
+          startIcon={<CheckIcon />}
+        >
           Xoá
         </Button>
       </DialogActions>
@@ -396,7 +410,13 @@ const StudentDialogComponent = ({
                 <LinearProgressComponent progress={uploadImageProgress} />
               </Box>
             )}
-            <Button autoFocus={true} onClick={onClose} variant="outlined">
+            <Button
+              autoFocus={true}
+              onClick={onClose}
+              variant="outlined"
+              color={'neutral'}
+              startIcon={<ClearIcon />}
+            >
               Huỷ
             </Button>
             <Button
@@ -405,6 +425,7 @@ const StudentDialogComponent = ({
               autoFocus={true}
               variant="contained"
               color={action === StudentActionType.EDIT_STUDENT ? 'warning' : 'primary'}
+              startIcon={<CheckIcon />}
             >
               Lưu
             </Button>

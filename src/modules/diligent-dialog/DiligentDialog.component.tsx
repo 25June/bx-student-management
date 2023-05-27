@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import { Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
-import { StudentActionType } from 'constant'
 import { useAddRollCallDate, useUpdateRollCallDate } from 'services/diligent'
-import { formatDateStoringDB } from 'utils/datetime'
+import { formatDateStoringDB, formatDisplayInput } from 'utils/datetime'
 import { RollCallDateActionType } from 'constant/common'
+import ClearIcon from '@mui/icons-material/Clear'
+import CheckIcon from '@mui/icons-material/Check'
 
 interface DiligentDialogComponentProps {
   onClose: (refreshData?: boolean) => void
@@ -22,7 +23,9 @@ const DiligentDialogComponent = ({
   action,
   rollCall,
 }: DiligentDialogComponentProps) => {
-  const { handleSubmit, control, setValue } = useForm<{ rollCallDate: string }>()
+  const { handleSubmit, control, setValue } = useForm<{ rollCallDate: string }>({
+    defaultValues: { rollCallDate: rollCall?.date || formatDisplayInput(new Date()) },
+  })
   const addRollCallDate = useAddRollCallDate()
   const updateRollCallDate = useUpdateRollCallDate()
 
@@ -64,17 +67,24 @@ const DiligentDialogComponent = ({
         />
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-        <Button onClick={() => onClose(false)} variant="outlined" type={'button'}>
-          Trở lại
+        <Button
+          onClick={() => onClose(false)}
+          variant="outlined"
+          type={'button'}
+          startIcon={<ClearIcon />}
+          color={'neutral'}
+        >
+          Huỷ
         </Button>
         <Button
           type={'button'}
           onClick={handleSubmit(onSubmit)}
           autoFocus={true}
           variant="contained"
-          color={action === StudentActionType.EDIT_STUDENT ? 'warning' : 'primary'}
+          color={action === RollCallDateActionType.EDIT_STUDY_DATE ? 'warning' : 'primary'}
+          startIcon={<CheckIcon />}
         >
-          Thêm
+          Lưu
         </Button>
       </DialogActions>
     </Dialog>

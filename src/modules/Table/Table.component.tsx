@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { Student } from 'models'
 import Menu from '@mui/material/Menu'
+import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 
 interface TableProps {
   columns: any[]
@@ -52,13 +53,9 @@ function getComparator(order: Order, orderBy: string): (a: any, b: any) => numbe
 const EnhancedTableHead = (props: EnhancedTableProps) => {
   const { order, orderBy, onRequestSort, columns } = props
 
-  const createSortHandler =
-    (property: string, disableSort: boolean) => (event: React.MouseEvent<unknown>) => {
-      if (disableSort) {
-        return
-      }
-      onRequestSort(event, property)
-    }
+  const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
+    onRequestSort(event, property)
+  }
 
   return (
     <TableHead>
@@ -69,18 +66,22 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             padding={'normal'}
             sortDirection={orderBy === column.field ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === column.field}
-              direction={orderBy === column.field ? order : 'asc'}
-              onClick={createSortHandler(column.field, column.disableSort)}
-            >
-              {column.headerName}
-              {orderBy === column.field ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {column.disableSort ? (
+              `${column.headerName}`
+            ) : (
+              <TableSortLabel
+                active={orderBy === column.field}
+                direction={orderBy === column.field ? order : 'asc'}
+                onClick={createSortHandler(column.field)}
+              >
+                {column.headerName}
+                {orderBy === column.field ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            )}
           </TableCell>
         ))}
         <TableCell padding={'normal'} />
@@ -117,7 +118,7 @@ const TableComponent = ({ rows, columns, onClickAction, renderActionMenu }: Tabl
   }
 
   return (
-    <Box p={2}>
+    <Box>
       <Paper>
         <TableContainer
           sx={{ maxHeight: 'calc(100vh - 240px)', width: '100%', overflow: 'auto' }}
@@ -143,9 +144,22 @@ const TableComponent = ({ rows, columns, onClickAction, renderActionMenu }: Tabl
                   return (
                     <TableRow hover={true} tabIndex={index} key={row.id} aria-label={row.id}>
                       {columns.map((column) => {
+                        if (column.field === 'fullName') {
+                          return (
+                            <TableCell key={`cell-${column.field}-${row.id}`}>
+                              <TableFullNameCellComponent
+                                avatarPath={row.avatarPath}
+                                saintName={row.saintName}
+                                lastName={row.lastName}
+                                firstName={row.firstName}
+                                gender={row.gender}
+                              />
+                            </TableCell>
+                          )
+                        }
                         return (
                           <TableCell key={`cell-${column.field}-${row.id}`}>
-                            {column.render(row[column.field])}
+                            {column.render(row[column.field], row.id)}
                           </TableCell>
                         )
                       })}

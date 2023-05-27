@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 import {
   addDoc,
   doc,
-  QueryDocumentSnapshot,
-  DocumentData,
   query,
   collection,
   onSnapshot,
@@ -30,10 +28,12 @@ export const useGetStudents = (classId: string) => {
         queryStudents,
         (snapshot) => {
           setStudents(
-            snapshot.docs.map(
-              (data: QueryDocumentSnapshot<DocumentData>) =>
-                ({ ...data.data(), id: data.id } as Student)
-            )
+            snapshot.docs.reduce((acc: Student[], data) => {
+              if (!(data.data() as Student).isDeleted) {
+                return [...acc, { ...data.data(), id: data.id } as Student]
+              }
+              return acc
+            }, [])
           )
           showSnackbar('Get Students Success', 'success')
         },

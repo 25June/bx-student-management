@@ -73,9 +73,23 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
         >
           <MenuIcon />
         </IconButton>
-        <Box width={'100%'} display={'flex'} justifyContent={'space-between'}>
-          <Box display={'flex'} gap={2}>
-            <Typography variant="h6" noWrap={true} component="div">
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            gap={2}
+          >
+            <Typography variant="h6" noWrap={true}>
               Giáo Lý Bình Xuyên
             </Typography>
             <Box maxWidth={200}>

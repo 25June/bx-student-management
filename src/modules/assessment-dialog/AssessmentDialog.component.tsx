@@ -19,6 +19,8 @@ import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { AssessmentEnum } from 'constant/common'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
 import { SelectChangeEvent } from '@mui/material/Select'
+import ClearIcon from '@mui/icons-material/Clear'
+import CheckIcon from '@mui/icons-material/Check'
 
 type AssessmentForm = {
   bookDate: string
@@ -211,10 +213,21 @@ const AssessmentDialogComponent = ({
           )}
         </DialogContent>
         <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-          <Button onClick={onClose} variant="outlined" type={'button'}>
+          <Button
+            color={'neutral'}
+            onClick={onClose}
+            variant="outlined"
+            type={'button'}
+            startIcon={<ClearIcon />}
+          >
             Huỷ
           </Button>
-          <Button variant="contained" color={getButtonColor(action)} type={'submit'}>
+          <Button
+            variant="contained"
+            color={getButtonColor(action)}
+            type={'submit'}
+            startIcon={<CheckIcon />}
+          >
             {action === AssessmentActionType.DELETE_ASSESSMENT ? 'Xoá' : 'Lưu'}
           </Button>
         </DialogActions>

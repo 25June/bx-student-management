@@ -27,6 +27,11 @@ export enum RollCallDateActionType {
   EDIT_STUDY_DATE = 'EDIT_STUDY_DATE',
 }
 
+export enum AttendanceType {
+  THANH_LE = 'tl',
+  GIAO_LY = 'gl',
+}
+
 export const BaseClasses: Class[] = [
   { id: 'kt1', name: 'Khai Tâm 1' },
   { id: 'kt2', name: 'Khai Tâm 2' },

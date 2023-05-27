@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Button, Box, ToggleButtonGroup } from '@mui/material'
+import { Button, Box, ToggleButtonGroup, Typography } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Student } from 'models'
 import TableRowsIcon from '@mui/icons-material/TableRows'
@@ -16,11 +16,8 @@ import {
   LayoutComponent,
 } from 'modules'
 import { useStudentContext } from 'contexts/StudentContext'
-import { useIsMobile } from 'utils/common'
-import { useClassContext } from 'contexts/ClassContext'
 
 const HomeComponent = () => {
-  const mobile = useIsMobile()
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
 
   const [actionType, setActionType] = useState<string>('')
@@ -28,12 +25,7 @@ const HomeComponent = () => {
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
-  const { setClassId } = useClassContext()
   const { students } = useStudentContext()
-
-  useEffect(() => {
-    setClassId('ts1a')
-  }, [setClassId])
 
   useEffect(() => {
     if (selectedStudent && students) {
@@ -90,89 +82,82 @@ const HomeComponent = () => {
 
   return (
     <LayoutComponent>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexDirection: mobile ? 'column' : 'row',
-          marginBottom: mobile ? 2 : 1,
-        }}
-      >
+      <Box p={2}>
         <Box
           sx={{
-            padding: 2,
             display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            flexDirection: mobile ? 'column' : 'row',
-            gap: mobile ? 2 : 1,
+            marginBottom: 4,
+            marginTop: 2,
           }}
         >
-          <Box component={mobile ? 'h3' : 'h2'} marginBottom={0}>
-            Thông Tin Thiếu Nhi
-          </Box>
-        </Box>
-
-        <Box display={'flex'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
-          <Button
-            variant="contained"
-            startIcon={<PersonAddIcon />}
-            onClick={() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT)}
-            sx={{ marginRight: 2 }}
-          >
-            Thêm Thiếu Nhi
-          </Button>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <ToggleButtonGroup value={displayType} exclusive={true} onChange={handleChangeDisplay}>
-              <ToggleButton value="table" aria-label="display-table" size="small">
-                <TableRowsIcon />
-              </ToggleButton>
-              <ToggleButton value="card" aria-label="display-card" size="small">
-                <StyleIcon />
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
-        </Box>
-      </Box>
-      {displayType === 'table' ? (
-        <TableComponent
-          columns={studentColumns}
-          rows={students || []}
-          onClickAction={handleClickAction}
-          renderActionMenu={renderStudentActions}
-        />
-      ) : (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: 5,
-            paddingLeft: 1,
-            paddingRight: 1,
-          }}
-        >
-          {(students || []).map((student: Student) => (
-            <Box key={student.id} sx={{ display: 'flex', columnGap: 16, rowGap: 16 }}>
-              <CardComponent student={student} onClickAction={handleClickAction} />
+          <Typography variant={'h1'}>Thông Tin Thiếu Nhi</Typography>
+          <Box display={'flex'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
+            <Button
+              variant="contained"
+              startIcon={<PersonAddIcon />}
+              onClick={() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT)}
+              sx={{ marginRight: 2 }}
+            >
+              Thêm Thiếu Nhi
+            </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <ToggleButtonGroup
+                value={displayType}
+                exclusive={true}
+                onChange={handleChangeDisplay}
+              >
+                <ToggleButton value="table" aria-label="display-table" size="small">
+                  <TableRowsIcon />
+                </ToggleButton>
+                <ToggleButton value="card" aria-label="display-card" size="small">
+                  <StyleIcon />
+                </ToggleButton>
+              </ToggleButtonGroup>
             </Box>
-          ))}
-          <InfoPanelComponent
-            isOpen={isOpenInfoPanel}
-            studentInfo={selectedStudent}
-            onClose={() => setOpenInfoPanel(false)}
-            onClickAction={handleClickAction}
-          />
-          {isOpenScoreBook && selectedStudent && (
-            <ScoreBookPanelComponent
-              isOpen={!!selectedStudent}
-              onClose={handleCloseScoreBook}
-              studentId={selectedStudent.id}
-            />
-          )}
+          </Box>
         </Box>
-      )}
+        {displayType === 'table' ? (
+          <TableComponent
+            columns={studentColumns}
+            rows={students || []}
+            onClickAction={handleClickAction}
+            renderActionMenu={renderStudentActions}
+          />
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: 5,
+              paddingLeft: 1,
+              paddingRight: 1,
+            }}
+          >
+            {(students || []).map((student: Student) => (
+              <Box key={student.id} sx={{ display: 'flex', columnGap: 16, rowGap: 16 }}>
+                <CardComponent student={student} onClickAction={handleClickAction} />
+              </Box>
+            ))}
+            <InfoPanelComponent
+              isOpen={isOpenInfoPanel}
+              studentInfo={selectedStudent}
+              onClose={() => setOpenInfoPanel(false)}
+              onClickAction={handleClickAction}
+            />
+            {isOpenScoreBook && selectedStudent && (
+              <ScoreBookPanelComponent
+                isOpen={!!selectedStudent}
+                onClose={handleCloseScoreBook}
+                studentId={selectedStudent.id}
+              />
+            )}
+          </Box>
+        )}
+      </Box>
       <StudentDialogComponent
         isOpen={isOpenStudentDialog}
         onClose={closeStudentDialog}

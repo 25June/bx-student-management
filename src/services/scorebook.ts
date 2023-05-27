@@ -129,22 +129,34 @@ const getScoreBook = (students: Student[], setStudentScoreBooks: (state: any) =>
     const ScoreBookQuery = query(scoreBookRef, where(documentId(), 'in', studentIds))
     return onSnapshot(ScoreBookQuery, (snapshot) => {
       if (snapshot.docs) {
-        const studentScoreBooks = studentSliceArr.map((student: Student) => {
+        // const studentScoreBooks = studentSliceArr.map((student: Student) => {
+        //   const scoreBook = snapshot.docs.find((data) => data.id === student.id)
+        //   if (scoreBook && scoreBook.exists()) {
+        //     return { ...scoreBook.data(), ...student, id: student.id }
+        //   }
+        //   return { ...getDefaultScoreBook(student.id), ...student, id: student.id }
+        // })
+
+        const studentScoreBooksObj = studentSliceArr.reduce((acc, student) => {
           const scoreBook = snapshot.docs.find((data) => data.id === student.id)
           if (scoreBook && scoreBook.exists()) {
-            return { ...scoreBook.data(), ...student, id: student.id }
+            return {
+              ...acc,
+              [student.id]: { ...scoreBook.data(), ...student, id: student.id },
+            }
           }
-          return { ...getDefaultScoreBook(student.id), ...student, id: student.id }
-        })
+          return {
+            ...acc,
+            [student.id]: { ...getDefaultScoreBook(student.id), ...student, id: student.id },
+          }
+        }, {})
 
-        setStudentScoreBooks((prevStudentScoreBooks: StudentScoreBooks[]) => {
-          if (!prevStudentScoreBooks || prevStudentScoreBooks.length === 0) {
-            return studentScoreBooks
+        setStudentScoreBooks((prevStudentScoreBooks: Record<string, StudentScoreBooks>) => {
+          if (!prevStudentScoreBooks || Object.values(prevStudentScoreBooks).length === 0) {
+            return studentScoreBooksObj
           }
-          if (prevStudentScoreBooks[0].class?.id !== studentScoreBooks[0].class?.id) {
-            return studentScoreBooks
-          }
-          return [...prevStudentScoreBooks, ...studentScoreBooks]
+
+          return { ...prevStudentScoreBooks, ...studentScoreBooksObj }
         })
         return
       }
@@ -161,7 +173,7 @@ export const useGetStudentScoreBooks = ({
   students: Student[]
   classId: string
 }) => {
-  const [studentScoreBooks, setStudentScoreBooks] = useState<StudentScoreBooks[]>()
+  const [studentScoreBooks, setStudentScoreBooks] = useState<Record<string, StudentScoreBooks>>()
   const [listeners, setListeners] = useState<Unsubscribe[]>()
 
   useEffect(() => {
@@ -180,12 +192,13 @@ export const useGetStudentScoreBooks = ({
       console.log('unsubscribe scorebook when class Id change: ')
       listeners.forEach((listener) => listener())
       setListeners(undefined)
+      setStudentScoreBooks(() => undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId])
 
   return {
-    studentScoreBooks,
+    studentScoreBooks: studentScoreBooks ? Object.values(studentScoreBooks) : [],
     isLoading: typeof studentScoreBooks === 'undefined',
   }
 }
