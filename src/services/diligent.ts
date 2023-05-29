@@ -80,7 +80,6 @@ export const useGetRollCallDates = () => {
   const { showSnackbar } = useSnackbarContext()
   const year = '2022-2023'
   return (classId: string) => {
-    console.log({ currentClassId: classId })
     return get(ref(realtimeDB, rollCallPathName(classId, year)))
       .then((snapshot) => {
         if (snapshot.exists()) {

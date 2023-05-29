@@ -3,6 +3,7 @@ import { format, parse } from 'date-fns'
 const fullDateHyphenFormat = 'dd-MM-yyyy'
 const fullDateInputHyphenFormat = 'yyyy-MM-dd'
 const DayMonthSlashFormat = 'dd/MM'
+const MonthYearSlashFormat = 'MM/yyyy'
 
 export const formatDateStoringDB = (date: string) => {
   return format(new Date(date), fullDateHyphenFormat)
@@ -17,4 +18,12 @@ export const formatDisplayInput = (date: string | Date) => {
     return format(parse(date, fullDateHyphenFormat, new Date()), fullDateInputHyphenFormat)
   }
   return format(date, fullDateInputHyphenFormat)
+}
+
+export const formatDisplayDropdown = (date: string) => {
+  return format(parse(date, fullDateHyphenFormat, new Date()), MonthYearSlashFormat)
+}
+
+export const parseToNumber = (date: string) => {
+  return parse(date, fullDateHyphenFormat, new Date()).getTime()
 }

@@ -13,7 +13,6 @@ import {
   ScoreBookPanelComponent,
   StudentDialogComponent,
   CardComponent,
-  LayoutComponent,
 } from 'modules'
 import { useStudentContext } from 'contexts/StudentContext'
 
@@ -81,7 +80,7 @@ const HomeComponent = () => {
   }, [])
 
   return (
-    <LayoutComponent>
+    <Box>
       <Box p={2}>
         <Box
           sx={{
@@ -164,7 +163,7 @@ const HomeComponent = () => {
         action={actionType}
         student={selectedStudent}
       />
-    </LayoutComponent>
+    </Box>
   )
 }
 

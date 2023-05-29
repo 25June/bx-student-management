@@ -96,7 +96,7 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
         />
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-        <Button onClick={onClose} variant="outlined" type={'button'}>
+        <Button onClick={onClose} variant="outlined" type={'button'} color={'neutral'}>
           Trở lại
         </Button>
       </DialogActions>

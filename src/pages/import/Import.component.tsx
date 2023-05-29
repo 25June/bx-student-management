@@ -2,7 +2,6 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
-import LayoutComponent from 'modules/layout/Layout.component'
 import FormControl from '@mui/material/FormControl'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -88,45 +87,43 @@ const ImportComponent = () => {
   }
 
   return (
-    <LayoutComponent>
-      <Box pt={3} textAlign={'left'} width={'100%'}>
-        <Box pr={2} pl={2}>
-          <Typography fontSize={'1rem'} fontWeight={500} sx={{ marginBottom: 2 }}>
-            Nhập Thông Tin Thiếu Nhi
-          </Typography>
-          <form onSubmit={handleSubmit(parseValue)}>
-            <Controller
-              name="value"
-              control={control}
-              render={({ field }) => {
-                return (
-                  <FormControl fullWidth={true}>
-                    <TextField
-                      helperText={'Stringify before parse'}
-                      multiline={true}
-                      maxRows={10}
-                      label={'Dữ liệu'}
-                      fullWidth={true}
-                      {...field}
-                    />
-                  </FormControl>
-                )
-              }}
-            />
-            <Button type={'submit'} variant={'outlined'}>
-              Parse
-            </Button>
-          </form>
-          {value.length !== 0 && <TableComponent columns={studentColumns} rows={value} />}
-          <Box mt={2} mb={2}>
-            <ClassDropdownComponent classObj={classObj} onChangeClass={handleChangeClass} />
-          </Box>
-          <Button onClick={saveData} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
-            Confirm Save Date
+    <Box pt={3} textAlign={'left'} width={'100%'}>
+      <Box pr={2} pl={2}>
+        <Typography fontSize={'1rem'} fontWeight={500} sx={{ marginBottom: 2 }}>
+          Nhập Thông Tin Thiếu Nhi
+        </Typography>
+        <form onSubmit={handleSubmit(parseValue)}>
+          <Controller
+            name="value"
+            control={control}
+            render={({ field }) => {
+              return (
+                <FormControl fullWidth={true}>
+                  <TextField
+                    helperText={'Stringify before parse'}
+                    multiline={true}
+                    maxRows={10}
+                    label={'Dữ liệu'}
+                    fullWidth={true}
+                    {...field}
+                  />
+                </FormControl>
+              )
+            }}
+          />
+          <Button type={'submit'} variant={'outlined'}>
+            Parse
           </Button>
+        </form>
+        {value.length !== 0 && <TableComponent columns={studentColumns} rows={value} />}
+        <Box mt={2} mb={2}>
+          <ClassDropdownComponent classObj={classObj} onChangeClass={handleChangeClass} />
         </Box>
+        <Button onClick={saveData} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
+          Confirm Save Date
+        </Button>
       </Box>
-    </LayoutComponent>
+    </Box>
   )
 }
 

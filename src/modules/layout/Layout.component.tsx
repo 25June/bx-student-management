@@ -2,10 +2,11 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import { TopBarComponent } from '../index'
 import DrawerComponent from '../drawer/Drawer.component'
+import { PropsWithChildren } from 'react'
 
 export const drawerWidth = 240
 
-const LayoutComponent = (props: any) => {
+const LayoutComponent = ({ children }: PropsWithChildren) => {
   const [isOpen, setOpen] = React.useState(false)
 
   return (
@@ -14,9 +15,17 @@ const LayoutComponent = (props: any) => {
       <DrawerComponent isOpen={isOpen} />
       <Box
         component="main"
-        sx={{ pt: 8, pb: 3, width: 'calc(100% - 65px)', pr: 1, pl: 1, boxSizing: 'border-box' }}
+        sx={{
+          pt: 8,
+          pb: 3,
+          width: 'calc(100% - 65px)',
+          height: 'calc(100% - 64px)',
+          pr: 1,
+          pl: 1,
+          boxSizing: 'border-box',
+        }}
       >
-        {props.children}
+        {children}
       </Box>
     </Box>
   )

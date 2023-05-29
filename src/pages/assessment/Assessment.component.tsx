@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react'
-import { LayoutComponent } from 'modules'
 import Box from '@mui/material/Box'
 import { Button, Typography } from '@mui/material'
 import AssignmentIcon from '@mui/icons-material/Assignment'
@@ -36,7 +35,7 @@ const AssessmentComponent = () => {
   )
 
   return (
-    <LayoutComponent>
+    <Box>
       <Box
         p={2}
         sx={{
@@ -70,7 +69,7 @@ const AssessmentComponent = () => {
           data={selectedAssessment}
         />
       )}
-    </LayoutComponent>
+    </Box>
   )
 }
 

@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { Box, Checkbox } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import { RollCallDates } from 'utils/customHooks'
 
 export interface OnSubmitAttendanceProps {
   value: boolean
@@ -20,13 +21,13 @@ export interface AttendanceProps {
 }
 
 interface AttendanceCheckboxComponentProps {
-  rollCall: Record<string, string>
+  rollCallDates: RollCallDates[]
   attendance: Record<string, AttendanceProps>
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
 }
 
 const AttendanceCheckboxComponent = ({
-  rollCall,
+  rollCallDates = [],
   attendance,
   onSubmitAttendance,
 }: AttendanceCheckboxComponentProps) => {
@@ -35,34 +36,32 @@ const AttendanceCheckboxComponent = ({
   }
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: 2 }}>
-      {rollCall
-        ? Object.keys(rollCall).map((key: string) => (
-            <Box
-              key={`checkbox-date-${key}-${rollCall[key]}`}
-              sx={{ display: 'flex', gap: 0.5, width: '84px', flexDirection: 'column' }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={!!(attendance && attendance?.[key] && attendance[key].tl)}
-                    onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: true })}
-                  />
-                }
-                label="TL"
+      {rollCallDates.map(({ key }: { key: string; value: string }) => (
+        <Box
+          key={`checkbox-date-${key}`}
+          sx={{ display: 'flex', gap: 0.5, width: '84px', flexDirection: 'column' }}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!!(attendance && attendance?.[key] && attendance[key].tl)}
+                onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: true })}
               />
+            }
+            label="TL"
+          />
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={!!(attendance && attendance?.[key] && attendance[key].gl)}
-                    onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: false })}
-                  />
-                }
-                label={'GL'}
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={!!(attendance && attendance?.[key] && attendance[key].gl)}
+                onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: false })}
               />
-            </Box>
-          ))
-        : null}
+            }
+            label={'GL'}
+          />
+        </Box>
+      ))}
     </Box>
   )
 }

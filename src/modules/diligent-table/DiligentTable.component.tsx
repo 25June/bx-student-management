@@ -14,6 +14,7 @@ import AttendanceCheckboxComponent, {
 import { useGetAttendanceByClassId, useSubmitAttendance } from 'services/diligent'
 import { useClassContext } from 'contexts/ClassContext'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
+import { RollCallDates } from 'utils/customHooks'
 
 interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -21,11 +22,15 @@ interface StudentRows extends Student {
 
 interface DiligentTableProps {
   rows: StudentRows[]
-  rollCalls: Record<string, string>
+  rollCallDates: RollCallDates[]
   openDiligentDialog: (date: string, id: string) => void
 }
 
-const DiligentTableComponent = ({ rows, rollCalls, openDiligentDialog }: DiligentTableProps) => {
+const DiligentTableComponent = ({
+  rows,
+  rollCallDates,
+  openDiligentDialog,
+}: DiligentTableProps) => {
   const { classId } = useClassContext()
   const { attendances } = useGetAttendanceByClassId(classId)
   const submitAttendance = useSubmitAttendance()
@@ -53,7 +58,7 @@ const DiligentTableComponent = ({ rows, rollCalls, openDiligentDialog }: Diligen
             <TableCell key={'rollDates'}>
               <AttendanceHeaderComponent
                 openDiligentDialog={openDiligentDialog}
-                rollCall={rollCalls}
+                rollCallDates={rollCallDates}
               />
             </TableCell>
           </TableRow>
@@ -72,7 +77,7 @@ const DiligentTableComponent = ({ rows, rollCalls, openDiligentDialog }: Diligen
               </TableCell>
               <TableCell sx={{ paddingTop: 1, paddingBottom: 1 }}>
                 <AttendanceCheckboxComponent
-                  rollCall={rollCalls}
+                  rollCallDates={rollCallDates}
                   attendance={attendances?.[row.id] || {}}
                   onSubmitAttendance={handleSubmitAttendance(row.id)}
                 />
