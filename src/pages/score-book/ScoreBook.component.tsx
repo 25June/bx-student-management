@@ -5,20 +5,41 @@ import TableComponent from 'modules/Table/Table.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
 import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
 import { StudentScoreBooks } from 'models'
-import React, { useState } from 'react'
-import { useGetStudentScoreBooks } from 'services'
+import React, { useState, useMemo } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import AssessmentDialogComponent from 'modules/assessment-dialog/AssessmentDialog.component'
 import { AssessmentActionType } from 'constant'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
+import { useGetStudentScoreBooks1 } from 'services/scorebook'
+import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
+import { SelectChangeEvent } from '@mui/material/Select'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
   const { classId } = useClassContext()
-  const { studentScoreBooks: stuScoreBooks } = useGetStudentScoreBooks({ students, classId })
+  const { studentScoreBooks } = useGetStudentScoreBooks1({ classId })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
   const [isOpenAssessmentDialog, openAssessmentDialog] = useState<boolean>(false)
+  const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
+
+  const stuScoreBooks1 = useMemo(() => {
+    if (students.length !== 0) {
+      return students.map((stu) => {
+        if (studentScoreBooks?.[stu.id]) {
+          return {
+            ...stu,
+            ...studentScoreBooks[stu.id],
+          }
+        }
+        return stu
+      })
+    }
+    return []
+  }, [students, studentScoreBooks])
+  const handleChangeSemester = (event: SelectChangeEvent) => {
+    setSelectedSemester(event.target.value)
+  }
 
   return (
     <Box p={2}>
@@ -31,8 +52,16 @@ const ScoreBookComponent = () => {
           marginTop: 2,
         }}
       >
-        <Typography variant={'h1'}>Bảng Điểm</Typography>
+        <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
+          <Typography variant={'h1'}>Bảng Điểm</Typography>
+          <SemesterDropdownComponent
+            selectedSemester={selectedSemester}
+            onChangeSemester={handleChangeSemester}
+            size={'small'}
+          />
+        </Box>
         <Button
+          sx={{ width: '100%', maxWidth: 'fit-content' }}
           variant="contained"
           startIcon={<AssignmentIcon />}
           onClick={() => openAssessmentDialog(true)}
@@ -40,10 +69,10 @@ const ScoreBookComponent = () => {
           Thêm Bài Kiểm Tra
         </Button>
       </Box>
-      {stuScoreBooks && stuScoreBooks.length !== 0 && (
+      {stuScoreBooks1 && stuScoreBooks1.length !== 0 && (
         <TableComponent
           columns={ScoreBookColumns}
-          rows={stuScoreBooks}
+          rows={stuScoreBooks1}
           onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
           renderActionMenu={renderScoreBookActions}
         />

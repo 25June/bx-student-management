@@ -12,6 +12,7 @@ import EventIcon from '@mui/icons-material/Event'
 import MonthDropdownComponent from 'modules/common/MonthDropdown.component'
 import { useGroupRollCallToSortedMonths, RollCallDates } from 'utils/customHooks'
 import { SelectChangeEvent } from '@mui/material/Select'
+import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 
 const DiligentComponent = () => {
   const { students } = useStudentContext()
@@ -24,6 +25,7 @@ const DiligentComponent = () => {
     action: RollCallDateActionType.ADD_STUDY_DATE,
   })
   const [selectedDate, setSelectedDate] = useState<string>('')
+  const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
 
   const groupRollDate = useGroupRollCallToSortedMonths(rollCallDates) as Record<
     string,
@@ -31,7 +33,7 @@ const DiligentComponent = () => {
   >
 
   const fetchRollCallDates = useCallback(() => {
-    getRollCallDates(classId).then((res: Record<string, string>) => {
+    getRollCallDates({ classId }).then((res: Record<string, string>) => {
       setRollCallDates(res)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,6 +81,11 @@ const DiligentComponent = () => {
       action: RollCallDateActionType.ADD_STUDY_DATE,
     })
   }
+
+  const handleChangeSemester = (event: SelectChangeEvent) => {
+    setSelectedSemester(event.target.value)
+  }
+
   return (
     <Box>
       <Box p={2}>
@@ -91,16 +98,15 @@ const DiligentComponent = () => {
             marginTop: 2,
           }}
         >
-          <Typography variant={'h1'}>Điểm Chuyên Cần</Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexShrink: 0 }}>
-            <Button
-              variant="contained"
-              startIcon={<EventIcon />}
-              onClick={() => openDiligentDialog(true)}
-              sx={{ marginRight: 2, width: '225px' }}
-            >
-              Thêm Ngày Học
-            </Button>
+          <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
+            <Typography variant={'h1'}>Điểm Chuyên Cần</Typography>
+            <SemesterDropdownComponent
+              selectedSemester={selectedSemester}
+              onChangeSemester={handleChangeSemester}
+              size={'small'}
+            />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             {rollCallDates && (
               <MonthDropdownComponent
                 selectedDate={selectedDate || Object.keys(groupRollDate)[0] || ''}
@@ -108,6 +114,14 @@ const DiligentComponent = () => {
                 onChangeMonth={handleChangeMonth}
               />
             )}
+            <Button
+              variant="contained"
+              startIcon={<EventIcon />}
+              onClick={() => openDiligentDialog(true)}
+              sx={{ marginRight: 2, minWidth: '180px' }}
+            >
+              Thêm Ngày Học
+            </Button>
           </Box>
         </Box>
         <Box mt={2} mb={2}>

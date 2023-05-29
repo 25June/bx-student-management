@@ -32,7 +32,7 @@ const DiligentTableComponent = ({
   openDiligentDialog,
 }: DiligentTableProps) => {
   const { classId } = useClassContext()
-  const { attendances } = useGetAttendanceByClassId(classId)
+  const { attendances } = useGetAttendanceByClassId({ classId })
   const submitAttendance = useSubmitAttendance()
 
   const handleSubmitAttendance =

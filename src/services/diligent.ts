@@ -2,20 +2,28 @@ import { realtimeDB } from '../firebase'
 import { onValue, ref, set, get, Unsubscribe } from 'firebase/database'
 import { useState, useEffect } from 'react'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
-import { useClassContext } from 'contexts/ClassContext'
 import { v4 as uuidv4 } from 'uuid'
 import { AttendanceType } from 'constant/common'
 import { AttendanceProps } from 'modules/common/AttendanceCheckbox.component'
 
-const attendancePathName = (classId: string, year: string) => `attendance/${classId}/${year}`
-const rollCallPathNameWithId = (classId: string, year: string, id: string) =>
-  `rollCall/${classId}/${year}/${id}`
-const rollCallPathName = (classId: string, year: string) => `rollCall/${classId}/${year}`
+const attendancePathName = (classId: string, year: string, semester: string) =>
+  `attendance/${classId}/${year}/${semester}`
+const rollCallPathNameWithId = (classId: string, year: string, id: string, semester: string) =>
+  `rollCall/${classId}/${year}/${semester}/${id}`
+const rollCallPathName = (classId: string, year: string, semester: string) =>
+  `rollCall/${classId}/${year}/${semester}`
 
-export const useGetAttendanceByClassId = (
-  classId: string,
-  year: string | undefined = '2022-2023'
-) => {
+interface GetAttendanceByClassIdProps {
+  classId: string
+  year?: string
+  semester?: string
+}
+
+export const useGetAttendanceByClassId = ({
+  classId,
+  year = '2022-2023',
+  semester = 'hk1',
+}: GetAttendanceByClassIdProps) => {
   const [attendances, setAttendances] = useState<Record<
     string,
     Record<string, AttendanceProps>
@@ -23,18 +31,22 @@ export const useGetAttendanceByClassId = (
   const [listener, setListener] = useState<Unsubscribe>()
   useEffect(() => {
     if (classId) {
-      const subscribe = onValue(ref(realtimeDB, attendancePathName(classId, year)), (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val()
-          setAttendances(data)
-          return
+      const subscribe = onValue(
+        ref(realtimeDB, attendancePathName(classId, year, semester)),
+        (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val()
+            setAttendances(data)
+            return
+          }
+          setAttendances(null)
         }
-        setAttendances(null)
-      })
+      )
       setListener(() => subscribe)
       return subscribe
     }
-  }, [classId, year])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId])
 
   useEffect(() => {
     if (listener) {
@@ -48,14 +60,15 @@ export const useGetAttendanceByClassId = (
 
 export interface AddRollCallDateProps {
   date: string
+  year?: string
+  classId: string
+  semester?: string
 }
 
 export const useAddRollCallDate = () => {
   const { showSnackbar } = useSnackbarContext()
-  const { classId } = useClassContext()
-  const year = '2022-2023'
-  return ({ date }: AddRollCallDateProps) => {
-    return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, uuidv4())), date)
+  return ({ date, year = '2022-2023', classId, semester = 'hk1' }: AddRollCallDateProps) => {
+    return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, uuidv4(), semester)), date)
       .then(() => showSnackbar(`${date} has been added`, 'success'))
       .catch((error: any) => showSnackbar(error, 'error'))
   }
@@ -63,24 +76,32 @@ export const useAddRollCallDate = () => {
 
 export interface UpdateRollCallDateProps extends AddRollCallDateProps {
   id: string
+  date: string
+  classId: string
+  year?: string
+  semester?: string
 }
 
 export const useUpdateRollCallDate = () => {
   const { showSnackbar } = useSnackbarContext()
-  const { classId } = useClassContext()
-  const year = '2022-2023'
-  return ({ date, id }: UpdateRollCallDateProps) => {
-    return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, id)), date)
+  return ({ date, id, classId, year = '2022-2023', semester = 'hk1' }: UpdateRollCallDateProps) => {
+    return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, id, semester)), date)
       .then(() => showSnackbar(`${date} has been added`, 'success'))
       .catch((error: any) => showSnackbar(error, 'error'))
   }
 }
 
+interface GetRollCallDateProps {
+  classId: string
+  year?: string
+  semester?: string
+}
+
 export const useGetRollCallDates = () => {
   const { showSnackbar } = useSnackbarContext()
-  const year = '2022-2023'
-  return (classId: string) => {
-    return get(ref(realtimeDB, rollCallPathName(classId, year)))
+
+  return ({ classId, year = '2022-2023', semester = 'hk1' }: GetRollCallDateProps) => {
+    return get(ref(realtimeDB, rollCallPathName(classId, year, semester)))
       .then((snapshot) => {
         if (snapshot.exists()) {
           showSnackbar('Roll call dates has been fetch', 'success')
@@ -102,17 +123,26 @@ interface SubmitAttendanceProps {
   rollDateId: string
   attendance: boolean
   isMissal: boolean
+  year?: string
+  semester?: string
 }
 
 export const useSubmitAttendance = () => {
   const { showSnackbar } = useSnackbarContext()
 
-  return ({ studentId, classId, rollDateId, attendance, isMissal }: SubmitAttendanceProps) => {
-    console.log({ studentId, classId, rollDateId, attendance, isMissal })
+  return ({
+    studentId,
+    classId,
+    rollDateId,
+    attendance,
+    isMissal,
+    semester = 'hk1',
+    year = '2022-2023',
+  }: SubmitAttendanceProps) => {
     return set(
       ref(
         realtimeDB,
-        `${attendancePathName(classId, '2022-2023')}/${studentId}/${rollDateId}/${
+        `${attendancePathName(classId, year, semester)}/${studentId}/${rollDateId}/${
           isMissal ? AttendanceType.THANH_LE : AttendanceType.GIAO_LY
         }`
       ),

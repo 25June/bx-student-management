@@ -6,6 +6,7 @@ import { formatDateStoringDB, formatDisplayInput } from 'utils/datetime'
 import { RollCallDateActionType } from 'constant/common'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface DiligentDialogComponentProps {
   onClose: (refreshData?: boolean) => void
@@ -28,6 +29,7 @@ const DiligentDialogComponent = ({
   })
   const addRollCallDate = useAddRollCallDate()
   const updateRollCallDate = useUpdateRollCallDate()
+  const { classId } = useClassContext()
 
   useEffect(() => {
     if (rollCall && rollCall.date) {
@@ -39,10 +41,12 @@ const DiligentDialogComponent = ({
     const formatDate = formatDateStoringDB(data.rollCallDate)
 
     if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
-      updateRollCallDate({ date: formatDate, id: rollCall?.id || '' }).finally(() => onClose(true))
+      updateRollCallDate({ date: formatDate, id: rollCall?.id || '', classId }).finally(() =>
+        onClose(true)
+      )
       return
     }
-    addRollCallDate({ date: formatDate }).finally(() => onClose(true))
+    addRollCallDate({ date: formatDate, classId }).finally(() => onClose(true))
   }
 
   return (

@@ -1,5 +1,5 @@
-import React from 'react'
-import { StudentScoreBooks, Assessment } from 'models'
+import React, { useCallback, useEffect, useState } from 'react'
+import { StudentScoreBooks, Assessment, ScoreBook } from 'models'
 import {
   Box,
   Dialog,
@@ -9,11 +9,13 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { useGetStudentScoreBook, useSetNewStudentScore } from 'services/scorebook'
+import { useGetStudentScoreBook1, useSetNewStudentScore1 } from 'services/scorebook'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import ScoreForm from '../common/ScoreForm.component'
 import { groupAssessments } from 'modules/Table/helpers'
+import { useClassContext } from 'contexts/ClassContext'
+import ClearIcon from '@mui/icons-material/Clear'
 
 interface ScoreBookDialogComponentProps {
   data?: StudentScoreBooks | null
@@ -50,19 +52,49 @@ const ScoreDetail = ({
 }
 
 const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComponentProps) => {
+  const { classId } = useClassContext()
   const { assessments } = useAssessmentContext()
-  const setStudentScore = useSetNewStudentScore()
-  const { studentScoreBook } = useGetStudentScoreBook(data?.id || '')
+  const setStudentScore1 = useSetNewStudentScore1()
+  const getStudentScoreBook = useGetStudentScoreBook1()
   const { showSnackbar } = useSnackbarContext()
+  const [studentScoreBook, setStudentScoreBook] = useState<ScoreBook>()
+
+  const handleFetchStudentScoreBook = useCallback(() => {
+    getStudentScoreBook({ classId, studentId: data?.id || '' })
+      .then((value) => {
+        setStudentScoreBook(value)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId, data])
+
+  useEffect(() => {
+    if (data?.id) {
+      handleFetchStudentScoreBook()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   if (typeof assessments === 'undefined') {
     return null
   }
 
   const handleChangeData = (type: string) => (score: { score: number }, assessmentId: string) => {
     if (data?.id) {
-      setStudentScore(data.id, type, score, assessmentId)
-        .then(() => showSnackbar('Cập nhật thành công', 'success'))
-        .catch(() => showSnackbar('Cập nhật thất bại', 'error'))
+      setStudentScore1({
+        studentId: data.id,
+        type,
+        score: score.score,
+        assessmentId,
+        classId,
+      })
+        .then(() => {
+          handleFetchStudentScoreBook()
+          showSnackbar('Cập nhật 1 thành công', 'success')
+        })
+        .catch(() => showSnackbar('Cập nhật 1 thất bại', 'error'))
     }
   }
   const groupAssessment = groupAssessments(assessments)
@@ -96,7 +128,13 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
         />
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
-        <Button onClick={onClose} variant="outlined" type={'button'} color={'neutral'}>
+        <Button
+          onClick={onClose}
+          variant="outlined"
+          type={'button'}
+          color={'neutral'}
+          startIcon={<ClearIcon />}
+        >
           Trở lại
         </Button>
       </DialogActions>
