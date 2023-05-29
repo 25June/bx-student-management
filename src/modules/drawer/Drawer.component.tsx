@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Box,
   List,
@@ -25,11 +25,31 @@ interface DrawerComponentProps {
 }
 
 const Menu = {
-  LIST: { text: 'Danh Sách', icon: <ListAltIcon />, to: Router.HOME },
-  DILIGENT: { text: 'Điểm Chuyên Cần', icon: <CoPresentIcon />, to: Router.DILIGENT },
-  SCORE: { text: 'Điểm Học Tập', icon: <ScoreIcon />, to: Router.SCORE_BOOK },
-  ASSESSMENT: { text: 'Bài Kiểm Tra', icon: <AssignmentIcon />, to: Router.ASSESSMENT },
-  IMPORT: { text: 'Import', icon: <ImportExportIcon />, to: Router.IMPORT },
+  LIST: {
+    text: 'Danh Sách',
+    icon: (isActive: boolean) => <ListAltIcon color={isActive ? 'primary' : undefined} />,
+    to: Router.HOME,
+  },
+  DILIGENT: {
+    text: 'Điểm Chuyên Cần',
+    icon: (isActive: boolean) => <CoPresentIcon color={isActive ? 'primary' : undefined} />,
+    to: Router.DILIGENT,
+  },
+  SCORE: {
+    text: 'Điểm Học Tập',
+    icon: (isActive: boolean) => <ScoreIcon color={isActive ? 'primary' : undefined} />,
+    to: Router.SCORE_BOOK,
+  },
+  ASSESSMENT: {
+    text: 'Bài Kiểm Tra',
+    icon: (isActive: boolean) => <AssignmentIcon color={isActive ? 'primary' : undefined} />,
+    to: Router.ASSESSMENT,
+  },
+  IMPORT: {
+    text: 'Import',
+    icon: (isActive: boolean) => <ImportExportIcon color={isActive ? 'primary' : undefined} />,
+    to: Router.IMPORT,
+  },
 }
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -72,6 +92,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
   const navigate = useNavigate()
+  const location = useLocation()
+
   return (
     <Drawer variant="permanent" open={isOpen}>
       <Box pt={8}>
@@ -79,6 +101,7 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
           {Object.values(Menu).map(({ text, icon, to }) => (
             <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
               <ListItemButton
+                selected={to === location.pathname}
                 onClick={() => navigate(to)}
                 sx={{
                   minHeight: 48,
@@ -93,9 +116,12 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
                     justifyContent: 'center',
                   }}
                 >
-                  {icon}
+                  {icon(to === location.pathname)}
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: isOpen ? 1 : 0 }} />
+                <ListItemText
+                  primary={text}
+                  sx={{ opacity: isOpen ? 1 : 0, color: to === location.pathname ? '#1976d2' : '' }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
