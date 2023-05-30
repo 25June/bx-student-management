@@ -4,8 +4,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment'
 import TableComponent from 'modules/Table/Table.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
 import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
-import { StudentScoreBooks } from 'models'
-import React, { useState, useMemo } from 'react'
+import { StudentScoreBooks, Student } from 'models'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import AssessmentDialogComponent from 'modules/assessment-dialog/AssessmentDialog.component'
 import { AssessmentActionType } from 'constant'
@@ -14,6 +14,8 @@ import { Typography } from '@mui/material'
 import { useGetStudentScoreBooks1 } from 'services/scorebook'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import { SelectChangeEvent } from '@mui/material/Select'
+import SearchComponent from 'modules/common/Search.component'
+import { toLowerCaseNonAccentVietnamese } from 'utils/common'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
@@ -23,7 +25,7 @@ const ScoreBookComponent = () => {
   const [isOpenAssessmentDialog, openAssessmentDialog] = useState<boolean>(false)
   const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
 
-  const stuScoreBooks1 = useMemo(() => {
+  const stuScoreBooks1: StudentScoreBooks[] | Student[] = useMemo(() => {
     if (students.length !== 0) {
       return students.map((stu) => {
         if (studentScoreBooks?.[stu.id]) {
@@ -37,28 +39,58 @@ const ScoreBookComponent = () => {
     }
     return []
   }, [students, studentScoreBooks])
+
+  const [filteredStuScoreBooks, setFilteredStuScoreBooks] = useState<
+    StudentScoreBooks[] | Student[]
+  >([])
+  useEffect(() => {
+    if (stuScoreBooks1) {
+      setFilteredStuScoreBooks(stuScoreBooks1)
+    }
+  }, [stuScoreBooks1])
+
   const handleChangeSemester = (event: SelectChangeEvent) => {
     setSelectedSemester(event.target.value)
   }
 
+  const handleFilterStudentByName = (value: string) => {
+    if (stuScoreBooks1 && stuScoreBooks1.length !== 0) {
+      if (!value) {
+        setFilteredStuScoreBooks(stuScoreBooks1)
+        return
+      }
+
+      const filtered = stuScoreBooks1.filter((stu) => {
+        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
+          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
+        )
+        return keywordArr.includes(value.toLowerCase())
+      })
+      setFilteredStuScoreBooks(filtered)
+    }
+  }
+
   return (
     <Box p={2}>
+      <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
+        <Typography variant={'h1'}>Bảng Điểm</Typography>
+        <SemesterDropdownComponent
+          selectedSemester={selectedSemester}
+          onChangeSemester={handleChangeSemester}
+          size={'small'}
+        />
+      </Box>
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: 4,
-          marginTop: 2,
+          marginTop: 1,
         }}
       >
-        <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
-          <Typography variant={'h1'}>Bảng Điểm</Typography>
-          <SemesterDropdownComponent
-            selectedSemester={selectedSemester}
-            onChangeSemester={handleChangeSemester}
-            size={'small'}
-          />
+        <Box>
+          <SearchComponent onChange={handleFilterStudentByName} />
         </Box>
         <Button
           sx={{ width: '100%', maxWidth: 'fit-content' }}
@@ -69,10 +101,10 @@ const ScoreBookComponent = () => {
           Thêm Bài Kiểm Tra
         </Button>
       </Box>
-      {stuScoreBooks1 && stuScoreBooks1.length !== 0 && (
+      {filteredStuScoreBooks && filteredStuScoreBooks.length !== 0 && (
         <TableComponent
           columns={ScoreBookColumns}
-          rows={stuScoreBooks1}
+          rows={filteredStuScoreBooks}
           onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
           renderActionMenu={renderScoreBookActions}
         />

@@ -32,8 +32,10 @@ const theme = createTheme({
   },
   typography: {
     h1: {
-      fontSize: '2.5rem',
+      fontSize: '2rem',
       fontWeight: 600,
+      color: '#424242',
+      fontFamily: 'Be Vietnam Pro, sans-serif',
     },
   },
   palette: {

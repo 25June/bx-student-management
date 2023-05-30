@@ -13,6 +13,8 @@ import MonthDropdownComponent from 'modules/common/MonthDropdown.component'
 import { useGroupRollCallToSortedMonths, RollCallDates } from 'utils/customHooks'
 import { SelectChangeEvent } from '@mui/material/Select'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
+import SearchComponent from 'modules/common/Search.component'
+import { toLowerCaseNonAccentVietnamese } from 'utils/common'
 
 const DiligentComponent = () => {
   const { students } = useStudentContext()
@@ -31,6 +33,13 @@ const DiligentComponent = () => {
     string,
     RollCallDates[]
   >
+
+  const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
+  useEffect(() => {
+    if (students) {
+      setFilteredStudents(students)
+    }
+  }, [students])
 
   const fetchRollCallDates = useCallback(() => {
     getRollCallDates({ classId }).then((res: Record<string, string>) => {
@@ -65,7 +74,7 @@ const DiligentComponent = () => {
     openDiligentDialog(true)
   }
 
-  const formatAttendances = students.map((stu: Student) => {
+  const formatAttendances = filteredStudents.map((stu: Student) => {
     return {
       ...stu,
       rollCalls: rollCallDates,
@@ -86,25 +95,45 @@ const DiligentComponent = () => {
     setSelectedSemester(event.target.value)
   }
 
+  const handleFilterStudentByName = (value: string) => {
+    if (students && students.length !== 0) {
+      if (!value) {
+        setFilteredStudents(students)
+        return
+      }
+
+      const filtered = students.filter((stu) => {
+        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
+          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
+        )
+        return keywordArr.includes(value.toLowerCase())
+      })
+      setFilteredStudents(filtered)
+    }
+  }
+
   return (
     <Box>
       <Box p={2}>
+        <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
+          <Typography variant={'h1'}>Điểm Chuyên Cần</Typography>
+          <SemesterDropdownComponent
+            selectedSemester={selectedSemester}
+            onChangeSemester={handleChangeSemester}
+            size={'small'}
+          />
+        </Box>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: 4,
-            marginTop: 2,
+            marginTop: 1,
           }}
         >
-          <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
-            <Typography variant={'h1'}>Điểm Chuyên Cần</Typography>
-            <SemesterDropdownComponent
-              selectedSemester={selectedSemester}
-              onChangeSemester={handleChangeSemester}
-              size={'small'}
-            />
+          <Box>
+            <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             {rollCallDates && (

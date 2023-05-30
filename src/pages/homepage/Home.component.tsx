@@ -15,6 +15,8 @@ import {
   CardComponent,
 } from 'modules'
 import { useStudentContext } from 'contexts/StudentContext'
+import SearchComponent from 'modules/common/Search.component'
+import { toLowerCaseNonAccentVietnamese } from 'utils/common'
 
 const HomeComponent = () => {
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
@@ -26,6 +28,12 @@ const HomeComponent = () => {
   const [displayType, setDisplayType] = React.useState<string | null>('card')
   const { students } = useStudentContext()
 
+  const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
+  useEffect(() => {
+    if (students) {
+      setFilteredStudents(students)
+    }
+  }, [students])
   useEffect(() => {
     if (selectedStudent && students) {
       const newData = students.find((student: Student) => student.id === selectedStudent.id)
@@ -79,19 +87,40 @@ const HomeComponent = () => {
     setOpenScoreBook(false)
   }, [])
 
+  const handleFilterStudentByName = (value: string) => {
+    if (students && students.length !== 0) {
+      if (!value) {
+        setFilteredStudents(students)
+        return
+      }
+
+      const filtered = students.filter((stu) => {
+        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
+          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
+        )
+        return keywordArr.includes(value.toLowerCase())
+      })
+      setFilteredStudents(filtered)
+    }
+  }
   return (
     <Box>
       <Box p={2}>
+        <Typography variant={'h1'} sx={{ textAlign: 'left' }}>
+          Thông Tin Thiếu Nhi
+        </Typography>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: 4,
-            marginTop: 2,
+            marginTop: 1,
           }}
         >
-          <Typography variant={'h1'}>Thông Tin Thiếu Nhi</Typography>
+          <Box>
+            <SearchComponent onChange={handleFilterStudentByName} />
+          </Box>
           <Box display={'flex'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
             <Button
               variant="contained"
@@ -120,7 +149,7 @@ const HomeComponent = () => {
         {displayType === 'table' ? (
           <TableComponent
             columns={studentColumns}
-            rows={students || []}
+            rows={filteredStudents || []}
             onClickAction={handleClickAction}
             renderActionMenu={renderStudentActions}
           />
@@ -136,7 +165,7 @@ const HomeComponent = () => {
               paddingRight: 1,
             }}
           >
-            {(students || []).map((student: Student) => (
+            {(filteredStudents || []).map((student: Student) => (
               <Box key={student.id} sx={{ display: 'flex', columnGap: 16, rowGap: 16 }}>
                 <CardComponent student={student} onClickAction={handleClickAction} />
               </Box>
