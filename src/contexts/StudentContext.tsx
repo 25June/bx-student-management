@@ -1,29 +1,21 @@
-import { useMemo, useContext, createContext, PropsWithChildren, useCallback } from 'react'
+import { useMemo, useContext, createContext, PropsWithChildren } from 'react'
 import { Student } from 'models'
 import { useClassContext } from 'contexts/ClassContext'
 import { useGetStudents } from 'services/student'
 
 const studentDefaultValue = {
   students: [],
-  stopListener: () => null,
-} as { students: Student[]; stopListener: () => void }
+} as { students: Student[] }
 
 const StudentContext = createContext(studentDefaultValue)
 
 export const StudentProvider = ({ children }: PropsWithChildren) => {
   const { classId } = useClassContext()
-  const { students, listener } = useGetStudents(classId)
-
-  const stopListener = useCallback(() => {
-    if (listener) {
-      console.log('stop listener of student')
-      listener()
-    }
-  }, [listener])
+  const { students } = useGetStudents(classId)
 
   const value = useMemo(() => {
-    return students ? { students, stopListener } : { students: [], stopListener }
-  }, [students, stopListener])
+    return students ? { students } : { students: [] }
+  }, [students])
   return <StudentContext.Provider value={value}>{children}</StudentContext.Provider>
 }
 

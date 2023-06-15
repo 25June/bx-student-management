@@ -1,7 +1,4 @@
 import React from 'react'
-import { auth } from '../../firebase'
-import { signOut } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
 import { Toolbar, IconButton, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -9,10 +6,11 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar/AppBar'
 import { styled } from '@mui/material/styles'
 import MuiAppBar from '@mui/material/AppBar'
-import { Router } from 'routes'
 import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
 import { useClassContext } from 'contexts/ClassContext'
 import { SelectChangeEvent } from '@mui/material/Select'
+import { useSignOut } from 'services/user'
+import { useIsMobile } from 'utils/common'
 
 interface TopBarComponentProps {
   isOpen: boolean
@@ -34,16 +32,14 @@ const AppBar = styled(MuiAppBar, {
 }))
 
 const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
-  const navigate = useNavigate()
+  const signOut = useSignOut()
   const { classObj, setClassId } = useClassContext()
+  const isMobile = useIsMobile()
   const handleDrawerOpen = () => {
     setOpen(!isOpen)
   }
   const handleSignOut = () => {
-    signOut(auth).then(() => {
-      console.info('sign out successfully')
-      navigate(Router.SIGN_IN)
-    })
+    signOut()
   }
 
   const handleChangeClassId = (event: SelectChangeEvent) => {
@@ -59,7 +55,7 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
           onClick={handleDrawerOpen}
           edge="start"
           sx={{
-            marginRight: 5,
+            marginRight: isMobile ? 2 : 5,
           }}
         >
           <MenuIcon />

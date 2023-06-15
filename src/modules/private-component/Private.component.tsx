@@ -1,22 +1,28 @@
 import React, { useEffect, useState, Suspense } from 'react'
 import { AuthContextStatus, useAuthentication } from 'contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Router } from 'routes'
 import LayoutComponent from 'modules/layout/Layout.component'
 import FallbackComponent from 'modules/fallback/Fallback.component'
+import { Role } from 'constant/common'
 
 const PrivateComponent = ({ component }: { component: React.ReactElement }) => {
   const [isLoading, setLoading] = useState<boolean>(true)
-  const auth = useAuthentication()
+  const { status, isSignedIn, user } = useAuthentication()
   const navigate = useNavigate()
+  const location = useLocation()
   useEffect(() => {
-    if (auth.status === AuthContextStatus.FINISH) {
-      if (!auth.isSignedIn) {
+    if (status === AuthContextStatus.FINISH) {
+      if (!isSignedIn) {
         navigate(Router.SIGN_IN)
+      }
+
+      if (location.pathname === Router.USER && user && user.role !== Role.CTO) {
+        navigate(Router.HOME)
       }
       setLoading(false)
     }
-  }, [auth, navigate])
+  }, [status, navigate, isSignedIn, user, location.pathname])
   if (isLoading) {
     return <FallbackComponent />
   }

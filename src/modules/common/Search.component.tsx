@@ -62,9 +62,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 interface SearchComponentProps {
   onChange: (value: string) => void
+  label?: string
 }
 
-const SearchComponent = ({ onChange }: SearchComponentProps) => {
+const SearchComponent = ({ onChange, label }: SearchComponentProps) => {
   const [value, setValue] = useState<string>('')
   const handleInputChange = debounce(
     (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -84,7 +85,7 @@ const SearchComponent = ({ onChange }: SearchComponentProps) => {
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
-        placeholder={'Tìm tên thiếu nhi'}
+        placeholder={label || 'Tìm tên thiếu nhi'}
         inputProps={{ 'aria-label': 'search' }}
         onChange={(event) => {
           handleInputChange(event)

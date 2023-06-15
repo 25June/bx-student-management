@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useEffect, useState, PropsWithChildren } from 'react'
-import { getAuth, User } from 'firebase/auth'
+import { getAuth, User as AuthUser } from 'firebase/auth'
+import { User } from 'models/user'
+import { getUserInfo } from 'services/user'
 
 interface AuthContextProps {
   isSignedIn: boolean
-  user: User | null
+  authUser: AuthUser | null
   status: AuthContextStatus
+  user?: User | null
 }
 
 export enum AuthContextStatus {
@@ -15,8 +18,9 @@ export enum AuthContextStatus {
 
 const authContextDefaultValues = {
   isSignedIn: false,
-  user: null,
+  authUser: null,
   status: AuthContextStatus.START,
+  user: null,
 }
 
 const AuthContext = createContext<AuthContextProps>(authContextDefaultValues)
@@ -24,21 +28,29 @@ const AuthContext = createContext<AuthContextProps>(authContextDefaultValues)
 export const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
   const auth = getAuth()
   const [isSignedIn, setSignedIn] = useState<boolean>(false)
-  const [user, setUser] = useState<User | null>(null)
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
+  const [user, setUser] = useState<User | null>()
   const [status, setStatus] = useState<AuthContextStatus>(AuthContextStatus.START)
   const value = {
     isSignedIn,
-    user,
+    authUser,
     status,
+    user,
   }
   useEffect(() => {
     setStatus(AuthContextStatus.IN_PROGRESS)
-    auth.onAuthStateChanged((authUser: User | null) => {
-      if (authUser) {
+    auth.onAuthStateChanged((authenticationUser: AuthUser | null) => {
+      if (authenticationUser) {
         setSignedIn(true)
-        setUser(authUser)
+        setAuthUser(authenticationUser)
+        getUserInfo(authenticationUser.uid).then((data) => {
+          if (data) {
+            setUser(data)
+          }
+        })
       } else {
         setSignedIn(false)
+        setAuthUser(null)
         setUser(null)
       }
       setStatus(AuthContextStatus.FINISH)

@@ -64,3 +64,46 @@ export const BaseAssessments: BaseAssessment[] = [
   { id: AssessmentEnum.KT45, name: 'Kiểm Tra 45 phút' },
   { id: AssessmentEnum.KT60, name: 'Thi' },
 ]
+
+export enum UserAction {
+  GRANT_PERMISSION = 'GRANT_PERMISSION',
+  CHANGE_PASSWORD = 'CHANGE_PASSWORD',
+  RESET_PASSWORD = 'RESET_PASSWORD',
+  UPDATE_INFO = 'UPDATE_INFO',
+}
+
+export enum Role {
+  CO_CLASS_MANAGER = 0,
+  CLASS_MANAGER = 1,
+  GROUP_MANAGER = 2,
+  CEO = 3,
+  CTO = 4,
+  SECRECTARY = 5,
+}
+
+export const UserRoles = [
+  {
+    title: 'Giáo Lý Viên',
+    id: 0,
+  },
+  {
+    title: 'Giáo Lý Viên Chủ Nhiệm',
+    id: 1,
+  },
+  {
+    title: 'Trưởng Khối',
+    id: 2,
+  },
+  {
+    title: 'Ban Điều Hành',
+    id: 3,
+  },
+  {
+    title: 'Admin',
+    id: 4,
+  },
+  {
+    title: 'Thư Ký',
+    id: 5,
+  },
+]

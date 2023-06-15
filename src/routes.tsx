@@ -7,6 +7,7 @@ const SignInComponent = lazy(() => import('modules/auth/SignIn.component'))
 const ScoreBookComponent = lazy(() => import('pages/score-book/ScoreBook.component'))
 const AssessmentComponent = lazy(() => import('pages/assessment/Assessment.component'))
 const DiligentComponent = lazy(() => import('pages/diligent/Diligent.component'))
+const UserComponent = lazy(() => import('pages/user/User.component'))
 export const Router = {
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
@@ -15,6 +16,7 @@ export const Router = {
   ASSESSMENT: '/assessment',
   DILIGENT: '/diligent',
   HOME: '/',
+  USER: '/user',
 }
 
 const ROUTES = [
@@ -59,6 +61,12 @@ const ROUTES = [
     component: <SignUpComponent />,
     path: Router.SIGN_UP,
     isPrivate: false,
+  },
+  {
+    name: 'User',
+    component: <UserComponent />,
+    path: Router.USER,
+    isPrivate: true,
   },
 ]
 
