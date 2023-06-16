@@ -9,35 +9,22 @@
 }
 
 table {
-  color: #98BCB8;
   border-collapse: collapse;
 }
 
 th, td, caption {
-  background: #FEE356;
   padding: 0.5rem;
   text-align: left;
 }
 
-caption {
-  background: #945A37;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
 th {
-  background: #945A37;
-  opacity: 0.5;
   font-weight: 700;
 }
 
 tr:nth-of-type(2n) {
-  background: #945A37;
-  opacity: 0.8;
 }
 
-@media (max-width: 690px) {
+@media (max-width: 900px) {
   th {
     display: none;
   }

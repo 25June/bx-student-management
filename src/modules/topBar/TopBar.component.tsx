@@ -55,7 +55,7 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
           onClick={handleDrawerOpen}
           edge="start"
           sx={{
-            marginRight: isMobile ? 2 : 5,
+            marginRight: isMobile ? 2 : 3,
           }}
         >
           <MenuIcon />
@@ -74,10 +74,10 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
               display: 'flex',
               alignItems: 'center',
             }}
-            gap={2}
+            gap={isMobile ? 1 : 2}
           >
-            <Typography variant="h6" noWrap={true}>
-              Giáo Lý Bình Xuyên
+            <Typography variant="h6" noWrap={true} sx={{ fontSize: isMobile ? '1rem' : '1.5rem' }}>
+              {isMobile ? 'Gx Bình Xuyên' : 'Giáo Lý Bình Xuyên'}
             </Typography>
             <Box maxWidth={200}>
               <ClassDropdownComponent

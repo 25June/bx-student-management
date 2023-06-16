@@ -15,6 +15,13 @@ import { useGetAttendanceByClassId, useSubmitAttendance } from 'services/diligen
 import { useClassContext } from 'contexts/ClassContext'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import { RollCallDates } from 'utils/customHooks'
+import { useIsMobile } from 'utils/common'
+import { Box } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import Typography from '@mui/material/Typography'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -34,6 +41,7 @@ const DiligentTableComponent = ({
   const { classId } = useClassContext()
   const { attendances } = useGetAttendanceByClassId({ classId })
   const submitAttendance = useSubmitAttendance()
+  const isMobile = useIsMobile()
 
   const handleSubmitAttendance =
     (studentId: string) =>
@@ -49,6 +57,42 @@ const DiligentTableComponent = ({
       }
     }
 
+  if (isMobile) {
+    return (
+      <Box>
+        {rows.map((row) => {
+          return (
+            <Accordion key={row.id}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel-content-${row.id}`}
+                id={`panel-header-${row.id}`}
+              >
+                <TableFullNameCellComponent
+                  avatarPath={row.avatarPath}
+                  saintName={row.saintName}
+                  lastName={row.lastName}
+                  firstName={row.firstName}
+                  gender={!!row.gender}
+                />
+              </AccordionSummary>
+              <AccordionDetails>
+                <AttendanceHeaderComponent
+                  openDiligentDialog={openDiligentDialog}
+                  rollCallDates={rollCallDates}
+                />
+                <AttendanceCheckboxComponent
+                  rollCallDates={rollCallDates}
+                  attendance={attendances?.[row.id] || {}}
+                  onSubmitAttendance={handleSubmitAttendance(row.id)}
+                />
+              </AccordionDetails>
+            </Accordion>
+          )
+        })}
+      </Box>
+    )
+  }
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 500, boxShadow: 3 }}>
       <Table stickyHeader={true} sx={{ minWidth: 650 }} aria-label="simple table">

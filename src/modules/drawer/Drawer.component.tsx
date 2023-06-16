@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import CoPresentIcon from '@mui/icons-material/CoPresent'
-import ListAltIcon from '@mui/icons-material/ListAlt'
+import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import ImportExportIcon from '@mui/icons-material/ImportExport'
 import ScoreIcon from '@mui/icons-material/Score'
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle'
@@ -31,7 +31,7 @@ interface DrawerComponentProps {
 const Menu = {
   LIST: {
     text: 'Danh Sách',
-    icon: (isActive: boolean) => <ListAltIcon color={isActive ? 'primary' : undefined} />,
+    icon: (isActive: boolean) => <PermIdentityIcon color={isActive ? 'primary' : undefined} />,
     to: Router.HOME,
   },
   DILIGENT: {

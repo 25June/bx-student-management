@@ -5,6 +5,7 @@ import InputBase from '@mui/material/InputBase'
 import ClearIcon from '@mui/icons-material/Clear'
 import { debounce } from 'lodash'
 import IconButton from '@mui/material/IconButton'
+import { useIsMobile } from 'utils/common'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -34,8 +35,10 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   color: alpha(theme.palette.common.black, 0.55),
 }))
 
-const ClearIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 1),
+const ClearIconWrapper = styled('div', { shouldForwardProp: (props) => props !== 'isMobile' })<{
+  isMobile: boolean
+}>(({ theme, isMobile }) => ({
+  padding: isMobile ? theme.spacing(0, 0) : theme.spacing(0, 1),
   height: '100%',
   cursor: 'pointer',
   display: 'inline-block',
@@ -43,18 +46,21 @@ const ClearIconWrapper = styled('div')(({ theme }) => ({
   color: alpha(theme.palette.common.black, 0.55),
 }))
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
+const StyledInputBase = styled(InputBase, { shouldForwardProp: (props) => props !== 'isMobile' })<{
+  isMobile: boolean
+}>(({ theme, isMobile }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
+    padding: isMobile ? theme.spacing(1, 1, 1, 0) : theme.spacing(0.5, 0.5, 0.5, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    paddingLeft: `calc(1em + ${theme.spacing(isMobile ? 2.5 : 4)})`,
     transition: theme.transitions.create('width'),
-    width: '30ch',
+    maxWidth: '25ch',
+    width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: '15ch',
+      maxWidth: '15ch',
       '&:focus': {
-        width: '25ch',
+        maxWidth: '25ch',
       },
     },
   },
@@ -67,6 +73,7 @@ interface SearchComponentProps {
 
 const SearchComponent = ({ onChange, label }: SearchComponentProps) => {
   const [value, setValue] = useState<string>('')
+  const isMobile = useIsMobile()
   const handleInputChange = debounce(
     (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       onChange(event.target.value)
@@ -92,9 +99,10 @@ const SearchComponent = ({ onChange, label }: SearchComponentProps) => {
           setValue(event.target.value)
         }}
         value={value}
+        isMobile={isMobile}
       />
       {value && (
-        <ClearIconWrapper>
+        <ClearIconWrapper isMobile={isMobile}>
           <IconButton onClick={handleReset}>
             <ClearIcon />
           </IconButton>

@@ -9,7 +9,6 @@ const ResponsiveTableComponent = () => {
     <div className={styles.container}>
       <div className={styles.tableWrapper}>
         <table>
-          <caption>Students table</caption>
           <tr>
             <th>saintName</th>
             <th>firstName</th>

@@ -16,7 +16,7 @@ import {
 } from 'modules'
 import { useStudentContext } from 'contexts/StudentContext'
 import SearchComponent from 'modules/common/Search.component'
-import { toLowerCaseNonAccentVietnamese } from 'utils/common'
+import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 
 const HomeComponent = () => {
   const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
@@ -27,6 +27,7 @@ const HomeComponent = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
   const { students } = useStudentContext()
+  const isMobile = useIsMobile()
 
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   useEffect(() => {
@@ -105,8 +106,8 @@ const HomeComponent = () => {
   }
   return (
     <Box>
-      <Box p={2}>
-        <Typography variant={'h1'} sx={{ textAlign: 'left' }}>
+      <Box p={isMobile ? 1 : 2}>
+        <Typography variant={'h1'} sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }}>
           Thông Tin Thiếu Nhi
         </Typography>
         <Box
@@ -116,19 +117,20 @@ const HomeComponent = () => {
             alignItems: 'center',
             marginBottom: 4,
             marginTop: 1,
+            flexWrap: isMobile ? 'wrap' : 'nowrap',
+            gap: isMobile ? 1 : 2,
           }}
         >
           <Box>
             <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
-          <Box display={'flex'} sx={{ paddingLeft: 2, paddingRight: 2 }}>
+          <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
             <Button
               variant="contained"
               startIcon={<PersonAddIcon />}
               onClick={() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT)}
-              sx={{ marginRight: 2 }}
             >
-              Thêm Thiếu Nhi
+              <span>Thêm Thiếu Nhi</span>
             </Button>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <ToggleButtonGroup
@@ -160,13 +162,16 @@ const HomeComponent = () => {
               flexDirection: 'row',
               flexWrap: 'wrap',
               justifyContent: 'center',
-              gap: 5,
+              gap: isMobile ? 2.5 : 5,
               paddingLeft: 1,
               paddingRight: 1,
             }}
           >
             {(filteredStudents || []).map((student: Student) => (
-              <Box key={student.id} sx={{ display: 'flex', columnGap: 16, rowGap: 16 }}>
+              <Box
+                key={student.id}
+                sx={{ display: 'flex', columnGap: isMobile ? 8 : 16, rowGap: isMobile ? 8 : 16 }}
+              >
                 <CardComponent student={student} onClickAction={handleClickAction} />
               </Box>
             ))}
@@ -176,9 +181,9 @@ const HomeComponent = () => {
               onClose={() => setOpenInfoPanel(false)}
               onClickAction={handleClickAction}
             />
-            {isOpenScoreBook && selectedStudent && (
+            {selectedStudent && (
               <ScoreBookPanelComponent
-                isOpen={!!selectedStudent}
+                isOpen={isOpenScoreBook}
                 onClose={handleCloseScoreBook}
                 studentId={selectedStudent.id}
               />

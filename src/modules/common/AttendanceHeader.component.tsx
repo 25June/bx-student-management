@@ -1,8 +1,9 @@
 import React from 'react'
-import { Box, IconButton } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { formatDisplayTable } from 'utils/datetime'
 import EditIcon from '@mui/icons-material/Edit'
 import { RollCallDates } from 'utils/customHooks'
+import { useIsMobile } from 'utils/common'
 
 interface AttendanceHeaderProps {
   rollCallDates: RollCallDates[]
@@ -13,6 +14,7 @@ const AttendanceHeaderComponent = ({
   rollCallDates = [],
   openDiligentDialog,
 }: AttendanceHeaderProps) => {
+  const isMobile = useIsMobile()
   const onOpenDiligentDialog = (
     event: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>,
     date: string,
@@ -22,21 +24,35 @@ const AttendanceHeaderComponent = ({
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: 2 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        gap: isMobile ? 1 : 2,
+      }}
+    >
       {rollCallDates.map((sortedRollCall: RollCallDates) => (
         <Box
           key={`date-${sortedRollCall.key}`}
-          sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end', width: '84px' }}
+          sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end', width: isMobile ? 64 : 84 }}
         >
-          <span>{formatDisplayTable(sortedRollCall.value)}</span>
+          <Typography variant={'body1'} sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>
+            {formatDisplayTable(sortedRollCall.value)}
+          </Typography>
           <IconButton
             aria-label="update"
             size={'small'}
+            sx={{ padding: isMobile ? 0 : 0.625 }}
             onClick={(event) =>
               onOpenDiligentDialog(event, sortedRollCall.value, sortedRollCall.key)
             }
           >
-            <EditIcon fontSize={'small'} color={'action'} sx={{ fontSize: '1rem' }} />
+            <EditIcon
+              fontSize={'small'}
+              color={'action'}
+              sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}
+            />
           </IconButton>
         </Box>
       ))}

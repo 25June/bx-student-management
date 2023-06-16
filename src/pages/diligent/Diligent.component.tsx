@@ -14,13 +14,13 @@ import { useGroupRollCallToSortedMonths, RollCallDates } from 'utils/customHooks
 import { SelectChangeEvent } from '@mui/material/Select'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import SearchComponent from 'modules/common/Search.component'
-import { toLowerCaseNonAccentVietnamese } from 'utils/common'
+import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 
 const DiligentComponent = () => {
   const { students } = useStudentContext()
   const { classId } = useClassContext()
   const getRollCallDates = useGetRollCallDates()
-
+  const isMobile = useIsMobile()
   const [rollCallDates, setRollCallDates] = useState<Record<string, string>>({})
   const [isOpen, openDiligentDialog] = useState<boolean>(false)
   const [dialogData, setDialogData] = useState<Record<string, any>>({
@@ -114,9 +114,22 @@ const DiligentComponent = () => {
 
   return (
     <Box>
-      <Box p={2}>
-        <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
-          <Typography variant={'h1'}>Điểm Chuyên Cần</Typography>
+      <Box p={isMobile ? 1 : 2}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: isMobile ? 1 : 2,
+            width: '100%',
+            alignItems: isMobile ? 'flex-start' : 'center',
+            flexDirection: isMobile ? 'column' : 'row',
+          }}
+        >
+          <Typography
+            variant={'h1'}
+            sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }}
+          >
+            Điểm Chuyên Cần
+          </Typography>
           <SemesterDropdownComponent
             selectedSemester={selectedSemester}
             onChangeSemester={handleChangeSemester}
@@ -127,9 +140,11 @@ const DiligentComponent = () => {
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 4,
+            marginBottom: isMobile ? 2 : 4,
             marginTop: 1,
+            alignItems: isMobile ? 'flex-start' : 'center',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: 2,
           }}
         >
           <Box>
@@ -147,7 +162,7 @@ const DiligentComponent = () => {
               variant="contained"
               startIcon={<EventIcon />}
               onClick={() => openDiligentDialog(true)}
-              sx={{ marginRight: 2, minWidth: '180px' }}
+              sx={{ minWidth: '172px' }}
             >
               Thêm Ngày Học
             </Button>

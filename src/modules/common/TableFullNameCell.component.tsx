@@ -26,7 +26,9 @@ const TableFullNameCellComponent = ({
         customStyles={{ borderRadius: '50%', maxWidth: 50 }}
       />
       <Box flex={1}>
-        <Typography sx={{ color: '#808080', marginBottom: 0 }}>{saintName}</Typography>
+        <Typography sx={{ color: '#808080', marginBottom: 0, textAlign: 'left' }}>
+          {saintName}
+        </Typography>
         <Typography sx={{ textTransform: 'capitalize', marginBottom: 0 }}>
           {`${(lastName + ' ' + firstName).toLowerCase()}`}
         </Typography>
