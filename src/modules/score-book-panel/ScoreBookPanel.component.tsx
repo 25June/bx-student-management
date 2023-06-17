@@ -19,6 +19,7 @@ import { groupAssessments, GroupAssessmentProps } from 'modules/Table/helpers'
 import { ImageBoxComponent } from 'modules/index'
 import { useClassContext } from 'contexts/ClassContext'
 import { getScoreName } from 'utils/getScoreName'
+import { ScoreEnum } from 'constant/common'
 
 interface ScoreBookPanelComponentProps {
   isOpen: boolean
@@ -96,7 +97,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
             {`${studentInfo.lastName} ${studentInfo.firstName}`}
           </Box>
           <Box>
-            {['score5', 'score15', 'score45', 'score60'].map((scoreType: string) => {
+            {Object.values(ScoreEnum).map((scoreType: string) => {
               const scoreList = scoreBook[scoreType as keyof ScoreBook] as Record<string, number>
               const assessmentByScoreType = groupAssessment[scoreType as keyof GroupAssessmentProps]
               return (

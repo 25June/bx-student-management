@@ -53,6 +53,13 @@ export enum AssessmentEnum {
   KT60 = 'KT60',
 }
 
+export enum ScoreEnum {
+  SCORE_5 = 'score5',
+  SCORE_15 = 'score15',
+  SCORE_45 = 'score45',
+  SCORE_60 = 'score60',
+}
+
 export interface BaseAssessment {
   id: string
   name: string

@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { ScoreBookActionType, StudentActionType } from 'constant'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { AssessmentEnum } from 'constant/common'
+import { AssessmentEnum, ScoreEnum } from 'constant/common'
 import { getScoreName } from 'utils/getScoreName'
 
 export const studentColumns = [
@@ -136,25 +136,25 @@ export const renderScoreBookActions = (onClickActions: (action: string) => void)
 export const ScoreBookColumns = [
   { field: 'fullName', headerName: 'Họ và Tên', disableSort: true },
   {
-    field: 'score5',
+    field: ScoreEnum.SCORE_5,
     headerName: getScoreName(AssessmentEnum.KT5),
     render: (data: ScoreProps) => data && Object.keys(data)?.length !== 0 && <Score data={data} />,
     disableSort: true,
   },
   {
-    field: 'score15',
+    field: ScoreEnum.SCORE_15,
     headerName: getScoreName(AssessmentEnum.KT15),
     render: (data: ScoreProps) => data && Object.keys(data)?.length !== 0 && <Score data={data} />,
     disableSort: true,
   },
   {
-    field: 'score45',
+    field: ScoreEnum.SCORE_45,
     headerName: getScoreName(AssessmentEnum.KT45),
     render: (data: ScoreProps) => data && Object.keys(data)?.length !== 0 && <Score data={data} />,
     disableSort: true,
   },
   {
-    field: 'score60',
+    field: ScoreEnum.SCORE_60,
     headerName: getScoreName(AssessmentEnum.KT60),
     render: (data: ScoreProps) => data && Object.keys(data)?.length !== 0 && <Score data={data} />,
     disableSort: true,

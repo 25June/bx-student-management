@@ -4,6 +4,8 @@ import { Box, IconButton, TextField } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import React from 'react'
+import { useIsMobile } from 'utils/common'
+import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 
 const ScoreForm = ({
   data,
@@ -23,6 +25,7 @@ const ScoreForm = ({
   } = useForm<{ score: number }>({
     defaultValues: data ? { score: data } : { score: 0 },
   })
+  const isMobile = useIsMobile()
 
   const onSubmit = (value: { score: number }) => {
     if (isNaN(Number(value.score)) || Number(value.score) > 10) {
@@ -44,13 +47,14 @@ const ScoreForm = ({
         render={({ field }) => (
           <TextField
             id="outlined-lesson"
-            label={assessment.bookDate}
+            label={assessment.bookDate ? formatYYYMMDDToDDMMYYYY(assessment.bookDate) : ''}
             type="number"
             inputMode="numeric"
             margin="normal"
             fullWidth={true}
             helperText={errors.score?.message}
             error={!!errors.score}
+            size={isMobile ? 'small' : 'medium'}
             {...field}
           />
         )}
@@ -62,6 +66,7 @@ const ScoreForm = ({
           sx={{ border: !isDirty ? 'none' : '1px solid #2e7d32', borderRadius: '5px', top: 5 }}
           onClick={handleSubmit(onSubmit)}
           disabled={!isDirty}
+          size={isMobile ? 'small' : 'medium'}
         >
           <CheckIcon />
         </IconButton>
@@ -73,6 +78,7 @@ const ScoreForm = ({
           sx={{ border: !isDirty ? 'none' : '1px solid #d32f2f', borderRadius: '5px', top: 5 }}
           onClick={() => reset({ score: data })}
           disabled={!isDirty}
+          size={isMobile ? 'small' : 'medium'}
         >
           <CloseIcon />
         </IconButton>

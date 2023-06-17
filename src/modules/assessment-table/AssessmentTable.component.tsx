@@ -4,6 +4,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
+import Button from '@mui/material/Button'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import { Assessment } from 'models'
@@ -16,6 +17,9 @@ import Menu from '@mui/material/Menu'
 import { useState } from 'react'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import { useIsMobile } from 'utils/common'
+import { getScoreName } from 'utils/getScoreName'
+import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 
 const tableColumns = [
   {
@@ -38,6 +42,7 @@ interface AssessmentTableComponentProps {
 }
 
 const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableComponentProps) => {
+  const isMobile = useIsMobile()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [open, setOpen] = useState(false)
   const [selectedRow, setSelectedRow] = useState<Assessment>()
@@ -47,11 +52,27 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
     setSelectedRow(row)
   }
 
+  const tableBodyClass = isMobile
+    ? {
+        '&:before': { content: `attr(data-cell)`, fontWeight: 500 },
+        display: 'grid',
+        gridTemplateColumns: '17ch auto',
+        borderBottom: 0,
+      }
+    : {}
+
+  const actionClass = {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: 2,
+    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+  }
+
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
-      <Table stickyHeader={true} sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table stickyHeader={true} sx={{ minWidth: isMobile ? 0 : 650 }} aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow sx={{ display: isMobile ? 'none' : '' }}>
             {tableColumns.map((col) => {
               return <TableCell key={col.value}>{col.label}</TableCell>
             })}
@@ -59,27 +80,65 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              {tableColumns.map((col) => {
-                return (
-                  <TableCell key={`${row.id}-${col.value}`}>{(row as any)[col.value]}</TableCell>
-                )
-              })}
-              <TableCell key={`${row.id}-action`} align={'right'}>
-                <Tooltip title={'Menu'} placement={'top'}>
-                  <IconButton
-                    aria-label={'Menu'}
-                    onClick={(e) => handleClickMenu(e, row)}
-                    size={'small'}
-                    color={'primary'}
-                  >
-                    <MoreVertIcon fontSize={'small'} />
-                  </IconButton>
-                </Tooltip>
-              </TableCell>
-            </TableRow>
-          ))}
+          {rows.map((row) => {
+            const assessment = {
+              ...row,
+              type: getScoreName(row.type),
+              bookDate: row.bookDate ? formatYYYMMDDToDDMMYYYY(row.bookDate) : '',
+            }
+            return (
+              <TableRow key={row.id}>
+                {tableColumns.map((col) => {
+                  return (
+                    <TableCell
+                      key={`${row.id}-${col.value}`}
+                      data-cell={col.label}
+                      sx={tableBodyClass}
+                    >
+                      {(assessment as any)[col.value]}
+                    </TableCell>
+                  )
+                })}
+                {isMobile ? (
+                  <TableCell key={`${row.id}-action`} sx={actionClass}>
+                    <Button
+                      onClick={() => onClickAction(row, AssessmentActionType.EDIT_ASSESSMENT)}
+                      variant="outlined"
+                      color={'warning'}
+                      startIcon={<EditIcon />}
+                    >
+                      <Typography color={'#ed6c02'} fontSize={'0.875rem'}>
+                        Cập nhật
+                      </Typography>
+                    </Button>
+                    <Button
+                      onClick={() => onClickAction(row, AssessmentActionType.DELETE_ASSESSMENT)}
+                      variant="outlined"
+                      color={'error'}
+                      startIcon={<DeleteIcon />}
+                    >
+                      <Typography color={'#d32f2f'} fontSize={'0.875rem'}>
+                        Xoá
+                      </Typography>
+                    </Button>
+                  </TableCell>
+                ) : (
+                  <TableCell key={`${row.id}-action`} align={'right'}>
+                    <Tooltip title={'Menu'} placement={'top'}>
+                      <IconButton
+                        aria-label={'Menu'}
+                        onClick={(e) => handleClickMenu(e, row)}
+                        size={'small'}
+                        color={'primary'}
+                      >
+                        <MoreVertIcon fontSize={'small'} />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                )}
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
       {selectedRow && (

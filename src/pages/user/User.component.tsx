@@ -12,8 +12,10 @@ import { UserAction } from 'constant/common'
 import ChangePasswordDialogComponent from 'modules/user-dialog/ChangePasswordDialog.component'
 import PermissionDialogComponent from 'modules/user-dialog/PermissionDialog.component'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
+import { useIsMobile } from 'utils/common'
 
 const UserComponent = () => {
+  const isMobile = useIsMobile()
   const sendPasswordResetEmail = useSendPasswordResetEmail()
   const [users, setUsers] = useState<User[]>()
   const [filteredUsers, setFilteredUsers] = useState<User[]>()
@@ -24,6 +26,7 @@ const UserComponent = () => {
   const [selectedUser, setSelectedUser] = useState<User>()
   const handleFilterUserByName = (value: string) => {
     console.log(value)
+    console.log(users)
   }
 
   const fetchUsers = useCallback(() => {
@@ -65,20 +68,28 @@ const UserComponent = () => {
     }
   }
 
-  console.log({ users, filteredUsers, isOpenUserDialog })
-
   return (
-    <Box p={2}>
-      <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
-        <Typography variant={'h1'}> Thông Tin GLV</Typography>
+    <Box p={isMobile ? 1 : 2}>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+        }}
+      >
+        <Typography variant={'h1'} sx={{ fontSize: isMobile ? '1rem' : '2rem' }}>
+          {' '}
+          Thông Tin GLV
+        </Typography>
       </Box>
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 4,
+          marginBottom: isMobile ? 2 : 4,
+          gap: isMobile ? 1 : 2,
           marginTop: 1,
+          alignItems: isMobile ? 'flex-start' : 'center',
+          flexDirection: isMobile ? 'column' : 'row',
         }}
       >
         <Box>

@@ -15,11 +15,18 @@ import { useGetStudentScoreBooks1 } from 'services/scorebook'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import { SelectChangeEvent } from '@mui/material/Select'
 import SearchComponent from 'modules/common/Search.component'
-import { toLowerCaseNonAccentVietnamese } from 'utils/common'
+import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
+import ScoreBookAccordionComponent from 'modules/score-book/ScoreBookAccordion.component'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import Accordion from '@mui/material/Accordion'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
   const { classId } = useClassContext()
+  const isMobile = useIsMobile()
   const { studentScoreBooks } = useGetStudentScoreBooks1({ classId })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
   const [isOpenAssessmentDialog, openAssessmentDialog] = useState<boolean>(false)
@@ -71,9 +78,19 @@ const ScoreBookComponent = () => {
   }
 
   return (
-    <Box p={2}>
-      <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
-        <Typography variant={'h1'}>Bảng Điểm</Typography>
+    <Box p={isMobile ? 1 : 2}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: isMobile ? 1 : 2,
+          width: '100%',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          flexDirection: isMobile ? 'column' : 'row',
+        }}
+      >
+        <Typography sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }} variant={'h1'}>
+          Bảng Điểm
+        </Typography>
         <SemesterDropdownComponent
           selectedSemester={selectedSemester}
           onChangeSemester={handleChangeSemester}
@@ -84,9 +101,11 @@ const ScoreBookComponent = () => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 4,
+          marginBottom: isMobile ? 2 : 4,
           marginTop: 1,
+          alignItems: isMobile ? 'flex-start' : 'center',
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: 2,
         }}
       >
         <Box>
@@ -101,13 +120,39 @@ const ScoreBookComponent = () => {
           Thêm Bài Kiểm Tra
         </Button>
       </Box>
-      {filteredStuScoreBooks && filteredStuScoreBooks.length !== 0 && (
+      {!isMobile && filteredStuScoreBooks?.length !== 0 ? (
         <TableComponent
           columns={ScoreBookColumns}
           rows={filteredStuScoreBooks}
           onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
           renderActionMenu={renderScoreBookActions}
         />
+      ) : (
+        <Box>
+          {filteredStuScoreBooks.map((row) => (
+            <Accordion key={row.id}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`scorebook-accordion-content-${row.id}`}
+                id={`scorebook-accordion-header-${row.id}`}
+              >
+                <TableFullNameCellComponent
+                  avatarPath={row.avatarPath}
+                  saintName={row.saintName}
+                  lastName={row.lastName}
+                  firstName={row.firstName}
+                  gender={!!row.gender}
+                />
+              </AccordionSummary>
+              <AccordionDetails>
+                <ScoreBookAccordionComponent
+                  key={row.id}
+                  studentScoreBook={row as StudentScoreBooks}
+                />
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Box>
       )}
       {!!selectedScoreBook && (
         <ScoreBookDialogComponent

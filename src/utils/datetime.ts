@@ -4,6 +4,7 @@ const fullDateHyphenFormat = 'dd-MM-yyyy'
 const fullDateInputHyphenFormat = 'yyyy-MM-dd'
 const DayMonthSlashFormat = 'dd/MM'
 const MonthYearSlashFormat = 'MM/yyyy'
+const DateMonthYearSlashFormat = 'dd/MM/yyyy'
 
 export const formatDateStoringDB = (date: string) => {
   return format(new Date(date), fullDateHyphenFormat)
@@ -26,4 +27,8 @@ export const formatDisplayDropdown = (date: string) => {
 
 export const parseToNumber = (date: string) => {
   return parse(date, fullDateHyphenFormat, new Date()).getTime()
+}
+
+export const formatYYYMMDDToDDMMYYYY = (date: string) => {
+  return format(parse(date, fullDateInputHyphenFormat, new Date()), DateMonthYearSlashFormat)
 }

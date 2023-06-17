@@ -6,9 +6,11 @@ import { AssessmentDialogComponent, AssessmentTableComponent } from 'modules/ind
 import { Assessment } from 'models/assessment'
 import { AssessmentActionType } from 'constant'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
+import { useIsMobile } from 'utils/common'
 
 const AssessmentComponent = () => {
   const { assessments } = useAssessmentContext()
+  const isMobile = useIsMobile()
 
   const [actionType, setActionType] = useState<string>('')
   const [selectedAssessment, setSelectedAssessment] = useState<Assessment | null>(null)
@@ -37,16 +39,20 @@ const AssessmentComponent = () => {
   return (
     <Box>
       <Box
-        p={2}
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 4,
-          marginTop: 2,
+          gap: isMobile ? 1 : 2,
+          padding: isMobile ? 1 : 2,
+          width: '100%',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          flexDirection: isMobile ? 'column' : 'row',
+          boxSizing: 'border-box',
         }}
       >
-        <Typography variant={'h1'}>Bài Kiểm Tra</Typography>
+        <Typography variant={'h1'} sx={{ fontSize: isMobile ? '1rem' : '2rem' }}>
+          Bài Kiểm Tra
+        </Typography>
         <Button
           variant="contained"
           startIcon={<AssignmentIcon />}
@@ -55,7 +61,7 @@ const AssessmentComponent = () => {
           Thêm Bài Kiểm Tra
         </Button>
       </Box>
-      <Box p={2}>
+      <Box p={isMobile ? 1 : 2}>
         {assessments && (
           <AssessmentTableComponent rows={assessments} onClickAction={openStudentDialog} />
         )}
