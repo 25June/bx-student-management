@@ -104,7 +104,7 @@ export const useGetRollCallDates = () => {
     return get(ref(realtimeDB, rollCallPathName(classId, year, semester)))
       .then((snapshot) => {
         if (snapshot.exists()) {
-          showSnackbar('Roll call dates has been fetch', 'success')
+          showSnackbar('Đã có ngày điểm danh', 'success')
           return snapshot.val()
         } else {
           showSnackbar('No data available', 'warning')
@@ -148,7 +148,7 @@ export const useSubmitAttendance = () => {
       ),
       attendance
     )
-      .then(() => showSnackbar(`Attendance ${studentId} Updated`, 'success'))
+      .then(() => showSnackbar(`Điểm danh thành công`, 'success'))
       .catch((error: any) => showSnackbar(error, 'error'))
   }
 }

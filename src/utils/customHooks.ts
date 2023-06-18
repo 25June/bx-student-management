@@ -38,9 +38,6 @@ export const useGroupRollCallToSortedMonths = (rollCall: Record<string, string> 
       })),
       ['number']
     )
-
-    const groupMonth = groupBy(formatRollCall, ({ month }) => month)
-    console.log(groupMonth)
-    return groupMonth
+    return groupBy(formatRollCall, ({ month }) => month)
   }, [rollCall])
 }

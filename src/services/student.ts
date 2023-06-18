@@ -23,6 +23,7 @@ export const useGetStudents = (classId: string) => {
   const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
     if (classId) {
+      console.log('run into student')
       const queryStudents = query(studentRef, where('class.id', '==', classId))
       const listenerData = onSnapshot(
         queryStudents,

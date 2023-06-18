@@ -29,7 +29,7 @@ const TableFullNameCellComponent = ({
         <Typography sx={{ color: '#808080', marginBottom: 0, textAlign: 'left' }}>
           {saintName}
         </Typography>
-        <Typography sx={{ textTransform: 'capitalize', marginBottom: 0 }}>
+        <Typography sx={{ textTransform: 'capitalize', marginBottom: 0, textAlign: 'left' }}>
           {`${(lastName + ' ' + firstName).toLowerCase()}`}
         </Typography>
       </Box>

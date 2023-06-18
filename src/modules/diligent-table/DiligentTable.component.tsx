@@ -16,13 +16,10 @@ import { useClassContext } from 'contexts/ClassContext'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import { RollCallDates } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
-import { Box } from '@mui/material'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Box, CircularProgress } from '@mui/material'
+import DiligentAccordionComponent from 'modules/diligent/DiligentAccordion.component'
 
-interface StudentRows extends Student {
+export interface StudentRows extends Student {
   rollCalls: Record<string, string>
 }
 
@@ -56,37 +53,21 @@ const DiligentTableComponent = ({
       }
     }
 
+  if (!attendances) {
+    return <CircularProgress />
+  }
+
   if (isMobile) {
     return (
       <Box>
         {rows.map((row) => {
           return (
-            <Accordion key={row.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel-content-${row.id}`}
-                id={`panel-header-${row.id}`}
-              >
-                <TableFullNameCellComponent
-                  avatarPath={row.avatarPath}
-                  saintName={row.saintName}
-                  lastName={row.lastName}
-                  firstName={row.firstName}
-                  gender={!!row.gender}
-                />
-              </AccordionSummary>
-              <AccordionDetails>
-                <AttendanceHeaderComponent
-                  openDiligentDialog={openDiligentDialog}
-                  rollCallDates={rollCallDates}
-                />
-                <AttendanceCheckboxComponent
-                  rollCallDates={rollCallDates}
-                  attendance={attendances?.[row.id] || {}}
-                  onSubmitAttendance={handleSubmitAttendance(row.id)}
-                />
-              </AccordionDetails>
-            </Accordion>
+            <DiligentAccordionComponent
+              key={row.id}
+              studentRow={row}
+              rollCallDates={rollCallDates}
+              onSubmitAttendance={handleSubmitAttendance(row.id)}
+            />
           )
         })}
       </Box>
