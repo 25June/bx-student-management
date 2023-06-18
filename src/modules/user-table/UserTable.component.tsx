@@ -16,7 +16,6 @@ import EditIcon from '@mui/icons-material/Edit'
 import PasswordIcon from '@mui/icons-material/Password'
 import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
 import { UserAction, UserRoles } from 'constant/common'
-import { useAuthentication } from 'contexts/AuthContext'
 
 interface UserTableComponentProps {
   rows: User[]
@@ -24,7 +23,6 @@ interface UserTableComponentProps {
 }
 
 const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) => {
-  const { authUser } = useAuthentication()
   const [selectedRow, setSelectedRow] = useState<User>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -32,7 +30,6 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
     setAnchorEl(e.currentTarget)
     setSelectedRow(row)
   }
-  console.log(authUser)
 
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 500, boxShadow: 3 }}>

@@ -60,10 +60,8 @@ const SignInComponent = () => {
   }, [reset])
 
   const onSubmit = (values: SignInForm) => {
-    console.log(values)
     signInWithEmailAndPassword(auth, values.email, values.password)
       .then(({ user }: UserCredential) => {
-        console.log(user)
         setSnackbarContent({ severity: 'success', message: `${user.email} Đăng nhập thành công` })
         setOpenSnackbar(true)
         navigate(Router.HOME)

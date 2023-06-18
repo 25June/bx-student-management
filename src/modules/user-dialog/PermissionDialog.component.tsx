@@ -27,7 +27,6 @@ const PermissionDialogComponent = ({
   })
 
   const onSubmit = ({ role }: { role: number }) => {
-    console.log(role)
     showSnackbar(`select ${role}`, 'success')
     updateRole(selectedUser, role).finally(() => onClose(true))
   }

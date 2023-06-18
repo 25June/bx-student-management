@@ -39,7 +39,6 @@ export const useCreateUser = () => {
   return (email: string, password: string) =>
     createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
-        console.log(res.user)
         showSnackbar(`Create ${email} in google auth success`, 'success')
 
         setDoc(userDocRef(res.user.uid), { email, id: res.user.uid })

@@ -34,7 +34,6 @@ const UserComponent = () => {
       if (res && res.length !== 0) {
         setUsers(res)
         setFilteredUsers(res)
-        console.log(res)
       }
     })
   }, [])

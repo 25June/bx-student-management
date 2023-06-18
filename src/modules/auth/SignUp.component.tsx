@@ -71,10 +71,8 @@ const SignUpComponent = () => {
       setSnackbarContent({ severity: 'error', message: `Mật khẩu không trùng khớp` })
       setOpenSnackbar(true)
     }
-    console.log(values)
     createUserWithEmailAndPassword(auth, values.email, values.password)
       .then(({ user }: UserCredential) => {
-        console.log(user)
         setSnackbarContent({ severity: 'success', message: `${user.email} Đăng nhập thành công` })
         setOpenSnackbar(true)
       })
