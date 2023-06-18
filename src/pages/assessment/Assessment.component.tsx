@@ -7,18 +7,27 @@ import { Assessment } from 'models/assessment'
 import { AssessmentActionType } from 'constant'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { useIsMobile } from 'utils/common'
+import { useGetAssessments } from 'services'
+import { useClassContext } from 'contexts/ClassContext'
 
 const AssessmentComponent = () => {
-  const { assessments } = useAssessmentContext()
+  const { assessments, setAssessments } = useAssessmentContext()
+  const { classId } = useClassContext()
+  const getAssessments = useGetAssessments()
   const isMobile = useIsMobile()
 
   const [actionType, setActionType] = useState<string>('')
   const [selectedAssessment, setSelectedAssessment] = useState<Assessment | null>(null)
 
-  const closeStudentDialog = useCallback((): void => {
+  const closeStudentDialog = (refreshData?: boolean): void => {
     setActionType('')
     setSelectedAssessment(null)
-  }, [])
+    if (refreshData) {
+      getAssessments(classId).then((res) => {
+        setAssessments(res)
+      })
+    }
+  }
 
   const openStudentDialog = useCallback(
     (assessment: Assessment | null, type: AssessmentActionType): void => {
@@ -70,7 +79,7 @@ const AssessmentComponent = () => {
         <AssessmentDialogComponent
           key={selectedAssessment?.id || 'new'}
           isOpen={actionType !== ''}
-          onClose={() => closeStudentDialog()}
+          onClose={closeStudentDialog}
           action={actionType}
           data={selectedAssessment}
         />

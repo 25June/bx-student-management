@@ -47,7 +47,7 @@ const AssessmentFormDefaultValue = (data: Assessment | null) => {
 interface AssessmentDialogComponentProps {
   data: Assessment | null
   action: string
-  onClose: () => void
+  onClose: (refreshData?: boolean) => void
   isOpen: boolean
 }
 
@@ -101,7 +101,7 @@ const AssessmentDialogComponent = ({
             'error'
           )
         },
-        onComplete: onClose,
+        onComplete: () => onClose(true),
       })
       return
     }
@@ -120,7 +120,7 @@ const AssessmentDialogComponent = ({
             'error'
           )
         },
-        onComplete: onClose,
+        onComplete: () => onClose(true),
       })
       return
     }
@@ -143,7 +143,7 @@ const AssessmentDialogComponent = ({
           'error'
         )
       },
-      onComplete: onClose,
+      onComplete: () => onClose(true),
     })
     return
   }
@@ -153,7 +153,7 @@ const AssessmentDialogComponent = ({
   }
 
   return (
-    <Dialog open={isOpen} onClose={onClose} aria-labelledby="assessment-dialog-title">
+    <Dialog open={isOpen} onClose={() => onClose()} aria-labelledby="assessment-dialog-title">
       <DialogTitle id="assessment-dialog-title">
         {action === AssessmentActionType.EDIT_ASSESSMENT && 'Cập nhật thông tin bài kiểm tra'}
         {action === AssessmentActionType.ADD_NEW_ASSESSMENT && 'Thêm thông tin bài kiểm tra'}
@@ -215,7 +215,7 @@ const AssessmentDialogComponent = ({
         <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
           <Button
             color={'neutral'}
-            onClick={onClose}
+            onClick={() => onClose()}
             variant="outlined"
             type={'button'}
             startIcon={<ClearIcon />}

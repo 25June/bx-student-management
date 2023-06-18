@@ -1,19 +1,33 @@
-import { useContext, createContext, PropsWithChildren, useMemo } from 'react'
+import { useContext, createContext, PropsWithChildren, useMemo, useEffect, useState } from 'react'
 import { useGetAssessments } from 'services'
 import { Assessment } from 'models'
 import { useClassContext } from 'contexts/ClassContext'
 
-const AssessmentDefaultValue = { assessments: [] } as { assessments: Assessment[] }
+const AssessmentDefaultValue = {
+  assessments: [],
+  setAssessments: () => null,
+} as { assessments: Assessment[]; setAssessments: (value: any) => void }
 const AssessmentContext = createContext(AssessmentDefaultValue)
 
 export const AssessmentProvider = ({ children }: PropsWithChildren) => {
   const { classId } = useClassContext()
-  const { assessments } = useGetAssessments(classId)
+  const getAssessments = useGetAssessments()
+  const [assessments, setAssessments] = useState<Assessment[]>()
+
+  useEffect(() => {
+    if (classId) {
+      getAssessments(classId).then((res) => {
+        setAssessments(res)
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId])
+
   const value = useMemo(() => {
     if (assessments) {
-      return { assessments }
+      return { assessments, setAssessments }
     }
-    return { assessments: [] }
+    return { assessments: [], setAssessments }
   }, [assessments])
 
   return <AssessmentContext.Provider value={value}>{children}</AssessmentContext.Provider>

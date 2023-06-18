@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Assessment } from 'models'
 import {
   addDoc,
@@ -20,29 +19,22 @@ const db = getFirestore(app)
 const AssessmentCollection = 'assessments'
 const assessmentRef = collection(db, AssessmentCollection)
 
-export const useGetAssessments = (classId: string) => {
-  const [assessments, setAssessments] = useState<Assessment[]>()
+export const useGetAssessments = () => {
   const { showSnackbar } = useSnackbarContext()
-  useEffect(() => {
-    if (classId) {
-      const queryAssessments = query(assessmentRef, where('classId', '==', classId))
-      getDocs(queryAssessments).then((snapshot) => {
-        if (snapshot.empty) {
-          showSnackbar(`Get Assessments empty for class ${classId}`, 'warning')
-          setAssessments([])
-          return
-        }
-        setAssessments(
-          snapshot.docs
-            .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
-            .filter((assessment) => !assessment.isDeleted)
-        )
-        showSnackbar('Get Assessments Success', 'success')
-      })
-    }
-  }, [classId, showSnackbar])
 
-  return { assessments, isLoading: typeof assessments === 'undefined' }
+  return (classId: string) => {
+    const queryAssessments = query(assessmentRef, where('classId', '==', classId))
+    return getDocs(queryAssessments).then((snapshot) => {
+      if (snapshot.empty) {
+        showSnackbar(`Get Assessments empty for class ${classId}`, 'warning')
+        return []
+      }
+      showSnackbar('Get Assessments Success', 'success')
+      return snapshot.docs
+        .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
+        .filter((assessment) => !assessment.isDeleted)
+    })
+  }
 }
 
 interface AddNewAssessmentProps {
