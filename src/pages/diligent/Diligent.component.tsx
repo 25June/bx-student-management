@@ -128,7 +128,7 @@ const DiligentComponent = () => {
             variant={'h1'}
             sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }}
           >
-            Điểm Chuyên Cần
+            Điểm Chuyên Cần{' '}
           </Typography>
           <SemesterDropdownComponent
             selectedSemester={selectedSemester}
@@ -169,6 +169,12 @@ const DiligentComponent = () => {
           </Box>
         </Box>
         <Box mt={2} mb={2}>
+          <Typography
+            component={'h6'}
+            sx={{ color: '#1769aa', fontWeight: 600, textAlign: 'right' }}
+          >
+            {students && students.length} Thiếu nhi
+          </Typography>
           <DiligentTableComponent
             rows={formatAttendances || []}
             rollCallDates={groupRollDate[selectedDate || Object.keys(groupRollDate)[0]]}

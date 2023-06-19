@@ -28,7 +28,7 @@ const DiligentAccordionComponent = ({
 }: DiligentComponentProps) => {
   const { classId } = useClassContext()
   const { attendances } = useGetAttendanceByClassId({ classId })
-  if (!attendances) {
+  if (!attendances || !rollCallDates) {
     return null
   }
   const stuAttendance = attendances[studentRow.id]
