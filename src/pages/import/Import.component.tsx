@@ -15,7 +15,7 @@ import { BaseClasses } from 'constant/common'
 import { useBatchAddStudents } from 'services/student'
 import { Class, Student } from 'models'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
-import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
+import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 
 type ImportProps = {
   value: string

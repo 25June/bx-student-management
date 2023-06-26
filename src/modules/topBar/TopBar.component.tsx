@@ -6,11 +6,13 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar/AppBar'
 import { styled } from '@mui/material/styles'
 import MuiAppBar from '@mui/material/AppBar'
-import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
+import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 import { useClassContext } from 'contexts/ClassContext'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { useSignOut } from 'services/user'
 import { useIsMobile } from 'utils/common'
+import Logo from 'static/images/logo/logo.svg'
+import { useStudentContext } from 'contexts/StudentContext'
 
 interface TopBarComponentProps {
   isOpen: boolean
@@ -34,6 +36,7 @@ const AppBar = styled(MuiAppBar, {
 const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
   const signOut = useSignOut()
   const { classObj, setClassId } = useClassContext()
+  const { students } = useStudentContext()
   const isMobile = useIsMobile()
   const handleDrawerOpen = () => {
     setOpen(!isOpen)
@@ -76,9 +79,23 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
             }}
             gap={isMobile ? 1 : 2}
           >
-            <Typography variant="h6" noWrap={true} sx={{ fontSize: isMobile ? '1rem' : '1.5rem' }}>
-              {isMobile ? 'Gx Bình Xuyên' : 'Giáo Lý Bình Xuyên'}
-            </Typography>
+            {isMobile ? (
+              <Box
+                component={'img'}
+                src={Logo}
+                alt={'Giao Xu Binh Xuyen'}
+                sx={{ height: 40, width: 40 }}
+              />
+            ) : (
+              <Typography
+                variant="h6"
+                noWrap={true}
+                sx={{ fontSize: isMobile ? '1rem' : '1.5rem' }}
+              >
+                Giáo Lý Bình Xuyên
+              </Typography>
+            )}
+
             <Box maxWidth={200}>
               <ClassDropdownComponent
                 classObj={classObj}
@@ -86,6 +103,12 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
                 size={'small'}
               />
             </Box>
+            <Typography
+              component={'h6'}
+              sx={{ color: '#fff', fontWeight: 500, textAlign: 'right', fontSize: '1rem' }}
+            >
+              {students && students.length} Em
+            </Typography>
           </Box>
           <IconButton color="inherit" aria-label="open drawer" onClick={handleSignOut} edge="start">
             <ExitToAppIcon />

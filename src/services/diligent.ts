@@ -104,10 +104,8 @@ export const useGetRollCallDates = () => {
     return get(ref(realtimeDB, rollCallPathName(classId, year, semester)))
       .then((snapshot) => {
         if (snapshot.exists()) {
-          showSnackbar('Đã có ngày điểm danh', 'success')
           return snapshot.val()
         } else {
-          showSnackbar('No data available', 'warning')
           return null
         }
       })

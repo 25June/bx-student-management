@@ -13,15 +13,14 @@ import {
   Unsubscribe,
 } from 'firebase/firestore'
 import { Student } from 'models'
-import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 const StudentCollection = 'students'
 export const studentRef = collection(fireStoreDB, StudentCollection)
 export const useGetStudents = (classId: string) => {
   const [students, setStudents] = useState<Student[] | null>()
   const [listener, setListener] = useState<Unsubscribe>()
-  const { showSnackbar } = useSnackbarContext()
   useEffect(() => {
+    console.log({ classId })
     if (classId) {
       const queryStudents = query(studentRef, where('class.id', '==', classId))
       const listenerData = onSnapshot(
@@ -35,7 +34,6 @@ export const useGetStudents = (classId: string) => {
               return acc
             }, [])
           )
-          showSnackbar('Get Students Success', 'success')
         },
         (error) => {
           console.error(error)
@@ -45,7 +43,7 @@ export const useGetStudents = (classId: string) => {
       setListener(() => listenerData)
       return listenerData
     }
-  }, [showSnackbar, classId])
+  }, [classId])
 
   useEffect(() => {
     if (listener && students) {

@@ -27,7 +27,7 @@ import {
 } from 'services'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules'
 import { useIsMobile } from 'utils/common'
-import ClassDropdownComponent from 'modules/common/ClassDropdown.component'
+import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { BaseClasses } from 'constant/common'
 import { useSnackbarContext } from 'contexts/SnackbarContext'

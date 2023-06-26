@@ -15,6 +15,7 @@ import { SelectChangeEvent } from '@mui/material/Select'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
+import SpeedDialComponent from 'modules/speed-dial/SpeedDial.component'
 
 const DiligentComponent = () => {
   const { students } = useStudentContext()
@@ -114,6 +115,7 @@ const DiligentComponent = () => {
 
   return (
     <Box>
+      <SpeedDialComponent />
       <Box p={isMobile ? 1 : 2}>
         <Box
           sx={{
@@ -169,12 +171,6 @@ const DiligentComponent = () => {
           </Box>
         </Box>
         <Box mt={2} mb={2}>
-          <Typography
-            component={'h6'}
-            sx={{ color: '#1769aa', fontWeight: 600, textAlign: 'right' }}
-          >
-            {students && students.length} Thiếu nhi
-          </Typography>
           <DiligentTableComponent
             rows={formatAttendances || []}
             rollCallDates={groupRollDate[selectedDate || Object.keys(groupRollDate)[0]]}

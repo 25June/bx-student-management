@@ -16,8 +16,9 @@ import { useClassContext } from 'contexts/ClassContext'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import { RollCallDates } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
 import DiligentAccordionComponent from 'modules/diligent/DiligentAccordion.component'
+import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -54,7 +55,7 @@ const DiligentTableComponent = ({
     }
 
   if (!attendances) {
-    return <CircularProgress />
+    return <DiligentSkeleton />
   }
 
   if (isMobile) {
