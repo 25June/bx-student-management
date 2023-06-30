@@ -87,7 +87,7 @@ const Score = ({ data }: { data: ScoreProps }) => {
   )
 }
 
-export const renderStudentActions = (onClickActions: (action: string) => void) => {
+export const renderStudentActions = (onClickActions: (action: StudentActionType) => void) => {
   return (
     <div>
       <MenuItem onClick={() => onClickActions(StudentActionType.EDIT_STUDENT)}>
@@ -110,7 +110,7 @@ export const renderStudentActions = (onClickActions: (action: string) => void) =
   )
 }
 
-export const renderScoreBookActions = (onClickActions: (action: string) => void) => {
+export const renderScoreBookActions = (onClickActions: (action: ScoreBookActionType) => void) => {
   return (
     <div>
       <MenuItem onClick={() => onClickActions(ScoreBookActionType.EDIT_SCORE_BOOK)}>

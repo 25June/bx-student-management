@@ -1,32 +1,27 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Box, Button, Typography } from '@mui/material'
-import { RollCallDateActionType } from 'constant/common'
-import DiligentDialogComponent from 'modules/diligent-dialog/DiligentDialog.component'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Box, Typography } from '@mui/material'
+import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useGetRollCallDates } from 'services/diligent'
 import { Student } from 'models'
 import { formatDisplayInput } from 'utils/datetime'
 import DiligentTableComponent from 'modules/diligent-table/DiligentTable.component'
-import EventIcon from '@mui/icons-material/Event'
 import MonthDropdownComponent from 'modules/common/MonthDropdown.component'
-import { useGroupRollCallToSortedMonths, RollCallDates } from 'utils/customHooks'
+import { RollCallDates, useGroupRollCallToSortedMonths } from 'utils/customHooks'
 import { SelectChangeEvent } from '@mui/material/Select'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
-import SpeedDialComponent from 'modules/speed-dial/SpeedDial.component'
+import { useDialogContext } from 'contexts/DialogContext'
 
 const DiligentComponent = () => {
   const { students } = useStudentContext()
   const { classId } = useClassContext()
   const getRollCallDates = useGetRollCallDates()
   const isMobile = useIsMobile()
+  const { openDialog } = useDialogContext()
   const [rollCallDates, setRollCallDates] = useState<Record<string, string>>({})
-  const [isOpen, openDiligentDialog] = useState<boolean>(false)
-  const [dialogData, setDialogData] = useState<Record<string, any>>({
-    action: RollCallDateActionType.ADD_STUDY_DATE,
-  })
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
 
@@ -65,14 +60,16 @@ const DiligentComponent = () => {
   }
 
   const handleOpenDiligentDialog = (date: string, id: string) => {
-    setDialogData({
-      rollCall: {
-        date: formatDisplayInput(date),
-        id,
-      },
-      action: RollCallDateActionType.EDIT_STUDY_DATE,
-    })
-    openDiligentDialog(true)
+    const rollCall = {
+      date: formatDisplayInput(date),
+      id,
+    }
+    openDialog(
+      DialogType.STUDY_DATE_DIALOG,
+      RollCallDateActionType.EDIT_STUDY_DATE,
+      rollCall,
+      callback
+    )
   }
 
   const formatAttendances = filteredStudents.map((stu: Student) => {
@@ -82,14 +79,10 @@ const DiligentComponent = () => {
     }
   })
 
-  const handleCloseDiligentDialog = (refreshData?: boolean) => {
+  const callback = (refreshData?: boolean) => {
     if (refreshData) {
       fetchRollCallDates()
     }
-    openDiligentDialog(false)
-    setDialogData({
-      action: RollCallDateActionType.ADD_STUDY_DATE,
-    })
   }
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
@@ -115,7 +108,6 @@ const DiligentComponent = () => {
 
   return (
     <Box>
-      <SpeedDialComponent />
       <Box p={isMobile ? 1 : 2}>
         <Box
           sx={{
@@ -160,14 +152,6 @@ const DiligentComponent = () => {
                 onChangeMonth={handleChangeMonth}
               />
             )}
-            <Button
-              variant="contained"
-              startIcon={<EventIcon />}
-              onClick={() => openDiligentDialog(true)}
-              sx={{ minWidth: '172px' }}
-            >
-              Thêm Ngày Học
-            </Button>
           </Box>
         </Box>
         <Box mt={2} mb={2}>
@@ -178,12 +162,6 @@ const DiligentComponent = () => {
           />
         </Box>
       </Box>
-      <DiligentDialogComponent
-        isOpen={isOpen}
-        onClose={handleCloseDiligentDialog}
-        action={dialogData.action}
-        rollCall={dialogData.rollCall}
-      />
     </Box>
   )
 }

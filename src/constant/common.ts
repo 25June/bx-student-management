@@ -88,6 +88,14 @@ export enum Role {
   SECRECTARY = 5,
 }
 
+export enum DialogType {
+  STUDENT_DIALOG,
+  ASSESSMENT_DIALOG,
+  STUDY_DATE_DIALOG,
+}
+
+export type ActionType = AssessmentActionType | StudentActionType | RollCallDateActionType
+
 export const UserRoles = [
   {
     title: 'Giáo Lý Viên',

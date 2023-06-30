@@ -11,7 +11,7 @@ const CardComponent = ({
   onClickAction,
 }: {
   student: Student
-  onClickAction: (student: any, actionType: string) => void
+  onClickAction: (student: any, actionType: StudentActionType) => void
 }) => {
   const isMobile = useIsMobile()
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()

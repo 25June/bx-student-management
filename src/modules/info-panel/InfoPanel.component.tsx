@@ -13,7 +13,7 @@ interface InfoPanelComponentProps {
   isOpen: boolean
   studentInfo?: Student
   onClose: () => void
-  onClickAction: (student: any, actionType: string) => void
+  onClickAction: (student: any, actionType: StudentActionType) => void
 }
 
 const InfoPanelComponent = ({

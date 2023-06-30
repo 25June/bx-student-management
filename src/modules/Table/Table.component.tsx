@@ -17,12 +17,15 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { Student } from 'models'
 import Menu from '@mui/material/Menu'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
+import { ScoreBookActionType, StudentActionType } from 'constant'
 
 interface TableProps {
   columns: any[]
   rows: any[]
-  onClickAction?: (data: any, type: string) => void
-  renderActionMenu?: (onClickActions: (action: string) => void) => React.ReactElement
+  onClickAction?: (data: any, type: StudentActionType | ScoreBookActionType) => void
+  renderActionMenu?: (
+    onClickActions: (action: StudentActionType | ScoreBookActionType) => void
+  ) => React.ReactElement
 }
 
 interface EnhancedTableProps {
@@ -104,7 +107,7 @@ const TableComponent = ({ rows, columns, onClickAction, renderActionMenu }: Tabl
     setSelectedStudent(row)
   }
 
-  const handleClickActions = (method: string) => {
+  const handleClickActions = (method: StudentActionType | ScoreBookActionType) => {
     if (onClickAction) {
       onClickAction(selectedStudent, method)
     }

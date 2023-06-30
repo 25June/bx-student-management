@@ -10,6 +10,7 @@ import { AssessmentProvider } from 'contexts/AssessmentContext'
 import { StudentProvider } from 'contexts/StudentContext'
 import { ClassProvider } from 'contexts/ClassContext'
 import theme from './styleConfigs'
+import { DialogProvider } from 'contexts/DialogContext'
 
 function App() {
   return (
@@ -17,35 +18,37 @@ function App() {
       <AuthContextProvider>
         <ThemeProvider theme={theme}>
           <SnackbarProvider>
-            <ClassProvider>
-              <AssessmentProvider>
-                <StudentProvider>
-                  <BrowserRouter>
-                    <Routes>
-                      {ROUTES.map((route) => {
-                        return (
-                          <Route
-                            key={route.name}
-                            path={route.path}
-                            element={
-                              route.isPrivate ? (
-                                <Suspense fallback={<FallbackComponent />}>
-                                  <PrivateComponent component={route.component} />
-                                </Suspense>
-                              ) : (
-                                <Suspense fallback={<FallbackComponent />}>
-                                  {route.component}
-                                </Suspense>
-                              )
-                            }
-                          />
-                        )
-                      })}
-                    </Routes>
-                  </BrowserRouter>
-                </StudentProvider>
-              </AssessmentProvider>
-            </ClassProvider>
+            <DialogProvider>
+              <ClassProvider>
+                <AssessmentProvider>
+                  <StudentProvider>
+                    <BrowserRouter>
+                      <Routes>
+                        {ROUTES.map((route) => {
+                          return (
+                            <Route
+                              key={route.name}
+                              path={route.path}
+                              element={
+                                route.isPrivate ? (
+                                  <Suspense fallback={<FallbackComponent />}>
+                                    <PrivateComponent component={route.component} />
+                                  </Suspense>
+                                ) : (
+                                  <Suspense fallback={<FallbackComponent />}>
+                                    {route.component}
+                                  </Suspense>
+                                )
+                              }
+                            />
+                          )
+                        })}
+                      </Routes>
+                    </BrowserRouter>
+                  </StudentProvider>
+                </AssessmentProvider>
+              </ClassProvider>
+            </DialogProvider>
           </SnackbarProvider>
         </ThemeProvider>
       </AuthContextProvider>

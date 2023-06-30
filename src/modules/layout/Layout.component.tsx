@@ -4,6 +4,7 @@ import { TopBarComponent } from '../index'
 import DrawerComponent from '../drawer/Drawer.component'
 import { PropsWithChildren } from 'react'
 import { useIsMobile } from 'utils/common'
+import SpeedDialComponent from 'modules/speed-dial/SpeedDial.component'
 
 export const drawerWidth = 240
 
@@ -29,6 +30,7 @@ const LayoutComponent = ({ children }: PropsWithChildren) => {
       >
         {children}
       </Box>
+      <SpeedDialComponent />
     </Box>
   )
 }

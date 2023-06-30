@@ -1,27 +1,51 @@
-import * as React from 'react'
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Backdrop from '@mui/material/Backdrop'
 import SpeedDial from '@mui/material/SpeedDial'
 import SpeedDialIcon from '@mui/material/SpeedDialIcon'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import SpeedDialAction from '@mui/material/SpeedDialAction'
-import CoPresentIcon from '@mui/icons-material/CoPresent'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import {
+  ActionType,
+  AssessmentActionType,
+  DialogType,
+  RollCallDateActionType,
+  StudentActionType,
+} from 'constant/common'
+import { useDialogContext } from 'contexts/DialogContext'
 
 const actions = [
-  { icon: <CoPresentIcon />, name: 'Điểm danh', type: 'CHECK_ATTENDANCE' },
-  { icon: <PermIdentityIcon />, name: 'Thêm thiếu nhi', type: 'ADD_STUDENT' },
-  { icon: <AssignmentIcon />, name: 'Thêm bài kiểm tra', type: 'ADD_ASSESSMENT' },
-  { icon: <CalendarMonthIcon />, name: 'Thêm ngày học', type: 'ADD_STUDY_DATE' },
+  {
+    icon: <PermIdentityIcon />,
+    name: 'Thêm thiếu nhi',
+    dialogType: DialogType.STUDENT_DIALOG,
+    actionType: StudentActionType.ADD_NEW_STUDENT,
+  },
+  {
+    icon: <AssignmentIcon />,
+    name: 'Thêm bài kiểm tra',
+    dialogType: DialogType.ASSESSMENT_DIALOG,
+    actionType: AssessmentActionType.ADD_NEW_ASSESSMENT,
+  },
+  {
+    icon: <CalendarMonthIcon />,
+    name: 'Thêm ngày học',
+    dialogType: DialogType.STUDY_DATE_DIALOG,
+    actionType: RollCallDateActionType.ADD_STUDY_DATE,
+  },
 ]
 
 const SpeedDialComponent = () => {
-  const [open, setOpen] = React.useState(false)
+  const { openDialog } = useDialogContext()
+
+  const [open, setOpen] = useState<boolean>(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  const handleOpenDialog = (type: string) => {
-    console.log(type)
+
+  const handleOpenDialog = (dialogType: DialogType, actionType: ActionType) => {
+    openDialog(dialogType, actionType, null)
     setOpen(false)
   }
   return (
@@ -52,7 +76,7 @@ const SpeedDialComponent = () => {
             icon={action.icon}
             tooltipTitle={action.name}
             tooltipOpen={true}
-            onClick={() => handleOpenDialog(action.type)}
+            onClick={() => handleOpenDialog(action.dialogType, action.actionType)}
             sx={{
               '.MuiSpeedDialAction-staticTooltipLabel': { whiteSpace: 'nowrap' },
             }}

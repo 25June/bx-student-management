@@ -1,33 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Button, Box, ToggleButtonGroup, Typography } from '@mui/material'
-import { StudentActionType } from 'constant'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Box, ToggleButtonGroup, Typography } from '@mui/material'
+import { ScoreBookActionType, StudentActionType } from 'constant'
 import { Student } from 'models'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import StyleIcon from '@mui/icons-material/Style'
 import ToggleButton from '@mui/material/ToggleButton'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { renderStudentActions, studentColumns } from 'modules/Table/helpers'
-import {
-  InfoPanelComponent,
-  TableComponent,
-  ScoreBookPanelComponent,
-  StudentDialogComponent,
-  CardComponent,
-} from 'modules'
+import { CardComponent, InfoPanelComponent, ScoreBookPanelComponent, TableComponent } from 'modules'
 import { useStudentContext } from 'contexts/StudentContext'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
+import { useDialogContext } from 'contexts/DialogContext'
+import { DialogType } from 'constant/common'
 
 const HomeComponent = () => {
-  const [isOpenStudentDialog, setOpenStudentDialog] = useState<boolean>(false)
-
-  const [actionType, setActionType] = useState<string>('')
   const [isOpenInfoPanel, setOpenInfoPanel] = useState(false)
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
   const { students } = useStudentContext()
   const isMobile = useIsMobile()
+  const { openDialog } = useDialogContext()
 
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   useEffect(() => {
@@ -51,18 +44,11 @@ const HomeComponent = () => {
     setDisplayType(newDisplayType)
   }
 
-  const openStudentDialog = (type: string): void => {
-    setActionType(type)
-    setOpenStudentDialog(true)
+  const openStudentDialog = (type: StudentActionType, student: Student): void => {
+    openDialog(DialogType.STUDENT_DIALOG, type, student)
   }
 
-  const closeStudentDialog = (): void => {
-    setOpenStudentDialog(false)
-    setActionType('')
-    setSelectedStudent(undefined)
-  }
-
-  const handleClickAction = (data: Student, type: string) => {
+  const handleClickAction = (data: Student, type: StudentActionType | ScoreBookActionType) => {
     if (type === StudentActionType.VIEW_SCORE_BOOK) {
       setSelectedStudent(data)
       setOpenScoreBook(true)
@@ -75,11 +61,7 @@ const HomeComponent = () => {
     }
     const student = students.find((std: Student) => std.id === data.id)
     if (student) {
-      setSelectedStudent({
-        ...student,
-        fullName: student.lastName + ' ' + student.firstName,
-      })
-      openStudentDialog(type)
+      openStudentDialog(type as StudentActionType, student)
     }
   }
 
@@ -125,13 +107,6 @@ const HomeComponent = () => {
             <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
           <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
-            <Button
-              variant="contained"
-              startIcon={<PersonAddIcon />}
-              onClick={() => openStudentDialog(StudentActionType.ADD_NEW_STUDENT)}
-            >
-              <span>Thêm Thiếu Nhi</span>
-            </Button>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <ToggleButtonGroup
                 value={displayType}
@@ -191,12 +166,6 @@ const HomeComponent = () => {
           </Box>
         )}
       </Box>
-      <StudentDialogComponent
-        isOpen={isOpenStudentDialog}
-        onClose={closeStudentDialog}
-        action={actionType}
-        student={selectedStudent}
-      />
     </Box>
   )
 }

@@ -1,14 +1,10 @@
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import AssignmentIcon from '@mui/icons-material/Assignment'
 import TableComponent from 'modules/Table/Table.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
 import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
 import { StudentScoreBooks, Student } from 'models'
 import React, { useState, useMemo, useEffect } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
-import AssessmentDialogComponent from 'modules/assessment-dialog/AssessmentDialog.component'
-import { AssessmentActionType } from 'constant'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
 import { useGetStudentScoreBooks1 } from 'services/scorebook'
@@ -29,7 +25,6 @@ const ScoreBookComponent = () => {
   const isMobile = useIsMobile()
   const { studentScoreBooks } = useGetStudentScoreBooks1({ classId })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
-  const [isOpenAssessmentDialog, openAssessmentDialog] = useState<boolean>(false)
   const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
 
   const stuScoreBooks1: StudentScoreBooks[] | Student[] = useMemo(() => {
@@ -111,14 +106,6 @@ const ScoreBookComponent = () => {
         <Box>
           <SearchComponent onChange={handleFilterStudentByName} />
         </Box>
-        <Button
-          sx={{ width: '100%', maxWidth: 'fit-content' }}
-          variant="contained"
-          startIcon={<AssignmentIcon />}
-          onClick={() => openAssessmentDialog(true)}
-        >
-          Thêm Bài Kiểm Tra
-        </Button>
       </Box>
       {!isMobile && filteredStuScoreBooks?.length !== 0 ? (
         <TableComponent
@@ -159,15 +146,6 @@ const ScoreBookComponent = () => {
           isOpen={!!selectedScoreBook}
           onClose={() => setSelectedScoreBook(undefined)}
           data={selectedScoreBook}
-        />
-      )}
-      {isOpenAssessmentDialog && (
-        <AssessmentDialogComponent
-          key={'new'}
-          isOpen={isOpenAssessmentDialog}
-          onClose={() => openAssessmentDialog(false)}
-          action={AssessmentActionType.ADD_NEW_ASSESSMENT}
-          data={null}
         />
       )}
     </Box>
