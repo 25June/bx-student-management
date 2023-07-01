@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { Box, Checkbox } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { RollCallDates } from 'utils/customHooks'
+import { RollCallDate } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
 
 export interface OnSubmitAttendanceProps {
@@ -22,7 +22,7 @@ export interface AttendanceProps {
 }
 
 interface AttendanceCheckboxComponentProps {
-  rollCallDates: RollCallDates[]
+  rollCallDates: RollCallDate[]
   attendance: Record<string, AttendanceProps>
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
 }
@@ -45,7 +45,7 @@ const AttendanceCheckboxComponent = ({
         gap: isMobile ? 1 : 2,
       }}
     >
-      {rollCallDates.map(({ key }: { key: string; value: string }) => (
+      {rollCallDates.map(({ key }: { key: string; dateAsString: string }) => (
         <Box
           key={`checkbox-date-${key}`}
           sx={{ display: 'flex', gap: 0.5, width: isMobile ? 42 : 84, flexDirection: 'column' }}

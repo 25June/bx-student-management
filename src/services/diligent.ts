@@ -19,15 +19,14 @@ interface GetAttendanceByClassIdProps {
   semester?: string
 }
 
+export type Attendances = Record<string, Record<string, AttendanceProps>>
+
 export const useGetAttendanceByClassId = ({
   classId,
   year = '2022-2023',
   semester = 'hk1',
 }: GetAttendanceByClassIdProps) => {
-  const [attendances, setAttendances] = useState<Record<
-    string,
-    Record<string, AttendanceProps>
-  > | null>()
+  const [attendances, setAttendances] = useState<Attendances | null>()
   const [listener, setListener] = useState<Unsubscribe>()
   useEffect(() => {
     if (classId) {

@@ -3,17 +3,18 @@ import { Box, Typography } from '@mui/material'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
-import { useGetRollCallDates } from 'services/diligent'
+import { useGetAttendanceByClassId, useGetRollCallDates } from 'services/diligent'
 import { Student } from 'models'
 import { formatDisplayInput } from 'utils/datetime'
 import DiligentTableComponent from 'modules/diligent-table/DiligentTable.component'
 import MonthDropdownComponent from 'modules/common/MonthDropdown.component'
-import { RollCallDates, useGroupRollCallToSortedMonths } from 'utils/customHooks'
+import { groupRollCallToSortedMonths, RollCallDate } from 'utils/customHooks'
 import { SelectChangeEvent } from '@mui/material/Select'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
+import DateDropdownComponent from 'modules/common/DateDropdown.component'
 
 const DiligentComponent = () => {
   const { students } = useStudentContext()
@@ -21,14 +22,14 @@ const DiligentComponent = () => {
   const getRollCallDates = useGetRollCallDates()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
-  const [rollCallDates, setRollCallDates] = useState<Record<string, string>>({})
-  const [selectedDate, setSelectedDate] = useState<string>('')
-  const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
+  const { attendances } = useGetAttendanceByClassId({ classId })
 
-  const groupRollDate = useGroupRollCallToSortedMonths(rollCallDates) as Record<
-    string,
-    RollCallDates[]
-  >
+  const [rollCallDates, setRollCallDates] = useState<Record<string, string>>({})
+  const [selectedMonth, setSelectedMonth] = useState<string>('')
+  const [selectedRollCallDate, setSelectedRollCallDate] = useState<RollCallDate>()
+
+  const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
+  const [groupRollDate, setGroupRollDate] = useState<Record<string, RollCallDate[]>>({})
 
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   useEffect(() => {
@@ -40,6 +41,9 @@ const DiligentComponent = () => {
   const fetchRollCallDates = useCallback(() => {
     getRollCallDates({ classId }).then((res: Record<string, string>) => {
       setRollCallDates(res)
+      const sortedMonthDate = groupRollCallToSortedMonths(res)
+      setGroupRollDate(sortedMonthDate)
+      setSelectedMonth(Object.keys(sortedMonthDate)[0])
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId])
@@ -53,10 +57,20 @@ const DiligentComponent = () => {
 
   const handleChangeMonth = (event: SelectChangeEvent | string) => {
     if (typeof event === 'string') {
-      setSelectedDate(event)
+      setSelectedMonth(event)
     } else {
-      setSelectedDate(event.target.value)
+      setSelectedMonth(event.target.value)
     }
+    setSelectedRollCallDate(undefined)
+  }
+
+  const handleChangeDate = (value: string) => {
+    if (value === 'all') {
+      setSelectedRollCallDate(undefined)
+      return
+    }
+    const rollCallDate = groupRollDate[selectedMonth].find((date) => date.dateAsString === value)
+    setSelectedRollCallDate(rollCallDate)
   }
 
   const handleOpenDiligentDialog = (date: string, id: string) => {
@@ -106,6 +120,8 @@ const DiligentComponent = () => {
     }
   }
 
+  console.log({ selectedRollCallDate })
+
   return (
     <Box>
       <Box p={isMobile ? 1 : 2}>
@@ -139,17 +155,24 @@ const DiligentComponent = () => {
             alignItems: isMobile ? 'flex-start' : 'center',
             flexDirection: isMobile ? 'column' : 'row',
             gap: 2,
+            width: '100%',
           }}
         >
           <Box>
             <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            {rollCallDates && (
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
+            {rollCallDates && selectedMonth && (
               <MonthDropdownComponent
-                selectedDate={selectedDate || Object.keys(groupRollDate)[0] || ''}
+                selectedMonth={selectedMonth}
                 dates={Object.keys(groupRollDate)}
                 onChangeMonth={handleChangeMonth}
+              />
+            )}
+            {groupRollDate && selectedMonth && (
+              <DateDropdownComponent
+                dates={groupRollDate[selectedMonth].map((date) => date.dateAsString)}
+                onChangeDate={handleChangeDate}
               />
             )}
           </Box>
@@ -157,8 +180,10 @@ const DiligentComponent = () => {
         <Box mt={2} mb={2}>
           <DiligentTableComponent
             rows={formatAttendances || []}
-            rollCallDates={groupRollDate[selectedDate || Object.keys(groupRollDate)[0]]}
+            rollCallDates={groupRollDate[selectedMonth || Object.keys(groupRollDate)[0]]}
             openDiligentDialog={handleOpenDiligentDialog}
+            selectedRollCallDate={selectedRollCallDate}
+            attendances={attendances}
           />
         </Box>
       </Box>

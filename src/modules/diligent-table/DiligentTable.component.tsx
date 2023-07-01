@@ -11,14 +11,17 @@ import AttendanceHeaderComponent from 'modules/common/AttendanceHeader.component
 import AttendanceCheckboxComponent, {
   OnSubmitAttendanceProps,
 } from 'modules/common/AttendanceCheckbox.component'
-import { useGetAttendanceByClassId, useSubmitAttendance } from 'services/diligent'
-import { useClassContext } from 'contexts/ClassContext'
+import { Attendances, useSubmitAttendance } from 'services/diligent'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
-import { RollCallDates } from 'utils/customHooks'
+import { RollCallDate } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
 import { Box } from '@mui/material'
+import Grow from '@mui/material/Grow'
+import Stack from '@mui/material/Stack'
 import DiligentAccordionComponent from 'modules/diligent/DiligentAccordion.component'
 import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
+import SingleDateViewComponent from 'modules/single-date-view/SingleDateView.component'
+import { useClassContext } from 'contexts/ClassContext'
 
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -26,17 +29,20 @@ export interface StudentRows extends Student {
 
 interface DiligentTableProps {
   rows: StudentRows[]
-  rollCallDates: RollCallDates[]
+  rollCallDates: RollCallDate[]
   openDiligentDialog: (date: string, id: string) => void
+  selectedRollCallDate?: RollCallDate
+  attendances?: Attendances | null
 }
 
 const DiligentTableComponent = ({
   rows,
   rollCallDates,
   openDiligentDialog,
+  selectedRollCallDate,
+  attendances,
 }: DiligentTableProps) => {
   const { classId } = useClassContext()
-  const { attendances } = useGetAttendanceByClassId({ classId })
   const submitAttendance = useSubmitAttendance()
   const isMobile = useIsMobile()
 
@@ -59,6 +65,28 @@ const DiligentTableComponent = ({
   }
 
   if (isMobile) {
+    if (selectedRollCallDate) {
+      return (
+        <Box sx={{ width: '100%' }}>
+          <Grow in={!!selectedRollCallDate}>
+            <Stack spacing={2}>
+              {rows.map((row) => {
+                return (
+                  <SingleDateViewComponent
+                    key={row.id}
+                    student={row}
+                    rollCallDate={selectedRollCallDate}
+                    onSubmitAttendance={handleSubmitAttendance(row.id)}
+                    attendance={attendances[row.id]}
+                  />
+                )
+              })}
+            </Stack>
+          </Grow>
+        </Box>
+      )
+    }
+
     return (
       <Box>
         {rows.map((row) => {
@@ -68,6 +96,7 @@ const DiligentTableComponent = ({
               studentRow={row}
               rollCallDates={rollCallDates}
               onSubmitAttendance={handleSubmitAttendance(row.id)}
+              attendance={attendances[row.id]}
             />
           )
         })}

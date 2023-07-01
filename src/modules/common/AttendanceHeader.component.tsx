@@ -2,11 +2,11 @@ import React from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
 import { formatDisplayTable } from 'utils/datetime'
 import EditIcon from '@mui/icons-material/Edit'
-import { RollCallDates } from 'utils/customHooks'
+import { RollCallDate } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
 
 interface AttendanceHeaderProps {
-  rollCallDates: RollCallDates[]
+  rollCallDates: RollCallDate[]
   openDiligentDialog: (date: string, id: string) => void
 }
 
@@ -32,20 +32,20 @@ const AttendanceHeaderComponent = ({
         gap: isMobile ? 1 : 2,
       }}
     >
-      {rollCallDates.map((sortedRollCall: RollCallDates) => (
+      {rollCallDates.map((sortedRollCall: RollCallDate) => (
         <Box
           key={`date-${sortedRollCall.key}`}
           sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end', width: isMobile ? 64 : 84 }}
         >
           <Typography variant={'body1'} sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>
-            {formatDisplayTable(sortedRollCall.value)}
+            {formatDisplayTable(sortedRollCall.dateAsString)}
           </Typography>
           <IconButton
             aria-label="update"
             size={'small'}
             sx={{ padding: isMobile ? 0 : 0.625 }}
             onClick={(event) =>
-              onOpenDiligentDialog(event, sortedRollCall.value, sortedRollCall.key)
+              onOpenDiligentDialog(event, sortedRollCall.dateAsString, sortedRollCall.key)
             }
           >
             <EditIcon

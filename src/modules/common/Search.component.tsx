@@ -78,7 +78,7 @@ const SearchComponent = ({ onChange, label }: SearchComponentProps) => {
     (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       onChange(event.target.value)
     },
-    700
+    300
   )
 
   const handleReset = () => {

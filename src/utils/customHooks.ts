@@ -16,28 +16,28 @@ export const useSortedRollCalls = (rollCall: Record<string, string> = {}) => {
   }, [rollCall])
 }
 
-export interface RollCallDates {
+export interface RollCallDate {
   key: string
-  value: string
-  number: number
+  dateAsString: string
+  dateAsNumber: number
   month: string
 }
 
-export const useGroupRollCallToSortedMonths = (rollCall: Record<string, string> = {}) => {
-  return useMemo(() => {
-    if (isEmpty(rollCall)) {
-      return []
-    }
+export const groupRollCallToSortedMonths = (
+  rollCall: Record<string, string> = {}
+): Record<string, RollCallDate[]> => {
+  if (isEmpty(rollCall)) {
+    return {}
+  }
 
-    const formatRollCall = sortBy(
-      Object.keys(rollCall).map((key: string) => ({
-        key,
-        value: rollCall[key],
-        number: parseToNumber(rollCall[key]),
-        month: formatDisplayDropdown(rollCall[key]),
-      })),
-      ['number']
-    )
-    return groupBy(formatRollCall, ({ month }) => month)
-  }, [rollCall])
+  const formatRollCall = sortBy(
+    Object.keys(rollCall).map((key: string) => ({
+      key,
+      dateAsString: rollCall[key],
+      dateAsNumber: parseToNumber(rollCall[key]),
+      month: formatDisplayDropdown(rollCall[key]),
+    })),
+    ['number']
+  )
+  return groupBy(formatRollCall, ({ month }) => month)
 }

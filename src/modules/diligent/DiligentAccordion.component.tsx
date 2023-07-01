@@ -1,4 +1,3 @@
-import { Checkbox } from '@mui/material'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -6,32 +5,30 @@ import TableFullNameCellComponent from 'modules/common/TableFullNameCell.compone
 import AccordionDetails from '@mui/material/AccordionDetails'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import React from 'react'
 import { StudentRows } from 'modules/diligent-table/DiligentTable.component'
-import { RollCallDates } from 'utils/customHooks'
+import { RollCallDate } from 'utils/customHooks'
 import { OnSubmitAttendanceProps } from 'modules/common/AttendanceCheckbox.component'
-import { useClassContext } from 'contexts/ClassContext'
-import { useGetAttendanceByClassId } from 'services/diligent'
 import { formatDisplayTable } from 'utils/datetime'
+import DiligentFormComponent from './DiligentForm.component'
 
 interface DiligentComponentProps {
   studentRow: StudentRows
-  rollCallDates: RollCallDates[]
+  rollCallDates: RollCallDate[]
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
+  attendance: any
 }
 
 const DiligentAccordionComponent = ({
   studentRow,
   rollCallDates,
   onSubmitAttendance,
+  attendance,
 }: DiligentComponentProps) => {
-  const { classId } = useClassContext()
-  const { attendances } = useGetAttendanceByClassId({ classId })
-  if (!attendances || !rollCallDates) {
+  if (!rollCallDates) {
     return null
   }
-  const stuAttendance = attendances[studentRow.id]
+
   return (
     <Accordion>
       <AccordionSummary
@@ -48,7 +45,7 @@ const DiligentAccordionComponent = ({
         />
       </AccordionSummary>
       <AccordionDetails>
-        {rollCallDates.map(({ key, value }: { key: string; value: string }) => {
+        {rollCallDates.map(({ key, dateAsString }: { key: string; dateAsString: string }) => {
           return (
             <FormControl
               component="fieldset"
@@ -68,43 +65,12 @@ const DiligentAccordionComponent = ({
                 boxSizing: 'border-box',
               }}
             >
-              <FormLabel component="span">{formatDisplayTable(value)}</FormLabel>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{ padding: 0.5 }}
-                    size={'small'}
-                    checked={!!(stuAttendance && stuAttendance?.[key] && stuAttendance[key].tl)}
-                    onChange={(event) =>
-                      onSubmitAttendance({
-                        value: event.target.checked,
-                        rollCallKey: key,
-                        isMissal: true,
-                      })
-                    }
-                  />
-                }
-                label="Thánh Lễ"
-                sx={{ margin: 0 }}
-              />
-
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{ padding: 0.5 }}
-                    size={'small'}
-                    checked={!!(stuAttendance && stuAttendance?.[key] && stuAttendance[key].gl)}
-                    onChange={(event) =>
-                      onSubmitAttendance({
-                        value: event.target.checked,
-                        rollCallKey: key,
-                        isMissal: false,
-                      })
-                    }
-                  />
-                }
-                label={'Giáo Lý'}
-                sx={{ margin: 0 }}
+              <FormLabel component="span">{formatDisplayTable(dateAsString)}</FormLabel>
+              <DiligentFormComponent
+                onSubmitAttendance={onSubmitAttendance}
+                rollCallKey={key}
+                TL={!!(attendance?.[key] && attendance[key].tl)}
+                GL={!!(attendance?.[key] && attendance[key].gl)}
               />
             </FormControl>
           )
