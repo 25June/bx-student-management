@@ -15,6 +15,7 @@ import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import DateDropdownComponent from 'modules/common/DateDropdown.component'
+import DiligentSkeletonComponent from 'modules/diligent/DiligentSkeleton.component'
 
 const DiligentComponent = () => {
   const { students } = useStudentContext()
@@ -120,8 +121,6 @@ const DiligentComponent = () => {
     }
   }
 
-  console.log({ selectedRollCallDate })
-
   return (
     <Box>
       <Box p={isMobile ? 1 : 2}>
@@ -178,13 +177,17 @@ const DiligentComponent = () => {
           </Box>
         </Box>
         <Box mt={2} mb={2}>
-          <DiligentTableComponent
-            rows={formatAttendances || []}
-            rollCallDates={groupRollDate[selectedMonth || Object.keys(groupRollDate)[0]]}
-            openDiligentDialog={handleOpenDiligentDialog}
-            selectedRollCallDate={selectedRollCallDate}
-            attendances={attendances}
-          />
+          {!formatAttendances || formatAttendances.length === 0 ? (
+            <DiligentSkeletonComponent />
+          ) : (
+            <DiligentTableComponent
+              rows={formatAttendances || []}
+              rollCallDates={groupRollDate[selectedMonth || Object.keys(groupRollDate)[0]]}
+              openDiligentDialog={handleOpenDiligentDialog}
+              selectedRollCallDate={selectedRollCallDate}
+              attendances={attendances}
+            />
+          )}
         </Box>
       </Box>
     </Box>

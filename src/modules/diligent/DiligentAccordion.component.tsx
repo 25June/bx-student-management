@@ -8,7 +8,10 @@ import FormLabel from '@mui/material/FormLabel'
 import React from 'react'
 import { StudentRows } from 'modules/diligent-table/DiligentTable.component'
 import { RollCallDate } from 'utils/customHooks'
-import { OnSubmitAttendanceProps } from 'modules/common/AttendanceCheckbox.component'
+import {
+  AttendanceProps,
+  OnSubmitAttendanceProps,
+} from 'modules/common/AttendanceCheckbox.component'
 import { formatDisplayTable } from 'utils/datetime'
 import DiligentFormComponent from './DiligentForm.component'
 
@@ -16,7 +19,7 @@ interface DiligentComponentProps {
   studentRow: StudentRows
   rollCallDates: RollCallDate[]
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
-  attendance: any
+  attendance: Record<string, AttendanceProps>
 }
 
 const DiligentAccordionComponent = ({
@@ -25,7 +28,7 @@ const DiligentAccordionComponent = ({
   onSubmitAttendance,
   attendance,
 }: DiligentComponentProps) => {
-  if (!rollCallDates) {
+  if (!rollCallDates || !studentRow) {
     return null
   }
 

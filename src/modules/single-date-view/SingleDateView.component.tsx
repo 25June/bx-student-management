@@ -5,14 +5,17 @@ import { RollCallDate } from 'utils/customHooks'
 import { StudentRows } from 'modules/diligent-table/DiligentTable.component'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import DiligentFormComponent from 'modules/diligent/DiligentForm.component'
-import { OnSubmitAttendanceProps } from 'modules/common/AttendanceCheckbox.component'
+import {
+  AttendanceProps,
+  OnSubmitAttendanceProps,
+} from 'modules/common/AttendanceCheckbox.component'
 import { styled } from '@mui/material/styles'
 
 interface SingleDateViewComponentProps {
   student: StudentRows
   rollCallDate: RollCallDate
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
-  attendance: any
+  attendance: Record<string, AttendanceProps>
 }
 
 const Item = styled(Paper)(({ theme }) => ({

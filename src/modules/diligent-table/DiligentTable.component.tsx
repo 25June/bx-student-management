@@ -50,7 +50,7 @@ const DiligentTableComponent = ({
     (studentId: string) =>
     ({ value, rollCallKey, isMissal }: OnSubmitAttendanceProps) => {
       if (rollCallKey) {
-        submitAttendance({
+        return submitAttendance({
           studentId,
           classId,
           rollDateId: rollCallKey,
@@ -60,7 +60,7 @@ const DiligentTableComponent = ({
       }
     }
 
-  if (!attendances) {
+  if (!attendances || !rollCallDates || rollCallDates.length === 0) {
     return <DiligentSkeleton />
   }
 

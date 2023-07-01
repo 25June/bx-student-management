@@ -1,13 +1,13 @@
 import Box from '@mui/material/Box'
 import TableComponent from 'modules/Table/Table.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
-import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
+import { groupAssessments, renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
 import { StudentScoreBooks, Student } from 'models'
 import React, { useState, useMemo, useEffect } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
-import { useGetStudentScoreBooks1 } from 'services/scorebook'
+import { useGetStudentScoreBooks1, useSetNewStudentScore1 } from 'services/scorebook'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import { SelectChangeEvent } from '@mui/material/Select'
 import SearchComponent from 'modules/common/Search.component'
@@ -18,16 +18,22 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Accordion from '@mui/material/Accordion'
+import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
+import { useAssessmentContext } from 'contexts/AssessmentContext'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
   const { classId } = useClassContext()
   const isMobile = useIsMobile()
+  const { assessments } = useAssessmentContext()
+  const setStudentScore = useSetNewStudentScore1()
+
+  const groupAssessment = groupAssessments(assessments)
   const { studentScoreBooks } = useGetStudentScoreBooks1({ classId })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
   const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
 
-  const stuScoreBooks1: StudentScoreBooks[] | Student[] = useMemo(() => {
+  const stuScoreBooks: StudentScoreBooks[] | Student[] = useMemo(() => {
     if (students.length !== 0) {
       return students.map((stu) => {
         if (studentScoreBooks?.[stu.id]) {
@@ -46,23 +52,23 @@ const ScoreBookComponent = () => {
     StudentScoreBooks[] | Student[]
   >([])
   useEffect(() => {
-    if (stuScoreBooks1) {
-      setFilteredStuScoreBooks(stuScoreBooks1)
+    if (stuScoreBooks) {
+      setFilteredStuScoreBooks(stuScoreBooks)
     }
-  }, [stuScoreBooks1])
+  }, [stuScoreBooks])
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
     setSelectedSemester(event.target.value)
   }
 
   const handleFilterStudentByName = (value: string) => {
-    if (stuScoreBooks1 && stuScoreBooks1.length !== 0) {
+    if (stuScoreBooks && stuScoreBooks.length !== 0) {
       if (!value) {
-        setFilteredStuScoreBooks(stuScoreBooks1)
+        setFilteredStuScoreBooks(stuScoreBooks)
         return
       }
 
-      const filtered = stuScoreBooks1.filter((stu) => {
+      const filtered = stuScoreBooks.filter((stu) => {
         const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
           (keyword) => toLowerCaseNonAccentVietnamese(keyword)
         )
@@ -71,6 +77,19 @@ const ScoreBookComponent = () => {
       setFilteredStuScoreBooks(filtered)
     }
   }
+
+  const handleChangeData =
+    (studentId: string) => (type: string) => (score: { score: number }, assessmentId: string) => {
+      if (studentId) {
+        return setStudentScore({
+          studentId,
+          type,
+          score: score.score,
+          assessmentId,
+          classId,
+        })
+      }
+    }
 
   return (
     <Box p={isMobile ? 1 : 2}>
@@ -116,29 +135,35 @@ const ScoreBookComponent = () => {
         />
       ) : (
         <Box>
-          {filteredStuScoreBooks.map((row) => (
-            <Accordion key={row.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`scorebook-accordion-content-${row.id}`}
-                id={`scorebook-accordion-header-${row.id}`}
-              >
-                <TableFullNameCellComponent
-                  avatarPath={row.avatarPath}
-                  saintName={row.saintName}
-                  lastName={row.lastName}
-                  firstName={row.firstName}
-                  gender={!!row.gender}
-                />
-              </AccordionSummary>
-              <AccordionDetails>
-                <ScoreBookAccordionComponent
-                  key={row.id}
-                  studentScoreBook={row as StudentScoreBooks}
-                />
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          {filteredStuScoreBooks.length === 0 ? (
+            <DiligentSkeleton />
+          ) : (
+            filteredStuScoreBooks.map((row) => (
+              <Accordion key={row.id}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`scorebook-accordion-content-${row.id}`}
+                  id={`scorebook-accordion-header-${row.id}`}
+                >
+                  <TableFullNameCellComponent
+                    avatarPath={row.avatarPath}
+                    saintName={row.saintName}
+                    lastName={row.lastName}
+                    firstName={row.firstName}
+                    gender={!!row.gender}
+                  />
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ScoreBookAccordionComponent
+                    key={row.id}
+                    studentScoreBook={row as StudentScoreBooks}
+                    groupAssessment={groupAssessment}
+                    onChangeScore={handleChangeData(row.id)}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            ))
+          )}
         </Box>
       )}
       {!!selectedScoreBook && (
