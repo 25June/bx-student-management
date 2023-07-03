@@ -11,7 +11,7 @@ export const formatDateStoringDB = (date: string) => {
 }
 
 export const formatDisplayTable = (date: string) => {
-  return format(parse(date, fullDateHyphenFormat, new Date()), DayMonthSlashFormat)
+  return format(parse(date, fullDateInputHyphenFormat, new Date()), DayMonthSlashFormat)
 }
 
 export const formatDisplayInput = (date: string | Date) => {
@@ -22,11 +22,11 @@ export const formatDisplayInput = (date: string | Date) => {
 }
 
 export const formatDisplayDropdown = (date: string) => {
-  return format(parse(date, fullDateHyphenFormat, new Date()), MonthYearSlashFormat)
+  return format(parse(date, fullDateInputHyphenFormat, new Date()), MonthYearSlashFormat)
 }
 
 export const parseToNumber = (date: string) => {
-  return parse(date, fullDateHyphenFormat, new Date()).getTime()
+  return parse(date, fullDateInputHyphenFormat, new Date()).getTime()
 }
 
 export const formatYYYMMDDToDDMMYYYY = (date: string) => {

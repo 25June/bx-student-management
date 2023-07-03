@@ -32,7 +32,7 @@ const tableColumns = [
   },
   {
     value: 'type',
-    label: 'Loại bài kiểm tra',
+    label: 'Bài kiểm tra',
   },
 ]
 

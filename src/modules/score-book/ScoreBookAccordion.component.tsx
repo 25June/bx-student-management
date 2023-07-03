@@ -14,7 +14,7 @@ import { ScoreEnum } from 'constant/common'
 
 interface ScoreBookAccordionComponentProps {
   studentScoreBook: StudentScoreBooks
-  groupAssessment: GroupAssessmentProps
+  groupAssessment?: GroupAssessmentProps
   onChangeScore: (type: string) => (score: { score: number }, assessmentId: string) => void
 }
 
@@ -23,7 +23,7 @@ const ScoreBookAccordionComponent = ({
   groupAssessment,
   onChangeScore,
 }: ScoreBookAccordionComponentProps) => {
-  if (!studentScoreBook) {
+  if (!studentScoreBook || !groupAssessment) {
     return null
   }
   return (

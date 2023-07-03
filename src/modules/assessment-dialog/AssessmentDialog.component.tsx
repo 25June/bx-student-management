@@ -18,7 +18,6 @@ import { useAddNewAssessment, useDeleteAssessment, useEditAssessment } from 'ser
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { AssessmentEnum } from 'constant/common'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
-import { SelectChangeEvent } from '@mui/material/Select'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 
@@ -148,8 +147,8 @@ const AssessmentDialogComponent = ({
     return
   }
 
-  const handleChangeAssessmentType = (event: SelectChangeEvent) => {
-    setValue('type', event.target.value)
+  const handleChangeAssessmentType = (value: string) => {
+    setValue('type', value)
   }
 
   return (

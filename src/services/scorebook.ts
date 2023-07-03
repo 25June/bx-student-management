@@ -67,7 +67,7 @@ interface GetStudentScoreBooks1Props {
 const scorebookPathName = (classId: string, year: string, semester: string) =>
   `scorebook/${classId}/${year}/${semester}`
 
-export const useGetStudentScoreBooks1 = ({
+export const useGetStudentScoreBooks = ({
   classId,
   semester = 'hk1',
   year = '2022-2023',

@@ -1,13 +1,18 @@
 import Box from '@mui/material/Box'
 import TableComponent from 'modules/Table/Table.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
-import { groupAssessments, renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
-import { StudentScoreBooks, Student } from 'models'
+import {
+  GroupAssessmentProps,
+  groupAssessments,
+  renderScoreBookActions,
+  ScoreBookColumns,
+} from 'modules/Table/helpers'
+import { StudentScoreBooks, Student, KeyValueProp, Assessment } from 'models'
 import React, { useState, useMemo, useEffect } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
-import { useGetStudentScoreBooks1, useSetNewStudentScore1 } from 'services/scorebook'
+import { useGetStudentScoreBooks, useSetNewStudentScore1 } from 'services/scorebook'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import { SelectChangeEvent } from '@mui/material/Select'
 import SearchComponent from 'modules/common/Search.component'
@@ -20,6 +25,10 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import Accordion from '@mui/material/Accordion'
 import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
+import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
+import DateDropdownComponent from 'modules/common/DateDropdown.component'
+import SingleScoreViewComponent from 'modules/single-score-view/SingleScoreView.component'
+import { get } from 'lodash'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
@@ -28,10 +37,17 @@ const ScoreBookComponent = () => {
   const { assessments } = useAssessmentContext()
   const setStudentScore = useSetNewStudentScore1()
 
-  const groupAssessment = groupAssessments(assessments)
-  const { studentScoreBooks } = useGetStudentScoreBooks1({ classId })
+  const { studentScoreBooks } = useGetStudentScoreBooks({ classId })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
   const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
+  const [groupAssessment, setGroupAssessments] = useState<GroupAssessmentProps>()
+  const [filteredStuScoreBooks, setFilteredStuScoreBooks] = useState<
+    StudentScoreBooks[] | Student[]
+  >([])
+
+  const [assessmentDates, setAssessmentDates] = useState<KeyValueProp[]>()
+  const [selectedAssessmentDate, setSelectedAssessmentDate] = useState<Assessment>()
+  const [selectedAssessmentType, setSelectedAssessmentType] = useState<string>()
 
   const stuScoreBooks: StudentScoreBooks[] | Student[] = useMemo(() => {
     if (students.length !== 0) {
@@ -48,9 +64,12 @@ const ScoreBookComponent = () => {
     return []
   }, [students, studentScoreBooks])
 
-  const [filteredStuScoreBooks, setFilteredStuScoreBooks] = useState<
-    StudentScoreBooks[] | Student[]
-  >([])
+  useEffect(() => {
+    if (assessments.length !== 0) {
+      setGroupAssessments(groupAssessments(assessments))
+    }
+  }, [assessments])
+
   useEffect(() => {
     if (stuScoreBooks) {
       setFilteredStuScoreBooks(stuScoreBooks)
@@ -91,6 +110,39 @@ const ScoreBookComponent = () => {
       }
     }
 
+  const handleSelectAssessmentType = (value: string) => {
+    if (value && assessments) {
+      const formatAssessments = assessments
+        .filter((assessment) => assessment.type === value)
+        .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
+      setAssessmentDates(formatAssessments)
+
+      switch (value) {
+        case 'KT5':
+          setSelectedAssessmentType('score5')
+          break
+        case 'KT15':
+          setSelectedAssessmentType('score15')
+          break
+        case 'KT45':
+          setSelectedAssessmentType('score45')
+          break
+        case 'KT60':
+          setSelectedAssessmentType('score60')
+          break
+        default:
+          alert(value)
+          break
+      }
+    }
+  }
+
+  const handleChangeShowScoreDate = (updatedDate?: KeyValueProp) => {
+    if (updatedDate) {
+      setSelectedAssessmentDate(assessments.find((assessment) => assessment.id === updatedDate.key))
+    }
+  }
+
   return (
     <Box p={isMobile ? 1 : 2}>
       <Box
@@ -125,6 +177,26 @@ const ScoreBookComponent = () => {
         <Box>
           <SearchComponent onChange={handleFilterStudentByName} />
         </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+            gap: 2,
+          }}
+        >
+          <AssessmentDropdownComponent
+            size={'small'}
+            forSearching={true}
+            onChangeAssessmentType={handleSelectAssessmentType}
+          />
+          {assessmentDates && (
+            <DateDropdownComponent
+              dates={assessmentDates}
+              onChangeDate={handleChangeShowScoreDate}
+            />
+          )}
+        </Box>
       </Box>
       {!isMobile && filteredStuScoreBooks?.length !== 0 ? (
         <TableComponent
@@ -133,6 +205,18 @@ const ScoreBookComponent = () => {
           onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
           renderActionMenu={renderScoreBookActions}
         />
+      ) : isMobile && selectedAssessmentDate && selectedAssessmentType ? (
+        <Box>
+          {filteredStuScoreBooks.map((row) => (
+            <SingleScoreViewComponent
+              key={row.id}
+              student={row}
+              score={get(row, [`${selectedAssessmentType}`, `${selectedAssessmentDate.id}`], 0)}
+              assessment={selectedAssessmentDate}
+              onChangeData={() => null}
+            />
+          ))}
+        </Box>
       ) : (
         <Box>
           {filteredStuScoreBooks.length === 0 ? (

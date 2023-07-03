@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { useAddRollCallDate, useUpdateRollCallDate } from 'services/diligent'
-import { formatDateStoringDB, formatDisplayInput } from 'utils/datetime'
+import { formatDisplayInput } from 'utils/datetime'
 import { RollCallDateActionType } from 'constant/common'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
@@ -37,16 +37,14 @@ const DiligentDialogComponent = ({
     }
   }, [rollCall, setValue])
 
-  const onSubmit = (data: { rollCallDate: string }) => {
-    const formatDate = formatDateStoringDB(data.rollCallDate)
-
+  const onSubmit = ({ rollCallDate }: { rollCallDate: string }) => {
     if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
-      updateRollCallDate({ date: formatDate, id: rollCall?.id || '', classId }).finally(() =>
+      updateRollCallDate({ date: rollCallDate, id: rollCall?.id || '', classId }).finally(() =>
         onClose(true)
       )
       return
     }
-    addRollCallDate({ date: formatDate, classId }).finally(() => onClose(true))
+    addRollCallDate({ date: rollCallDate, classId }).finally(() => onClose(true))
   }
 
   return (
