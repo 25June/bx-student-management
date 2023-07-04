@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Box, IconButton, TextField } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useIsMobile } from 'utils/common'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 
@@ -22,10 +22,16 @@ const ScoreForm = ({
     reset,
     formState: { isDirty, errors },
     setError,
+    setValue,
   } = useForm<{ score: number }>({
     defaultValues: data ? { score: data } : { score: 0 },
   })
   const isMobile = useIsMobile()
+
+  useEffect(() => {
+    setValue('score', data)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
   const onSubmit = (value: { score: number }) => {
     if (isNaN(Number(value.score)) || Number(value.score) > 10) {

@@ -97,7 +97,7 @@ const ScoreBookComponent = () => {
     }
   }
 
-  const handleChangeData =
+  const handleUpdateScore =
     (studentId: string) => (type: string) => (score: { score: number }, assessmentId: string) => {
       if (studentId) {
         return setStudentScore({
@@ -213,7 +213,7 @@ const ScoreBookComponent = () => {
               student={row}
               score={get(row, [`${selectedAssessmentType}`, `${selectedAssessmentDate.id}`], 0)}
               assessment={selectedAssessmentDate}
-              onChangeData={() => null}
+              onChangeData={handleUpdateScore(row.id)(selectedAssessmentType)}
             />
           ))}
         </Box>
@@ -242,7 +242,7 @@ const ScoreBookComponent = () => {
                     key={row.id}
                     studentScoreBook={row as StudentScoreBooks}
                     groupAssessment={groupAssessment}
-                    onChangeScore={handleChangeData(row.id)}
+                    onChangeScore={handleUpdateScore(row.id)}
                   />
                 </AccordionDetails>
               </Accordion>
