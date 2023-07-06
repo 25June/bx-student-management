@@ -1,34 +1,21 @@
 import Box from '@mui/material/Box'
-import TableComponent from 'modules/Table/Table.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
-import {
-  GroupAssessmentProps,
-  groupAssessments,
-  renderScoreBookActions,
-  ScoreBookColumns,
-} from 'modules/Table/helpers'
+import { GroupAssessmentProps, groupAssessments } from 'modules/Table/helpers'
 import { StudentScoreBooks, Student, KeyValueProp, Assessment } from 'models'
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
 import { useGetStudentScoreBooks, useSetNewStudentScore1 } from 'services/scorebook'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
-import { SelectChangeEvent } from '@mui/material/Select'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
-import ScoreBookAccordionComponent from 'modules/score-book/ScoreBookAccordion.component'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import Accordion from '@mui/material/Accordion'
-import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
 import DateDropdownComponent from 'modules/common/DateDropdown.component'
-import SingleScoreViewComponent from 'modules/single-score-view/SingleScoreView.component'
-import { get } from 'lodash'
+import ScoreBookDisplayComponent, {
+  ScoreBookDisplayComponentProps,
+} from 'modules/score-book/ScoreBookDisplay.component'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
@@ -76,26 +63,25 @@ const ScoreBookComponent = () => {
     }
   }, [stuScoreBooks])
 
-  const handleChangeSemester = (event: SelectChangeEvent) => {
-    setSelectedSemester(event.target.value)
-  }
+  const handleFilterStudentByName = useCallback(
+    (value: string) => {
+      if (stuScoreBooks && stuScoreBooks.length !== 0) {
+        if (!value) {
+          setFilteredStuScoreBooks(stuScoreBooks)
+          return
+        }
 
-  const handleFilterStudentByName = (value: string) => {
-    if (stuScoreBooks && stuScoreBooks.length !== 0) {
-      if (!value) {
-        setFilteredStuScoreBooks(stuScoreBooks)
-        return
+        const filtered = stuScoreBooks.filter((stu) => {
+          const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
+            (keyword) => toLowerCaseNonAccentVietnamese(keyword)
+          )
+          return keywordArr.includes(value.toLowerCase())
+        })
+        setFilteredStuScoreBooks(filtered)
       }
-
-      const filtered = stuScoreBooks.filter((stu) => {
-        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
-          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
-        )
-        return keywordArr.includes(value.toLowerCase())
-      })
-      setFilteredStuScoreBooks(filtered)
-    }
-  }
+    },
+    [stuScoreBooks]
+  )
 
   const handleUpdateScore =
     (studentId: string) => (type: string) => (score: { score: number }, assessmentId: string) => {
@@ -110,37 +96,54 @@ const ScoreBookComponent = () => {
       }
     }
 
-  const handleSelectAssessmentType = (value: string) => {
-    if (value && assessments) {
-      const formatAssessments = assessments
-        .filter((assessment) => assessment.type === value)
-        .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
-      setAssessmentDates(formatAssessments)
+  const handleSelectAssessmentType = useCallback(
+    (value: string) => {
+      if (value && assessments) {
+        const formatAssessments = assessments
+          .filter((assessment) => assessment.type === value)
+          .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
+        setAssessmentDates(formatAssessments)
 
-      switch (value) {
-        case 'KT5':
-          setSelectedAssessmentType('score5')
-          break
-        case 'KT15':
-          setSelectedAssessmentType('score15')
-          break
-        case 'KT45':
-          setSelectedAssessmentType('score45')
-          break
-        case 'KT60':
-          setSelectedAssessmentType('score60')
-          break
-        default:
-          alert(value)
-          break
+        switch (value) {
+          case 'KT5':
+            setSelectedAssessmentType('score5')
+            break
+          case 'KT15':
+            setSelectedAssessmentType('score15')
+            break
+          case 'KT45':
+            setSelectedAssessmentType('score45')
+            break
+          case 'KT60':
+            setSelectedAssessmentType('score60')
+            break
+          default:
+            alert(value)
+            break
+        }
       }
-    }
-  }
+    },
+    [assessments]
+  )
 
-  const handleChangeShowScoreDate = (updatedDate?: KeyValueProp) => {
-    if (updatedDate) {
-      setSelectedAssessmentDate(assessments.find((assessment) => assessment.id === updatedDate.key))
-    }
+  const handleChangeShowScoreDate = useCallback(
+    (updatedDate?: KeyValueProp) => {
+      if (updatedDate) {
+        setSelectedAssessmentDate(
+          assessments.find((assessment) => assessment.id === updatedDate.key)
+        )
+      }
+    },
+    [assessments]
+  )
+
+  const displayProps: ScoreBookDisplayComponentProps = {
+    filteredStuScoreBooks,
+    selectedAssessmentType,
+    groupAssessment,
+    setSelectedScoreBook,
+    selectedAssessmentDate,
+    handleUpdateScore,
   }
 
   return (
@@ -159,7 +162,7 @@ const ScoreBookComponent = () => {
         </Typography>
         <SemesterDropdownComponent
           selectedSemester={selectedSemester}
-          onChangeSemester={handleChangeSemester}
+          onChangeSemester={(event) => setSelectedSemester(event.target.value)}
           size={'small'}
         />
       </Box>
@@ -190,66 +193,10 @@ const ScoreBookComponent = () => {
             forSearching={true}
             onChangeAssessmentType={handleSelectAssessmentType}
           />
-          {assessmentDates && (
-            <DateDropdownComponent
-              dates={assessmentDates}
-              onChangeDate={handleChangeShowScoreDate}
-            />
-          )}
+          <DateDropdownComponent dates={assessmentDates} onChangeDate={handleChangeShowScoreDate} />
         </Box>
       </Box>
-      {!isMobile && filteredStuScoreBooks?.length !== 0 ? (
-        <TableComponent
-          columns={ScoreBookColumns}
-          rows={filteredStuScoreBooks}
-          onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
-          renderActionMenu={renderScoreBookActions}
-        />
-      ) : isMobile && selectedAssessmentDate && selectedAssessmentType ? (
-        <Box>
-          {filteredStuScoreBooks.map((row) => (
-            <SingleScoreViewComponent
-              key={row.id}
-              student={row}
-              score={get(row, [`${selectedAssessmentType}`, `${selectedAssessmentDate.id}`], 0)}
-              assessment={selectedAssessmentDate}
-              onChangeData={handleUpdateScore(row.id)(selectedAssessmentType)}
-            />
-          ))}
-        </Box>
-      ) : (
-        <Box>
-          {filteredStuScoreBooks.length === 0 ? (
-            <DiligentSkeleton />
-          ) : (
-            filteredStuScoreBooks.map((row) => (
-              <Accordion key={row.id}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls={`scorebook-accordion-content-${row.id}`}
-                  id={`scorebook-accordion-header-${row.id}`}
-                >
-                  <TableFullNameCellComponent
-                    avatarPath={row.avatarPath}
-                    saintName={row.saintName}
-                    lastName={row.lastName}
-                    firstName={row.firstName}
-                    gender={!!row.gender}
-                  />
-                </AccordionSummary>
-                <AccordionDetails>
-                  <ScoreBookAccordionComponent
-                    key={row.id}
-                    studentScoreBook={row as StudentScoreBooks}
-                    groupAssessment={groupAssessment}
-                    onChangeScore={handleUpdateScore(row.id)}
-                  />
-                </AccordionDetails>
-              </Accordion>
-            ))
-          )}
-        </Box>
-      )}
+      <ScoreBookDisplayComponent {...displayProps} />
       {!!selectedScoreBook && (
         <ScoreBookDialogComponent
           isOpen={!!selectedScoreBook}

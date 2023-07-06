@@ -93,7 +93,7 @@ export const useGetStudentScoreBooks = ({
   }, [classId, year, semester])
 
   useEffect(() => {
-    if (listener) {
+    if (classId && listener) {
       listener()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -7,7 +7,7 @@ import { formatDisplayTable } from 'utils/datetime'
 import { KeyValueProp } from 'models'
 
 interface DateDropdownProps {
-  dates: KeyValueProp[]
+  dates?: KeyValueProp[]
   onChangeDate: (date?: KeyValueProp) => void
   size?: SelectProps['size']
 }
@@ -17,7 +17,7 @@ const defaultSelectItem: KeyValueProp = {
   value: 'Tất cả',
 }
 
-const DateDropdownComponent = ({ dates, onChangeDate, size }: DateDropdownProps) => {
+const DateDropdownComponent = ({ dates = [], onChangeDate, size }: DateDropdownProps) => {
   const [date, setDate] = useState<string>(defaultSelectItem.value)
   const dateChange = (event: SelectChangeEvent) => {
     setDate(event.target.value)
@@ -31,7 +31,7 @@ const DateDropdownComponent = ({ dates, onChangeDate, size }: DateDropdownProps)
   return (
     <FormControl fullWidth={true} size={size || 'small'}>
       <InputLabel>Ngày</InputLabel>
-      <Select value={date} label="Ngày" onChange={dateChange}>
+      <Select value={date} label="Ngày" onChange={dateChange} disabled={dates.length === 0}>
         <MenuItem value={defaultSelectItem.value} key={defaultSelectItem.key}>
           {defaultSelectItem.value}
         </MenuItem>
