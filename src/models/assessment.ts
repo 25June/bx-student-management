@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore'
+import { AssessmentEnum } from 'constant/common'
 
 export type Assessment = {
   id: string
@@ -7,6 +8,6 @@ export type Assessment = {
   bookDate: string
   createdDate?: Timestamp
   lesson: string
-  type: string
+  type: AssessmentEnum
   isDeleted?: boolean
 }

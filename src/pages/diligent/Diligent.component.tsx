@@ -173,6 +173,7 @@ const DiligentComponent = () => {
             )}
             {groupRollDate && selectedMonth && (
               <DateDropdownComponent
+                selectedDate={selectedRollCallDate?.dateAsString}
                 dates={groupRollDate[selectedMonth].map((date) => ({
                   key: date.key,
                   value: date.dateAsString,

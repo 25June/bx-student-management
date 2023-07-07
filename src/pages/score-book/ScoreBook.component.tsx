@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
 import { GroupAssessmentProps, groupAssessments } from 'modules/Table/helpers'
 import { StudentScoreBooks, Student, KeyValueProp, Assessment } from 'models'
-import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
@@ -16,6 +16,7 @@ import DateDropdownComponent from 'modules/common/DateDropdown.component'
 import ScoreBookDisplayComponent, {
   ScoreBookDisplayComponentProps,
 } from 'modules/score-book/ScoreBookDisplay.component'
+import { AssessmentEnum } from 'constant/common'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
@@ -34,21 +35,18 @@ const ScoreBookComponent = () => {
 
   const [assessmentDates, setAssessmentDates] = useState<KeyValueProp[]>()
   const [selectedAssessmentDate, setSelectedAssessmentDate] = useState<Assessment>()
-  const [selectedAssessmentType, setSelectedAssessmentType] = useState<string>()
+  const [selectedAssessmentType, setSelectedAssessmentType] = useState<AssessmentEnum>()
 
   const stuScoreBooks: StudentScoreBooks[] | Student[] = useMemo(() => {
-    if (students.length !== 0) {
-      return students.map((stu) => {
-        if (studentScoreBooks?.[stu.id]) {
-          return {
-            ...stu,
-            ...studentScoreBooks[stu.id],
-          }
+    return (students || []).map((stu) => {
+      if (studentScoreBooks?.[stu.id]) {
+        return {
+          ...stu,
+          ...studentScoreBooks[stu.id],
         }
-        return stu
-      })
-    }
-    return []
+      }
+      return stu
+    })
   }, [students, studentScoreBooks])
 
   useEffect(() => {
@@ -63,25 +61,26 @@ const ScoreBookComponent = () => {
     }
   }, [stuScoreBooks])
 
-  const handleFilterStudentByName = useCallback(
-    (value: string) => {
-      if (stuScoreBooks && stuScoreBooks.length !== 0) {
-        if (!value) {
-          setFilteredStuScoreBooks(stuScoreBooks)
-          return
-        }
+  if (!students || !classId || !assessments || !studentScoreBooks) {
+    return null
+  }
 
-        const filtered = stuScoreBooks.filter((stu) => {
-          const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
-            (keyword) => toLowerCaseNonAccentVietnamese(keyword)
-          )
-          return keywordArr.includes(value.toLowerCase())
-        })
-        setFilteredStuScoreBooks(filtered)
+  const handleFilterStudentByName = (value: string) => {
+    if (stuScoreBooks && stuScoreBooks.length !== 0) {
+      if (!value) {
+        setFilteredStuScoreBooks(stuScoreBooks)
+        return
       }
-    },
-    [stuScoreBooks]
-  )
+
+      const filtered = stuScoreBooks.filter((stu) => {
+        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
+          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
+        )
+        return keywordArr.includes(value.toLowerCase())
+      })
+      setFilteredStuScoreBooks(filtered)
+    }
+  }
 
   const handleUpdateScore =
     (studentId: string) => (type: string) => (score: { score: number }, assessmentId: string) => {
@@ -96,46 +95,25 @@ const ScoreBookComponent = () => {
       }
     }
 
-  const handleSelectAssessmentType = useCallback(
-    (value: string) => {
-      if (value && assessments) {
-        const formatAssessments = assessments
-          .filter((assessment) => assessment.type === value)
-          .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
-        setAssessmentDates(formatAssessments)
+  const handleSelectAssessmentType = (value: AssessmentEnum) => {
+    if (value && assessments) {
+      const formatAssessments = assessments
+        .filter((assessment) => assessment.type === value)
+        .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
+      setAssessmentDates(formatAssessments)
+      setSelectedAssessmentType(value)
+    }
+  }
 
-        switch (value) {
-          case 'KT5':
-            setSelectedAssessmentType('score5')
-            break
-          case 'KT15':
-            setSelectedAssessmentType('score15')
-            break
-          case 'KT45':
-            setSelectedAssessmentType('score45')
-            break
-          case 'KT60':
-            setSelectedAssessmentType('score60')
-            break
-          default:
-            alert(value)
-            break
-        }
-      }
-    },
-    [assessments]
-  )
-
-  const handleChangeShowScoreDate = useCallback(
-    (updatedDate?: KeyValueProp) => {
-      if (updatedDate) {
+  const handleChangeShowScoreDate = (updatedDate?: KeyValueProp) => {
+    if (updatedDate) {
+      setTimeout(() => {
         setSelectedAssessmentDate(
           assessments.find((assessment) => assessment.id === updatedDate.key)
         )
-      }
-    },
-    [assessments]
-  )
+      }, 0)
+    }
+  }
 
   const displayProps: ScoreBookDisplayComponentProps = {
     filteredStuScoreBooks,
@@ -189,11 +167,15 @@ const ScoreBookComponent = () => {
           }}
         >
           <AssessmentDropdownComponent
+            assessmentType={selectedAssessmentType}
             size={'small'}
-            forSearching={true}
             onChangeAssessmentType={handleSelectAssessmentType}
           />
-          <DateDropdownComponent dates={assessmentDates} onChangeDate={handleChangeShowScoreDate} />
+          <DateDropdownComponent
+            selectedDate={selectedAssessmentDate?.bookDate}
+            dates={assessmentDates}
+            onChangeDate={handleChangeShowScoreDate}
+          />
         </Box>
       </Box>
       <ScoreBookDisplayComponent {...displayProps} />

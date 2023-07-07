@@ -62,12 +62,15 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
     []
   )
 
-  const handleCloseDialog = (refreshData?: boolean) => {
-    if (refreshData && callbackFn) {
-      callbackFn(refreshData)
-    }
-    setOpen(false)
-  }
+  const handleCloseDialog = useCallback(
+    (refreshData?: boolean) => {
+      if (refreshData && callbackFn) {
+        callbackFn(refreshData)
+      }
+      setOpen(false)
+    },
+    [callbackFn]
+  )
   const value = useMemo(() => {
     return {
       openDialog: handleOpenDialog,

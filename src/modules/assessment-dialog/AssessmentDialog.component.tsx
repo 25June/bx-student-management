@@ -23,7 +23,7 @@ import CheckIcon from '@mui/icons-material/Check'
 
 type AssessmentForm = {
   bookDate: string
-  type: string
+  type: AssessmentEnum
   lesson: string
 }
 
@@ -147,7 +147,7 @@ const AssessmentDialogComponent = ({
     return
   }
 
-  const handleChangeAssessmentType = (value: string) => {
+  const handleChangeAssessmentType = (value: AssessmentEnum) => {
     setValue('type', value)
   }
 

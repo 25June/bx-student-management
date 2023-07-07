@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Backdrop from '@mui/material/Backdrop'
 import SpeedDial from '@mui/material/SpeedDial'
@@ -41,13 +41,16 @@ const SpeedDialComponent = () => {
   const { openDialog } = useDialogContext()
 
   const [open, setOpen] = useState<boolean>(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const handleOpen = useCallback(() => setOpen(true), [])
+  const handleClose = useCallback(() => setOpen(false), [])
 
-  const handleOpenDialog = (dialogType: DialogType, actionType: ActionType) => {
-    openDialog(dialogType, actionType, null)
-    setOpen(false)
-  }
+  const handleOpenDialog = useCallback(
+    (dialogType: DialogType, actionType: ActionType) => {
+      openDialog(dialogType, actionType, null)
+      setOpen(false)
+    },
+    [openDialog]
+  )
   return (
     <Box
       sx={{

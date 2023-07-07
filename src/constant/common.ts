@@ -47,10 +47,10 @@ export const BaseClasses: Class[] = [
 ]
 
 export enum AssessmentEnum {
-  KT5 = 'KT5',
-  KT15 = 'KT15',
-  KT45 = 'KT45',
-  KT60 = 'KT60',
+  KT5 = 'score5',
+  KT15 = 'score15',
+  KT45 = 'score45',
+  KT60 = 'score60',
 }
 
 export enum ScoreEnum {
@@ -61,7 +61,7 @@ export enum ScoreEnum {
 }
 
 export interface BaseAssessment {
-  id: string
+  id: AssessmentEnum
   name: string
 }
 
