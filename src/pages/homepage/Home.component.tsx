@@ -50,13 +50,17 @@ const HomeComponent = () => {
 
   const handleClickAction = (data: Student, type: StudentActionType | ScoreBookActionType) => {
     if (type === StudentActionType.VIEW_SCORE_BOOK) {
-      setSelectedStudent(data)
-      setOpenScoreBook(true)
+      setTimeout(() => {
+        setSelectedStudent(data)
+        setOpenScoreBook(true)
+      }, 0)
       return
     }
     if (type === StudentActionType.VIEW_STUDENT) {
-      setSelectedStudent(data)
-      setOpenInfoPanel(true)
+      setTimeout(() => {
+        setSelectedStudent(data)
+        setOpenInfoPanel(true)
+      })
       return
     }
     const student = students.find((std: Student) => std.id === data.id)
@@ -86,6 +90,9 @@ const HomeComponent = () => {
       setFilteredStudents(filtered)
     }
   }
+
+  console.log(selectedStudent)
+  console.log(isOpenScoreBook)
   return (
     <Box>
       <Box p={isMobile ? 1 : 2}>
@@ -158,15 +165,13 @@ const HomeComponent = () => {
               onClose={() => setOpenInfoPanel(false)}
               onClickAction={handleClickAction}
             />
-            {selectedStudent && (
-              <ScoreBookPanelComponent
-                isOpen={isOpenScoreBook}
-                onClose={handleCloseScoreBook}
-                studentId={selectedStudent.id}
-              />
-            )}
           </Box>
         )}
+        <ScoreBookPanelComponent
+          isOpen={isOpenScoreBook}
+          onClose={handleCloseScoreBook}
+          studentId={selectedStudent?.id || ''}
+        />
       </Box>
     </Box>
   )

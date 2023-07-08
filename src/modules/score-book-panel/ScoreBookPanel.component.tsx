@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import MuiDrawer from '@mui/material/Drawer'
+import Drawer from '@mui/material/Drawer'
 import { Button } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import React, { useState, useEffect, useCallback } from 'react'
@@ -69,7 +69,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
   if (!scoreBook || !studentInfo) return null
 
   return (
-    <MuiDrawer
+    <Drawer
       variant="temporary"
       anchor={'right'}
       open={isOpen}
@@ -132,7 +132,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
           </Box>
         </Box>
       </Box>
-    </MuiDrawer>
+    </Drawer>
   )
 }
 
