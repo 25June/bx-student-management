@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import Box from '@mui/material/Box'
 import Backdrop from '@mui/material/Backdrop'
 import SpeedDial from '@mui/material/SpeedDial'
@@ -15,6 +15,9 @@ import {
   StudentActionType,
 } from 'constant/common'
 import { useDialogContext } from 'contexts/DialogContext'
+import { useAssessmentContext } from 'contexts/AssessmentContext'
+import { useGetAssessments } from 'services'
+import { useClassContext } from 'contexts/ClassContext'
 
 const actions = [
   {
@@ -39,18 +42,39 @@ const actions = [
 
 const SpeedDialComponent = () => {
   const { openDialog } = useDialogContext()
+  const { setAssessments } = useAssessmentContext()
+  const getAssessments = useGetAssessments()
+  const { classId } = useClassContext()
 
   const [open, setOpen] = useState<boolean>(false)
   const handleOpen = useCallback(() => setOpen(true), [])
   const handleClose = useCallback(() => setOpen(false), [])
 
+  const assessmentCallBack = useCallback(() => {
+    setTimeout(() => {
+      getAssessments(classId).then((res) => {
+        setAssessments(res)
+      })
+    }, 500)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const handleOpenDialog = useCallback(
     (dialogType: DialogType, actionType: ActionType) => {
+      if (
+        dialogType === DialogType.ASSESSMENT_DIALOG &&
+        actionType === AssessmentActionType.ADD_NEW_ASSESSMENT
+      ) {
+        openDialog(dialogType, actionType, null, assessmentCallBack)
+        setOpen(false)
+        return
+      }
       openDialog(dialogType, actionType, null)
       setOpen(false)
     },
-    [openDialog]
+    [assessmentCallBack, openDialog]
   )
+
   return (
     <Box
       sx={{

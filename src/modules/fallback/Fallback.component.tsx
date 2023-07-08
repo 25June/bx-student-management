@@ -12,7 +12,7 @@ const FallbackComponent = () => {
         height: '100vh',
       }}
     >
-      <CircularProgress color="success" />
+      <CircularProgress color="primary" />
     </Box>
   )
 }

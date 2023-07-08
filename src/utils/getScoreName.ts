@@ -13,7 +13,7 @@ export const getScoreName = (scoreType: string): string => {
       return "Kiểm Tra 45'"
     case AssessmentEnum.KT60:
     case ScoreEnum.SCORE_60:
-      return "Kiểm Tra 60'"
+      return 'Thi Học Kỳ'
     default:
       return 'Unknown'
   }

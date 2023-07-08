@@ -46,6 +46,20 @@ export const BaseClasses: Class[] = [
   { id: 'vd', name: 'Vào Đời' },
 ]
 
+export const BaseClassObj: Record<string, string> = {
+  kt1: 'Khai Tâm 1',
+  kt2: 'Khai Tâm 2',
+  rl1: 'Rước Lễ 1',
+  rl2a: 'Rước Lễ 2A',
+  rl2b: 'Rước Lễ 2B',
+  ts1a: 'Thêm Sức 1A',
+  ts1b: 'Thêm Sức 1B',
+  ts2: 'Thêm Sức 2',
+  bd1: 'Bao Đồng 1',
+  bd2: 'Bao Đồng 2',
+  vd: 'Vào Đời',
+}
+
 export enum AssessmentEnum {
   KT5 = 'score5',
   KT15 = 'score15',

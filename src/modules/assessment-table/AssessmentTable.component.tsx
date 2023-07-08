@@ -20,6 +20,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useIsMobile } from 'utils/common'
 import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
+import { grey } from '@mui/material/colors'
 
 const tableColumns = [
   {
@@ -69,7 +70,7 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
   }
 
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
+    <TableContainer component={Paper} sx={{ border: `1px solid ${grey[300]}` }}>
       <Table stickyHeader={true} sx={{ minWidth: isMobile ? 0 : 650 }} aria-label="simple table">
         <TableHead>
           <TableRow sx={{ display: isMobile ? 'none' : '' }}>
@@ -80,14 +81,14 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => {
+          {rows.map((row, index) => {
             const assessment = {
               ...row,
               type: getScoreName(row.type),
               bookDate: row.bookDate ? formatYYYMMDDToDDMMYYYY(row.bookDate) : '',
             }
             return (
-              <TableRow key={row.id}>
+              <TableRow key={row.id} sx={{ background: index % 2 === 0 ? '#fff' : grey[50] }}>
                 {tableColumns.map((col) => {
                   return (
                     <TableCell

@@ -20,6 +20,8 @@ import { AssessmentEnum } from 'constant/common'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
+import { getScoreName } from 'utils/getScoreName'
+import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 
 type AssessmentForm = {
   bookDate: string
@@ -162,7 +164,9 @@ const AssessmentDialogComponent = ({
         <DialogContent dividers={true}>
           {action === AssessmentActionType.DELETE_ASSESSMENT && data?.id ? (
             <DialogContentText>
-              {`Bạn có chắc chắn muốn xoá thông tin bài kiểm tra ${data.type} vào ngày ${data.bookDate}`}
+              {`Bạn có chắc chắn muốn xoá thông tin bài kiểm tra ${getScoreName(
+                data.type
+              )} vào ngày ${formatYYYMMDDToDDMMYYYY(data.bookDate)}`}
             </DialogContentText>
           ) : (
             <Box>

@@ -106,22 +106,24 @@ const HomeComponent = () => {
           <Box>
             <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
-          <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <ToggleButtonGroup
-                value={displayType}
-                exclusive={true}
-                onChange={handleChangeDisplay}
-              >
-                <ToggleButton value="table" aria-label="display-table" size="small">
-                  <TableRowsIcon />
-                </ToggleButton>
-                <ToggleButton value="card" aria-label="display-card" size="small">
-                  <StyleIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
+          {!isMobile && (
+            <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <ToggleButtonGroup
+                  value={displayType}
+                  exclusive={true}
+                  onChange={handleChangeDisplay}
+                >
+                  <ToggleButton value="table" aria-label="display-table" size="small">
+                    <TableRowsIcon />
+                  </ToggleButton>
+                  <ToggleButton value="card" aria-label="display-card" size="small">
+                    <StyleIcon />
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
         {displayType === 'table' ? (
           <TableComponent

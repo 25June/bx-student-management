@@ -19,8 +19,8 @@ const MonthDropdownComponent = ({
 }: MonthDropdownComponentProps) => {
   return (
     <FormControl fullWidth={true} size={size} sx={{ maxWidth: '150px' }}>
-      <InputLabel shrink={true}>Thời điểm</InputLabel>
-      <Select value={selectedMonth} label="Thời điểm" onChange={onChangeMonth}>
+      <InputLabel shrink={true}>Tháng</InputLabel>
+      <Select value={selectedMonth} label="Tháng" onChange={onChangeMonth}>
         {dates.map((date: string) => (
           <MenuItem value={date} key={date}>
             {date}

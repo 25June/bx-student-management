@@ -15,7 +15,9 @@ import MenuItem from '@mui/material/MenuItem'
 import EditIcon from '@mui/icons-material/Edit'
 import PasswordIcon from '@mui/icons-material/Password'
 import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
-import { UserAction, UserRoles } from 'constant/common'
+import { BaseClassObj, UserAction, UserRoles } from 'constant/common'
+import { useIsMobile } from 'utils/common'
+import { grey } from '@mui/material/colors'
 
 interface UserTableComponentProps {
   rows: User[]
@@ -23,6 +25,8 @@ interface UserTableComponentProps {
 }
 
 const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) => {
+  const isMobile = useIsMobile()
+
   const [selectedRow, setSelectedRow] = useState<User>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -31,24 +35,63 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
     setSelectedRow(row)
   }
 
+  const tableBodyClass = isMobile
+    ? {
+        '&:before': { content: `attr(data-cell)`, fontWeight: 500 },
+        display: 'grid',
+        gridTemplateColumns: '10ch auto',
+        borderBottom: 0,
+      }
+    : {}
+
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 500, boxShadow: 3 }}>
-      <Table stickyHeader={true} sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer component={Paper} sx={{ boxShadow: 3, border: `1px solid ${grey[300]}` }}>
+      <Table stickyHeader={true} sx={{ minWidth: isMobile ? 0 : 650 }} aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow sx={{ display: isMobile ? 'none' : '' }}>
             <TableCell key={'email'}>Email</TableCell>
-            <TableCell key={'role'}>Role</TableCell>
-            <TableCell />
+            <TableCell key={'classId'}>Lớp</TableCell>
+            <TableCell key={'role'}>Chức vụ</TableCell>
+            <TableCell key={'action'} />
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.email} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCell sx={{ paddingTop: 1, paddingBottom: 1 }}>{row.email}</TableCell>
-              <TableCell sx={{ paddingTop: 1, paddingBottom: 1 }}>
+          {rows.map((row, index) => (
+            <TableRow
+              key={row.email}
+              sx={{
+                '&:last-child td, &:last-child th': { border: 0 },
+                background: index % 2 === 0 ? '#fff' : grey[50],
+              }}
+            >
+              <TableCell
+                data-cell={'Email'}
+                sx={{
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  ...tableBodyClass,
+                }}
+              >
+                {row.email}
+              </TableCell>
+              <TableCell
+                data-cell={'Lớp'}
+                sx={{ paddingTop: 1, paddingBottom: 1, ...tableBodyClass }}
+              >
+                {BaseClassObj[row.classId || 'kt1']}
+              </TableCell>
+              <TableCell
+                data-cell={'Vai trò'}
+                sx={{ paddingTop: 1, paddingBottom: 1, ...tableBodyClass }}
+              >
                 {UserRoles[row.role]?.title || ''}
               </TableCell>
-              <TableCell key={`${row.id}-action`} align={'right'}>
+              <TableCell
+                data-cell={'Action'}
+                key={`${row.id}-action`}
+                align={isMobile ? 'left' : 'right'}
+                sx={{ ...tableBodyClass }}
+              >
                 <Tooltip title={'Menu'} placement={'top'}>
                   <IconButton
                     aria-label={'Menu'}
@@ -56,7 +99,7 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
                     size={'small'}
                     color={'primary'}
                   >
-                    <MoreVertIcon fontSize={'small'} />
+                    <MoreVertIcon fontSize={'small'} sx={{ transform: 'rotate(90deg)' }} />
                   </IconButton>
                 </Tooltip>
               </TableCell>

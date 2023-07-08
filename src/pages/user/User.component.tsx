@@ -47,6 +47,7 @@ const UserComponent = () => {
       fetchUsers()
     }
     openUserDialog(false)
+    setSelectedUser(undefined)
   }
 
   const handleClickAction = (action: string, selectedRow: User) => {
@@ -64,6 +65,13 @@ const UserComponent = () => {
         return openUpdateInfoDialog(true)
       case UserAction.CHANGE_PASSWORD:
         return openChangePasswordDialog(true)
+    }
+  }
+
+  const handleCloseUpdateDialog = (refreshData?: boolean) => {
+    openUpdateInfoDialog(false)
+    if (refreshData) {
+      fetchUsers()
     }
   }
 
@@ -119,7 +127,7 @@ const UserComponent = () => {
             selectedUser={selectedUser}
           />
           <UpdateInfoDialogComponent
-            onClose={() => openUpdateInfoDialog(false)}
+            onClose={handleCloseUpdateDialog}
             isOpen={isOpenUpdateInfoDialog}
             user={selectedUser}
           />

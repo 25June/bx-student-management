@@ -66,14 +66,18 @@ const DiligentComponent = () => {
 
   const handleChangeDate = (updatedDate?: KeyValueProp) => {
     if (updatedDate && updatedDate.value === 'all') {
-      setSelectedRollCallDate(undefined)
+      setTimeout(() => {
+        setSelectedRollCallDate(undefined)
+      }, 0)
       return
     }
 
-    const rollCallDate = groupRollDate[selectedMonth].find(
-      (date) => date.dateAsString === updatedDate?.value
-    )
-    setSelectedRollCallDate(rollCallDate)
+    setTimeout(() => {
+      const rollCallDate = groupRollDate[selectedMonth].find(
+        (date) => date.dateAsString === updatedDate?.value
+      )
+      setSelectedRollCallDate(rollCallDate)
+    })
   }
 
   const handleOpenDiligentDialog = (date: string, id: string) => {

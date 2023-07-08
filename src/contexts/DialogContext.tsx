@@ -68,6 +68,8 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
         callbackFn(refreshData)
       }
       setOpen(false)
+      setAction(undefined)
+      setDialogType(undefined)
     },
     [callbackFn]
   )

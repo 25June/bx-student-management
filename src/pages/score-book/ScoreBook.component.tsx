@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
-import { GroupAssessmentProps, groupAssessments } from 'modules/Table/helpers'
 import { StudentScoreBooks, Student, KeyValueProp, Assessment } from 'models'
 import React, { useState, useMemo, useEffect } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
@@ -17,6 +16,7 @@ import ScoreBookDisplayComponent, {
   ScoreBookDisplayComponentProps,
 } from 'modules/score-book/ScoreBookDisplay.component'
 import { AssessmentEnum } from 'constant/common'
+import { sortBy } from 'lodash'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
@@ -28,7 +28,6 @@ const ScoreBookComponent = () => {
   const { studentScoreBooks } = useGetStudentScoreBooks({ classId })
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
   const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
-  const [groupAssessment, setGroupAssessments] = useState<GroupAssessmentProps>()
   const [filteredStuScoreBooks, setFilteredStuScoreBooks] = useState<
     StudentScoreBooks[] | Student[]
   >([])
@@ -50,9 +49,10 @@ const ScoreBookComponent = () => {
   }, [students, studentScoreBooks])
 
   useEffect(() => {
-    if (assessments.length !== 0) {
-      setGroupAssessments(groupAssessments(assessments))
+    if (assessments.length !== 0 && selectedAssessmentType) {
+      handleSelectAssessmentType(selectedAssessmentType)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assessments])
 
   useEffect(() => {
@@ -100,8 +100,9 @@ const ScoreBookComponent = () => {
       const formatAssessments = assessments
         .filter((assessment) => assessment.type === value)
         .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
-      setAssessmentDates(formatAssessments)
+      setAssessmentDates(sortBy(formatAssessments, 'value'))
       setSelectedAssessmentType(value)
+      setSelectedAssessmentDate(undefined)
     }
   }
 
@@ -118,7 +119,6 @@ const ScoreBookComponent = () => {
   const displayProps: ScoreBookDisplayComponentProps = {
     filteredStuScoreBooks,
     selectedAssessmentType,
-    groupAssessment,
     setSelectedScoreBook,
     selectedAssessmentDate,
     handleUpdateScore,

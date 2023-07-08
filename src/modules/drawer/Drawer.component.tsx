@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Box,
@@ -10,7 +10,9 @@ import {
   CSSObject,
   styled,
   Theme,
+  IconButton,
 } from '@mui/material'
+import Fade from '@mui/material/Fade'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import CoPresentIcon from '@mui/icons-material/CoPresent'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
@@ -23,6 +25,9 @@ import { Router } from 'routes'
 import { useAuthentication } from 'contexts/AuthContext'
 import { Role } from 'constant/common'
 import { useIsMobile } from 'utils/common'
+import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
+import { blue } from '@mui/material/colors'
+import { debounce } from 'lodash'
 
 interface DrawerComponentProps {
   isOpen: boolean
@@ -106,10 +111,30 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const isMobile = useIsMobile()
+  const [showScroll, setShowScroll] = useState<boolean>(false)
+  useEffect(() => {
+    const eventHandler = () => {
+      if (!showScroll) {
+        setShowScroll(window.scrollY > 0)
+      }
+    }
+    window.addEventListener('scroll', debounce(eventHandler, 200))
+
+    return () => window.removeEventListener('scroll', eventHandler)
+  }, [showScroll])
+
+  const handleScrollToTop = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    })
+    setShowScroll(false)
+  }, [])
 
   return (
     <Drawer variant="permanent" open={isOpen}>
-      <Box pt={8}>
+      <Box pt={8} position={'relative'}>
         <List>
           {Object.values(Menu).map(({ text, icon, to }) => {
             if ([Router.USER, Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
@@ -139,7 +164,7 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
                     primary={text}
                     sx={{
                       opacity: isOpen ? 1 : 0,
-                      color: to === location.pathname ? '#1976d2' : '',
+                      color: to === location.pathname ? blue[500] : '',
                     }}
                   />
                 </ListItemButton>
@@ -148,6 +173,16 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
           })}
         </List>
       </Box>
+      <Fade in={showScroll}>
+        <IconButton
+          size={'small'}
+          color={'primary'}
+          sx={{ position: 'absolute', background: blue[100], bottom: 16, left: 8 }}
+          onClick={handleScrollToTop}
+        >
+          <ExpandLessRoundedIcon />
+        </IconButton>
+      </Fade>
     </Drawer>
   )
 }

@@ -36,6 +36,7 @@ const theme = createTheme({
       fontWeight: 600,
       color: '#424242',
       fontFamily: 'Be Vietnam Pro, sans-serif',
+      marginBottom: '0.5rem',
     },
   },
   palette: {
