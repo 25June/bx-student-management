@@ -5,17 +5,24 @@ import DrawerComponent from '../drawer/Drawer.component'
 import { PropsWithChildren } from 'react'
 import { useIsMobile } from 'utils/common'
 import SpeedDialComponent from 'modules/speed-dial/SpeedDial.component'
+import UserDrawerComponent from 'modules/user-drawer/UserDrawer.component'
 
 export const drawerWidth = 240
 
 const LayoutComponent = ({ children }: PropsWithChildren) => {
-  const [isOpen, setOpen] = React.useState(false)
+  const [isOpen, setOpen] = React.useState<boolean>(false)
+  const [openUserDrawer, setOpenUserDrawer] = React.useState<boolean>(false)
   const isMobile = useIsMobile()
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <TopBarComponent isOpen={isOpen} setOpen={setOpen} />
+      <TopBarComponent
+        isOpen={isOpen}
+        setOpen={setOpen}
+        openUserDrawer={() => setOpenUserDrawer(true)}
+      />
       <DrawerComponent isOpen={isOpen} />
+      <UserDrawerComponent open={openUserDrawer} onClose={() => setOpenUserDrawer(false)} />
       <Box
         component="main"
         sx={{

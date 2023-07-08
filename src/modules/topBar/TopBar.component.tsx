@@ -1,22 +1,22 @@
 import React from 'react'
-import { Toolbar, IconButton, Typography } from '@mui/material'
+import { Toolbar, IconButton, Typography, Avatar } from '@mui/material'
 import Box from '@mui/material/Box'
 import MenuIcon from '@mui/icons-material/Menu'
-import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar/AppBar'
 import { styled } from '@mui/material/styles'
 import MuiAppBar from '@mui/material/AppBar'
 import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 import { useClassContext } from 'contexts/ClassContext'
 import { SelectChangeEvent } from '@mui/material/Select'
-import { useSignOut } from 'services/user'
 import { useIsMobile } from 'utils/common'
 import Logo from 'static/images/logo/logo.svg'
 import { useStudentContext } from 'contexts/StudentContext'
+import GLVLogo from 'static/images/cards/glv.png'
 
 interface TopBarComponentProps {
   isOpen: boolean
   setOpen: (value: boolean) => void
+  openUserDrawer: () => void
 }
 
 interface AppBarProps extends MuiAppBarProps {
@@ -33,16 +33,12 @@ const AppBar = styled(MuiAppBar, {
   }),
 }))
 
-const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
-  const signOut = useSignOut()
+const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentProps) => {
   const { classObj, setClassId } = useClassContext()
   const { students } = useStudentContext()
   const isMobile = useIsMobile()
   const handleDrawerOpen = () => {
     setOpen(!isOpen)
-  }
-  const handleSignOut = () => {
-    signOut()
   }
 
   const handleChangeClassId = (event: SelectChangeEvent) => {
@@ -110,8 +106,15 @@ const TopBarComponent = ({ isOpen, setOpen }: TopBarComponentProps) => {
               {students && students.length} Em
             </Typography>
           </Box>
-          <IconButton color="inherit" aria-label="open drawer" onClick={handleSignOut} edge="start">
-            <ExitToAppIcon />
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            sx={{ paddingRight: 0 }}
+            onClick={openUserDrawer}
+          >
+            <Avatar alt="GLV-avatar" src={GLVLogo} />
+            {/*<ExitToAppIcon />*/}
           </IconButton>
         </Box>
       </Toolbar>
