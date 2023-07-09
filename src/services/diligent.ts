@@ -1,5 +1,5 @@
 import { realtimeDB } from '../firebase'
-import { onValue, ref, set, get, Unsubscribe } from 'firebase/database'
+import { onValue, ref, set, get } from 'firebase/database'
 import { useState, useEffect } from 'react'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { v4 as uuidv4 } from 'uuid'
@@ -27,7 +27,6 @@ export const useGetAttendanceByClassId = ({
   semester = 'hk1',
 }: GetAttendanceByClassIdProps) => {
   const [attendances, setAttendances] = useState<Attendances | null>()
-  const [listener, setListener] = useState<Unsubscribe>()
   useEffect(() => {
     if (classId) {
       const subscribe = onValue(
@@ -41,15 +40,7 @@ export const useGetAttendanceByClassId = ({
           setAttendances(null)
         }
       )
-      setListener(() => subscribe)
-      return subscribe
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId])
-
-  useEffect(() => {
-    if (listener) {
-      listener()
+      return () => subscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId])
@@ -96,22 +87,23 @@ interface GetRollCallDateProps {
   semester?: string
 }
 
-export const useGetRollCallDates = () => {
-  const { showSnackbar } = useSnackbarContext()
-
-  return ({ classId, year = '2022-2023', semester = 'hk1' }: GetRollCallDateProps) => {
-    return get(ref(realtimeDB, rollCallPathName(classId, year, semester)))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          return snapshot.val()
-        } else {
-          return null
-        }
-      })
-      .catch((error) => {
-        showSnackbar(error, 'error')
-      })
-  }
+export const fetchRollCallDates = ({
+  classId,
+  year = '2022-2023',
+  semester = 'hk1',
+}: GetRollCallDateProps) => {
+  return get(ref(realtimeDB, rollCallPathName(classId, year, semester)))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        return snapshot.val()
+      }
+      console.info('Data null')
+      return null
+    })
+    .catch((error) => {
+      console.error(error, 'error')
+      return null
+    })
 }
 
 interface SubmitAttendanceProps {

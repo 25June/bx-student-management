@@ -19,9 +19,10 @@ import { Box } from '@mui/material'
 import Grow from '@mui/material/Grow'
 import Stack from '@mui/material/Stack'
 import DiligentAccordionComponent from 'modules/diligent/DiligentAccordion.component'
-import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 import SingleDateViewComponent from 'modules/single-date-view/SingleDateView.component'
 import { useClassContext } from 'contexts/ClassContext'
+import { blueGrey } from '@mui/material/colors'
+import Typography from '@mui/material/Typography'
 
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -61,7 +62,13 @@ const DiligentTableComponent = ({
     }
 
   if (!attendances || !rollCallDates || rollCallDates.length === 0) {
-    return <DiligentSkeleton />
+    return (
+      <Box>
+        <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
+          <i>Chưa có ngày điểm danh. Tạo ngày điểm danh.</i>
+        </Typography>
+      </Box>
+    )
   }
 
   if (isMobile) {

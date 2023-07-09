@@ -3,7 +3,6 @@ import { Box, Typography } from '@mui/material'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
-import { useGetAttendanceByClassId, useGetRollCallDates } from 'services/diligent'
 import { KeyValueProp, Student } from 'models'
 import DiligentTableComponent from 'modules/diligent-table/DiligentTable.component'
 import MonthDropdownComponent from 'modules/common/MonthDropdown.component'
@@ -15,16 +14,15 @@ import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import DateDropdownComponent from 'modules/common/DateDropdown.component'
 import DiligentSkeletonComponent from 'modules/diligent/DiligentSkeleton.component'
+import { useDiligentContext } from 'contexts/DiligentContext'
 
 const DiligentComponent = () => {
+  const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
   const { students } = useStudentContext()
   const { classId } = useClassContext()
-  const getRollCallDates = useGetRollCallDates()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
-  const { attendances } = useGetAttendanceByClassId({ classId })
-
-  const [rollCallDates, setRollCallDates] = useState<Record<string, string>>({})
+  console.log({ attendances })
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedRollCallDate, setSelectedRollCallDate] = useState<RollCallDate>()
 
@@ -38,22 +36,40 @@ const DiligentComponent = () => {
     }
   }, [students])
 
-  const fetchRollCallDates = useCallback(() => {
-    getRollCallDates({ classId }).then((res: Record<string, string>) => {
-      setRollCallDates(res)
-      const sortedMonthDate = groupRollCallToSortedMonths(res)
-      setGroupRollDate(sortedMonthDate)
-      setSelectedMonth(Object.keys(sortedMonthDate)[0])
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId])
+  const getRollCallDates = useCallback(() => {
+    if (fetchRollCallDates !== null) {
+      fetchRollCallDates({ classId }).then((res: Record<string, string> | null) => {
+        if (res) {
+          setTimeout(() => {
+            const sortedMonthDate = groupRollCallToSortedMonths(res)
+            console.log({ setGroupRollDate: sortedMonthDate })
+            setGroupRollDate(sortedMonthDate)
+            setSelectedMonth(Object.keys(sortedMonthDate)[0])
+          }, 0)
+          return
+        }
+        setGroupRollDate({})
+        setSelectedMonth('')
+      })
+    }
+  }, [classId, fetchRollCallDates])
 
   useEffect(() => {
     if (classId) {
-      fetchRollCallDates()
+      getRollCallDates()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId])
+  }, [classId, getRollCallDates])
+
+  useEffect(() => {
+    if (rollCallDates) {
+      setTimeout(() => {
+        const sortedMonthDate = groupRollCallToSortedMonths(rollCallDates)
+        setGroupRollDate(sortedMonthDate)
+        setSelectedMonth(Object.keys(sortedMonthDate)[0])
+      }, 0)
+    }
+  }, [rollCallDates])
 
   const handleChangeMonth = (event: SelectChangeEvent | string) => {
     if (typeof event === 'string') {
@@ -102,7 +118,7 @@ const DiligentComponent = () => {
 
   const callback = (refreshData?: boolean) => {
     if (refreshData) {
-      fetchRollCallDates()
+      getRollCallDates()
     }
   }
 
@@ -126,7 +142,7 @@ const DiligentComponent = () => {
       setFilteredStudents(filtered)
     }
   }
-  console.log({ formatAttendances })
+  console.log({ rollCallDates, selectedMonth })
 
   return (
     <Box>

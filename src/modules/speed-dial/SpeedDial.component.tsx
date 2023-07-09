@@ -34,7 +34,7 @@ const actions = [
   },
   {
     icon: <CalendarMonthIcon />,
-    name: 'Thêm ngày học',
+    name: 'Thêm ngày điểm danh',
     dialogType: DialogType.STUDY_DATE_DIALOG,
     actionType: RollCallDateActionType.ADD_STUDY_DATE,
   },

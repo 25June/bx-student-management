@@ -182,7 +182,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
                 type={'text'}
                 fullWidth={true}
                 error={!!fieldState.error}
-                inputMode={'numeric'}
+                inputMode={'decimal'}
                 {...field}
               />
             )

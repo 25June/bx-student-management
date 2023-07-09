@@ -66,7 +66,43 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
   }
 
   const groupAssessment = groupAssessments(assessments)
-  if (!scoreBook || !studentInfo) return null
+  if (!studentInfo) {
+    return null
+  }
+  if (!scoreBook) {
+    return (
+      <Drawer
+        variant="temporary"
+        anchor={'right'}
+        open={isOpen}
+        onClose={onClose}
+        sx={{ width: '100%', maxWidth: 350 }}
+      >
+        <Box pt={9} pr={2} pl={2} mb={5}>
+          <Box display={'flex'} alignItems={'center'} mb={2}>
+            <Button color={'primary'} onClick={onClose} startIcon={<KeyboardBackspaceIcon />}>
+              Back
+            </Button>
+          </Box>
+          <Box sx={{ display: 'flex' }}>
+            <ImageBoxComponent
+              imagePath={studentInfo.avatarPath}
+              gender={studentInfo.gender}
+              maxWidth={200}
+            />
+          </Box>
+          <Box>
+            <Box textAlign={'center'} component={'h2'} margin={0}>
+              {studentInfo.saintName}
+            </Box>
+            <Box textAlign={'center'} component={'h1'} mt={0}>
+              {`${studentInfo.lastName} ${studentInfo.firstName}`}
+            </Box>
+          </Box>
+        </Box>
+      </Drawer>
+    )
+  }
 
   return (
     <Drawer

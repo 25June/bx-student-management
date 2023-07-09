@@ -7,6 +7,7 @@ import { RollCallDateActionType } from 'constant/common'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { useClassContext } from 'contexts/ClassContext'
+import { useDiligentContext } from 'contexts/DiligentContext'
 
 interface DiligentDialogComponentProps {
   onClose: (refreshData?: boolean) => void
@@ -30,6 +31,7 @@ const DiligentDialogComponent = ({
   const addRollCallDate = useAddRollCallDate()
   const updateRollCallDate = useUpdateRollCallDate()
   const { classId } = useClassContext()
+  const { fetchRollCallDates } = useDiligentContext()
 
   useEffect(() => {
     if (rollCall && rollCall.date) {
@@ -44,7 +46,10 @@ const DiligentDialogComponent = ({
       )
       return
     }
-    addRollCallDate({ date: rollCallDate, classId }).finally(() => onClose(true))
+    addRollCallDate({ date: rollCallDate, classId }).finally(() => {
+      onClose(true)
+      return fetchRollCallDates?.({ classId })
+    })
   }
 
   return (
