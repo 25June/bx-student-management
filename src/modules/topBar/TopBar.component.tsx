@@ -11,7 +11,8 @@ import { SelectChangeEvent } from '@mui/material/Select'
 import { useIsMobile } from 'utils/common'
 import Logo from 'static/images/logo/logo.svg'
 import { useStudentContext } from 'contexts/StudentContext'
-import GLVLogo from 'static/images/cards/glv.png'
+import { useAuthentication } from 'contexts/AuthContext'
+import ImageBoxComponent from 'modules/image-box/ImageBox.component'
 
 interface TopBarComponentProps {
   isOpen: boolean
@@ -36,6 +37,7 @@ const AppBar = styled(MuiAppBar, {
 const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentProps) => {
   const { classObj, setClassId } = useClassContext()
   const { students } = useStudentContext()
+  const { user } = useAuthentication()
   const isMobile = useIsMobile()
   const handleDrawerOpen = () => {
     setOpen(!isOpen)
@@ -113,7 +115,9 @@ const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentPro
             sx={{ paddingRight: 0 }}
             onClick={openUserDrawer}
           >
-            <Avatar alt="GLV-avatar" src={GLVLogo} />
+            <Avatar alt="GLV-avatar">
+              <ImageBoxComponent imagePath={user?.avatarPath} isGLV={true} />
+            </Avatar>
             {/*<ExitToAppIcon />*/}
           </IconButton>
         </Box>
