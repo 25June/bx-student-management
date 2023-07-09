@@ -1,14 +1,17 @@
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import Drawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import EditIcon from '@mui/icons-material/Edit'
-import { useSignOut } from 'services/user'
+import { getUserInfo, useSignOut } from 'services/user'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import { useAuthentication } from 'contexts/AuthContext'
-import GLVLogo from 'static/images/cards/glv.png'
 import { red } from '@mui/material/colors'
+import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
+import { useState } from 'react'
+import { User } from 'models/user'
+import { ImageBoxComponent } from 'modules/index'
 
 interface UserDrawerComponentProps {
   onClose: () => void
@@ -16,12 +19,34 @@ interface UserDrawerComponentProps {
 }
 
 const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
+  const [isOpenUpdateInfoDialog, openUpdateInfoDialog] = useState<boolean>(false)
+  const [currentUser, setCurrentUser] = useState<User>()
   const { user } = useAuthentication()
   const signOut = useSignOut()
+
+  useEffect(() => {
+    if (user && user.id) {
+      getUserInfo(user.id).then((res) => {
+        if (res) {
+          console.log(res)
+          setCurrentUser(res)
+        }
+      })
+    }
+  }, [user])
 
   const handleSignOut = () => {
     signOut()
   }
+
+  const handleCloseUpdateDialog = (refreshData?: boolean) => {
+    openUpdateInfoDialog(false)
+    if (refreshData) {
+      // fetchUsers()
+      console.log(refreshData)
+    }
+  }
+
   if (!user) {
     return null
   }
@@ -46,18 +71,7 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           </Button>
         </Box>
         <Box display={'flex'}>
-          <Box
-            component={'img'}
-            src={user.avatarPath || GLVLogo}
-            alt={'GLV-avatar'}
-            sx={{
-              width: '100%',
-              maxWidth: 200,
-              aspectRatio: '1/1',
-              objectFit: 'cover',
-              margin: '0 auto',
-            }}
-          />
+          <ImageBoxComponent imagePath={user.avatarPath} isGLV={true} maxWidth={200} />
         </Box>
         <Box>
           <Box textAlign={'center'} margin={0} color={red.A200}>
@@ -67,7 +81,12 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
             {`${user.lastName} ${user.firstName}`}
           </Box>
         </Box>
-        <Button startIcon={<EditIcon />} sx={{ justifyContent: 'flex-start' }} variant={'outlined'}>
+        <Button
+          startIcon={<EditIcon />}
+          sx={{ justifyContent: 'flex-start' }}
+          variant={'outlined'}
+          onClick={() => openUpdateInfoDialog(true)}
+        >
           Cập nhật thông tin
         </Button>
         <Button
@@ -79,6 +98,13 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           Thoát ra
         </Button>
       </Box>
+      {currentUser && (
+        <UpdateInfoDialogComponent
+          onClose={handleCloseUpdateDialog}
+          isOpen={isOpenUpdateInfoDialog}
+          user={currentUser}
+        />
+      )}
     </Drawer>
   )
 }

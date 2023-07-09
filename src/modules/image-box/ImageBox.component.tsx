@@ -7,9 +7,11 @@ interface ImageBoxComponentProps {
   gender?: boolean
   maxWidth?: number | string
   customStyles?: Record<string, string | number>
+  isGLV?: boolean
 }
 
 const ImageBoxComponent = ({
+  isGLV,
   imagePath,
   gender,
   maxWidth = 375,
@@ -18,7 +20,7 @@ const ImageBoxComponent = ({
   return (
     <Box
       component={'img'}
-      src={buildImageUrl(imagePath, gender)}
+      src={buildImageUrl(imagePath, gender, isGLV)}
       alt={imagePath}
       sx={{
         width: '100%',

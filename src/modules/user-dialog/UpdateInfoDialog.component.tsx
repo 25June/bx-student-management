@@ -36,7 +36,7 @@ const defaultUserInfo = (user: User) => {
     firstName: user.firstName || '',
     lastName: user.lastName || '',
     phoneNumber: user.phoneNumber || '',
-    classId: user.classId || 'kt1',
+    classId: user.classId || '',
     avatarPath: user.avatarPath || '',
   }
 }
