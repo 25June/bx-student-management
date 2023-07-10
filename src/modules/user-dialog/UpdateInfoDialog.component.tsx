@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Button,
   Dialog,
@@ -8,7 +8,7 @@ import {
   TextField,
   Box,
 } from '@mui/material'
-import { BaseClasses } from 'constant/common'
+import { BaseClasses, BaseClassObj } from 'constant/common'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { User } from 'models/user'
@@ -54,6 +54,15 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
   const updateUserInfo = useUpdateUserInfo()
   const [classObj, setClassObj] = useState<{ id: string; name: string }>()
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
+
+  useEffect(() => {
+    if (user.classId) {
+      setClassObj({
+        id: user.classId,
+        name: BaseClassObj[user.classId],
+      })
+    }
+  }, [user])
 
   const handleChangeClass = (event: SelectChangeEvent) => {
     const selectedClass = BaseClasses.find((c: Class) => c.id === (event.target.value as string))

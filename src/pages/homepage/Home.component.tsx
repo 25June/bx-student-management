@@ -91,8 +91,6 @@ const HomeComponent = () => {
     }
   }
 
-  console.log(selectedStudent)
-  console.log(isOpenScoreBook)
   return (
     <Box>
       <Box p={isMobile ? 1 : 2}>
@@ -168,7 +166,7 @@ const HomeComponent = () => {
           </Box>
         )}
         <ScoreBookPanelComponent
-          isOpen={isOpenScoreBook}
+          isOpen={!!(selectedStudent?.id && isOpenScoreBook)}
           onClose={handleCloseScoreBook}
           studentId={selectedStudent?.id || ''}
         />

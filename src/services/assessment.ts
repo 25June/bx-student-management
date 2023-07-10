@@ -54,18 +54,16 @@ export const updateAllValueOfAssessment = () => {
   })
 }
 
-export const useGetAssessments = () => {
-  return (classId: string) => {
-    const queryAssessments = query(assessmentRef, where('classId', '==', classId))
-    return getDocs(queryAssessments).then((snapshot) => {
-      if (snapshot.empty) {
-        return []
-      }
-      return snapshot.docs
-        .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
-        .filter((assessment) => !assessment.isDeleted)
-    })
-  }
+export const fetchAssessments = (classId: string) => {
+  const queryAssessments = query(assessmentRef, where('classId', '==', classId))
+  return getDocs(queryAssessments).then((snapshot) => {
+    if (snapshot.empty) {
+      return []
+    }
+    return snapshot.docs
+      .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
+      .filter((assessment) => !assessment.isDeleted)
+  })
 }
 
 interface AddNewAssessmentProps {

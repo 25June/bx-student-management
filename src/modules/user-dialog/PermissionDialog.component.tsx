@@ -32,7 +32,6 @@ const PermissionDialogComponent = ({
   }
 
   const handleChangeRole = (value: string) => {
-    console.log(value)
     setValue('role', parseInt(value, 0))
   }
 

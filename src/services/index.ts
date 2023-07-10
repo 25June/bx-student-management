@@ -3,7 +3,7 @@ import { studentRef, queryClasses } from './firestore'
 import { uploadAvatar, uploadProgress, removeImage } from 'services/storage'
 import {
   useAddNewAssessment,
-  useGetAssessments,
+  fetchAssessments,
   useEditAssessment,
   useDeleteAssessment,
 } from './assessment'
@@ -19,7 +19,7 @@ export {
   uploadProgress,
   removeImage,
   useAddNewAssessment,
-  useGetAssessments,
+  fetchAssessments,
   useEditAssessment,
   useDeleteAssessment,
 }

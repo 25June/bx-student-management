@@ -44,9 +44,13 @@ const UserComponent = () => {
 
   const handleCloseDialog = (isRefreshUsers?: boolean) => {
     if (isRefreshUsers) {
-      fetchUsers()
+      setTimeout(() => {
+        fetchUsers()
+      }, 0)
     }
     openUserDialog(false)
+    openPermissionDialog(false)
+    openUpdateInfoDialog(false)
     setSelectedUser(undefined)
   }
 
@@ -65,13 +69,6 @@ const UserComponent = () => {
         return openUpdateInfoDialog(true)
       case UserAction.CHANGE_PASSWORD:
         return openChangePasswordDialog(true)
-    }
-  }
-
-  const handleCloseUpdateDialog = (refreshData?: boolean) => {
-    openUpdateInfoDialog(false)
-    if (refreshData) {
-      fetchUsers()
     }
   }
 
@@ -122,12 +119,12 @@ const UserComponent = () => {
       {selectedUser && (
         <>
           <PermissionDialogComponent
-            onClose={() => openPermissionDialog(false)}
+            onClose={handleCloseDialog}
             isOpen={isOpenPermissionDialog}
             selectedUser={selectedUser}
           />
           <UpdateInfoDialogComponent
-            onClose={handleCloseUpdateDialog}
+            onClose={handleCloseDialog}
             isOpen={isOpenUpdateInfoDialog}
             user={selectedUser}
           />

@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { getUserInfo, useSignOut } from 'services/user'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import { useAuthentication } from 'contexts/AuthContext'
-import { red } from '@mui/material/colors'
+import { blue } from '@mui/material/colors'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import { useState } from 'react'
 import { User } from 'models/user'
@@ -74,11 +74,11 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           <ImageBoxComponent imagePath={user.avatarPath} isGLV={true} maxWidth={200} />
         </Box>
         <Box>
-          <Box textAlign={'center'} margin={0} color={red.A200}>
+          <Box textAlign={'center'} margin={0} color={blue[800]}>
             {user.email}
           </Box>
-          <Box textAlign={'center'} component={'h1'} mt={0} color={red.A200}>
-            {`${user.lastName} ${user.firstName}`}
+          <Box textAlign={'center'} component={'h1'} mt={0} color={blue[800]}>
+            {`${user.firstName} ${user.lastName}`}
           </Box>
         </Box>
         <Button

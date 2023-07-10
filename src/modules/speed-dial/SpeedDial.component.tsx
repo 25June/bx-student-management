@@ -16,7 +16,7 @@ import {
 } from 'constant/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
-import { useGetAssessments } from 'services'
+import { fetchAssessments } from 'services'
 import { useClassContext } from 'contexts/ClassContext'
 
 const actions = [
@@ -43,7 +43,6 @@ const actions = [
 const SpeedDialComponent = () => {
   const { openDialog } = useDialogContext()
   const { setAssessments } = useAssessmentContext()
-  const getAssessments = useGetAssessments()
   const { classId } = useClassContext()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -52,7 +51,7 @@ const SpeedDialComponent = () => {
 
   const assessmentCallBack = useCallback(() => {
     setTimeout(() => {
-      getAssessments(classId).then((res) => {
+      fetchAssessments(classId).then((res) => {
         setAssessments(res)
       })
     }, 500)

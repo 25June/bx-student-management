@@ -1,5 +1,5 @@
 import { useContext, createContext, PropsWithChildren, useMemo, useEffect, useState } from 'react'
-import { useGetAssessments } from 'services'
+import { fetchAssessments } from 'services'
 import { Assessment } from 'models'
 import { useClassContext } from 'contexts/ClassContext'
 
@@ -11,12 +11,11 @@ const AssessmentContext = createContext(AssessmentDefaultValue)
 
 export const AssessmentProvider = ({ children }: PropsWithChildren) => {
   const { classId } = useClassContext()
-  const getAssessments = useGetAssessments()
   const [assessments, setAssessments] = useState<Assessment[]>()
 
   useEffect(() => {
     if (classId) {
-      getAssessments(classId).then((res) => {
+      fetchAssessments(classId).then((res) => {
         setAssessments(res)
       })
     }

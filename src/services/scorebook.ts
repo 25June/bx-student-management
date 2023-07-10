@@ -2,13 +2,11 @@ import { realtimeDB } from '../firebase'
 import { useState, useEffect } from 'react'
 import { Assessment } from 'models'
 import { ScoreBook } from 'models/ScoreBook'
-
-import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { AssessmentEnum } from 'constant/common'
 import { onValue, ref, get, set, Unsubscribe } from 'firebase/database'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 
-const initDefaultScoreBook = (assessments: Assessment[]) => {
+export const initDefaultScoreBook = (assessments: Assessment[]) => {
   return assessments.reduce(
     (acc, cur) => {
       if (cur.type === AssessmentEnum.KT5) {
@@ -115,30 +113,23 @@ const studentScoreBookPathName = (
   semester: string,
   studentId: string
 ) => `scorebook/${classId}/${year}/${semester}/${studentId}`
-export const useGetStudentScoreBook1 = () => {
-  const { showSnackbar } = useSnackbarContext()
-  const { assessments } = useAssessmentContext()
-
-  return ({
-    classId,
-    year = '2022-2023',
-    semester = 'hk1',
-    studentId,
-  }: GetStudentScoreBookProps) => {
-    return get(ref(realtimeDB, studentScoreBookPathName(classId, year, semester, studentId)))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          showSnackbar('Student scorebook has been fetch', 'success')
-          return { ...snapshot.val(), id: snapshot.key }
-        } else {
-          showSnackbar('No data available', 'warning')
-          return initDefaultScoreBook(assessments)
-        }
-      })
-      .catch((error) => {
-        showSnackbar(error, 'error')
-      })
-  }
+export const getStudentScoreBook = ({
+  classId,
+  year = '2022-2023',
+  semester = 'hk1',
+  studentId,
+}: GetStudentScoreBookProps) => {
+  return get(ref(realtimeDB, studentScoreBookPathName(classId, year, semester, studentId)))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        return { ...snapshot.val(), id: snapshot.key }
+      }
+      return 'EMPTY_DATA'
+    })
+    .catch((error) => {
+      console.error(error, 'error')
+      return null
+    })
 }
 
 interface SetNewStudentScoreProps {

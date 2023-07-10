@@ -136,3 +136,5 @@ export const UserRoles = [
     id: 5,
   },
 ]
+
+export type extendedColorPalettes = 'kt' | 'rl' | 'ts' | 'bd' | 'vd'

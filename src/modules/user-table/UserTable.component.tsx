@@ -15,9 +15,10 @@ import MenuItem from '@mui/material/MenuItem'
 import EditIcon from '@mui/icons-material/Edit'
 import PasswordIcon from '@mui/icons-material/Password'
 import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
-import { BaseClassObj, UserAction, UserRoles } from 'constant/common'
+import { BaseClassObj, extendedColorPalettes, UserAction, UserRoles } from 'constant/common'
 import { useIsMobile } from 'utils/common'
 import { grey } from '@mui/material/colors'
+import Chip from '@mui/material/Chip'
 
 interface UserTableComponentProps {
   rows: User[]
@@ -33,6 +34,15 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
   const handleClickMenu = (e: React.MouseEvent<HTMLButtonElement>, row: User) => {
     setAnchorEl(e.currentTarget)
     setSelectedRow(row)
+  }
+
+  const handleClickAction = (type: any) => {
+    if (selectedRow) {
+      onClickAction(type, selectedRow)
+      setTimeout(() => {
+        setSelectedRow(undefined)
+      }, 0)
+    }
   }
 
   const tableBodyClass = isMobile
@@ -78,7 +88,12 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
                 data-cell={'Lớp'}
                 sx={{ paddingTop: 1, paddingBottom: 1, ...tableBodyClass }}
               >
-                {BaseClassObj[row.classId || 'kt1']}
+                <Box>
+                  <Chip
+                    label={<b>{row.classId ? BaseClassObj[row.classId] : 'Chưa có lớp'}</b>}
+                    color={(row.classId?.slice(0, 2) as extendedColorPalettes) || 'default'}
+                  />
+                </Box>
               </TableCell>
               <TableCell
                 data-cell={'Vai trò'}
@@ -109,25 +124,25 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
       </Table>
       {selectedRow && (
         <Menu open={!!selectedRow} anchorEl={anchorEl} onClose={() => setSelectedRow(undefined)}>
-          <MenuItem onClick={() => onClickAction(UserAction.UPDATE_INFO, selectedRow)}>
+          <MenuItem onClick={() => handleClickAction(UserAction.UPDATE_INFO)}>
             <Box display={'flex'} alignItems={'center'} gap={2}>
               <EditIcon fontSize="small" color={'info'} />
               <Typography fontSize={'0.875rem'}>Cập nhật thông tin</Typography>
             </Box>
           </MenuItem>
-          <MenuItem onClick={() => onClickAction(UserAction.CHANGE_PASSWORD, selectedRow)}>
+          <MenuItem onClick={() => handleClickAction(UserAction.CHANGE_PASSWORD)}>
             <Box display={'flex'} alignItems={'center'} gap={2}>
               <PasswordIcon fontSize="small" color={'info'} />
               <Typography fontSize={'0.875rem'}>Thay đổi mật khẩu</Typography>
             </Box>
           </MenuItem>
-          <MenuItem onClick={() => onClickAction(UserAction.RESET_PASSWORD, selectedRow)}>
+          <MenuItem onClick={() => handleClickAction(UserAction.RESET_PASSWORD)}>
             <Box display={'flex'} alignItems={'center'} gap={2}>
               <PasswordIcon fontSize="small" color={'info'} />
               <Typography fontSize={'0.875rem'}>Reset mật khẩu</Typography>
             </Box>
           </MenuItem>
-          <MenuItem onClick={() => onClickAction(UserAction.GRANT_PERMISSION, selectedRow)}>
+          <MenuItem onClick={() => handleClickAction(UserAction.GRANT_PERMISSION)}>
             <Box display={'flex'} alignItems={'center'} gap={2}>
               <SwitchAccessShortcutIcon fontSize="small" color={'info'} />
               <Typography fontSize={'0.875rem'}>Cấp quyền</Typography>

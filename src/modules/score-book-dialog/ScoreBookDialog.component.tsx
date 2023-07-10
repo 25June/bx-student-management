@@ -9,7 +9,11 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { useGetStudentScoreBook1, useSetNewStudentScore1 } from 'services/scorebook'
+import {
+  getStudentScoreBook,
+  initDefaultScoreBook,
+  useSetNewStudentScore1,
+} from 'services/scorebook'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import ScoreForm from '../common/ScoreForm.component'
@@ -55,18 +59,24 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
   const { classId } = useClassContext()
   const { assessments } = useAssessmentContext()
   const setStudentScore1 = useSetNewStudentScore1()
-  const getStudentScoreBook = useGetStudentScoreBook1()
   const { showSnackbar } = useSnackbarContext()
   const [studentScoreBook, setStudentScoreBook] = useState<ScoreBook>()
 
   const handleFetchStudentScoreBook = useCallback(() => {
-    getStudentScoreBook({ classId, studentId: data?.id || '' })
-      .then((value) => {
-        setStudentScoreBook(value)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+    if (data && data.id) {
+      getStudentScoreBook({ classId, studentId: data.id })
+        .then((value) => {
+          if (value === 'EMPTY_DATA' && assessments?.length !== 0) {
+            const initValue = initDefaultScoreBook(assessments)
+            setStudentScoreBook({ ...initValue, id: data.id })
+            return
+          }
+          setStudentScoreBook(value)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId, data])
 
@@ -127,7 +137,7 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
           onChangeData={handleChangeData('score60')}
         />
       </DialogContent>
-      <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
+      <DialogActions sx={{ padding: '1rem 1.5rem', position: 'relative' }}>
         <Button
           onClick={onClose}
           variant="outlined"

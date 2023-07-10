@@ -6,7 +6,7 @@ import { Assessment } from 'models/assessment'
 import { AssessmentActionType } from 'constant'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { useIsMobile } from 'utils/common'
-import { useGetAssessments } from 'services'
+import { fetchAssessments } from 'services'
 import { useClassContext } from 'contexts/ClassContext'
 import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType } from 'constant/common'
@@ -15,12 +15,11 @@ const AssessmentComponent = () => {
   const { assessments, setAssessments } = useAssessmentContext()
   const { classId } = useClassContext()
   const { openDialog } = useDialogContext()
-  const getAssessments = useGetAssessments()
   const isMobile = useIsMobile()
 
   const callback = (refreshData?: boolean): void => {
     if (refreshData) {
-      getAssessments(classId).then((res) => {
+      fetchAssessments(classId).then((res) => {
         setAssessments(res)
       })
     }
