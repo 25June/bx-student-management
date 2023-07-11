@@ -22,7 +22,6 @@ const DiligentComponent = () => {
   const { classId } = useClassContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
-  console.log({ attendances })
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedRollCallDate, setSelectedRollCallDate] = useState<RollCallDate>()
 
@@ -42,7 +41,6 @@ const DiligentComponent = () => {
         if (res) {
           setTimeout(() => {
             const sortedMonthDate = groupRollCallToSortedMonths(res)
-            console.log({ setGroupRollDate: sortedMonthDate })
             setGroupRollDate(sortedMonthDate)
             setSelectedMonth(Object.keys(sortedMonthDate)[0])
           }, 0)
@@ -142,7 +140,6 @@ const DiligentComponent = () => {
       setFilteredStudents(filtered)
     }
   }
-  console.log({ rollCallDates, selectedMonth })
 
   return (
     <Box>

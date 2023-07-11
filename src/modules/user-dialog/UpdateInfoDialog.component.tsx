@@ -80,9 +80,11 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
       downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
       delete data.avatar
     }
-    updateUserInfo({ ...data, avatarPath: downloadPath, id: user.id } as User).finally(() =>
-      onClose(true)
-    )
+    updateUserInfo({
+      ...data,
+      avatarPath: downloadPath ? downloadPath : user.avatarPath,
+      id: user.id,
+    } as User).finally(() => onClose(true))
   }
 
   return (

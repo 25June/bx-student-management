@@ -52,6 +52,7 @@ const theme = createTheme({
     },
   },
   typography: {
+    fontFamily: 'Be Vietnam Pro, Roboto',
     h1: {
       fontSize: '2rem',
       fontWeight: 600,
