@@ -46,10 +46,14 @@ export const buildImageUrl = (imagePath?: string, gender?: boolean, isGLV?: bool
   if (!imagePath) {
     return isGLV ? GLVLogo : gender ? studentGirlLogo : studentBoyLogo
   }
-  const prefix = 'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/'
-  const postfix = '?alt=media&token=23812601-6493-46bc-b0fc-3d1164216a17'
-  const formatImage = imagePath.replaceAll('/', '%2F')
-  return prefix + formatImage + postfix
+  // const prefix = 'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/'
+  // const postfix = '?alt=media&token=23812601-6493-46bc-b0fc-3d1164216a17'
+  // const formatImage = imagePath.replaceAll('/', '%2F')
+
+  const prefix = 'https://ik.imagekit.io/rpynfcw1e/bx-management/'
+  const dimension = '?tr=w-500,h-500'
+  const imageName = imagePath.replace('avatars/', '')
+  return prefix + imageName + dimension
 }
 
 export const getToday = () => {

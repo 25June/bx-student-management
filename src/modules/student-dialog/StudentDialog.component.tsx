@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormControlLabel,
   Switch,
+  CircularProgress,
 } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Class, Student } from 'models'
@@ -97,6 +98,7 @@ const StudentDialogComponent = ({
     defaultValues: getValues(student),
   })
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
+  const [isLoading, setLoading] = useState<boolean>(false)
   useEffect(() => {
     if (action === StudentActionType.EDIT_STUDENT) {
       const stu: StudentForm = getValues(student)
@@ -108,6 +110,7 @@ const StudentDialogComponent = ({
   }, [action, student, reset, setValue])
 
   const onSubmit = async (data: StudentForm) => {
+    setLoading(true)
     const { firstName, lastName } = splitFullName(data.fullName)
 
     if (action === StudentActionType.DELETE_STUDENT && student?.id) {
@@ -116,7 +119,10 @@ const StudentDialogComponent = ({
         onSuccess: () =>
           showSnackbar(`Xoá Thiếu Nhi ${lastName} ${firstName} Thành Công`, 'success'),
         onError: () => showSnackbar(`Xoá Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
-        onComplete: onClose,
+        onComplete: () => {
+          setLoading(false)
+          setTimeout(() => onClose(), 100)
+        },
       })
     }
 
@@ -149,7 +155,8 @@ const StudentDialogComponent = ({
           if (downloadPath && data.avatarPath) {
             removeImage(data.avatarPath)
           }
-          onClose()
+          setLoading(false)
+          setTimeout(() => onClose(), 100)
         },
       })
     }
@@ -171,7 +178,8 @@ const StudentDialogComponent = ({
       onError: () => showSnackbar(`Thêm Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
       onComplete: () => {
         setUploadImageProgress(0)
-        onClose()
+        setLoading(false)
+        setTimeout(() => onClose(), 100)
       },
     })
   }
@@ -415,6 +423,7 @@ const StudentDialogComponent = ({
               onClick={onClose}
               variant="outlined"
               color={'neutral'}
+              disabled={isLoading}
               startIcon={<ClearIcon />}
             >
               Huỷ
@@ -425,7 +434,8 @@ const StudentDialogComponent = ({
               autoFocus={true}
               variant="contained"
               color={action === StudentActionType.EDIT_STUDENT ? 'warning' : 'primary'}
-              startIcon={<CheckIcon />}
+              startIcon={isLoading ? <CircularProgress size={'1rem'} /> : <CheckIcon />}
+              disabled={isLoading}
             >
               Lưu
             </Button>

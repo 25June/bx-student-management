@@ -20,7 +20,7 @@ const CardComponent = ({
     <Card sx={{ maxWidth: isMobile ? 275 : 300, minWidth: isMobile ? 275 : 300 }}>
       <CardMedia
         component="img"
-        height={isMobile ? 200 : 300}
+        height={isMobile ? 275 : 300}
         src={avatar}
         alt="student-girl"
         sx={{ objectFit: 'contain' }}

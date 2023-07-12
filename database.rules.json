@@ -1,6 +1,25 @@
 {
   "rules": {
-    ".read": false,
-    ".write": false
+    ".read": "auth.uid !== null",
+    "attendance": {
+      "rl1": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      }
+    },
+    "rollCall": {
+      "rl1": {
+        ".read": "auth.uid !== null",
+        ".write": "root.child('users').child(auth.uid).child('rl').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+      }
+    },
+    "scorebook": {
+      "rl1": {
+        ".read": "auth.uid !== null",
+        ".write": "root.child('users').child(auth.uid).child('rl').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+      }
+    }
   }
 }
