@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, IconButton } from '@mui/material'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
@@ -15,6 +15,9 @@ import { useDialogContext } from 'contexts/DialogContext'
 import DateDropdownComponent from 'modules/common/DateDropdown.component'
 import DiligentSkeletonComponent from 'modules/diligent/DiligentSkeleton.component'
 import { useDiligentContext } from 'contexts/DiligentContext'
+import EditIcon from '@mui/icons-material/Edit'
+import { countStudentPresent } from 'utils/diligentSummary'
+import AttendanceCountComponent from 'modules/diligent/AttendanceCountComponent'
 
 const DiligentComponent = () => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
@@ -27,8 +30,8 @@ const DiligentComponent = () => {
 
   const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
   const [groupRollDate, setGroupRollDate] = useState<Record<string, RollCallDate[]>>({})
-
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
+  const [studentAttendanceCount, setStudentAttendanceCount] = useState<{ tl: number; gl: number }>()
   useEffect(() => {
     if (students) {
       setFilteredStudents(students)
@@ -58,6 +61,14 @@ const DiligentComponent = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId, getRollCallDates])
+
+  useEffect(() => {
+    if (selectedRollCallDate && attendances) {
+      setTimeout(() => {
+        setStudentAttendanceCount(countStudentPresent(selectedRollCallDate.key, attendances))
+      }, 100)
+    }
+  }, [selectedRollCallDate, attendances])
 
   useEffect(() => {
     if (rollCallDates) {
@@ -95,6 +106,13 @@ const DiligentComponent = () => {
   }
 
   const handleOpenDiligentDialog = (date: string, id: string) => {
+    const callback = (refreshData?: boolean) => {
+      if (refreshData) {
+        setSelectedRollCallDate(undefined)
+        getRollCallDates()
+      }
+    }
+
     const rollCall = {
       date,
       id,
@@ -113,12 +131,6 @@ const DiligentComponent = () => {
       rollCalls: rollCallDates,
     }
   })
-
-  const callback = (refreshData?: boolean) => {
-    if (refreshData) {
-      getRollCallDates()
-    }
-  }
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
     setSelectedSemester(event.target.value)
@@ -189,17 +201,39 @@ const DiligentComponent = () => {
               />
             )}
             {groupRollDate && selectedMonth && (
-              <DateDropdownComponent
-                selectedDate={selectedRollCallDate?.dateAsString}
-                dates={groupRollDate[selectedMonth].map((date) => ({
-                  key: date.key,
-                  value: date.dateAsString,
-                }))}
-                onChangeDate={handleChangeDate}
-              />
+              <>
+                <DateDropdownComponent
+                  selectedDate={selectedRollCallDate?.dateAsString}
+                  dates={groupRollDate[selectedMonth].map((date) => ({
+                    key: date.key,
+                    value: date.dateAsString,
+                  }))}
+                  onChangeDate={handleChangeDate}
+                />
+                {isMobile && selectedRollCallDate && (
+                  <IconButton
+                    color="default"
+                    size="small"
+                    onClick={() =>
+                      handleOpenDiligentDialog(
+                        selectedRollCallDate.dateAsString,
+                        selectedRollCallDate.key
+                      )
+                    }
+                  >
+                    <EditIcon />
+                  </IconButton>
+                )}
+              </>
             )}
           </Box>
         </Box>
+        {studentAttendanceCount && (
+          <AttendanceCountComponent
+            studentAttendanceCount={studentAttendanceCount}
+            totalStudents={students?.length || 0}
+          />
+        )}
         <Box mt={2} mb={2}>
           {!formatAttendances || formatAttendances.length === 0 ? (
             <DiligentSkeletonComponent />

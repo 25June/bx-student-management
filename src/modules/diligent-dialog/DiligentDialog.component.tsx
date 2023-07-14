@@ -12,7 +12,7 @@ import { useDiligentContext } from 'contexts/DiligentContext'
 interface DiligentDialogComponentProps {
   onClose: (refreshData?: boolean) => void
   isOpen: boolean
-  action: string
+  action: RollCallDateActionType
   rollCall?: {
     id: string
     date: string
@@ -25,13 +25,14 @@ const DiligentDialogComponent = ({
   action,
   rollCall,
 }: DiligentDialogComponentProps) => {
-  const { handleSubmit, control, setValue } = useForm<{ rollCallDate: string }>({
+  const { handleSubmit, control, setValue, setError } = useForm<{ rollCallDate: string }>({
     defaultValues: { rollCallDate: rollCall?.date || formatDisplayInput(new Date()) },
   })
   const addRollCallDate = useAddRollCallDate()
   const updateRollCallDate = useUpdateRollCallDate()
   const { classId } = useClassContext()
-  const { fetchRollCallDates } = useDiligentContext()
+
+  const { fetchRollCallDates, rollCallDates } = useDiligentContext()
 
   useEffect(() => {
     if (rollCall && rollCall.date) {
@@ -40,12 +41,19 @@ const DiligentDialogComponent = ({
   }, [rollCall, setValue])
 
   const onSubmit = ({ rollCallDate }: { rollCallDate: string }) => {
-    if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
-      updateRollCallDate({ date: rollCallDate, id: rollCall?.id || '', classId }).finally(() =>
-        onClose(true)
-      )
+    if (Object.values(rollCallDates).includes(rollCallDate)) {
+      setError('rollCallDate', { message: 'Ngày bạn định thêm đã có rồi!' }, { shouldFocus: true })
       return
     }
+
+    if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
+      updateRollCallDate({ date: rollCallDate, id: rollCall?.id || '', classId }).finally(() => {
+        onClose(true)
+        return fetchRollCallDates?.({ classId })
+      })
+      return
+    }
+
     addRollCallDate({ date: rollCallDate, classId }).finally(() => {
       onClose(true)
       return fetchRollCallDates?.({ classId })
@@ -54,20 +62,25 @@ const DiligentDialogComponent = ({
 
   return (
     <Dialog open={isOpen} onClose={() => onClose(false)} aria-labelledby="diligent-dialog-title">
-      <DialogTitle id="diligent-dialog-title">Thêm Ngày Điểm Danh</DialogTitle>
+      <DialogTitle id="diligent-dialog-title">
+        {action === RollCallDateActionType.EDIT_STUDY_DATE
+          ? 'Sửa Ngày Điểm Danh'
+          : 'Thêm Ngày Điểm Danh'}
+      </DialogTitle>
       <DialogContent dividers={true}>
         <Controller
           control={control}
           name={'rollCallDate'}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <TextField
               id="outlined-studyDate"
               label="Ngày Điểm Danh"
               type="date"
-              helperText="Ngay/Thang/Nam"
+              helperText={fieldState.error ? fieldState.error.message : 'Ngay/Thang/Nam'}
               margin="normal"
               InputLabelProps={{ shrink: true }}
               fullWidth={true}
+              error={!!fieldState.error}
               {...field}
             />
           )}

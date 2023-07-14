@@ -101,7 +101,7 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
         <DiligentDialogComponent
           isOpen={open}
           onClose={handleCloseDialog}
-          action={action || ''}
+          action={(action as RollCallDateActionType) || RollCallDateActionType.ADD_STUDY_DATE}
           rollCall={data as RollCallDate}
         />
       )}
