@@ -144,7 +144,7 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
               <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
                 <ListItemButton
                   selected={to === location.pathname}
-                  onClick={() => setTimeout(() => navigate(to), 0)}
+                  onClick={() => setTimeout(() => navigate(to), 100)}
                   sx={{
                     minHeight: 48,
                     justifyContent: isOpen ? 'initial' : 'center',
