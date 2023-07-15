@@ -65,7 +65,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
         fetchAssessments(classId).then((res) => {
           setAssessments(res)
         })
-      }, 500)
+      }, 100)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }
     openDialog(

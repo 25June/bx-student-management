@@ -34,7 +34,9 @@ const DiligentComponent = () => {
   const [studentAttendanceCount, setStudentAttendanceCount] = useState<{ tl: number; gl: number }>()
   useEffect(() => {
     if (students) {
-      setFilteredStudents(students)
+      setTimeout(() => {
+        setFilteredStudents(students)
+      }, 20)
     }
   }, [students])
 
@@ -46,7 +48,7 @@ const DiligentComponent = () => {
             const sortedMonthDate = groupRollCallToSortedMonths(res)
             setGroupRollDate(sortedMonthDate)
             setSelectedMonth(Object.keys(sortedMonthDate)[0])
-          }, 0)
+          }, 20)
           return
         }
         setGroupRollDate({})

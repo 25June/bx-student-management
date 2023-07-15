@@ -17,18 +17,21 @@ interface Level {
 
 const ScoreBox = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'color' && prop !== 'width' && prop !== 'selected',
-})<{ color: string; width: number; selected?: boolean }>(({ theme, color, width, selected }) => ({
-  width: width + '%',
-  backgroundColor: color,
-  textAlign: 'right',
-  paddingRight: 4,
-  fontWeight: selected ? 600 : 400,
+})<{ backgroundColor: string; width: number; selected?: boolean }>(
+  ({ theme, backgroundColor, width, selected }) => ({
+    width: width + '%',
+    background: backgroundColor,
+    textAlign: 'right',
+    paddingRight: 4,
+    color: grey[700],
+    fontWeight: selected ? 600 : 400,
 
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-}))
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  })
+)
 
 const ScoreBookSummaryInfoComponent = ({
   average,
@@ -45,37 +48,37 @@ const ScoreBookSummaryInfoComponent = ({
       score: needToImprove,
       percentage: (needToImprove / totalStudents) * 100,
       color: blue[100],
-      text: 'Yếu',
+      text: 'Yếu (< 5)',
     },
     {
       score: average,
       percentage: (average / totalStudents) * 100,
       color: blue[200],
-      text: 'Trung Bình',
+      text: 'Trung Bình (5 < 6)',
     },
     {
       score: upperAverage,
       percentage: (upperAverage / totalStudents) * 100,
       color: blue[300],
-      text: 'Trung Bình Khá',
+      text: 'Trung Bình Khá (6 < 7)',
     },
     {
       score: good,
       percentage: (good / totalStudents) * 100,
       color: blue[400],
-      text: 'Khá',
+      text: 'Khá (7 < 8)',
     },
     {
       score: wellDome,
       percentage: (wellDome / totalStudents) * 100,
       color: blue[500],
-      text: 'Giỏi',
+      text: 'Giỏi (8 < 9)',
     },
     {
       score: excellent,
       percentage: (excellent / totalStudents) * 100,
       color: blue[600],
-      text: 'Xuất Sắc',
+      text: 'Xuất Sắc (9 < 10)',
     },
   ]
 
@@ -106,7 +109,7 @@ const ScoreBookSummaryInfoComponent = ({
           return (
             <ScoreBox
               key={level.color}
-              color={level.color}
+              backgroundColor={level.color}
               width={level.percentage}
               selected={selectedType?.color === level.color}
               onClick={() =>
@@ -119,7 +122,7 @@ const ScoreBookSummaryInfoComponent = ({
         })}
       </Box>
       <Box color={grey[700]}>
-        {selectedType ? `${selectedType?.score} ${selectedType.text}` : 'Thống kê theo điểm'}
+        {selectedType ? `${selectedType?.score} em ${selectedType.text}` : 'Thống kê theo điểm'}
       </Box>
     </Box>
   )

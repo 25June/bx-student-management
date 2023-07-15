@@ -12,6 +12,7 @@ import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType } from 'constant/common'
+import SingleInfoViewComponent from 'modules/student/SingleInfoViewComponent'
 
 const HomeComponent = () => {
   const [isOpenInfoPanel, setOpenInfoPanel] = useState(false)
@@ -53,14 +54,14 @@ const HomeComponent = () => {
       setTimeout(() => {
         setSelectedStudent(data)
         setOpenScoreBook(true)
-      }, 0)
+      }, 100)
       return
     }
     if (type === StudentActionType.VIEW_STUDENT) {
       setTimeout(() => {
         setSelectedStudent(data)
         setOpenInfoPanel(true)
-      })
+      }, 100)
       return
     }
     const student = students.find((std: Student) => std.id === data.id)
@@ -111,32 +112,44 @@ const HomeComponent = () => {
           <Box>
             <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
-          {!isMobile && (
-            <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <ToggleButtonGroup
-                  value={displayType}
-                  exclusive={true}
-                  onChange={handleChangeDisplay}
-                >
-                  <ToggleButton value="table" aria-label="display-table" size="small">
-                    <TableRowsIcon />
-                  </ToggleButton>
-                  <ToggleButton value="card" aria-label="display-card" size="small">
-                    <StyleIcon />
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </Box>
+          <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <ToggleButtonGroup
+                value={displayType}
+                exclusive={true}
+                onChange={handleChangeDisplay}
+              >
+                <ToggleButton value="table" aria-label="display-table" size="small">
+                  <TableRowsIcon />
+                </ToggleButton>
+                <ToggleButton value="card" aria-label="display-card" size="small">
+                  <StyleIcon />
+                </ToggleButton>
+              </ToggleButtonGroup>
             </Box>
-          )}
+          </Box>
         </Box>
         {displayType === 'table' ? (
-          <TableComponent
-            columns={studentColumns}
-            rows={filteredStudents || []}
-            onClickAction={handleClickAction}
-            renderActionMenu={renderStudentActions}
-          />
+          <>
+            {isMobile ? (
+              <Box>
+                {(filteredStudents || []).map((student) => (
+                  <SingleInfoViewComponent
+                    key={student.id}
+                    student={student}
+                    onClickAction={handleClickAction}
+                  />
+                ))}
+              </Box>
+            ) : (
+              <TableComponent
+                columns={studentColumns}
+                rows={filteredStudents || []}
+                onClickAction={handleClickAction}
+                renderActionMenu={renderStudentActions}
+              />
+            )}
+          </>
         ) : (
           <Box
             sx={{
@@ -157,18 +170,18 @@ const HomeComponent = () => {
                 <CardComponent student={student} onClickAction={handleClickAction} />
               </Box>
             ))}
-            <InfoPanelComponent
-              isOpen={isOpenInfoPanel}
-              studentInfo={selectedStudent}
-              onClose={() => setOpenInfoPanel(false)}
-              onClickAction={handleClickAction}
-            />
           </Box>
         )}
         <ScoreBookPanelComponent
           isOpen={!!(selectedStudent?.id && isOpenScoreBook)}
           onClose={handleCloseScoreBook}
           studentId={selectedStudent?.id || ''}
+        />
+        <InfoPanelComponent
+          isOpen={!!(selectedStudent?.id && isOpenInfoPanel)}
+          studentInfo={selectedStudent}
+          onClose={() => setOpenInfoPanel(false)}
+          onClickAction={handleClickAction}
         />
       </Box>
     </Box>
