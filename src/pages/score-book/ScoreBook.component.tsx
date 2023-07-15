@@ -17,6 +17,8 @@ import ScoreBookDisplayComponent, {
 } from 'modules/score-book/ScoreBookDisplay.component'
 import { AssessmentEnum } from 'constant/common'
 import { sortBy } from 'lodash'
+import { ScoreBookSummaryResponse, getScoreBookSummary } from 'utils/scorebookSummary'
+import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
@@ -35,7 +37,7 @@ const ScoreBookComponent = () => {
   const [assessmentDates, setAssessmentDates] = useState<KeyValueProp[]>()
   const [selectedAssessmentDate, setSelectedAssessmentDate] = useState<Assessment>()
   const [selectedAssessmentType, setSelectedAssessmentType] = useState<AssessmentEnum>()
-
+  const [scoreBookSummary, setScoreBookSummary] = useState<ScoreBookSummaryResponse>()
   const stuScoreBooks: StudentScoreBooks[] | Student[] = useMemo(() => {
     return (students || []).map((stu) => {
       if (studentScoreBooks?.[stu.id]) {
@@ -60,6 +62,20 @@ const ScoreBookComponent = () => {
       setFilteredStuScoreBooks(stuScoreBooks)
     }
   }, [stuScoreBooks])
+
+  useEffect(() => {
+    if (stuScoreBooks?.length !== 0 && selectedAssessmentType && selectedAssessmentDate) {
+      setTimeout(() => {
+        setScoreBookSummary(
+          getScoreBookSummary({
+            assessmentType: selectedAssessmentType,
+            assessmentId: selectedAssessmentDate.id,
+            studentScoreBooks: stuScoreBooks as StudentScoreBooks[],
+          })
+        )
+      }, 200)
+    }
+  }, [stuScoreBooks, selectedAssessmentType, selectedAssessmentDate])
 
   if (!students || !classId || !assessments || !studentScoreBooks) {
     return null
@@ -124,6 +140,8 @@ const ScoreBookComponent = () => {
     handleUpdateScore,
   }
 
+  console.log({ scoreBookSummary })
+
   return (
     <Box p={isMobile ? 1 : 2}>
       <Box
@@ -178,6 +196,9 @@ const ScoreBookComponent = () => {
           />
         </Box>
       </Box>
+      {scoreBookSummary && (
+        <ScoreBookSummaryInfoComponent totalStudents={students.length} {...scoreBookSummary} />
+      )}
       <ScoreBookDisplayComponent {...displayProps} />
       {!!selectedScoreBook && (
         <ScoreBookDialogComponent

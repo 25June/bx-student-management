@@ -56,7 +56,7 @@ export const initDefaultScoreBook = (assessments: Assessment[]) => {
   )
 }
 
-interface GetStudentScoreBooks1Props {
+interface GetStudentScoreBooksProps {
   classId: string
   semester?: string
   year?: string
@@ -69,7 +69,7 @@ export const useGetStudentScoreBooks = ({
   classId,
   semester = 'hk1',
   year = '2022-2023',
-}: GetStudentScoreBooks1Props) => {
+}: GetStudentScoreBooksProps) => {
   const [studentScoreBooks, setStudentScoreBooks] = useState<Record<string, ScoreBook> | null>()
   const [listener, setListener] = useState<Unsubscribe>()
   useEffect(() => {
