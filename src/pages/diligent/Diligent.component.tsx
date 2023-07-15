@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Typography, IconButton } from '@mui/material'
+import { Box, Typography, IconButton, Button } from '@mui/material'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
@@ -18,6 +18,8 @@ import { useDiligentContext } from 'contexts/DiligentContext'
 import EditIcon from '@mui/icons-material/Edit'
 import { countStudentPresent } from 'utils/diligentSummary'
 import AttendanceCountComponent from 'modules/diligent/AttendanceCountComponent'
+import DoneAllIcon from '@mui/icons-material/DoneAll'
+import { submitAttendanceAllStudentsInClass } from 'services/diligent'
 
 const DiligentComponent = () => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
@@ -155,6 +157,28 @@ const DiligentComponent = () => {
     }
   }
 
+  const handleMarkAllStudentPresent = () => {
+    if (selectedRollCallDate?.key && students?.length !== 0 && classId) {
+      const confirmation = window.confirm('Are u sure')
+      if (confirmation) {
+        console.log('jump here')
+        setTimeout(() => {
+          submitAttendanceAllStudentsInClass({
+            studentIds: students.map((stu) => stu.id),
+            classId,
+            rollDateId: selectedRollCallDate.key,
+            attendance: true,
+          })
+        }, 20)
+      }
+    }
+  }
+
+  const showSubmitAllButton =
+    selectedRollCallDate?.key &&
+    (studentAttendanceCount?.tl !== students?.length ||
+      studentAttendanceCount?.gl !== students?.length)
+
   return (
     <Box>
       <Box p={isMobile ? 1 : 2}>
@@ -235,6 +259,17 @@ const DiligentComponent = () => {
             studentAttendanceCount={studentAttendanceCount}
             totalStudents={students?.length || 0}
           />
+        )}
+        {showSubmitAllButton && (
+          <Box sx={{ padding: '0.5rem 0' }}>
+            <Button
+              variant={'outlined'}
+              onClick={handleMarkAllStudentPresent}
+              endIcon={<DoneAllIcon />}
+            >
+              Đánh dấu tất cả đều có mặt
+            </Button>
+          </Box>
         )}
         <Box mt={2} mb={2}>
           {!formatAttendances || formatAttendances.length === 0 ? (

@@ -1,5 +1,13 @@
-import React, { useEffect } from 'react'
-import { Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import {
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  Button,
+  TextField,
+  CircularProgress,
+} from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { useAddRollCallDate, useUpdateRollCallDate } from 'services/diligent'
 import { formatDisplayInput } from 'utils/datetime'
@@ -28,6 +36,7 @@ const DiligentDialogComponent = ({
   const { handleSubmit, control, setValue, setError } = useForm<{ rollCallDate: string }>({
     defaultValues: { rollCallDate: rollCall?.date || formatDisplayInput(new Date()) },
   })
+  const [isLoading, setLoading] = useState<boolean>(false)
   const addRollCallDate = useAddRollCallDate()
   const updateRollCallDate = useUpdateRollCallDate()
   const { classId } = useClassContext()
@@ -41,6 +50,7 @@ const DiligentDialogComponent = ({
   }, [rollCall, setValue])
 
   const onSubmit = ({ rollCallDate }: { rollCallDate: string }) => {
+    setLoading(true)
     if (Object.values(rollCallDates).includes(rollCallDate)) {
       setError('rollCallDate', { message: 'Ngày bạn định thêm đã có rồi!' }, { shouldFocus: true })
       return
@@ -48,14 +58,20 @@ const DiligentDialogComponent = ({
 
     if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
       updateRollCallDate({ date: rollCallDate, id: rollCall?.id || '', classId }).finally(() => {
-        onClose(true)
+        setTimeout(() => {
+          setLoading(false)
+          onClose(true)
+        }, 20)
         return fetchRollCallDates?.({ classId })
       })
       return
     }
 
     addRollCallDate({ date: rollCallDate, classId }).finally(() => {
-      onClose(true)
+      setTimeout(() => {
+        setLoading(false)
+        onClose(true)
+      }, 20)
       return fetchRollCallDates?.({ classId })
     })
   }
@@ -93,6 +109,7 @@ const DiligentDialogComponent = ({
           type={'button'}
           startIcon={<ClearIcon />}
           color={'neutral'}
+          disabled={isLoading}
         >
           Huỷ
         </Button>
@@ -102,7 +119,8 @@ const DiligentDialogComponent = ({
           autoFocus={true}
           variant="contained"
           color={action === RollCallDateActionType.EDIT_STUDY_DATE ? 'warning' : 'primary'}
-          startIcon={<CheckIcon />}
+          startIcon={isLoading ? <CircularProgress size={'1rem'} /> : <CheckIcon />}
+          disabled={isLoading}
         >
           Lưu
         </Button>

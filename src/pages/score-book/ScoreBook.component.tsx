@@ -140,8 +140,6 @@ const ScoreBookComponent = () => {
     handleUpdateScore,
   }
 
-  console.log({ scoreBookSummary })
-
   return (
     <Box p={isMobile ? 1 : 2}>
       <Box

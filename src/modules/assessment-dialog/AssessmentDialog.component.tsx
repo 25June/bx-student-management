@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -9,6 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  CircularProgress,
 } from '@mui/material'
 import { AssessmentActionType } from 'constant'
 import { Controller, useForm } from 'react-hook-form'
@@ -76,11 +77,15 @@ const AssessmentDialogComponent = ({
   const { handleSubmit, control, reset, setValue } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
   })
+
+  const [isLoading, setLoading] = useState<boolean>(false)
+
   useEffect(() => {
     return () => reset()
   }, [reset])
 
   const onSubmit = async (submitData: AssessmentForm) => {
+    setLoading(true)
     if (action === AssessmentActionType.EDIT_ASSESSMENT && data?.id) {
       const updatedAssessment: Assessment = {
         id: data.id,
@@ -102,7 +107,12 @@ const AssessmentDialogComponent = ({
             'error'
           )
         },
-        onComplete: () => onClose(true),
+        onComplete: () => {
+          setTimeout(() => {
+            setLoading(false)
+            onClose(true)
+          }, 20)
+        },
       })
       return
     }
@@ -121,7 +131,12 @@ const AssessmentDialogComponent = ({
             'error'
           )
         },
-        onComplete: () => onClose(true),
+        onComplete: () => {
+          setTimeout(() => {
+            setLoading(false)
+            onClose(true)
+          }, 20)
+        },
       })
       return
     }
@@ -144,7 +159,12 @@ const AssessmentDialogComponent = ({
           'error'
         )
       },
-      onComplete: () => onClose(true),
+      onComplete: () => {
+        setTimeout(() => {
+          setLoading(false)
+          onClose(true)
+        }, 20)
+      },
     })
     return
   }
@@ -222,6 +242,7 @@ const AssessmentDialogComponent = ({
             variant="outlined"
             type={'button'}
             startIcon={<ClearIcon />}
+            disabled={isLoading}
           >
             Huỷ
           </Button>
@@ -229,7 +250,8 @@ const AssessmentDialogComponent = ({
             variant="contained"
             color={getButtonColor(action)}
             type={'submit'}
-            startIcon={<CheckIcon />}
+            startIcon={isLoading ? <CircularProgress size={'1rem'} /> : <CheckIcon />}
+            disabled={isLoading}
           >
             {action === AssessmentActionType.DELETE_ASSESSMENT ? 'Xoá' : 'Lưu'}
           </Button>

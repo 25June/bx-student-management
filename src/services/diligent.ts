@@ -1,5 +1,5 @@
 import { realtimeDB } from '../firebase'
-import { onValue, ref, set, get } from 'firebase/database'
+import { onValue, ref, set, get, update } from 'firebase/database'
 import { useState, useEffect } from 'react'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { v4 as uuidv4 } from 'uuid'
@@ -59,7 +59,7 @@ export const useAddRollCallDate = () => {
   const { showSnackbar } = useSnackbarContext()
   return ({ date, year = '2022-2023', classId, semester = 'hk1' }: AddRollCallDateProps) => {
     return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, uuidv4(), semester)), date)
-      .then(() => showSnackbar(`${date} has been added`, 'success'))
+      .then(() => showSnackbar(`Tạo ${date} thành công`, 'success'))
       .catch((error: any) => showSnackbar(error, 'error'))
   }
 }
@@ -76,7 +76,7 @@ export const useUpdateRollCallDate = () => {
   const { showSnackbar } = useSnackbarContext()
   return ({ date, id, classId, year = '2022-2023', semester = 'hk1' }: UpdateRollCallDateProps) => {
     return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, id, semester)), date)
-      .then(() => showSnackbar(`${date} has been added`, 'success'))
+      .then(() => showSnackbar(`Thay đổi ${date} thành công`, 'success'))
       .catch((error: any) => showSnackbar(error, 'error'))
   }
 }
@@ -104,6 +104,38 @@ export const fetchRollCallDates = ({
       console.error(error, 'error')
       return null
     })
+}
+
+interface SubmitAttendanceAllStudentsInClass {
+  studentIds: string[]
+  classId: string
+  rollDateId: string
+  attendance: boolean
+  year?: string
+  semester?: string
+}
+
+export const submitAttendanceAllStudentsInClass = ({
+  studentIds,
+  classId,
+  rollDateId,
+  attendance,
+  semester = 'hk1',
+  year = '2022-2023',
+}: SubmitAttendanceAllStudentsInClass) => {
+  const updatedObj = studentIds.reduce((acc, studentId) => {
+    return {
+      ...acc,
+      [`${attendancePathName(classId, year, semester)}/${studentId}/${rollDateId}`]: {
+        tl: attendance,
+        gl: attendance,
+      },
+    }
+  }, {})
+
+  return update(ref(realtimeDB), updatedObj)
+    .then(() => console.info(`Điểm danh thành công`, 'success'))
+    .catch((error: any) => console.error(error, 'error'))
 }
 
 interface SubmitAttendanceProps {

@@ -167,7 +167,7 @@ export const useSetNewStudentScore1 = () => {
         ref(realtimeDB, scorePathName(classId, year, semester, studentId, type, assessmentId)),
         score
       )
-        .then(() => showSnackbar(`${score} has been added to ${studentId}`, 'success'))
+        .then(() => showSnackbar(`Thay đổi thành công`, 'success'))
         .catch((error: any) => showSnackbar(error, 'error'))
     }
     return Promise.reject('Invalid Data')
