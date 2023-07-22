@@ -31,6 +31,7 @@ import { debounce } from 'lodash'
 
 interface DrawerComponentProps {
   isOpen: boolean
+  setOpen: (value: boolean) => void
 }
 
 const Menu = {
@@ -106,7 +107,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   })
 )
 
-const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
+const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
   const { user } = useAuthentication()
   const navigate = useNavigate()
   const location = useLocation()
@@ -144,7 +145,10 @@ const DrawerComponent = ({ isOpen }: DrawerComponentProps) => {
               <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
                 <ListItemButton
                   selected={to === location.pathname}
-                  onClick={() => setTimeout(() => navigate(to), 100)}
+                  onClick={() => {
+                    setTimeout(() => navigate(to), 100)
+                    setTimeout(() => setOpen(false), 200)
+                  }}
                   sx={{
                     minHeight: 48,
                     justifyContent: isOpen ? 'initial' : 'center',

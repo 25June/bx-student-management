@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import { TopBarComponent } from '../index'
 import DrawerComponent from '../drawer/Drawer.component'
@@ -10,8 +10,8 @@ import UserDrawerComponent from 'modules/user-drawer/UserDrawer.component'
 export const drawerWidth = 240
 
 const LayoutComponent = ({ children }: PropsWithChildren) => {
-  const [isOpen, setOpen] = React.useState<boolean>(false)
-  const [openUserDrawer, setOpenUserDrawer] = React.useState<boolean>(false)
+  const [isOpen, setOpen] = useState<boolean>(false)
+  const [openUserDrawer, setOpenUserDrawer] = useState<boolean>(false)
   const isMobile = useIsMobile()
 
   return (
@@ -21,7 +21,7 @@ const LayoutComponent = ({ children }: PropsWithChildren) => {
         setOpen={setOpen}
         openUserDrawer={() => setOpenUserDrawer(true)}
       />
-      <DrawerComponent isOpen={isOpen} />
+      <DrawerComponent isOpen={isOpen} setOpen={setOpen} />
       <UserDrawerComponent open={openUserDrawer} onClose={() => setOpenUserDrawer(false)} />
       <Box
         component="main"

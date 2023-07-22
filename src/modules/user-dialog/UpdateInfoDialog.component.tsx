@@ -121,7 +121,6 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
           )}
         </Box>
         <Controller
-          rules={{ required: true }}
           control={control}
           name={'email'}
           render={({ field, fieldState }) => {
@@ -141,7 +140,6 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
         />
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Controller
-            rules={{ required: true }}
             control={control}
             name={'lastName'}
             render={({ field, fieldState }) => {
@@ -160,7 +158,6 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
             }}
           />
           <Controller
-            rules={{ required: true }}
             control={control}
             name={'firstName'}
             render={({ field, fieldState }) => {
@@ -180,7 +177,6 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
           />
         </Box>
         <Controller
-          rules={{ required: true }}
           control={control}
           name={'phoneNumber'}
           render={({ field, fieldState }) => {

@@ -13,6 +13,7 @@ import Logo from 'static/images/logo/logo.svg'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useAuthentication } from 'contexts/AuthContext'
 import ImageBoxComponent from 'modules/image-box/ImageBox.component'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 interface TopBarComponentProps {
   isOpen: boolean
@@ -59,7 +60,7 @@ const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentPro
             marginRight: isMobile ? 2 : 3,
           }}
         >
-          <MenuIcon />
+          {isOpen ? <ArrowBackIcon /> : <MenuIcon />}
         </IconButton>
         <Box
           sx={{
