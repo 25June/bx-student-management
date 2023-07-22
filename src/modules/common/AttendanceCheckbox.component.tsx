@@ -3,22 +3,12 @@ import { Box, Checkbox } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { RollCallDate } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
-
-export interface OnSubmitAttendanceProps {
-  value: boolean
-  rollCallKey: string
-  isMissal: boolean
-}
+import { AttendanceProps, OnSubmitAttendanceProps } from 'models/diligent'
 
 interface OnCheckboxChangeProps {
   event: ChangeEvent<HTMLInputElement>
   rollCallKey: string
   isMissal: boolean
-}
-
-export interface AttendanceProps {
-  tl: boolean
-  gl: boolean
 }
 
 interface AttendanceCheckboxComponentProps {

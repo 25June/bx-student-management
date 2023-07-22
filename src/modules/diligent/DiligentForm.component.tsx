@@ -1,5 +1,5 @@
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { Checkbox } from '@mui/material'
+import { Checkbox, Box } from '@mui/material'
 import React from 'react'
 import { OnSubmitAttendanceProps } from 'modules/common/AttendanceCheckbox.component'
 
@@ -17,7 +17,7 @@ const DiligentFormComponent = ({
   onSubmitAttendance,
 }: DiligentFormComponentProps) => {
   return (
-    <>
+    <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexGrow: 2 }}>
       <FormControlLabel
         control={
           <Checkbox
@@ -55,7 +55,7 @@ const DiligentFormComponent = ({
         label={'Giáo Lý'}
         sx={{ margin: 0 }}
       />
-    </>
+    </Box>
   )
 }
 

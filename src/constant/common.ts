@@ -25,6 +25,7 @@ export enum ScoreBookActionType {
 export enum RollCallDateActionType {
   ADD_STUDY_DATE = 'ADD_STUDY_DATE',
   EDIT_STUDY_DATE = 'EDIT_STUDY_DATE',
+  ADD_NOTE = 'ADD_NOTE',
 }
 
 export enum AttendanceType {

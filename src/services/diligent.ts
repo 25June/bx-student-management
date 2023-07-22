@@ -138,6 +138,32 @@ export const submitAttendanceAllStudentsInClass = ({
     .catch((error: any) => console.error(error, 'error'))
 }
 
+interface UpdateNoteAttendance {
+  studentId: string
+  classId: string
+  rollDateId: string
+  note: string
+  year?: string
+  semester?: string
+}
+
+export const updateNoteAttendance = ({
+  studentId,
+  classId,
+  rollDateId,
+  note,
+  semester = 'hk1',
+  year = '2022-2023',
+}: UpdateNoteAttendance) => {
+  return set(
+    ref(
+      realtimeDB,
+      `${attendancePathName(classId, year, semester)}/${studentId}/${rollDateId}/note`
+    ),
+    note
+  )
+}
+
 interface SubmitAttendanceProps {
   studentId: string
   classId: string

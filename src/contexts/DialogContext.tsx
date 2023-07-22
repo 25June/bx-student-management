@@ -15,13 +15,19 @@ import {
 import { AssessmentDialogComponent, StudentDialogComponent } from 'modules'
 import DiligentDialogComponent from 'modules/diligent-dialog/DiligentDialog.component'
 import { Assessment, Student } from 'models'
+import NoteDialogComponent from 'modules/diligent/NoteDialog.component'
 
 type ActionType = AssessmentActionType | StudentActionType | RollCallDateActionType
 type RollCallDate = {
   id: string
   date: string
 }
-type DataType = Student | Assessment | RollCallDate | null
+type Attendance = {
+  note: string
+  studentId: string
+  rollCallDateId: string
+}
+type DataType = Student | Assessment | RollCallDate | Attendance | null
 
 interface DialogContextProps {
   openDialog: (
@@ -103,6 +109,15 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
           onClose={handleCloseDialog}
           action={(action as RollCallDateActionType) || RollCallDateActionType.ADD_STUDY_DATE}
           rollCall={data as RollCallDate}
+        />
+      )}
+      {dialog === DialogType.STUDY_DATE_DIALOG && action === 'ADD_NOTE' && (
+        <NoteDialogComponent
+          isOpen={open}
+          onClose={handleCloseDialog}
+          note={(data as Attendance)?.note || ''}
+          rollCallDateId={(data as Attendance)?.rollCallDateId || ''}
+          studentId={(data as Attendance)?.studentId}
         />
       )}
     </DialogContext.Provider>

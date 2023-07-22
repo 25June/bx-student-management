@@ -28,6 +28,7 @@ import { useIsMobile } from 'utils/common'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import { blue } from '@mui/material/colors'
 import { debounce } from 'lodash'
+import SettingsIcon from '@mui/icons-material/Settings'
 
 interface DrawerComponentProps {
   isOpen: boolean
@@ -181,12 +182,15 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
         <IconButton
           size={'small'}
           color={'primary'}
-          sx={{ position: 'absolute', background: blue[100], bottom: 16, left: 8 }}
+          sx={{ position: 'absolute', background: blue[100], bottom: 32, left: 8 }}
           onClick={handleScrollToTop}
         >
           <ExpandLessRoundedIcon />
         </IconButton>
       </Fade>
+      <IconButton sx={{ display: 'none' }}>
+        <SettingsIcon />
+      </IconButton>
     </Drawer>
   )
 }

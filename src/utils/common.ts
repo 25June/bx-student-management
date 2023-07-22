@@ -51,7 +51,7 @@ export const buildImageUrl = (imagePath?: string, gender?: boolean, isGLV?: bool
   // const formatImage = imagePath.replaceAll('/', '%2F')
 
   const prefix = 'https://ik.imagekit.io/rpynfcw1e/bx-management/'
-  const dimension = '?tr=w-500,h-500'
+  const dimension = '?tr=w-500,h-500,fo-auto'
   const imageName = imagePath.replace('avatars/', '')
   return prefix + imageName + dimension
 }
