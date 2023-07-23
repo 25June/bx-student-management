@@ -23,12 +23,13 @@ import MuiDrawer from '@mui/material/Drawer'
 import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
 import { useAuthentication } from 'contexts/AuthContext'
-import { Role } from 'constant/common'
+import { DialogType, Role } from 'constant/common'
 import { useIsMobile } from 'utils/common'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import { blue } from '@mui/material/colors'
 import { debounce } from 'lodash'
 import SettingsIcon from '@mui/icons-material/Settings'
+import { useDialogContext } from 'contexts/DialogContext'
 
 interface DrawerComponentProps {
   isOpen: boolean
@@ -110,6 +111,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
   const { user } = useAuthentication()
+  const { openDialog } = useDialogContext()
   const navigate = useNavigate()
   const location = useLocation()
   const isMobile = useIsMobile()
@@ -136,61 +138,70 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
 
   return (
     <Drawer variant="permanent" open={isOpen}>
-      <Box pt={8} position={'relative'}>
-        <List>
-          {Object.values(Menu).map(({ text, icon, to }) => {
-            if ([Router.USER, Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
-              return null
-            }
-            return (
-              <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
-                <ListItemButton
-                  selected={to === location.pathname}
-                  onClick={() => {
-                    setTimeout(() => navigate(to), 100)
-                    setTimeout(() => setOpen(false), 200)
-                  }}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: isOpen ? 'initial' : 'center',
-                    px: isMobile ? 1.5 : 2.5,
-                  }}
-                >
-                  <ListItemIcon
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: '100%',
+        }}
+      >
+        <Box pt={8}>
+          <List>
+            {Object.values(Menu).map(({ text, icon, to }) => {
+              if ([Router.USER, Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
+                return null
+              }
+              return (
+                <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
+                  <ListItemButton
+                    selected={to === location.pathname}
+                    onClick={() => {
+                      setTimeout(() => navigate(to), 100)
+                      setTimeout(() => setOpen(false), 200)
+                    }}
                     sx={{
-                      minWidth: 0,
-                      mr: isOpen ? 3 : 'auto',
-                      justifyContent: 'center',
+                      height: 48,
+                      justifyContent: isOpen ? 'initial' : 'center',
+                      px: isMobile ? 1.5 : 2.5,
+                      borderRadius: '50%',
+                      width: 48,
                     }}
                   >
-                    {icon(to === location.pathname)}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text}
-                    sx={{
-                      opacity: isOpen ? 1 : 0,
-                      color: to === location.pathname ? blue[500] : '',
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            )
-          })}
-        </List>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: isOpen ? 3 : 'auto',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {icon(to === location.pathname)}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{
+                        opacity: isOpen ? 1 : 0,
+                        color: to === location.pathname ? blue[500] : '',
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )
+            })}
+          </List>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', paddingBottom: '1rem' }}>
+          <Fade in={showScroll}>
+            <IconButton size={'small'} color={'primary'} onClick={handleScrollToTop}>
+              <ExpandLessRoundedIcon sx={{ background: blue[100], borderRadius: '50%' }} />
+            </IconButton>
+          </Fade>
+          <IconButton onClick={() => openDialog(DialogType.CONFIG_DIALOG, undefined, undefined)}>
+            <SettingsIcon />
+          </IconButton>
+        </Box>
       </Box>
-      <Fade in={showScroll}>
-        <IconButton
-          size={'small'}
-          color={'primary'}
-          sx={{ position: 'absolute', background: blue[100], bottom: 32, left: 8 }}
-          onClick={handleScrollToTop}
-        >
-          <ExpandLessRoundedIcon />
-        </IconButton>
-      </Fade>
-      <IconButton sx={{ display: 'none' }}>
-        <SettingsIcon />
-      </IconButton>
     </Drawer>
   )
 }

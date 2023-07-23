@@ -20,7 +20,6 @@ export const useGetStudents = (classId: string) => {
   const [students, setStudents] = useState<Student[] | null>()
   const [listener, setListener] = useState<Unsubscribe>()
   useEffect(() => {
-    console.log({ classId })
     if (classId) {
       const queryStudents = query(studentRef, where('class.id', '==', classId))
       const listenerData = onSnapshot(
@@ -146,7 +145,6 @@ interface UpdateStudentParams {
 
 export const useUpdateStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: UpdateStudentParams) => {
-    console.log(dataInput)
     const ref = doc(fireStoreDB, StudentCollection, dataInput.id)
     updateDoc(ref, { updatedDate: serverTimestamp(), ...dataInput })
       .then((value) => {

@@ -107,6 +107,7 @@ export enum DialogType {
   STUDENT_DIALOG,
   ASSESSMENT_DIALOG,
   STUDY_DATE_DIALOG,
+  CONFIG_DIALOG,
 }
 
 export type ActionType = AssessmentActionType | StudentActionType | RollCallDateActionType

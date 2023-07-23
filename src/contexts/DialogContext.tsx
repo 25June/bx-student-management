@@ -16,6 +16,7 @@ import { AssessmentDialogComponent, StudentDialogComponent } from 'modules'
 import DiligentDialogComponent from 'modules/diligent-dialog/DiligentDialog.component'
 import { Assessment, Student } from 'models'
 import NoteDialogComponent from 'modules/diligent/NoteDialog.component'
+import ConfigDialogComponent from 'modules/config-dialog/ConfigDialog.component'
 
 type ActionType = AssessmentActionType | StudentActionType | RollCallDateActionType
 type RollCallDate = {
@@ -32,8 +33,8 @@ type DataType = Student | Assessment | RollCallDate | Attendance | null
 interface DialogContextProps {
   openDialog: (
     dialogType: DialogType,
-    actionType: ActionType,
-    selectedData: DataType,
+    actionType?: ActionType,
+    selectedData?: DataType,
     callback?: (refreshData?: boolean) => void
   ) => void
 }
@@ -53,8 +54,8 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
   const handleOpenDialog = useCallback(
     (
       dialogType: DialogType,
-      actionType: ActionType,
-      selectedData: DataType,
+      actionType?: ActionType,
+      selectedData?: DataType,
       callback?: (refreshData?: boolean) => void
     ) => {
       setOpen(true)
@@ -103,7 +104,7 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
           data={data as Assessment}
         />
       )}
-      {dialog === DialogType.STUDY_DATE_DIALOG && (
+      {dialog === DialogType.STUDY_DATE_DIALOG && action !== 'ADD_NOTE' && (
         <DiligentDialogComponent
           isOpen={open}
           onClose={handleCloseDialog}
@@ -119,6 +120,9 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
           rollCallDateId={(data as Attendance)?.rollCallDateId || ''}
           studentId={(data as Attendance)?.studentId}
         />
+      )}
+      {dialog === DialogType.CONFIG_DIALOG && (
+        <ConfigDialogComponent onClose={handleCloseDialog} isOpen={open} />
       )}
     </DialogContext.Provider>
   )
