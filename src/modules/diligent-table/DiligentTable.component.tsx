@@ -8,9 +8,8 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import AttendanceHeaderComponent from 'modules/common/AttendanceHeader.component'
-import AttendanceCheckboxComponent, {
-  OnSubmitAttendanceProps,
-} from 'modules/common/AttendanceCheckbox.component'
+import AttendanceCheckboxComponent from 'modules/common/AttendanceCheckbox.component'
+import { OnSubmitAttendanceProps } from 'models/diligent'
 import { Attendances, useSubmitAttendance } from 'services/diligent'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import { RollCallDate } from 'utils/customHooks'

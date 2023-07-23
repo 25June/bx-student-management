@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { v4 as uuidv4 } from 'uuid'
 import { AttendanceType } from 'constant/common'
-import { AttendanceProps } from 'modules/common/AttendanceCheckbox.component'
+import { AttendanceProps } from 'models/diligent'
 
 const attendancePathName = (classId: string, year: string, semester: string) =>
   `attendance/${classId}/${year}/${semester}`

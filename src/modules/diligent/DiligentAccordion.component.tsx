@@ -8,10 +8,7 @@ import FormLabel from '@mui/material/FormLabel'
 import React from 'react'
 import { StudentRows } from 'modules/diligent-table/DiligentTable.component'
 import { RollCallDate } from 'utils/customHooks'
-import {
-  AttendanceProps,
-  OnSubmitAttendanceProps,
-} from 'modules/common/AttendanceCheckbox.component'
+import { AttendanceProps, OnSubmitAttendanceProps } from 'models/diligent'
 import { formatDisplayTable } from 'utils/datetime'
 import DiligentFormComponent from './DiligentForm.component'
 

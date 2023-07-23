@@ -1,7 +1,7 @@
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { Checkbox, Box } from '@mui/material'
 import React from 'react'
-import { OnSubmitAttendanceProps } from 'modules/common/AttendanceCheckbox.component'
+import { OnSubmitAttendanceProps } from 'models/diligent'
 
 interface DiligentFormComponentProps {
   rollCallKey: string

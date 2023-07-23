@@ -7,10 +7,7 @@ import { RollCallDate } from 'utils/customHooks'
 import { StudentRows } from 'modules/diligent-table/DiligentTable.component'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import DiligentFormComponent from 'modules/diligent/DiligentForm.component'
-import {
-  AttendanceProps,
-  OnSubmitAttendanceProps,
-} from 'modules/common/AttendanceCheckbox.component'
+import { AttendanceProps, OnSubmitAttendanceProps } from 'models/diligent'
 import { styled } from '@mui/material/styles'
 import ShortTextIcon from '@mui/icons-material/ShortText'
 import { useDialogContext } from 'contexts/DialogContext'
