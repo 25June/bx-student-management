@@ -7,6 +7,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Typography,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import ClearIcon from '@mui/icons-material/Clear'
@@ -15,6 +16,7 @@ import { useSnackbarContext } from 'contexts/SnackbarContext'
 import SchoolYearsDropdownComponent from 'modules/school-year-dropdown/SchoolYearDropdown.component'
 import { SelectChangeEvent } from '@mui/material/Select'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
+import { useIsMobile } from 'utils/common'
 
 interface ConfigDialogComponentProps {
   onClose: (refreshData?: boolean) => void
@@ -28,10 +30,12 @@ interface ConfigForm {
 
 const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) => {
   const { showSnackbar } = useSnackbarContext()
-  const { handleSubmit, setValue, getValues, watch } = useForm<ConfigForm>({
+  const isMobile = useIsMobile()
+  const { handleSubmit, setValue, watch } = useForm<ConfigForm>({
     defaultValues: {},
   })
   const schoolYearId = watch('schoolYearId')
+  const semesterId = watch('semesterId')
 
   const [isLoading, setLoading] = useState<boolean>(false)
   const onSubmit = (data: ConfigForm) => {
@@ -49,9 +53,17 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
   }
 
   return (
-    <Dialog open={isOpen} onClose={() => onClose(false)} aria-labelledby="config-dialog-title">
+    <Dialog
+      open={isOpen}
+      onClose={() => onClose(false)}
+      fullWidth={isMobile}
+      aria-labelledby="config-dialog-title"
+    >
       <DialogTitle id="diligent-dialog-title">Cài Đặt</DialogTitle>
       <DialogContent dividers={true}>
+        <Typography sx={{ marginBottom: '1rem' }}>
+          Chọn Niên Khoá và Học Kỳ để lưu điểm các em thiếu nhi
+        </Typography>
         <Box mb={3}>
           <SchoolYearsDropdownComponent
             onChangeSchoolYear={handleSelectSchoolYear}
@@ -59,7 +71,7 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
           />
         </Box>
         <SemesterDropdownComponent
-          selectedSemester={getValues('semesterId')}
+          selectedSemester={semesterId}
           onChangeSemester={handleChangeSemester}
         />
       </DialogContent>

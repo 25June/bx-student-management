@@ -5,7 +5,7 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
-import { useGetStudentScoreBooks, useSetNewStudentScore1 } from 'services/scorebook'
+import { useGetStudentScoreBooks, setNewStudentScore } from 'services/scorebook'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
@@ -22,14 +22,13 @@ import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryIn
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
-  const { classId } = useClassContext()
+  const { classId, schoolYearId, semesterId } = useClassContext()
   const isMobile = useIsMobile()
   const { assessments } = useAssessmentContext()
-  const setStudentScore = useSetNewStudentScore1()
 
-  const { studentScoreBooks } = useGetStudentScoreBooks({ classId })
+  const { studentScoreBooks } = useGetStudentScoreBooks()
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
-  const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
+  const [selectedSemester, setSelectedSemester] = useState<string>(semesterId)
   const [filteredStuScoreBooks, setFilteredStuScoreBooks] = useState<
     StudentScoreBooks[] | Student[]
   >([])
@@ -101,12 +100,14 @@ const ScoreBookComponent = () => {
   const handleUpdateScore =
     (studentId: string) => (type: string) => (score: { score: number }, assessmentId: string) => {
       if (studentId) {
-        return setStudentScore({
+        return setNewStudentScore({
           studentId,
           type,
           score: score.score,
           assessmentId,
           classId,
+          schoolYearId,
+          semesterId,
         })
       }
     }

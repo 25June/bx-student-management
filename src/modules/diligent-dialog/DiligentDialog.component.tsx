@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
-import { useAddRollCallDate, useUpdateRollCallDate } from 'services/diligent'
+import { addRollCallDate, updateRollCallDate } from 'services/diligent'
 import { formatDisplayInput } from 'utils/datetime'
 import { RollCallDateActionType } from 'constant/common'
 import ClearIcon from '@mui/icons-material/Clear'
@@ -37,9 +37,7 @@ const DiligentDialogComponent = ({
     defaultValues: { rollCallDate: rollCall?.date || formatDisplayInput(new Date()) },
   })
   const [isLoading, setLoading] = useState<boolean>(false)
-  const addRollCallDate = useAddRollCallDate()
-  const updateRollCallDate = useUpdateRollCallDate()
-  const { classId } = useClassContext()
+  const { classId, semesterId, schoolYearId } = useClassContext()
 
   const { fetchRollCallDates, rollCallDates } = useDiligentContext()
 
@@ -57,22 +55,28 @@ const DiligentDialogComponent = ({
     }
 
     if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
-      updateRollCallDate({ date: rollCallDate, id: rollCall?.id || '', classId }).finally(() => {
+      updateRollCallDate({
+        date: rollCallDate,
+        id: rollCall?.id || '',
+        classId,
+        semesterId,
+        schoolYearId,
+      }).finally(() => {
         setTimeout(() => {
           setLoading(false)
           onClose(true)
         }, 20)
-        return fetchRollCallDates?.({ classId })
+        return fetchRollCallDates?.({ classId, semesterId, schoolYearId })
       })
       return
     }
 
-    addRollCallDate({ date: rollCallDate, classId }).finally(() => {
+    addRollCallDate({ date: rollCallDate, classId, semesterId, schoolYearId }).finally(() => {
       setTimeout(() => {
         setLoading(false)
         onClose(true)
       }, 20)
-      return fetchRollCallDates?.({ classId })
+      return fetchRollCallDates?.({ classId, semesterId, schoolYearId })
     })
   }
 

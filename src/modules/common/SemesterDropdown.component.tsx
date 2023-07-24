@@ -27,9 +27,9 @@ const SemesterDropdownComponent = ({
   size = 'medium',
 }: SemesterDropdownComponentProps) => {
   return (
-    <FormControl fullWidth={true} size={size} sx={{ maxWidth: '150px' }}>
-      <InputLabel shrink={true}>Học kỳ</InputLabel>
-      <Select value={selectedSemester} label="Học kỳ" onChange={onChangeSemester}>
+    <FormControl fullWidth={true} size={size}>
+      <InputLabel>Học kỳ</InputLabel>
+      <Select value={selectedSemester || ''} label="Học kỳ" onChange={onChangeSemester}>
         {Semesters.map(({ key, label }) => (
           <MenuItem value={key} key={key}>
             {label}

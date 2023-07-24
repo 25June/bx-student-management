@@ -24,13 +24,13 @@ import { submitAttendanceAllStudentsInClass } from 'services/diligent'
 const DiligentComponent = () => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
   const { students } = useStudentContext()
-  const { classId } = useClassContext()
+  const { classId, semesterId, schoolYearId } = useClassContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedRollCallDate, setSelectedRollCallDate] = useState<RollCallDate>()
 
-  const [selectedSemester, setSelectedSemester] = useState<string>('hk1')
+  const [selectedSemester, setSelectedSemester] = useState<string>(semesterId)
   const [groupRollDate, setGroupRollDate] = useState<Record<string, RollCallDate[]>>({})
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   const [studentAttendanceCount, setStudentAttendanceCount] = useState<{ tl: number; gl: number }>()
@@ -44,20 +44,22 @@ const DiligentComponent = () => {
 
   const getRollCallDates = useCallback(() => {
     if (fetchRollCallDates !== null) {
-      fetchRollCallDates({ classId }).then((res: Record<string, string> | null) => {
-        if (res) {
-          setTimeout(() => {
-            const sortedMonthDate = groupRollCallToSortedMonths(res)
-            setGroupRollDate(sortedMonthDate)
-            setSelectedMonth(Object.keys(sortedMonthDate)[0])
-          }, 20)
-          return
+      fetchRollCallDates({ classId, semesterId, schoolYearId }).then(
+        (res: Record<string, string> | null) => {
+          if (res) {
+            setTimeout(() => {
+              const sortedMonthDate = groupRollCallToSortedMonths(res)
+              setGroupRollDate(sortedMonthDate)
+              setSelectedMonth(Object.keys(sortedMonthDate)[0])
+            }, 20)
+            return
+          }
+          setGroupRollDate({})
+          setSelectedMonth('')
         }
-        setGroupRollDate({})
-        setSelectedMonth('')
-      })
+      )
     }
-  }, [classId, fetchRollCallDates])
+  }, [classId, fetchRollCallDates, semesterId, schoolYearId])
 
   useEffect(() => {
     if (classId) {
@@ -159,17 +161,16 @@ const DiligentComponent = () => {
 
   const handleMarkAllStudentPresent = () => {
     if (selectedRollCallDate?.key && students?.length !== 0 && classId) {
-      const confirmation = window.confirm('Are u sure')
+      const confirmation = window.confirm('Chắc chưa?')
       if (confirmation) {
-        console.log('jump here')
-        setTimeout(() => {
-          submitAttendanceAllStudentsInClass({
-            studentIds: students.map((stu) => stu.id),
-            classId,
-            rollDateId: selectedRollCallDate.key,
-            attendance: true,
-          })
-        }, 20)
+        submitAttendanceAllStudentsInClass({
+          studentIds: students.map((stu) => stu.id),
+          classId,
+          rollDateId: selectedRollCallDate.key,
+          attendance: true,
+          semesterId,
+          schoolYearId,
+        })
       }
     }
   }

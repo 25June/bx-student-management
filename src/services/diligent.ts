@@ -1,10 +1,10 @@
 import { realtimeDB } from '../firebase'
 import { onValue, ref, set, get, update } from 'firebase/database'
 import { useState, useEffect } from 'react'
-import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { v4 as uuidv4 } from 'uuid'
 import { AttendanceType } from 'constant/common'
 import { AttendanceProps } from 'models/diligent'
+import { useClassContext } from 'contexts/ClassContext'
 
 const attendancePathName = (classId: string, year: string, semester: string) =>
   `attendance/${classId}/${year}/${semester}`
@@ -13,24 +13,15 @@ const rollCallPathNameWithId = (classId: string, year: string, id: string, semes
 const rollCallPathName = (classId: string, year: string, semester: string) =>
   `rollCall/${classId}/${year}/${semester}`
 
-interface GetAttendanceByClassIdProps {
-  classId: string
-  year?: string
-  semester?: string
-}
-
 export type Attendances = Record<string, Record<string, AttendanceProps>>
 
-export const useGetAttendanceByClassId = ({
-  classId,
-  year = '2022-2023',
-  semester = 'hk1',
-}: GetAttendanceByClassIdProps) => {
+export const useGetAttendanceByClassId = () => {
+  const { classId, schoolYearId, semesterId } = useClassContext()
   const [attendances, setAttendances] = useState<Attendances | null>()
   useEffect(() => {
-    if (classId) {
+    if (classId && schoolYearId && semesterId) {
       const subscribe = onValue(
-        ref(realtimeDB, attendancePathName(classId, year, semester)),
+        ref(realtimeDB, attendancePathName(classId, schoolYearId, semesterId)),
         (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val()
@@ -50,60 +41,73 @@ export const useGetAttendanceByClassId = ({
 
 export interface AddRollCallDateProps {
   date: string
-  year?: string
+  semesterId: string
   classId: string
-  semester?: string
+  schoolYearId: string
 }
 
-export const useAddRollCallDate = () => {
-  const { showSnackbar } = useSnackbarContext()
-  return ({ date, year = '2022-2023', classId, semester = 'hk1' }: AddRollCallDateProps) => {
-    return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, uuidv4(), semester)), date)
-      .then(() => showSnackbar(`Tạo ${date} thành công`, 'success'))
-      .catch((error: any) => showSnackbar(error, 'error'))
+export const addRollCallDate = ({
+  date,
+  schoolYearId,
+  classId,
+  semesterId,
+}: AddRollCallDateProps) => {
+  if (date && schoolYearId && classId && semesterId) {
+    return set(
+      ref(realtimeDB, rollCallPathNameWithId(classId, schoolYearId, uuidv4(), semesterId)),
+      date
+    )
   }
+  return Promise.reject('Invalid Data')
 }
 
 export interface UpdateRollCallDateProps extends AddRollCallDateProps {
   id: string
   date: string
   classId: string
-  year?: string
-  semester?: string
+  schoolYearId: string
+  semesterId: string
 }
 
-export const useUpdateRollCallDate = () => {
-  const { showSnackbar } = useSnackbarContext()
-  return ({ date, id, classId, year = '2022-2023', semester = 'hk1' }: UpdateRollCallDateProps) => {
-    return set(ref(realtimeDB, rollCallPathNameWithId(classId, year, id, semester)), date)
-      .then(() => showSnackbar(`Thay đổi ${date} thành công`, 'success'))
-      .catch((error: any) => showSnackbar(error, 'error'))
+export const updateRollCallDate = ({
+  date,
+  id,
+  classId,
+  schoolYearId,
+  semesterId,
+}: UpdateRollCallDateProps) => {
+  if (classId && schoolYearId && semesterId) {
+    return set(ref(realtimeDB, rollCallPathNameWithId(classId, schoolYearId, id, semesterId)), date)
   }
+  return Promise.reject('Invalid Data')
 }
 
-interface GetRollCallDateProps {
+interface FetchRollCallDateProps {
   classId: string
-  year?: string
-  semester?: string
+  schoolYearId: string
+  semesterId: string
 }
 
 export const fetchRollCallDates = ({
   classId,
-  year = '2022-2023',
-  semester = 'hk1',
-}: GetRollCallDateProps) => {
-  return get(ref(realtimeDB, rollCallPathName(classId, year, semester)))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        return snapshot.val()
-      }
-      console.info('Data null')
-      return null
-    })
-    .catch((error) => {
-      console.error(error, 'error')
-      return null
-    })
+  schoolYearId,
+  semesterId,
+}: FetchRollCallDateProps) => {
+  if (classId && schoolYearId && semesterId) {
+    return get(ref(realtimeDB, rollCallPathName(classId, schoolYearId, semesterId)))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          return snapshot.val()
+        }
+        console.info('Data null')
+        return null
+      })
+      .catch((error) => {
+        console.error(error, 'error')
+        return null
+      })
+  }
+  return Promise.reject('Invalid Data')
 }
 
 interface SubmitAttendanceAllStudentsInClass {
@@ -111,8 +115,8 @@ interface SubmitAttendanceAllStudentsInClass {
   classId: string
   rollDateId: string
   attendance: boolean
-  year?: string
-  semester?: string
+  schoolYearId: string
+  semesterId: string
 }
 
 export const submitAttendanceAllStudentsInClass = ({
@@ -120,22 +124,25 @@ export const submitAttendanceAllStudentsInClass = ({
   classId,
   rollDateId,
   attendance,
-  semester = 'hk1',
-  year = '2022-2023',
+  semesterId,
+  schoolYearId,
 }: SubmitAttendanceAllStudentsInClass) => {
-  const updatedObj = studentIds.reduce((acc, studentId) => {
-    return {
-      ...acc,
-      [`${attendancePathName(classId, year, semester)}/${studentId}/${rollDateId}`]: {
-        tl: attendance,
-        gl: attendance,
-      },
-    }
-  }, {})
+  if (semesterId && schoolYearId && classId && rollDateId) {
+    const updatedObj = studentIds.reduce((acc, studentId) => {
+      return {
+        ...acc,
+        [`${attendancePathName(classId, schoolYearId, semesterId)}/${studentId}/${rollDateId}`]: {
+          tl: attendance,
+          gl: attendance,
+        },
+      }
+    }, {})
 
-  return update(ref(realtimeDB), updatedObj)
-    .then(() => console.info(`Điểm danh thành công`, 'success'))
-    .catch((error: any) => console.error(error, 'error'))
+    return update(ref(realtimeDB), updatedObj)
+      .then(() => console.info(`Điểm danh thành công`, 'success'))
+      .catch((error: any) => console.error(error, 'error'))
+  }
+  return Promise.reject('Invalid Data')
 }
 
 interface UpdateNoteAttendance {
@@ -143,8 +150,8 @@ interface UpdateNoteAttendance {
   classId: string
   rollDateId: string
   note: string
-  year?: string
-  semester?: string
+  schoolYearId: string
+  semesterId: string
 }
 
 export const updateNoteAttendance = ({
@@ -152,16 +159,19 @@ export const updateNoteAttendance = ({
   classId,
   rollDateId,
   note,
-  semester = 'hk1',
-  year = '2022-2023',
+  semesterId,
+  schoolYearId,
 }: UpdateNoteAttendance) => {
-  return set(
-    ref(
-      realtimeDB,
-      `${attendancePathName(classId, year, semester)}/${studentId}/${rollDateId}/note`
-    ),
-    note
-  )
+  if (semesterId && schoolYearId && classId && studentId && rollDateId) {
+    return set(
+      ref(
+        realtimeDB,
+        `${attendancePathName(classId, schoolYearId, semesterId)}/${studentId}/${rollDateId}/note`
+      ),
+      note
+    )
+  }
+  return Promise.reject('Invalid Data')
 }
 
 interface SubmitAttendanceProps {
@@ -170,32 +180,29 @@ interface SubmitAttendanceProps {
   rollDateId: string
   attendance: boolean
   isMissal: boolean
-  year?: string
-  semester?: string
+  schoolYearId: string
+  semesterId: string
 }
 
-export const useSubmitAttendance = () => {
-  const { showSnackbar } = useSnackbarContext()
-
-  return ({
-    studentId,
-    classId,
-    rollDateId,
-    attendance,
-    isMissal,
-    semester = 'hk1',
-    year = '2022-2023',
-  }: SubmitAttendanceProps) => {
+export const submitAttendance = ({
+  studentId,
+  classId,
+  rollDateId,
+  attendance,
+  isMissal,
+  semesterId,
+  schoolYearId,
+}: SubmitAttendanceProps) => {
+  if (semesterId && schoolYearId && classId && studentId && rollDateId) {
     return set(
       ref(
         realtimeDB,
-        `${attendancePathName(classId, year, semester)}/${studentId}/${rollDateId}/${
+        `${attendancePathName(classId, schoolYearId, semesterId)}/${studentId}/${rollDateId}/${
           isMissal ? AttendanceType.THANH_LE : AttendanceType.GIAO_LY
         }`
       ),
       attendance
     )
-      .then(() => showSnackbar(`Điểm danh thành công`, 'success'))
-      .catch((error: any) => showSnackbar(error, 'error'))
   }
+  return Promise.reject('Invalid Data')
 }

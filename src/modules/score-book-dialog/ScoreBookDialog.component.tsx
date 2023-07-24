@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StudentScoreBooks, Assessment, ScoreBook } from 'models'
 import {
   Box,
@@ -9,11 +9,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import {
-  getStudentScoreBook,
-  initDefaultScoreBook,
-  useSetNewStudentScore1,
-} from 'services/scorebook'
+import { getStudentScoreBook, initDefaultScoreBook, setNewStudentScore } from 'services/scorebook'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import ScoreForm from '../common/ScoreForm.component'
@@ -56,15 +52,14 @@ const ScoreDetail = ({
 }
 
 const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComponentProps) => {
-  const { classId } = useClassContext()
+  const { classId, semesterId, schoolYearId } = useClassContext()
   const { assessments } = useAssessmentContext()
-  const setStudentScore1 = useSetNewStudentScore1()
   const { showSnackbar } = useSnackbarContext()
   const [studentScoreBook, setStudentScoreBook] = useState<ScoreBook>()
 
-  const handleFetchStudentScoreBook = useCallback(() => {
+  const handleFetchStudentScoreBook = () => {
     if (data && data.id) {
-      getStudentScoreBook({ classId, studentId: data.id })
+      getStudentScoreBook({ classId, studentId: data.id, semesterId, schoolYearId })
         .then((value) => {
           if (value === 'EMPTY_DATA' && assessments?.length !== 0) {
             const initValue = initDefaultScoreBook(assessments)
@@ -77,8 +72,7 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
           console.error(error)
         })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, data])
+  }
 
   useEffect(() => {
     if (data?.id) {
@@ -93,12 +87,14 @@ const ScoreBookDialogComponent = ({ data, onClose, isOpen }: ScoreBookDialogComp
 
   const handleChangeData = (type: string) => (score: { score: number }, assessmentId: string) => {
     if (data?.id) {
-      setStudentScore1({
+      setNewStudentScore({
         studentId: data.id,
         type,
         score: score.score,
         assessmentId,
         classId,
+        semesterId,
+        schoolYearId,
       })
         .then(() => {
           handleFetchStudentScoreBook()

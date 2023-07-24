@@ -137,70 +137,82 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
   }, [])
 
   return (
-    <Drawer variant="permanent" open={isOpen}>
+    <Drawer
+      variant="permanent"
+      open={isOpen}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: '100%',
+      }}
+    >
+      <Box pt={8} sx={{ flexGrow: 1 }}>
+        <List>
+          {Object.values(Menu).map(({ text, icon, to }) => {
+            if ([Router.USER, Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
+              return null
+            }
+            return (
+              <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
+                <ListItemButton
+                  selected={to === location.pathname}
+                  onClick={() => {
+                    setTimeout(() => navigate(to), 100)
+                    setTimeout(() => setOpen(false), 200)
+                  }}
+                  sx={{
+                    height: 48,
+                    justifyContent: isOpen ? 'initial' : 'center',
+                    px: isMobile ? 1.5 : 2.5,
+                    borderRadius: '50%',
+                    width: 48,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: isOpen ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {icon(to === location.pathname)}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={text}
+                    sx={{
+                      opacity: isOpen ? 1 : 0,
+                      color: to === location.pathname ? blue[500] : '',
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            )
+          })}
+        </List>
+      </Box>
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          height: '100%',
+          alignItems: 'flex-start',
+          padding: '0 0.25rem 1rem',
         }}
       >
-        <Box pt={8}>
-          <List>
-            {Object.values(Menu).map(({ text, icon, to }) => {
-              if ([Router.USER, Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
-                return null
-              }
-              return (
-                <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
-                  <ListItemButton
-                    selected={to === location.pathname}
-                    onClick={() => {
-                      setTimeout(() => navigate(to), 100)
-                      setTimeout(() => setOpen(false), 200)
-                    }}
-                    sx={{
-                      height: 48,
-                      justifyContent: isOpen ? 'initial' : 'center',
-                      px: isMobile ? 1.5 : 2.5,
-                      borderRadius: '50%',
-                      width: 48,
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: isOpen ? 3 : 'auto',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      {icon(to === location.pathname)}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{
-                        opacity: isOpen ? 1 : 0,
-                        color: to === location.pathname ? blue[500] : '',
-                      }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              )
-            })}
-          </List>
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', paddingBottom: '1rem' }}>
-          <Fade in={showScroll}>
-            <IconButton size={'small'} color={'primary'} onClick={handleScrollToTop}>
-              <ExpandLessRoundedIcon sx={{ background: blue[100], borderRadius: '50%' }} />
-            </IconButton>
-          </Fade>
-          <IconButton onClick={() => openDialog(DialogType.CONFIG_DIALOG, undefined, undefined)}>
-            <SettingsIcon />
+        <Fade in={showScroll}>
+          <IconButton
+            size={'small'}
+            color={'primary'}
+            onClick={handleScrollToTop}
+            sx={{ padding: '0.5rem' }}
+          >
+            <ExpandLessRoundedIcon sx={{ background: blue[100], borderRadius: '50%' }} />
           </IconButton>
-        </Box>
+        </Fade>
+        <IconButton onClick={() => openDialog(DialogType.CONFIG_DIALOG, undefined, undefined)}>
+          <SettingsIcon />
+        </IconButton>
       </Box>
     </Drawer>
   )

@@ -4,7 +4,7 @@ import { Assessment } from 'models'
 import { ScoreBook } from 'models/ScoreBook'
 import { AssessmentEnum } from 'constant/common'
 import { onValue, ref, get, set, Unsubscribe } from 'firebase/database'
-import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { useClassContext } from 'contexts/ClassContext'
 
 export const initDefaultScoreBook = (assessments: Assessment[]) => {
   return assessments.reduce(
@@ -56,26 +56,17 @@ export const initDefaultScoreBook = (assessments: Assessment[]) => {
   )
 }
 
-interface GetStudentScoreBooksProps {
-  classId: string
-  semester?: string
-  year?: string
-}
-
 const scorebookPathName = (classId: string, year: string, semester: string) =>
   `scorebook/${classId}/${year}/${semester}`
 
-export const useGetStudentScoreBooks = ({
-  classId,
-  semester = 'hk1',
-  year = '2022-2023',
-}: GetStudentScoreBooksProps) => {
+export const useGetStudentScoreBooks = () => {
+  const { classId, semesterId, schoolYearId } = useClassContext()
   const [studentScoreBooks, setStudentScoreBooks] = useState<Record<string, ScoreBook> | null>()
   const [listener, setListener] = useState<Unsubscribe>()
   useEffect(() => {
     if (classId) {
       const subscribe = onValue(
-        ref(realtimeDB, scorebookPathName(classId, year, semester)),
+        ref(realtimeDB, scorebookPathName(classId, schoolYearId, semesterId)),
         (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val()
@@ -88,22 +79,22 @@ export const useGetStudentScoreBooks = ({
       setListener(() => subscribe)
       return subscribe
     }
-  }, [classId, year, semester])
+  }, [classId, schoolYearId, semesterId])
 
   useEffect(() => {
     if (classId && listener) {
       listener()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, semester])
+  }, [classId, schoolYearId, semesterId])
 
   return { studentScoreBooks, isLoading: typeof studentScoreBooks === 'undefined' }
 }
 
 interface GetStudentScoreBookProps {
   classId: string
-  semester?: string
-  year?: string
+  semesterId: string
+  schoolYearId: string
   studentId: string
 }
 
@@ -115,21 +106,26 @@ const studentScoreBookPathName = (
 ) => `scorebook/${classId}/${year}/${semester}/${studentId}`
 export const getStudentScoreBook = ({
   classId,
-  year = '2022-2023',
-  semester = 'hk1',
+  schoolYearId,
+  semesterId,
   studentId,
 }: GetStudentScoreBookProps) => {
-  return get(ref(realtimeDB, studentScoreBookPathName(classId, year, semester, studentId)))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        return { ...snapshot.val(), id: snapshot.key }
-      }
-      return 'EMPTY_DATA'
-    })
-    .catch((error) => {
-      console.error(error, 'error')
-      return null
-    })
+  if (classId && schoolYearId && semesterId && studentId) {
+    return get(
+      ref(realtimeDB, studentScoreBookPathName(classId, schoolYearId, semesterId, studentId))
+    )
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          return { ...snapshot.val(), id: snapshot.key }
+        }
+        return 'EMPTY_DATA'
+      })
+      .catch((error) => {
+        console.error(error, 'error')
+        return null
+      })
+  }
+  return Promise.reject('Invalid Data')
 }
 
 interface SetNewStudentScoreProps {
@@ -138,8 +134,8 @@ interface SetNewStudentScoreProps {
   studentId: string
   type: string
   classId: string
-  semester?: string
-  year?: string
+  semesterId: string
+  schoolYearId: string
 }
 
 const scorePathName = (
@@ -151,25 +147,23 @@ const scorePathName = (
   assessmentId: string
 ) => `scorebook/${classId}/${year}/${semester}/${studentId}/${type}/${assessmentId}`
 
-export const useSetNewStudentScore1 = () => {
-  const { showSnackbar } = useSnackbarContext()
-  return ({
-    score,
-    assessmentId,
-    semester = 'hk1',
-    studentId,
-    classId,
-    year = '2022-2023',
-    type,
-  }: SetNewStudentScoreProps) => {
-    if (score && assessmentId && semester && studentId && classId && year && type) {
-      return set(
-        ref(realtimeDB, scorePathName(classId, year, semester, studentId, type, assessmentId)),
-        score
-      )
-        .then(() => showSnackbar(`Thay đổi thành công`, 'success'))
-        .catch((error: any) => showSnackbar(error, 'error'))
-    }
-    return Promise.reject('Invalid Data')
+export const setNewStudentScore = ({
+  score,
+  assessmentId,
+  semesterId,
+  studentId,
+  classId,
+  schoolYearId,
+  type,
+}: SetNewStudentScoreProps) => {
+  if (score && assessmentId && semesterId && studentId && classId && schoolYearId && type) {
+    return set(
+      ref(
+        realtimeDB,
+        scorePathName(classId, schoolYearId, semesterId, studentId, type, assessmentId)
+      ),
+      score
+    )
   }
+  return Promise.reject('Invalid Data')
 }

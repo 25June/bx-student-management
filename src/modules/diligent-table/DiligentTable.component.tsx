@@ -10,7 +10,7 @@ import TableBody from '@mui/material/TableBody'
 import AttendanceHeaderComponent from 'modules/common/AttendanceHeader.component'
 import AttendanceCheckboxComponent from 'modules/common/AttendanceCheckbox.component'
 import { OnSubmitAttendanceProps } from 'models/diligent'
-import { Attendances, useSubmitAttendance } from 'services/diligent'
+import { Attendances, submitAttendance } from 'services/diligent'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import { RollCallDate } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
@@ -42,8 +42,7 @@ const DiligentTableComponent = ({
   selectedRollCallDate,
   attendances,
 }: DiligentTableProps) => {
-  const { classId } = useClassContext()
-  const submitAttendance = useSubmitAttendance()
+  const { classId, semesterId, schoolYearId } = useClassContext()
   const isMobile = useIsMobile()
 
   const handleSubmitAttendance =
@@ -56,6 +55,8 @@ const DiligentTableComponent = ({
           rollDateId: rollCallKey,
           attendance: value,
           isMissal,
+          semesterId,
+          schoolYearId,
         })
       }
     }

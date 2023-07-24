@@ -10,11 +10,7 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import AddIcon from '@mui/icons-material/Add'
 import { averageScore } from './helpers'
-import {
-  getStudentScoreBook,
-  useSetNewStudentScore1,
-  initDefaultScoreBook,
-} from 'services/scorebook'
+import { getStudentScoreBook, setNewStudentScore, initDefaultScoreBook } from 'services/scorebook'
 import { useGetStudentById } from 'services/student'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { Assessment, ScoreBook } from 'models'
@@ -37,14 +33,13 @@ interface ScoreBookPanelComponentProps {
 const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelComponentProps) => {
   const { student: studentInfo } = useGetStudentById(studentId)
   const { assessments, setAssessments } = useAssessmentContext()
-  const setStudentScore = useSetNewStudentScore1()
   const { showSnackbar } = useSnackbarContext()
-  const { classId } = useClassContext()
+  const { classId, semesterId, schoolYearId } = useClassContext()
   const { openDialog } = useDialogContext()
 
   const [scoreBook, setStudentScoreBook] = useState<ScoreBook>()
   const handleFetchStudentScoreBook = useCallback(() => {
-    getStudentScoreBook({ classId, studentId })
+    getStudentScoreBook({ classId, studentId, semesterId, schoolYearId })
       .then((value) => {
         if (value === 'EMPTY_DATA' && assessments?.length !== 0) {
           const initValue = initDefaultScoreBook(assessments)
@@ -56,8 +51,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
       .catch((error) => {
         console.error(error)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, studentId, assessments])
+  }, [classId, studentId, semesterId, schoolYearId, assessments])
 
   const handleOpenAssessmentDialog = useCallback(() => {
     const assessmentCallBack = () => {
@@ -84,7 +78,15 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
 
   const handleChangeData = (type: string) => (score: { score: number }, assessmentId: string) => {
     if (studentId) {
-      setStudentScore({ studentId, type, score: score.score, assessmentId, classId })
+      setNewStudentScore({
+        studentId,
+        type,
+        score: score.score,
+        assessmentId,
+        classId,
+        semesterId,
+        schoolYearId,
+      })
         .then(() => {
           handleFetchStudentScoreBook()
           showSnackbar('Cập nhật thành công', 'success')

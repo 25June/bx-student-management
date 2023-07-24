@@ -30,7 +30,7 @@ const NoteDialogComponent = ({
   rollCallDateId,
   studentId,
 }: NoteDialogComponentProps) => {
-  const { classId } = useClassContext()
+  const { classId, schoolYearId, semesterId } = useClassContext()
   const { showSnackbar } = useSnackbarContext()
   const { handleSubmit, control } = useForm<{ note: string }>({
     defaultValues: { note: note || '' },
@@ -44,6 +44,8 @@ const NoteDialogComponent = ({
       studentId,
       note: data.note,
       classId,
+      schoolYearId,
+      semesterId,
     })
       .then(() => {
         showSnackbar('Ghi chú đã được lưu', 'success')
