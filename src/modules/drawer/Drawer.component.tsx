@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
-  Box,
   List,
   ListItem,
   ListItemButton,
@@ -10,9 +9,7 @@ import {
   CSSObject,
   styled,
   Theme,
-  IconButton,
 } from '@mui/material'
-import Fade from '@mui/material/Fade'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import CoPresentIcon from '@mui/icons-material/CoPresent'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
@@ -137,83 +134,111 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
   }, [])
 
   return (
-    <Drawer
-      variant="permanent"
-      open={isOpen}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: '100%',
-      }}
-    >
-      <Box pt={8} sx={{ flexGrow: 1 }}>
-        <List>
-          {Object.values(Menu).map(({ text, icon, to }) => {
-            if ([Router.USER, Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
-              return null
-            }
-            return (
-              <ListItem key={text} disablePadding={true} sx={{ display: 'block' }}>
-                <ListItemButton
-                  selected={to === location.pathname}
-                  onClick={() => {
-                    setTimeout(() => navigate(to), 100)
-                    setTimeout(() => setOpen(false), 200)
-                  }}
+    <Drawer variant="permanent" open={isOpen} sx={{ height: '100%' }}>
+      <List sx={{ paddingTop: 8, height: '100vh' }}>
+        {Object.values(Menu).map(({ text, icon, to }) => {
+          if ([Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
+            return null
+          }
+          return (
+            <ListItem key={text} disablePadding={true}>
+              <ListItemButton
+                selected={to === location.pathname}
+                onClick={() => {
+                  setTimeout(() => navigate(to), 100)
+                  setTimeout(() => setOpen(false), 200)
+                }}
+                sx={{
+                  height: 48,
+                  justifyContent: isOpen ? 'initial' : 'center',
+                  px: isMobile ? 1.5 : 2.5,
+                  width: 48,
+                }}
+              >
+                <ListItemIcon
                   sx={{
-                    height: 48,
-                    justifyContent: isOpen ? 'initial' : 'center',
-                    px: isMobile ? 1.5 : 2.5,
-                    borderRadius: '50%',
-                    width: 48,
+                    minWidth: 0,
+                    mr: isOpen ? 3 : 'auto',
+                    justifyContent: 'center',
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: isOpen ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {icon(to === location.pathname)}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text}
-                    sx={{
-                      opacity: isOpen ? 1 : 0,
-                      color: to === location.pathname ? blue[500] : '',
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            )
-          })}
-        </List>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          padding: '0 0.25rem 1rem',
-        }}
-      >
-        <Fade in={showScroll}>
-          <IconButton
-            size={'small'}
-            color={'primary'}
+                  {icon(to === location.pathname)}
+                </ListItemIcon>
+                <ListItemText
+                  primary={text}
+                  sx={{
+                    opacity: isOpen ? 1 : 0,
+                    color: to === location.pathname ? blue[500] : '',
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          )
+        })}
+        <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 56 }}>
+          <ListItemButton
             onClick={handleScrollToTop}
-            sx={{ padding: '0.5rem' }}
+            sx={{
+              height: 48,
+              justifyContent: isOpen ? 'initial' : 'center',
+              px: isMobile ? 1.5 : 2.5,
+              width: 48,
+            }}
           >
-            <ExpandLessRoundedIcon sx={{ background: blue[100], borderRadius: '50%' }} />
-          </IconButton>
-        </Fade>
-        <IconButton onClick={() => openDialog(DialogType.CONFIG_DIALOG, undefined, undefined)}>
-          <SettingsIcon />
-        </IconButton>
-      </Box>
+            {showScroll && (
+              <>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: isOpen ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ExpandLessRoundedIcon sx={{ background: blue[100], borderRadius: '50%' }} />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Lên Trên"
+                  sx={{
+                    opacity: isOpen ? 1 : 0,
+                    color: blue[500],
+                  }}
+                />
+              </>
+            )}
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 16 }}>
+          <ListItemButton
+            onClick={() => {
+              openDialog(DialogType.CONFIG_DIALOG, undefined, undefined)
+              setOpen(false)
+            }}
+            sx={{
+              height: 48,
+              justifyContent: isOpen ? 'initial' : 'center',
+              px: isMobile ? 1.5 : 2.5,
+              width: 48,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: isOpen ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Cài Đặt"
+              sx={{
+                opacity: isOpen ? 1 : 0,
+                color: blue[500],
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+      </List>
     </Drawer>
   )
 }
