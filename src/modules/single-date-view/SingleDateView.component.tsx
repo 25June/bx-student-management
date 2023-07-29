@@ -58,14 +58,14 @@ const SingleDateViewComponent = ({
             openDialog(DialogType.STUDY_DATE_DIALOG, RollCallDateActionType.ADD_NOTE, {
               studentId: student.id,
               rollCallDateId: rollCallDate.key,
-              note: attendance[rollCallDate.key].note || '',
+              note: attendance?.[rollCallDate.key]?.note || '',
             })
           }
         >
           <ShortTextIcon color={'disabled'} />
         </IconButton>
       </Box>
-      {attendance && attendance?.[rollCallDate.key].note && (
+      {attendance && attendance?.[rollCallDate.key]?.note && (
         <Typography fontSize={'0.5rem'} sx={{ color: grey[600], textAlign: 'left' }}>
           <i>Ghi chú: {attendance[rollCallDate.key].note}</i>
         </Typography>

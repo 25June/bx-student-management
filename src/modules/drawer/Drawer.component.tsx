@@ -9,6 +9,7 @@ import {
   CSSObject,
   styled,
   Theme,
+  Typography,
 } from '@mui/material'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import CoPresentIcon from '@mui/icons-material/CoPresent'
@@ -20,13 +21,14 @@ import MuiDrawer from '@mui/material/Drawer'
 import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
 import { useAuthentication } from 'contexts/AuthContext'
-import { DialogType, Role } from 'constant/common'
+import { DialogType, Role, SemesterObj } from 'constant/common'
 import { useIsMobile } from 'utils/common'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
-import { blue } from '@mui/material/colors'
+import { blue, grey } from '@mui/material/colors'
 import { debounce } from 'lodash'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useDialogContext } from 'contexts/DialogContext'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface DrawerComponentProps {
   isOpen: boolean
@@ -74,6 +76,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
+  height: '100vh',
   overflowX: 'hidden',
 })
 
@@ -108,6 +111,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
   const { user } = useAuthentication()
+  const { semesterId, schoolYearId } = useClassContext()
   const { openDialog } = useDialogContext()
   const navigate = useNavigate()
   const location = useLocation()
@@ -131,10 +135,14 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
       behavior: 'smooth',
     })
     setShowScroll(false)
-  }, [])
-
+    Promise.resolve().then(() => setOpen(false))
+  }, [setOpen])
+  const schoolYearLabel = `${SemesterObj[semesterId]} (${schoolYearId.slice(
+    2,
+    4
+  )} - ${schoolYearId.slice(7, 9)})`
   return (
-    <Drawer variant="permanent" open={isOpen} sx={{ height: '100%' }}>
+    <Drawer variant="permanent" open={isOpen}>
       <List sx={{ paddingTop: 8, height: '100vh' }}>
         {Object.values(Menu).map(({ text, icon, to }) => {
           if ([Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
@@ -146,7 +154,7 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
                 selected={to === location.pathname}
                 onClick={() => {
                   setTimeout(() => navigate(to), 100)
-                  setTimeout(() => setOpen(false), 200)
+                  Promise.resolve().then(() => setOpen(false))
                 }}
                 sx={{
                   height: 48,
@@ -175,6 +183,32 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
             </ListItem>
           )
         })}
+        <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 96 }}>
+          <ListItemButton
+            onClick={handleScrollToTop}
+            sx={{
+              height: 48,
+              justifyContent: isOpen ? 'initial' : 'center',
+              px: isMobile ? 1.5 : 2.5,
+              width: 48,
+            }}
+          >
+            <ListItemText>
+              <Typography
+                sx={{
+                  paddingLeft: isOpen ? 6 : 0,
+                  transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+                  transformOrigin: isOpen ? 'center' : '8% 50%',
+                  transition: 'all 0.2s ease-out',
+                  color: grey[500],
+                  display: 'inline-block',
+                }}
+              >
+                {schoolYearLabel}
+              </Typography>
+            </ListItemText>
+          </ListItemButton>
+        </ListItem>
         <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 56 }}>
           <ListItemButton
             onClick={handleScrollToTop}
@@ -197,7 +231,7 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
                   <ExpandLessRoundedIcon sx={{ background: blue[100], borderRadius: '50%' }} />
                 </ListItemIcon>
                 <ListItemText
-                  primary="Lên Trên"
+                  primary="Lên Đầu Trang"
                   sx={{
                     opacity: isOpen ? 1 : 0,
                     color: blue[500],
@@ -207,6 +241,7 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
             )}
           </ListItemButton>
         </ListItem>
+
         <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 16 }}>
           <ListItemButton
             onClick={() => {
@@ -233,7 +268,6 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
               primary="Cài Đặt"
               sx={{
                 opacity: isOpen ? 1 : 0,
-                color: blue[500],
               }}
             />
           </ListItemButton>

@@ -17,6 +17,7 @@ import SchoolYearsDropdownComponent from 'modules/school-year-dropdown/SchoolYea
 import { SelectChangeEvent } from '@mui/material/Select'
 import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import { useIsMobile } from 'utils/common'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface ConfigDialogComponentProps {
   onClose: (refreshData?: boolean) => void
@@ -30,9 +31,18 @@ interface ConfigForm {
 
 const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) => {
   const { showSnackbar } = useSnackbarContext()
+  const {
+    setSchoolYearId,
+    setSemesterId,
+    semesterId: defaultSemesterId,
+    schoolYearId: defaultSchoolYearId,
+  } = useClassContext()
   const isMobile = useIsMobile()
   const { handleSubmit, setValue, watch } = useForm<ConfigForm>({
-    defaultValues: {},
+    defaultValues: {
+      schoolYearId: defaultSchoolYearId,
+      semesterId: defaultSemesterId,
+    },
   })
   const schoolYearId = watch('schoolYearId')
   const semesterId = watch('semesterId')
@@ -41,6 +51,16 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
   const onSubmit = (data: ConfigForm) => {
     console.log({ data })
     setLoading(true)
+    Promise.resolve().then(() => {
+      setTimeout(() => {
+        setSchoolYearId(data.schoolYearId)
+        setSemesterId(data.semesterId)
+        setLoading(false)
+      }, 200)
+      setTimeout(() => {
+        onClose()
+      }, 300)
+    })
     showSnackbar('submitting', 'success')
   }
 

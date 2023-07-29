@@ -7,8 +7,10 @@ interface ClassContextProps {
   classId: string
   semesterId: string
   schoolYearId: string
-  setClassId: (classId: string) => void
+  setClassId: (classId: any) => void
   classObj?: Class
+  setSchoolYearId: (value: any) => void
+  setSemesterId: (value: any) => void
 }
 
 const classContextDefaultProps: ClassContextProps = {
@@ -17,6 +19,8 @@ const classContextDefaultProps: ClassContextProps = {
   classObj: BaseClasses[0],
   schoolYearId: '',
   semesterId: '',
+  setSchoolYearId: () => null,
+  setSemesterId: () => null,
 }
 
 const ClassContext = createContext(classContextDefaultProps)
@@ -24,8 +28,8 @@ const ClassContext = createContext(classContextDefaultProps)
 export const ClassProvider = ({ children }: PropsWithChildren) => {
   const { isSignedIn } = useAuthentication()
   const [classId, setClassId] = useState<string>(BaseClasses[0].id)
-  const schoolYearId = '2022-2023'
-  const semesterId = 'hk1'
+  const [schoolYearId, setSchoolYearId] = useState<string>('2022-2023')
+  const [semesterId, setSemesterId] = useState<string>('hk1')
   const value = useMemo(() => {
     return {
       classId: isSignedIn ? classId : '',
@@ -33,8 +37,10 @@ export const ClassProvider = ({ children }: PropsWithChildren) => {
       classObj: BaseClasses.find((c) => c.id === classId),
       schoolYearId,
       semesterId,
+      setSchoolYearId,
+      setSemesterId,
     }
-  }, [classId, isSignedIn])
+  }, [classId, isSignedIn, schoolYearId, semesterId])
   return <ClassContext.Provider value={value}>{children}</ClassContext.Provider>
 }
 

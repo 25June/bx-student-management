@@ -25,7 +25,10 @@ const CardComponent = ({
         alt="student-girl"
         sx={{ objectFit: 'contain' }}
       />
-      <CardContent sx={{ height: isMobile ? 60 : 120, padding: isMobile ? 1 : 2 }}>
+      <CardContent
+        sx={{ height: isMobile ? 60 : 120, padding: isMobile ? 1 : 2 }}
+        onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+      >
         <Typography
           gutterBottom={!isMobile}
           variant={isMobile ? 'h6' : 'h5'}

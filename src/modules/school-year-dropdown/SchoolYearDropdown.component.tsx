@@ -7,7 +7,7 @@ import { SchoolYear } from 'models/schoolYear'
 import { fetchSchoolYears } from 'services/one-time-call/schoolYear'
 
 interface SchoolYearsDropdownComponentProps {
-  schoolYearId?: string
+  schoolYearId: string
   onChangeSchoolYear: (event: SelectChangeEvent) => void
   size?: SelectProps['size']
 }
@@ -30,7 +30,7 @@ const SchoolYearsDropdownComponent = ({
   return (
     <FormControl fullWidth={true} size={size}>
       <InputLabel>Niên Khoá</InputLabel>
-      <Select value={schoolYearId || ''} label="Niên Khoá" onChange={onChangeSchoolYear}>
+      <Select value={schoolYearId} label="Niên Khoá" onChange={onChangeSchoolYear}>
         {(schoolYears || []).map((c: SchoolYear) => (
           <MenuItem value={c.id} key={c.duration}>
             {c.duration}

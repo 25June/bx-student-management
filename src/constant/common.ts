@@ -140,3 +140,19 @@ export const UserRoles = [
 ]
 
 export type extendedColorPalettes = 'kt' | 'rl' | 'ts' | 'bd' | 'vd'
+
+export const Semesters = [
+  {
+    key: 'hk1',
+    label: 'Học Kỳ 1',
+  },
+  {
+    key: 'hk2',
+    label: 'Học Kỳ 2',
+  },
+]
+
+export const SemesterObj: Record<string, string> = {
+  hk1: 'Học Kỳ 1',
+  hk2: 'Học Kỳ 2',
+}

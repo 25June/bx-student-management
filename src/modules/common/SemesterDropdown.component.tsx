@@ -3,23 +3,13 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select, { SelectChangeEvent, SelectProps } from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
+import { Semesters } from 'constant/common'
 
 interface SemesterDropdownComponentProps {
   selectedSemester: string
   onChangeSemester: (event: SelectChangeEvent) => void
   size?: SelectProps['size']
 }
-
-const Semesters = [
-  {
-    key: 'hk1',
-    label: 'Học Kỳ 1',
-  },
-  {
-    key: 'hk2',
-    label: 'Học Kỳ 2',
-  },
-]
 
 const SemesterDropdownComponent = ({
   selectedSemester,

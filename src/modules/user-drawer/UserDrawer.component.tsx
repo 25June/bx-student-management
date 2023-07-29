@@ -28,7 +28,6 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
     if (user && user.id) {
       getUserInfo(user.id).then((res) => {
         if (res) {
-          console.log(res)
           setCurrentUser(res)
         }
       })
@@ -41,9 +40,12 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
 
   const handleCloseUpdateDialog = (refreshData?: boolean) => {
     openUpdateInfoDialog(false)
-    if (refreshData) {
-      // fetchUsers()
-      console.log(refreshData)
+    if (refreshData && user && user.id) {
+      getUserInfo(user.id).then((res) => {
+        if (res) {
+          setCurrentUser(res)
+        }
+      })
     }
   }
 
