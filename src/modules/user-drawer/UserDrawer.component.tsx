@@ -39,7 +39,6 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
   }
 
   const handleCloseUpdateDialog = (refreshData?: boolean) => {
-    openUpdateInfoDialog(false)
     if (refreshData && user && user.id) {
       getUserInfo(user.id).then((res) => {
         if (res) {
@@ -47,9 +46,10 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
         }
       })
     }
+    openUpdateInfoDialog(false)
   }
 
-  if (!user) {
+  if (!user || !currentUser) {
     return null
   }
 
@@ -73,14 +73,14 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           </Button>
         </Box>
         <Box display={'flex'}>
-          <ImageBoxComponent imagePath={user.avatarPath} isGLV={true} maxWidth={200} />
+          <ImageBoxComponent imagePath={currentUser.avatarPath} isGLV={true} maxWidth={200} />
         </Box>
         <Box>
           <Box textAlign={'center'} margin={0} color={blue[800]}>
-            {user.email}
+            {currentUser.email}
           </Box>
           <Box textAlign={'center'} component={'h1'} mt={0} color={blue[800]}>
-            {`${user.firstName} ${user.lastName}`}
+            {`${currentUser.firstName} ${currentUser.lastName}`}
           </Box>
         </Box>
         <Button

@@ -156,3 +156,10 @@ export const SemesterObj: Record<string, string> = {
   hk1: 'Học Kỳ 1',
   hk2: 'Học Kỳ 2',
 }
+
+export const colorPalettes = {
+  score5: '#89C0B7',
+  score15: '#fccf55',
+  score45: '#6F91B5',
+  score60: '#EF8F88',
+}

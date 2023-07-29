@@ -15,10 +15,6 @@ const PrivateComponent = ({ component }: { component: React.ReactElement }) => {
       if (!isSignedIn) {
         navigate(Router.SIGN_IN)
       }
-
-      if (location.pathname === Router.USER) {
-        navigate(Router.HOME)
-      }
       setLoading(false)
     }
   }, [status, navigate, isSignedIn, user, location.pathname])

@@ -82,7 +82,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
     }
     updateUserInfo({
       ...data,
-      avatarPath: downloadPath ? downloadPath : user.avatarPath,
+      avatarPath: downloadPath ? downloadPath : user.avatarPath || '',
       id: user.id,
     } as User).finally(() => onClose(true))
   }
@@ -128,7 +128,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
               <TextField
                 label={'Email'}
                 variant={'outlined'}
-                helperText={fieldState.error ? fieldState.error.message || '' : 'abc@gmail.com'}
+                helperText={fieldState?.error?.message}
                 margin={'normal'}
                 type={'email'}
                 fullWidth={true}
@@ -147,7 +147,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
                 <TextField
                   label={'Họ'}
                   variant={'outlined'}
-                  helperText={fieldState.error ? fieldState.error.message || '' : 'Nguyễn'}
+                  helperText={fieldState?.error?.message}
                   margin={'normal'}
                   type={'email'}
                   fullWidth={true}
@@ -165,7 +165,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
                 <TextField
                   label={'Tên'}
                   variant={'outlined'}
-                  helperText={fieldState.error ? fieldState.error.message || '' : 'Phú'}
+                  helperText={fieldState?.error?.message}
                   margin={'normal'}
                   type={'text'}
                   fullWidth={true}
@@ -184,7 +184,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
               <TextField
                 label={'Điện Thoại'}
                 variant={'outlined'}
-                helperText={fieldState.error ? fieldState.error.message || '' : '0973173484'}
+                helperText={fieldState?.error?.message}
                 margin={'normal'}
                 type={'text'}
                 fullWidth={true}

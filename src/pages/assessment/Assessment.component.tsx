@@ -10,6 +10,8 @@ import { fetchAssessments } from 'services'
 import { useClassContext } from 'contexts/ClassContext'
 import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType } from 'constant/common'
+import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
+import AssessmentSingleViewComponent from 'modules/assessment-single-view/AssessmentSingleView.component'
 
 const AssessmentComponent = () => {
   const { assessments, setAssessments } = useAssessmentContext()
@@ -48,8 +50,17 @@ const AssessmentComponent = () => {
         </Typography>
       </Box>
       <Box p={isMobile ? 1 : 2}>
-        {assessments && (
-          <AssessmentTableComponent rows={assessments} onClickAction={openStudentDialog} />
+        {assessments ? (
+          isMobile ? (
+            <AssessmentSingleViewComponent
+              assessments={assessments}
+              onClickAction={openStudentDialog}
+            />
+          ) : (
+            <AssessmentTableComponent rows={assessments} onClickAction={openStudentDialog} />
+          )
+        ) : (
+          <DiligentSkeleton />
         )}
       </Box>
     </Box>

@@ -180,9 +180,9 @@ const AssessmentDialogComponent = ({
   return (
     <Dialog open={isOpen} onClose={() => onClose()} aria-labelledby="assessment-dialog-title">
       <DialogTitle id="assessment-dialog-title">
-        {action === AssessmentActionType.EDIT_ASSESSMENT && 'Cập nhật thông tin bài kiểm tra'}
-        {action === AssessmentActionType.ADD_NEW_ASSESSMENT && 'Thêm thông tin bài kiểm tra'}
-        {action === AssessmentActionType.DELETE_ASSESSMENT && 'Xoá thông tin bài kiểm tra'}
+        {action === AssessmentActionType.EDIT_ASSESSMENT && 'Cập nhật bài kiểm tra'}
+        {action === AssessmentActionType.ADD_NEW_ASSESSMENT && 'Thêm bài kiểm tra'}
+        {action === AssessmentActionType.DELETE_ASSESSMENT && 'Xoá bài kiểm tra'}
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent dividers={true}>

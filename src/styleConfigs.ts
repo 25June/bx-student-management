@@ -9,6 +9,10 @@ declare module '@mui/material/styles' {
     ts: Palette['primary']
     bd: Palette['primary']
     vd: Palette['primary']
+    score5: Palette['primary']
+    score15: Palette['primary']
+    score45: Palette['primary']
+    score60: Palette['primary']
   }
 
   // allow configuration using `createTheme`
@@ -19,6 +23,10 @@ declare module '@mui/material/styles' {
     ts?: PaletteOptions['primary']
     bd?: PaletteOptions['primary']
     vd?: PaletteOptions['primary']
+    score5?: PaletteOptions['primary']
+    score15?: PaletteOptions['primary']
+    score45?: PaletteOptions['primary']
+    score60?: PaletteOptions['primary']
   }
 }
 
@@ -94,6 +102,30 @@ const theme = createTheme({
     },
     vd: {
       main: brown[500],
+      light: brown[100],
+      dark: brown[800],
+      contrastText: '#fff',
+    },
+    score5: {
+      main: '#89C0B7',
+      light: brown[100],
+      dark: brown[800],
+      contrastText: '#fff',
+    },
+    score15: {
+      main: '#B7E1E4',
+      light: brown[100],
+      dark: brown[800],
+      contrastText: '#fff',
+    },
+    score45: {
+      main: '#6F91B5',
+      light: brown[100],
+      dark: brown[800],
+      contrastText: '#fff',
+    },
+    score60: {
+      main: '#EF8F88',
       light: brown[100],
       dark: brown[800],
       contrastText: '#fff',

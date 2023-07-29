@@ -149,7 +149,7 @@ const SignInComponent = () => {
                   <TextField
                     label={'Email'}
                     variant={'outlined'}
-                    helperText={fieldState.error ? fieldState.error.message || '' : 'abc@gmail.com'}
+                    helperText={fieldState?.error?.message || ''}
                     margin={'normal'}
                     type={'email'}
                     autoComplete={'email'}
