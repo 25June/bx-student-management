@@ -33,8 +33,7 @@ export const useGetAttendanceByClassId = () => {
       )
       return () => subscribe()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId])
+  }, [classId, schoolYearId, semesterId])
 
   return { attendances, isLoading: typeof attendances === 'undefined' }
 }

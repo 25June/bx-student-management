@@ -13,7 +13,6 @@ import {
 } from 'firebase/firestore'
 import { app } from '../firebase'
 import { useClassContext } from 'contexts/ClassContext'
-import { AssessmentEnum } from 'constant/common'
 
 const db = getFirestore(app)
 const AssessmentCollection = 'assessments'
@@ -23,26 +22,7 @@ export const updateAllValueOfAssessment = () => {
   const queryAssessments = query(assessmentRef)
   getDocs(queryAssessments).then((snapshot) => {
     snapshot.docs.forEach((snapshotDoc) => {
-      let score
-      switch (snapshotDoc.data().type) {
-        case AssessmentEnum.KT5:
-          score = 'score5'
-          break
-        case AssessmentEnum.KT15:
-          score = 'score15'
-          break
-        case AssessmentEnum.KT45:
-          score = 'score45'
-          break
-        case AssessmentEnum.KT60:
-          score = 'score60'
-          break
-        default:
-          break
-      }
-      if (score) {
-        updateDoc(snapshotDoc.ref, { type: score }).then((result) => console.log(result))
-      }
+      updateDoc(snapshotDoc.ref, { schoolYear: '2022-2023' }).then((result) => console.log(result))
     })
 
     if (snapshot.empty) {

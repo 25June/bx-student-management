@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Router } from 'routes'
 import LayoutComponent from 'modules/layout/Layout.component'
 import FallbackComponent from 'modules/fallback/Fallback.component'
-import { Role } from 'constant/common'
 
 const PrivateComponent = ({ component }: { component: React.ReactElement }) => {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -17,7 +16,7 @@ const PrivateComponent = ({ component }: { component: React.ReactElement }) => {
         navigate(Router.SIGN_IN)
       }
 
-      if (location.pathname === Router.USER && user && user.role !== Role.CTO) {
+      if (location.pathname === Router.USER) {
         navigate(Router.HOME)
       }
       setLoading(false)

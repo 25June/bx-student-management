@@ -44,7 +44,6 @@ const DiligentTableComponent = ({
 }: DiligentTableProps) => {
   const { classId, semesterId, schoolYearId } = useClassContext()
   const isMobile = useIsMobile()
-
   const handleSubmitAttendance =
     (studentId: string) =>
     ({ value, rollCallKey, isMissal }: OnSubmitAttendanceProps) => {

@@ -49,7 +49,7 @@ const DiligentDialogComponent = ({
 
   const onSubmit = ({ rollCallDate }: { rollCallDate: string }) => {
     setLoading(true)
-    if (Object.values(rollCallDates).includes(rollCallDate)) {
+    if (Object.values(rollCallDates || {}).includes(rollCallDate)) {
       setError('rollCallDate', { message: 'Ngày bạn định thêm đã có rồi!' }, { shouldFocus: true })
       return
     }

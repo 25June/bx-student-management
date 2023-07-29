@@ -23,6 +23,7 @@ import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
+import { useClassContext } from 'contexts/ClassContext'
 
 type AssessmentForm = {
   bookDate: string
@@ -73,6 +74,7 @@ const AssessmentDialogComponent = ({
   const editAssessment = useEditAssessment()
   const deleteAssessment = useDeleteAssessment()
   const { showSnackbar } = useSnackbarContext()
+  const { schoolYearId } = useClassContext()
 
   const { handleSubmit, control, reset, setValue } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
@@ -93,6 +95,7 @@ const AssessmentDialogComponent = ({
         bookDate: submitData.bookDate,
         type: submitData.type,
         lesson: submitData.lesson,
+        schoolYear: data.schoolYear,
       }
       editAssessment({
         dataInput: updatedAssessment,
@@ -145,6 +148,7 @@ const AssessmentDialogComponent = ({
       bookDate: submitData.bookDate,
       type: submitData.type,
       lesson: submitData.lesson,
+      schoolYear: schoolYearId,
     }
     addNewAssessment({
       dataInput: newAssessment,

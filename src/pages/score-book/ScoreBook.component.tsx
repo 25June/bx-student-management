@@ -6,7 +6,6 @@ import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
 import { useGetStudentScoreBooks, setNewStudentScore } from 'services/scorebook'
-import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
@@ -28,7 +27,6 @@ const ScoreBookComponent = () => {
 
   const { studentScoreBooks } = useGetStudentScoreBooks()
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
-  const [selectedSemester, setSelectedSemester] = useState<string>(semesterId)
   const [filteredStuScoreBooks, setFilteredStuScoreBooks] = useState<
     StudentScoreBooks[] | Student[]
   >([])
@@ -155,11 +153,6 @@ const ScoreBookComponent = () => {
         <Typography sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }} variant={'h1'}>
           Bảng Điểm
         </Typography>
-        <SemesterDropdownComponent
-          selectedSemester={selectedSemester}
-          onChangeSemester={(event) => setSelectedSemester(event.target.value)}
-          size={'small'}
-        />
       </Box>
       <Box
         sx={{

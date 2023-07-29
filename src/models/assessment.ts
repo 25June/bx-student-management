@@ -10,4 +10,5 @@ export type Assessment = {
   lesson: string
   type: AssessmentEnum
   isDeleted?: boolean
+  schoolYear: string
 }

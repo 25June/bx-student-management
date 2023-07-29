@@ -8,7 +8,6 @@ import DiligentTableComponent from 'modules/diligent-table/DiligentTable.compone
 import MonthDropdownComponent from 'modules/common/MonthDropdown.component'
 import { groupRollCallToSortedMonths, RollCallDate } from 'utils/customHooks'
 import { SelectChangeEvent } from '@mui/material/Select'
-import SemesterDropdownComponent from 'modules/common/SemesterDropdown.component'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
@@ -30,7 +29,6 @@ const DiligentComponent = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedRollCallDate, setSelectedRollCallDate] = useState<RollCallDate>()
 
-  const [selectedSemester, setSelectedSemester] = useState<string>(semesterId)
   const [groupRollDate, setGroupRollDate] = useState<Record<string, RollCallDate[]>>({})
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   const [studentAttendanceCount, setStudentAttendanceCount] = useState<{ tl: number; gl: number }>()
@@ -138,10 +136,6 @@ const DiligentComponent = () => {
     }
   })
 
-  const handleChangeSemester = (event: SelectChangeEvent) => {
-    setSelectedSemester(event.target.value)
-  }
-
   const handleFilterStudentByName = (value: string) => {
     if (students && students.length !== 0) {
       if (!value) {
@@ -198,11 +192,6 @@ const DiligentComponent = () => {
           >
             Điểm Chuyên Cần{' '}
           </Typography>
-          <SemesterDropdownComponent
-            selectedSemester={selectedSemester}
-            onChangeSemester={handleChangeSemester}
-            size={'small'}
-          />
         </Box>
         <Box
           sx={{
