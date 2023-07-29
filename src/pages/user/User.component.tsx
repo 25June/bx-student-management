@@ -13,6 +13,7 @@ import ChangePasswordDialogComponent from 'modules/user-dialog/ChangePasswordDia
 import PermissionDialogComponent from 'modules/user-dialog/PermissionDialog.component'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import { useIsMobile } from 'utils/common'
+import UserSingleViewComponent from 'modules/user-single-view/UserSingleViewComponent'
 
 const UserComponent = () => {
   const isMobile = useIsMobile()
@@ -109,7 +110,11 @@ const UserComponent = () => {
         </Button>
       </Box>
       <Box>
-        <UserTableComponent rows={filteredUsers || []} onClickAction={handleClickAction} />
+        {isMobile ? (
+          <UserSingleViewComponent users={filteredUsers || []} onClickAction={handleClickAction} />
+        ) : (
+          <UserTableComponent rows={filteredUsers || []} onClickAction={handleClickAction} />
+        )}
       </Box>
       <UserDialogComponent onClose={handleCloseDialog} isOpen={isOpenUserDialog} />
       <ChangePasswordDialogComponent

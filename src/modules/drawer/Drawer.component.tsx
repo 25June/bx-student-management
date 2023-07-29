@@ -62,7 +62,7 @@ const Menu = {
     to: Router.IMPORT,
   },
   USER: {
-    text: 'GLV',
+    text: 'Giáo Lý Viên',
     icon: (isActive: boolean) => (
       <SupervisedUserCircleIcon color={isActive ? 'primary' : undefined} />
     ),

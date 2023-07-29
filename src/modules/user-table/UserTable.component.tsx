@@ -15,10 +15,11 @@ import MenuItem from '@mui/material/MenuItem'
 import EditIcon from '@mui/icons-material/Edit'
 import PasswordIcon from '@mui/icons-material/Password'
 import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
-import { BaseClassObj, extendedColorPalettes, UserAction, UserRoles } from 'constant/common'
+import { BaseClassObj, extendedColorPalettes, Role, UserAction, UserRoles } from 'constant/common'
 import { useIsMobile } from 'utils/common'
 import { grey } from '@mui/material/colors'
 import Chip from '@mui/material/Chip'
+import { useAuthentication } from 'contexts/AuthContext'
 
 interface UserTableComponentProps {
   rows: User[]
@@ -27,6 +28,7 @@ interface UserTableComponentProps {
 
 const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) => {
   const isMobile = useIsMobile()
+  const { user } = useAuthentication()
 
   const [selectedRow, setSelectedRow] = useState<User>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -62,7 +64,7 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
             <TableCell key={'email'}>Email</TableCell>
             <TableCell key={'classId'}>Lớp</TableCell>
             <TableCell key={'role'}>Chức vụ</TableCell>
-            <TableCell key={'action'} />
+            {user?.role === Role.CTO && <TableCell key={'action'} />}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -101,23 +103,25 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
               >
                 {UserRoles[row.role]?.title || ''}
               </TableCell>
-              <TableCell
-                data-cell={'Action'}
-                key={`${row.id}-action`}
-                align={isMobile ? 'left' : 'right'}
-                sx={{ ...tableBodyClass }}
-              >
-                <Tooltip title={'Menu'} placement={'top'}>
-                  <IconButton
-                    aria-label={'Menu'}
-                    onClick={(e) => handleClickMenu(e, row)}
-                    size={'small'}
-                    color={'primary'}
-                  >
-                    <MoreVertIcon fontSize={'small'} sx={{ transform: 'rotate(90deg)' }} />
-                  </IconButton>
-                </Tooltip>
-              </TableCell>
+              {user?.role === Role.CTO && (
+                <TableCell
+                  data-cell={'Action'}
+                  key={`${row.id}-action`}
+                  align={isMobile ? 'left' : 'right'}
+                  sx={{ ...tableBodyClass }}
+                >
+                  <Tooltip title={'Menu'} placement={'top'}>
+                    <IconButton
+                      aria-label={'Menu'}
+                      onClick={(e) => handleClickMenu(e, row)}
+                      size={'small'}
+                      color={'primary'}
+                    >
+                      <MoreVertIcon fontSize={'small'} sx={{ transform: 'rotate(90deg)' }} />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>
