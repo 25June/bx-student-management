@@ -22,6 +22,7 @@ const DateDropdownComponent = ({
   const dateChange = (event: SelectChangeEvent) => {
     onChangeDate(dates.find(({ value }) => value === event.target.value))
   }
+
   return (
     <FormControl fullWidth={true} size={size || 'small'}>
       <InputLabel>Ngày</InputLabel>

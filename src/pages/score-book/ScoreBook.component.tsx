@@ -1,11 +1,12 @@
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
-import { StudentScoreBooks, Student, KeyValueProp, Assessment } from 'models'
-import React, { useState, useMemo, useEffect } from 'react'
+import { Assessment, KeyValueProp, Student, StudentScoreBooks } from 'models'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Typography } from '@mui/material'
-import { useGetStudentScoreBooks, setNewStudentScore } from 'services/scorebook'
+import { setNewStudentScore, useGetStudentScoreBooks } from 'services/scorebook'
 import SearchComponent from 'modules/common/Search.component'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
@@ -14,16 +15,20 @@ import DateDropdownComponent from 'modules/common/DateDropdown.component'
 import ScoreBookDisplayComponent, {
   ScoreBookDisplayComponentProps,
 } from 'modules/score-book/ScoreBookDisplay.component'
-import { AssessmentEnum } from 'constant/common'
+import { AssessmentActionType, AssessmentEnum, DialogType } from 'constant/common'
 import { sortBy } from 'lodash'
-import { ScoreBookSummaryResponse, getScoreBookSummary } from 'utils/scorebookSummary'
+import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
 import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
+import { blueGrey } from '@mui/material/colors'
+import { useDialogContext } from 'contexts/DialogContext'
+import { fetchAssessments } from 'services'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
   const { classId, schoolYearId, semesterId } = useClassContext()
   const isMobile = useIsMobile()
-  const { assessments } = useAssessmentContext()
+  const { assessments, setAssessments } = useAssessmentContext()
+  const { openDialog } = useDialogContext()
 
   const { studentScoreBooks } = useGetStudentScoreBooks()
   const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
@@ -74,7 +79,15 @@ const ScoreBookComponent = () => {
     }
   }, [stuScoreBooks, selectedAssessmentType, selectedAssessmentDate])
 
-  if (!students || !classId || !assessments || !studentScoreBooks) {
+  const callback = (refreshData?: boolean): void => {
+    if (refreshData) {
+      fetchAssessments(classId).then((res) => {
+        setAssessments(res)
+      })
+    }
+  }
+
+  if (!students || !classId || !assessments) {
     return null
   }
 
@@ -191,7 +204,28 @@ const ScoreBookComponent = () => {
       {scoreBookSummary && (
         <ScoreBookSummaryInfoComponent totalStudents={students.length} {...scoreBookSummary} />
       )}
-      <ScoreBookDisplayComponent {...displayProps} />
+      {assessments.length !== 0 ? (
+        <ScoreBookDisplayComponent {...displayProps} />
+      ) : (
+        <Box>
+          <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
+            <i>Chưa có bài kiểm tra nào, tạo ngay thôi</i>
+            <Button
+              variant={'contained'}
+              onClick={() =>
+                openDialog(
+                  DialogType.ASSESSMENT_DIALOG,
+                  AssessmentActionType.ADD_NEW_ASSESSMENT,
+                  undefined,
+                  callback
+                )
+              }
+            >
+              Tạo bài kiểm tra
+            </Button>
+          </Typography>
+        </Box>
+      )}
       {!!selectedScoreBook && (
         <ScoreBookDialogComponent
           isOpen={!!selectedScoreBook}

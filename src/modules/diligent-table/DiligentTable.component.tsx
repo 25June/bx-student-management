@@ -22,6 +22,9 @@ import SingleDateViewComponent from 'modules/single-date-view/SingleDateView.com
 import { useClassContext } from 'contexts/ClassContext'
 import { blueGrey } from '@mui/material/colors'
 import Typography from '@mui/material/Typography'
+import { DialogType, RollCallDateActionType } from 'constant/common'
+import Button from '@mui/material/Button'
+import { useDialogContext } from 'contexts/DialogContext'
 
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -43,6 +46,7 @@ const DiligentTableComponent = ({
   attendances,
 }: DiligentTableProps) => {
   const { classId, semesterId, schoolYearId } = useClassContext()
+  const { openDialog } = useDialogContext()
   const isMobile = useIsMobile()
   const handleSubmitAttendance =
     (studentId: string) =>
@@ -66,6 +70,19 @@ const DiligentTableComponent = ({
         <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
           <i>Chưa có ngày điểm danh. Tạo ngày điểm danh.</i>
         </Typography>
+        <Button
+          variant={'contained'}
+          onClick={() =>
+            openDialog(
+              DialogType.STUDY_DATE_DIALOG,
+              RollCallDateActionType.ADD_STUDY_DATE,
+              undefined,
+              undefined
+            )
+          }
+        >
+          Tạo bài kiểm tra
+        </Button>
       </Box>
     )
   }
