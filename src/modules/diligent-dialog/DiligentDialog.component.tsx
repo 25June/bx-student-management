@@ -62,20 +62,18 @@ const DiligentDialogComponent = ({
         semesterId,
         schoolYearId,
       }).finally(() => {
-        setTimeout(() => {
-          setLoading(false)
-          onClose(true)
-        }, 20)
+        setLoading(false)
+        onClose(true)
         return fetchRollCallDates?.({ classId, semesterId, schoolYearId })
       })
       return
     }
 
     addRollCallDate({ date: rollCallDate, classId, semesterId, schoolYearId }).finally(() => {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setLoading(false)
         onClose(true)
-      }, 20)
+      })
       return fetchRollCallDates?.({ classId, semesterId, schoolYearId })
     })
   }

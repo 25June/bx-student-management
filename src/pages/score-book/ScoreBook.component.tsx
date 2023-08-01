@@ -67,7 +67,7 @@ const ScoreBookComponent = () => {
 
   useEffect(() => {
     if (stuScoreBooks?.length !== 0 && selectedAssessmentType && selectedAssessmentDate) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setScoreBookSummary(
           getScoreBookSummary({
             assessmentType: selectedAssessmentType,
@@ -75,7 +75,7 @@ const ScoreBookComponent = () => {
             studentScoreBooks: stuScoreBooks as StudentScoreBooks[],
           })
         )
-      }, 200)
+      })
     }
   }, [stuScoreBooks, selectedAssessmentType, selectedAssessmentDate])
 
@@ -149,11 +149,11 @@ const ScoreBookComponent = () => {
 
   const handleChangeShowScoreDate = (updatedDate?: KeyValueProp) => {
     if (updatedDate) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setSelectedAssessmentDate(
           assessments.find((assessment) => assessment.id === updatedDate.key)
         )
-      }, 0)
+      })
     }
   }
 
@@ -191,9 +191,6 @@ const ScoreBookComponent = () => {
           gap: 2,
         }}
       >
-        <Box>
-          <SearchComponent onChange={handleFilterStudentByName} />
-        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -213,6 +210,7 @@ const ScoreBookComponent = () => {
             onChangeDate={handleChangeShowScoreDate}
           />
         </Box>
+        {assessments.length !== 0 && <SearchComponent onChange={handleFilterStudentByName} />}
       </Box>
       {scoreBookSummary && (
         <ScoreBookSummaryInfoComponent

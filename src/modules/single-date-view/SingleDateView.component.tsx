@@ -13,6 +13,7 @@ import ShortTextIcon from '@mui/icons-material/ShortText'
 import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { grey } from '@mui/material/colors'
+import { get } from 'lodash'
 
 interface SingleDateViewComponentProps {
   student: StudentRows
@@ -36,7 +37,7 @@ const SingleDateViewComponent = ({
   attendance,
 }: SingleDateViewComponentProps) => {
   const { openDialog } = useDialogContext()
-
+  const note = get(attendance, [`${rollCallDate.key}`, 'note'], '')
   return (
     <Item>
       <TableFullNameCellComponent
@@ -49,8 +50,8 @@ const SingleDateViewComponent = ({
       <Box pt={2} sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <DiligentFormComponent
           rollCallKey={rollCallDate.key}
-          GL={!!(attendance && attendance?.[rollCallDate.key] && attendance[rollCallDate.key].gl)}
-          TL={!!(attendance && attendance?.[rollCallDate.key] && attendance[rollCallDate.key].tl)}
+          GL={!!get(attendance, [`${rollCallDate.key}`, 'gl'], false)}
+          TL={!!get(attendance, [`${rollCallDate.key}`, 'tl'], false)}
           onSubmitAttendance={onSubmitAttendance}
         />
         <IconButton
@@ -58,16 +59,16 @@ const SingleDateViewComponent = ({
             openDialog(DialogType.STUDY_DATE_DIALOG, RollCallDateActionType.ADD_NOTE, {
               studentId: student.id,
               rollCallDateId: rollCallDate.key,
-              note: attendance?.[rollCallDate.key]?.note || '',
+              note,
             })
           }
         >
           <ShortTextIcon color={'disabled'} />
         </IconButton>
       </Box>
-      {attendance && attendance?.[rollCallDate.key]?.note && (
+      {note && (
         <Typography fontSize={'0.5rem'} sx={{ color: grey[600], textAlign: 'left' }}>
-          <i>Ghi chú: {attendance[rollCallDate.key].note}</i>
+          <i>Ghi chú: {note}</i>
         </Typography>
       )}
     </Item>

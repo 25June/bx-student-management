@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Student } from 'models'
 import TableContainer from '@mui/material/TableContainer'
 import Paper from '@mui/material/Paper'
@@ -17,7 +17,6 @@ import { useIsMobile } from 'utils/common'
 import { Box } from '@mui/material'
 import Grow from '@mui/material/Grow'
 import Stack from '@mui/material/Stack'
-import DiligentAccordionComponent from 'modules/diligent/DiligentAccordion.component'
 import SingleDateViewComponent from 'modules/single-date-view/SingleDateView.component'
 import { useClassContext } from 'contexts/ClassContext'
 import { blueGrey } from '@mui/material/colors'
@@ -25,9 +24,46 @@ import Typography from '@mui/material/Typography'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import Button from '@mui/material/Button'
 import { useDialogContext } from 'contexts/DialogContext'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Divider from '@mui/material/Divider'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import IconButton from '@mui/material/IconButton'
+import Drawer from '@mui/material/Drawer'
+import DiligentPanelContentComponent from 'modules/diligent/DiligentPanelContent.component'
 
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
+}
+
+const ListStudent = ({
+  row,
+  onClickMenu,
+}: {
+  row: StudentRows
+  onClickMenu: (row: StudentRows) => void
+}) => {
+  return (
+    <>
+      <ListItem
+        onClick={() => onClickMenu(row)}
+        secondaryAction={
+          <IconButton aria-label={'Menu'} size={'small'} color={'primary'}>
+            <NavigateNextIcon fontSize={'small'} />
+          </IconButton>
+        }
+      >
+        <TableFullNameCellComponent
+          avatarPath={row.avatarPath}
+          saintName={row.saintName}
+          lastName={row.lastName}
+          firstName={row.firstName}
+          gender={!!row.gender}
+        />
+      </ListItem>
+      <Divider variant="inset" component="li" />
+    </>
+  )
 }
 
 interface DiligentTableProps {
@@ -48,6 +84,8 @@ const DiligentTableComponent = ({
   const { classId, semesterId, schoolYearId } = useClassContext()
   const { openDialog } = useDialogContext()
   const isMobile = useIsMobile()
+  const [selectedStuRow, setSelectedStuRow] = useState<StudentRows>()
+
   const handleSubmitAttendance =
     (studentId: string) =>
     ({ value, rollCallKey, isMissal }: OnSubmitAttendanceProps) => {
@@ -63,6 +101,10 @@ const DiligentTableComponent = ({
         })
       }
     }
+
+  const handleSelectRow = (row?: StudentRows) => {
+    setSelectedStuRow(row)
+  }
 
   if (!attendances || !rollCallDates || rollCallDates.length === 0) {
     return (
@@ -112,17 +154,28 @@ const DiligentTableComponent = ({
 
     return (
       <Box>
-        {rows.map((row) => {
-          return (
-            <DiligentAccordionComponent
-              key={row.id}
-              studentRow={row}
+        <List>
+          {rows.map((row) => {
+            return <ListStudent row={row} key={row.id} onClickMenu={handleSelectRow} />
+          })}
+        </List>
+        <Drawer
+          variant="temporary"
+          anchor={'right'}
+          open={!!selectedStuRow}
+          onClose={() => handleSelectRow(undefined)}
+          sx={{ width: 325, maxWidth: 325 }}
+        >
+          {selectedStuRow && (
+            <DiligentPanelContentComponent
+              studentAttendance={selectedStuRow}
               rollCallDates={rollCallDates}
-              onSubmitAttendance={handleSubmitAttendance(row.id)}
-              attendance={attendances[row.id]}
+              attendance={attendances[selectedStuRow.id]}
+              onClose={() => handleSelectRow(undefined)}
+              onSubmitAttendance={handleSubmitAttendance(selectedStuRow.id)}
             />
-          )
-        })}
+          )}
+        </Drawer>
       </Box>
     )
   }

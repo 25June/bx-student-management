@@ -121,11 +121,11 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
             maxWidth={200}
           />
         </Box>
-        <Box>
-          <Box textAlign={'center'} component={'h2'} margin={0}>
+        <Box mt={1.5}>
+          <Box textAlign={'center'} component={'h5'} fontWeight={400} margin={0}>
             {studentInfo.saintName}
           </Box>
-          <Box textAlign={'center'} component={'h1'} mt={0}>
+          <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
             {`${studentInfo.lastName} ${studentInfo.firstName}`}
           </Box>
           <Box>

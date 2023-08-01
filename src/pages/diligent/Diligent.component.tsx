@@ -34,9 +34,9 @@ const DiligentComponent = () => {
   const [studentAttendanceCount, setStudentAttendanceCount] = useState<{ tl: number; gl: number }>()
   useEffect(() => {
     if (students) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setFilteredStudents(students)
-      }, 20)
+      })
     }
   }, [students])
 
@@ -45,11 +45,9 @@ const DiligentComponent = () => {
       fetchRollCallDates({ classId, semesterId, schoolYearId }).then(
         (res: Record<string, string> | null) => {
           if (res) {
-            setTimeout(() => {
-              const sortedMonthDate = groupRollCallToSortedMonths(res)
-              setGroupRollDate(sortedMonthDate)
-              setSelectedMonth(Object.keys(sortedMonthDate)[0])
-            }, 20)
+            const sortedMonthDate = groupRollCallToSortedMonths(res)
+            setGroupRollDate(sortedMonthDate)
+            setSelectedMonth(Object.keys(sortedMonthDate)[0])
             return
           }
           setGroupRollDate({})
@@ -68,19 +66,19 @@ const DiligentComponent = () => {
 
   useEffect(() => {
     if (selectedRollCallDate && attendances) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setStudentAttendanceCount(countStudentPresent(selectedRollCallDate.key, attendances))
-      }, 100)
+      })
     }
   }, [selectedRollCallDate, attendances])
 
   useEffect(() => {
     if (rollCallDates) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         const sortedMonthDate = groupRollCallToSortedMonths(rollCallDates)
         setGroupRollDate(sortedMonthDate)
         setSelectedMonth(Object.keys(sortedMonthDate)[0])
-      }, 0)
+      })
     }
   }, [rollCallDates])
 
@@ -95,13 +93,13 @@ const DiligentComponent = () => {
 
   const handleChangeDate = (updatedDate?: KeyValueProp) => {
     if (updatedDate && updatedDate.value === 'all') {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setSelectedRollCallDate(undefined)
-      }, 0)
+      })
       return
     }
 
-    setTimeout(() => {
+    Promise.resolve().then(() => {
       const rollCallDate = groupRollDate[selectedMonth].find(
         (date) => date.dateAsString === updatedDate?.value
       )
@@ -157,7 +155,7 @@ const DiligentComponent = () => {
     if (selectedRollCallDate?.key && students?.length !== 0 && classId) {
       const confirmation = window.confirm('Chắc chưa?')
       if (confirmation) {
-        submitAttendanceAllStudentsInClass({
+        return submitAttendanceAllStudentsInClass({
           studentIds: students.map((stu) => stu.id),
           classId,
           rollDateId: selectedRollCallDate.key,
@@ -205,9 +203,6 @@ const DiligentComponent = () => {
             width: '100%',
           }}
         >
-          <Box>
-            <SearchComponent onChange={handleFilterStudentByName} />
-          </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
             {rollCallDates && selectedMonth && (
               <MonthDropdownComponent
@@ -243,6 +238,9 @@ const DiligentComponent = () => {
               </>
             )}
           </Box>
+          {formatAttendances && formatAttendances.length !== 0 && (
+            <SearchComponent onChange={handleFilterStudentByName} />
+          )}
         </Box>
         {studentAttendanceCount && (
           <AttendanceCountComponent

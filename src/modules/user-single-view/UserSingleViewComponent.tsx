@@ -74,7 +74,7 @@ const UserItem = ({
         }
       >
         <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src={buildImageUrl(user.avatarPath, false, true)} />
+          <Avatar src={buildImageUrl(user.avatarPath, false, true)} />
         </ListItemAvatar>
         <ListItemText
           primary={

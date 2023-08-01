@@ -17,7 +17,7 @@ const DiligentFormComponent = ({
   onSubmitAttendance,
 }: DiligentFormComponentProps) => {
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexGrow: 2 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexGrow: 2, gap: 1.5 }}>
       <FormControlLabel
         control={
           <Checkbox
