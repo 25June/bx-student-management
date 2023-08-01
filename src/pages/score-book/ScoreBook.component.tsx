@@ -16,7 +16,7 @@ import ScoreBookDisplayComponent, {
   ScoreBookDisplayComponentProps,
 } from 'modules/score-book/ScoreBookDisplay.component'
 import { AssessmentActionType, AssessmentEnum, DialogType } from 'constant/common'
-import { sortBy } from 'lodash'
+import { get, sortBy } from 'lodash'
 import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
 import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
 import { blueGrey } from '@mui/material/colors'
@@ -105,6 +105,19 @@ const ScoreBookComponent = () => {
         return keywordArr.includes(value.toLowerCase())
       })
       setFilteredStuScoreBooks(filtered)
+    }
+  }
+
+  const handleFilterStudentByGrade = (isBelong?: (score: number) => boolean) => {
+    if (!isBelong) {
+      return setFilteredStuScoreBooks(stuScoreBooks)
+    }
+    if (selectedAssessmentType && selectedAssessmentDate) {
+      const filteredStu = stuScoreBooks.filter((stu) => {
+        const score = get(stu, [`${selectedAssessmentType}`, `${selectedAssessmentDate.id}`], 0)
+        return isBelong(score)
+      })
+      setFilteredStuScoreBooks(filteredStu)
     }
   }
 
@@ -202,7 +215,11 @@ const ScoreBookComponent = () => {
         </Box>
       </Box>
       {scoreBookSummary && (
-        <ScoreBookSummaryInfoComponent totalStudents={students.length} {...scoreBookSummary} />
+        <ScoreBookSummaryInfoComponent
+          onFilterStudentByGrade={handleFilterStudentByGrade}
+          totalStudents={students.length}
+          {...scoreBookSummary}
+        />
       )}
       {assessments.length !== 0 ? (
         <ScoreBookDisplayComponent {...displayProps} />

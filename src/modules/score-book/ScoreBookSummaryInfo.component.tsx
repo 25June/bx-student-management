@@ -6,6 +6,7 @@ import { styled } from '@mui/material'
 
 interface ScoreBookSummaryInfoComponentProps extends ScoreBookSummaryResponse {
   totalStudents: number
+  onFilterStudentByGrade: (data?: any) => void
 }
 
 interface Level {
@@ -13,6 +14,7 @@ interface Level {
   percentage: number
   color: string
   text: string
+  isBelong: (score: number) => boolean
 }
 
 const ScoreBox = styled(Box, {
@@ -41,6 +43,7 @@ const ScoreBookSummaryInfoComponent = ({
   wellDome,
   excellent,
   totalStudents,
+  onFilterStudentByGrade,
 }: ScoreBookSummaryInfoComponentProps) => {
   const [selectedType, setSelectedType] = useState<Level>()
   const levels: Level[] = [
@@ -49,36 +52,42 @@ const ScoreBookSummaryInfoComponent = ({
       percentage: (needToImprove / totalStudents) * 100,
       color: blue[100],
       text: 'Yếu (< 5)',
+      isBelong: (score: number) => score >= 0 && score < 5,
     },
     {
       score: average,
       percentage: (average / totalStudents) * 100,
       color: blue[200],
       text: 'Trung Bình (5 < 6)',
+      isBelong: (score: number) => score >= 5 && score < 6,
     },
     {
       score: upperAverage,
       percentage: (upperAverage / totalStudents) * 100,
       color: blue[300],
       text: 'Trung Bình Khá (6 < 7)',
+      isBelong: (score: number) => score >= 6 && score < 7,
     },
     {
       score: good,
       percentage: (good / totalStudents) * 100,
       color: blue[400],
       text: 'Khá (7 < 8)',
+      isBelong: (score: number) => score >= 7 && score < 8,
     },
     {
       score: wellDome,
       percentage: (wellDome / totalStudents) * 100,
       color: blue[500],
       text: 'Giỏi (8 < 9)',
+      isBelong: (score: number) => score >= 8 && score < 9,
     },
     {
       score: excellent,
       percentage: (excellent / totalStudents) * 100,
       color: blue[600],
       text: 'Xuất Sắc (9 < 10)',
+      isBelong: (score: number) => score >= 9 && score <= 10,
     },
   ]
 
@@ -112,9 +121,12 @@ const ScoreBookSummaryInfoComponent = ({
               backgroundColor={level.color}
               width={level.percentage}
               selected={selectedType?.color === level.color}
-              onClick={() =>
+              onClick={() => {
                 setSelectedType((prev) => (level.color === prev?.color ? undefined : level))
-              }
+                onFilterStudentByGrade(
+                  selectedType?.color === level.color ? undefined : level.isBelong
+                )
+              }}
             >
               {level.score}
             </ScoreBox>
