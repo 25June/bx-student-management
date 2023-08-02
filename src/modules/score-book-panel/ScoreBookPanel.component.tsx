@@ -3,26 +3,20 @@ import Drawer from '@mui/material/Drawer'
 import { Button } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import React, { useState, useEffect, useCallback } from 'react'
-import Accordion from '@mui/material/Accordion'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import Typography from '@mui/material/Typography'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import AddIcon from '@mui/icons-material/Add'
-import { averageScore } from './helpers'
 import { getStudentScoreBook, setNewStudentScore, initDefaultScoreBook } from 'services/scorebook'
 import { useGetStudentById } from 'services/student'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { Assessment, ScoreBook } from 'models'
 import ScoreForm from 'modules/common/ScoreForm.component'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
-import { groupAssessments, GroupAssessmentProps } from 'modules/Table/helpers'
 import { ImageBoxComponent } from 'modules/index'
 import { useClassContext } from 'contexts/ClassContext'
-import { getScoreName } from 'utils/getScoreName'
 import { AssessmentActionType, DialogType, ScoreEnum } from 'constant/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import { fetchAssessments } from 'services'
+import Chip from '@mui/material/Chip'
+import { get } from 'lodash'
 
 interface ScoreBookPanelComponentProps {
   isOpen: boolean
@@ -36,6 +30,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
   const { showSnackbar } = useSnackbarContext()
   const { classId, semesterId, schoolYearId } = useClassContext()
   const { openDialog } = useDialogContext()
+  const [activeTab, setActiveTab] = useState<string>('score5')
 
   const [scoreBook, setStudentScoreBook] = useState<ScoreBook>()
   const handleFetchStudentScoreBook = useCallback(() => {
@@ -95,7 +90,6 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
     }
   }
 
-  const groupAssessment = groupAssessments(assessments)
   if (!studentInfo) {
     return null
   }
@@ -129,50 +123,64 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
             {`${studentInfo.lastName} ${studentInfo.firstName}`}
           </Box>
           <Box>
-            {scoreBook &&
-              Object.values(ScoreEnum).map((scoreType: string) => {
-                const scoreList = scoreBook[scoreType as keyof ScoreBook] as Record<string, number>
-                const assessmentByScoreType =
-                  groupAssessment[scoreType as keyof GroupAssessmentProps]
-                return (
-                  <Accordion key={scoreType}>
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1bh-content"
-                      id="panel1bh-header"
-                    >
-                      <Typography sx={{ width: '70%', flexShrink: 0 }}>
-                        Trung Bình {getScoreName(scoreType)}
-                      </Typography>
-                      <Typography sx={{ color: 'text.secondary' }}>
-                        {averageScore(scoreList ? Object.values(scoreList) : [])}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {assessmentByScoreType.map((assessment: Assessment) => {
-                        return (
-                          <ScoreForm
-                            data={scoreList?.[assessment.id] || 0}
-                            assessment={assessment}
-                            key={`${assessment.id}_${scoreList?.[assessment.id] || 0}`}
-                            onChangeData={handleChangeData(scoreType)}
-                          />
-                        )
-                      })}
-                      <Box sx={{ textAlign: 'right', paddingTop: 1 }}>
-                        <Button
-                          variant="contained"
-                          size={'small'}
-                          startIcon={<AddIcon />}
-                          onClick={handleOpenAssessmentDialog}
-                        >
-                          Thêm bài kiểm tra
-                        </Button>
-                      </Box>
-                    </AccordionDetails>
-                  </Accordion>
-                )
-              })}
+            {scoreBook && (
+              <Box>
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                  <Chip
+                    label="KT 5'"
+                    color="primary"
+                    size={'small'}
+                    variant={activeTab === ScoreEnum.SCORE_5 ? 'filled' : 'outlined'}
+                    onClick={() => setActiveTab(ScoreEnum.SCORE_5)}
+                  />
+                  <Chip
+                    label="KT 15'"
+                    color="primary"
+                    size={'small'}
+                    variant={activeTab === ScoreEnum.SCORE_15 ? 'filled' : 'outlined'}
+                    onClick={() => setActiveTab(ScoreEnum.SCORE_15)}
+                  />
+                  <Chip
+                    label="KT 45'"
+                    color="primary"
+                    size={'small'}
+                    variant={activeTab === ScoreEnum.SCORE_45 ? 'filled' : 'outlined'}
+                    onClick={() => setActiveTab(ScoreEnum.SCORE_45)}
+                  />
+                  <Chip
+                    label="Thi"
+                    color="primary"
+                    size={'small'}
+                    variant={activeTab === ScoreEnum.SCORE_60 ? 'filled' : 'outlined'}
+                    onClick={() => setActiveTab(ScoreEnum.SCORE_60)}
+                  />
+                </Box>
+                <Box>
+                  {assessments
+                    .filter((assessment) => assessment.type === activeTab)
+                    .map((assessment: Assessment) => {
+                      return (
+                        <ScoreForm
+                          data={get(scoreBook, [`${activeTab}`, `${assessment.id}`], 0)}
+                          assessment={assessment}
+                          key={`${assessment.id}`}
+                          onChangeData={handleChangeData(activeTab)}
+                        />
+                      )
+                    })}
+                </Box>
+                <Box sx={{ textAlign: 'right', paddingTop: 1 }}>
+                  <Button
+                    variant="contained"
+                    size={'small'}
+                    startIcon={<AddIcon />}
+                    onClick={handleOpenAssessmentDialog}
+                  >
+                    Thêm bài kiểm tra
+                  </Button>
+                </Box>
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>
