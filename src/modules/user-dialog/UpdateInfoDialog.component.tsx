@@ -19,6 +19,7 @@ import { Class } from 'models'
 import { useUpdateUserInfo } from 'services/user'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
 import { uploadAvatar } from 'services'
+import { useIsMobile } from 'utils/common'
 
 interface UserInfoProps {
   email: string
@@ -28,6 +29,7 @@ interface UserInfoProps {
   classId: string
   avatarPath: string
   avatar?: File | null
+  saintName: string
 }
 
 const defaultUserInfo = (user: User) => {
@@ -38,6 +40,7 @@ const defaultUserInfo = (user: User) => {
     phoneNumber: user.phoneNumber || '',
     classId: user.classId || '',
     avatarPath: user.avatarPath || '',
+    saintName: user.saintName || '',
   }
 }
 
@@ -51,6 +54,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
   const { handleSubmit, setValue, control, formState } = useForm<UserInfoProps>({
     defaultValues: defaultUserInfo(user),
   })
+  const isMobile = useIsMobile()
   const updateUserInfo = useUpdateUserInfo()
   const [classObj, setClassObj] = useState<{ id: string; name: string }>()
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
@@ -93,7 +97,8 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
       onClose={() => onClose(false)}
       aria-labelledby="user-dialog-title"
       maxWidth={'sm'}
-      fullWidth={true}
+      fullWidth={isMobile}
+      fullScreen={isMobile}
     >
       <DialogTitle id="change-password-dialog-title">Cập Nhật Thông Tin</DialogTitle>
       <DialogContent dividers={true}>
@@ -116,7 +121,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
 
           {user.avatarPath && (
             <Box textAlign={'center'}>
-              <ImageBoxComponent imagePath={user.avatarPath} />
+              <ImageBoxComponent imagePath={user.avatarPath} maxWidth={200} />
             </Box>
           )}
         </Box>
@@ -131,6 +136,24 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
                 helperText={fieldState?.error?.message}
                 margin={'normal'}
                 type={'email'}
+                fullWidth={true}
+                error={!!fieldState.error}
+                {...field}
+              />
+            )
+          }}
+        />
+        <Controller
+          control={control}
+          name={'saintName'}
+          render={({ field, fieldState }) => {
+            return (
+              <TextField
+                label={'Tên Thánh'}
+                variant={'outlined'}
+                helperText={fieldState?.error?.message}
+                margin={'normal'}
+                type={'text'}
                 fullWidth={true}
                 error={!!fieldState.error}
                 {...field}
@@ -195,7 +218,9 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
             )
           }}
         />
-        <ClassDropdownComponent onChangeClass={handleChangeClass} classObj={classObj} />
+        <Box sx={{ marginTop: '1rem' }}>
+          <ClassDropdownComponent onChangeClass={handleChangeClass} classObj={classObj} />
+        </Box>
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
         {formState.isSubmitting && (

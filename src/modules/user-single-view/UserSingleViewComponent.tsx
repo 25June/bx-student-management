@@ -114,10 +114,7 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
 
   return (
     <Box>
-      <List
-        disablePadding={true}
-        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-      >
+      <List disablePadding={true} sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {users.map((user) => (
           <UserItem key={user.id} user={user} onClickMenu={handleClickMenu} />
         ))}

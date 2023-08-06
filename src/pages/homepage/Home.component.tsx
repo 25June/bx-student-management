@@ -115,6 +115,7 @@ const HomeComponent = () => {
           <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <ToggleButtonGroup
+                color={'info'}
                 value={displayType}
                 exclusive={true}
                 onChange={handleChangeDisplay}

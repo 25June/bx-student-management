@@ -1,5 +1,5 @@
 import { Class, Student } from 'models'
-import { formatDate, formatPhoneWithoutDot } from 'utils/formatDataForTable'
+import { formatPhoneWithoutDot } from 'utils/formatDataForTable'
 import { BaseClasses } from 'constant/common'
 
 export type Phone = {
@@ -26,7 +26,7 @@ export const getValues = (stu?: Student | null) => {
     return {
       saintName: stu.saintName,
       fullName: `${stu.lastName} ${stu.firstName}`,
-      birthday: formatDate(stu.birthday, false),
+      birthday: stu.birthday,
       address: stu.address,
       gender: !!stu.gender,
       grade: stu.grade,
@@ -40,6 +40,7 @@ export const getValues = (stu?: Student | null) => {
         ...stu.phones[1],
         number: formatPhoneWithoutDot(stu.phones[1].number),
       },
+      note: stu.note,
     }
   }
   return {
@@ -60,5 +61,6 @@ export const getValues = (stu?: Student | null) => {
     avatar: null,
     avatarPath: '',
     class: BaseClasses[0],
+    note: '',
   }
 }

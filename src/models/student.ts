@@ -18,4 +18,6 @@ export type Student = {
   class?: Class
   fullName?: string
   isDeleted?: boolean
+  schoolYears?: string[]
+  note?: string
 }

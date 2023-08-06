@@ -84,6 +84,9 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
         <Typography sx={{ marginBottom: '1rem' }}>
           Chọn Niên Khoá và Học Kỳ để lưu điểm các em thiếu nhi
         </Typography>
+        <Typography sx={{ marginBottom: '1rem', fontSize: '0.75rem' }}>
+          <i>(Tính năng đang phát triển nên chưa cho dùng)</i>
+        </Typography>
         <Box mb={3}>
           <SchoolYearsDropdownComponent
             onChangeSchoolYear={handleSelectSchoolYear}
@@ -113,7 +116,7 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
           variant="contained"
           color={'primary'}
           startIcon={isLoading ? <CircularProgress size={'1rem'} /> : <CheckIcon />}
-          disabled={isLoading}
+          disabled={isLoading || true}
         >
           Lưu
         </Button>

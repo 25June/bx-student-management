@@ -24,7 +24,6 @@ const AssessmentItem = ({
   return (
     <>
       <ListItem
-        onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
         disableGutters={true}
         secondaryAction={
           <>
@@ -51,7 +50,11 @@ const AssessmentItem = ({
             <Typography>{assessment.type.slice(5)}'</Typography>
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={assessment.lesson} secondary={assessment.bookDate} />
+        <ListItemText
+          onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
+          primary={assessment.lesson}
+          secondary={assessment.bookDate}
+        />
       </ListItem>
       <Divider variant="middle" component="li" />
     </>

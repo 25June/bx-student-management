@@ -4,11 +4,6 @@ import studentGirlLogo from 'static/images/cards/student-girl.png'
 import studentBoyLogo from 'static/images/cards/student-boy.png'
 import GLVLogo from 'static/images/cards/glv.png'
 
-export const convertStringToDate = (date: string) => {
-  const [day, month, year] = date.split('.')
-  return new Date(Number(year), Number(month), Number(day))
-}
-
 export const mockDataFormatFirstName = (firstName: string): string => {
   const name = firstName.toLowerCase()
   return name.charAt(0).toUpperCase() + name.slice(1)
@@ -32,7 +27,7 @@ export const formatMockData = (mockStudents: any[]): Student[] => {
       return {
         ...student,
         firstName: mockDataFormatFirstName(student.firstName),
-        birthday: mockDataFormatBirthday(student.birthday),
+        birthday: student.birthday ? mockDataFormatBirthday(student.birthday) : '',
         phones: [
           { name: 'Cha', number: mockDataFormatPhone(phone1) },
           { name: 'Mẹ', number: mockDataFormatPhone(phone2) },

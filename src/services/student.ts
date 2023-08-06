@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import {
   addDoc,
   doc,
+  getDocs,
   query,
   collection,
   onSnapshot,
@@ -10,6 +11,7 @@ import {
   where,
   serverTimestamp,
   updateDoc,
+  deleteDoc,
   Unsubscribe,
 } from 'firebase/firestore'
 import { Student } from 'models'
@@ -120,7 +122,12 @@ export const useBatchAddStudents = () => {
     const batch = writeBatch(fireStoreDB)
     students.forEach((student) => {
       const docRef = doc(collection(fireStoreDB, StudentCollection))
-      batch.set(docRef, { ...student, isDeleted: false, createdDate: serverTimestamp() })
+      batch.set(docRef, {
+        ...student,
+        isDeleted: false,
+        createdDate: serverTimestamp(),
+        schoolYears: ['2022-2023'],
+      })
     })
     await batch
       .commit()
@@ -146,7 +153,7 @@ interface UpdateStudentParams {
 export const useUpdateStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: UpdateStudentParams) => {
     const ref = doc(fireStoreDB, StudentCollection, dataInput.id)
-    updateDoc(ref, { updatedDate: serverTimestamp(), ...dataInput })
+    updateDoc(ref, { updatedDate: serverTimestamp(), ...dataInput, note: dataInput.note || '' })
       .then((value) => {
         console.info(value)
         onSuccess()
@@ -184,4 +191,27 @@ export const useDeleteStudent = () => {
         onComplete()
       })
   }
+}
+
+export const updateSchoolYearForAllStudent = () => {
+  const ref = collection(fireStoreDB, StudentCollection)
+  return getDocs(ref).then((snapshot) => {
+    snapshot.docs.forEach((snapshotDoc) => {
+      updateDoc(snapshotDoc.ref, { schoolYears: ['2020-2021'] }).then((result) =>
+        console.log(result)
+      )
+    })
+  })
+}
+
+export const removeAllStudent = () => {
+  const ref = collection(fireStoreDB, StudentCollection)
+  return getDocs(query(ref, where('class.id', '==', 'vd'))).then((res) => {
+    res.forEach((snapDoc) => {
+      deleteDoc(doc(fireStoreDB, StudentCollection, snapDoc.id)).then((delDoc) =>
+        console.log({ delDoc })
+      )
+    })
+    console.log({ length: res.docs.length })
+  })
 }

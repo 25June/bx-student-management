@@ -28,7 +28,7 @@ const ClassContext = createContext(classContextDefaultProps)
 export const ClassProvider = ({ children }: PropsWithChildren) => {
   const { isSignedIn } = useAuthentication()
   const [classId, setClassId] = useState<string>(BaseClasses[0].id)
-  const [schoolYearId, setSchoolYearId] = useState<string>('2022-2023')
+  const [schoolYearId, setSchoolYearId] = useState<string>('2023-2024')
   const [semesterId, setSemesterId] = useState<string>('hk1')
   const value = useMemo(() => {
     return {

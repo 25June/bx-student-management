@@ -1,4 +1,12 @@
-import { useContext, createContext, PropsWithChildren, useMemo, useEffect, useState } from 'react'
+import {
+  useContext,
+  createContext,
+  PropsWithChildren,
+  useMemo,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react'
 import { fetchAssessments } from 'services'
 import { Assessment } from 'models'
 import { useClassContext } from 'contexts/ClassContext'
@@ -6,28 +14,39 @@ import { useClassContext } from 'contexts/ClassContext'
 const AssessmentDefaultValue = {
   assessments: [],
   setAssessments: () => null,
-} as { assessments: Assessment[]; setAssessments: (value: any) => void }
+  onFetchAssessments: () => null,
+} as {
+  assessments: Assessment[]
+  setAssessments: (value: any) => void
+  onFetchAssessments: (classId: string) => void
+}
 const AssessmentContext = createContext(AssessmentDefaultValue)
 
 export const AssessmentProvider = ({ children }: PropsWithChildren) => {
   const { classId } = useClassContext()
   const [assessments, setAssessments] = useState<Assessment[]>()
 
-  useEffect(() => {
-    if (classId) {
-      fetchAssessments(classId).then((res) => {
+  const handleFetchAssessments = useCallback((selectedClassId: string) => {
+    if (selectedClassId) {
+      fetchAssessments(selectedClassId).then((res) => {
         setAssessments(res)
       })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (classId) {
+      handleFetchAssessments(classId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId])
 
   const value = useMemo(() => {
     if (assessments) {
-      return { assessments, setAssessments }
+      return { assessments, setAssessments, onFetchAssessments: handleFetchAssessments }
     }
-    return { assessments: [], setAssessments }
-  }, [assessments])
+    return { assessments: [], setAssessments, onFetchAssessments: handleFetchAssessments }
+  }, [assessments, handleFetchAssessments])
 
   return <AssessmentContext.Provider value={value}>{children}</AssessmentContext.Provider>
 }

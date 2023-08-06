@@ -25,27 +25,25 @@ function App() {
                   <DiligentProvider>
                     <DialogProvider>
                       <BrowserRouter>
-                        <Routes>
-                          {ROUTES.map((route) => {
-                            return (
-                              <Route
-                                key={route.name}
-                                path={route.path}
-                                element={
-                                  route.isPrivate ? (
-                                    <Suspense fallback={<FallbackComponent />}>
+                        <Suspense fallback={<FallbackComponent />}>
+                          <Routes>
+                            {ROUTES.map((route) => {
+                              return (
+                                <Route
+                                  key={route.name}
+                                  path={route.path}
+                                  element={
+                                    route.isPrivate ? (
                                       <PrivateComponent component={route.component} />
-                                    </Suspense>
-                                  ) : (
-                                    <Suspense fallback={<FallbackComponent />}>
-                                      {route.component}
-                                    </Suspense>
-                                  )
-                                }
-                              />
-                            )
-                          })}
-                        </Routes>
+                                    ) : (
+                                      route.component
+                                    )
+                                  }
+                                />
+                              )
+                            })}
+                          </Routes>
+                        </Suspense>
                       </BrowserRouter>
                     </DialogProvider>
                   </DiligentProvider>

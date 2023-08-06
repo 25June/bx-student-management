@@ -56,7 +56,7 @@ const CardComponent = ({
           startIcon={<PermIdentityIcon />}
           size="small"
           onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
-          color="warning"
+          color="info"
           variant="outlined"
         >
           Thông Tin
@@ -65,7 +65,7 @@ const CardComponent = ({
           startIcon={<ScoreIcon />}
           size="small"
           onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
-          color="warning"
+          color="info"
           variant="outlined"
         >
           Bảng Điểm

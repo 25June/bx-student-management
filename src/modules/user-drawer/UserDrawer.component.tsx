@@ -2,16 +2,19 @@ import React, { useEffect } from 'react'
 import Drawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Avatar from '@mui/material/Avatar'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import EditIcon from '@mui/icons-material/Edit'
 import { getUserInfo, useSignOut } from 'services/user'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import { useAuthentication } from 'contexts/AuthContext'
-import { blue } from '@mui/material/colors'
+import { grey } from '@mui/material/colors'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import { useState } from 'react'
 import { User } from 'models/user'
-import { ImageBoxComponent } from 'modules/index'
+import { buildImageUrl } from 'utils/common'
+import Chip from '@mui/material/Chip'
 
 interface UserDrawerComponentProps {
   onClose: () => void
@@ -68,20 +71,31 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
         }}
       >
         <Box display={'flex'} alignItems={'center'}>
-          <Button color={'primary'} onClick={onClose} startIcon={<KeyboardBackspaceIcon />}>
-            Back
-          </Button>
+          <Chip
+            color={'default'}
+            size={'small'}
+            icon={<KeyboardBackspaceIcon />}
+            onClick={onClose}
+            label="Trở về"
+            variant="outlined"
+          />
         </Box>
-        <Box display={'flex'}>
-          <ImageBoxComponent imagePath={currentUser.avatarPath} isGLV={true} maxWidth={200} />
+        <Box sx={{ textAlign: 'center', '.MuiAvatar-root': { margin: '0 auto' } }}>
+          <Avatar
+            src={buildImageUrl(currentUser.avatarPath, false, true)}
+            sx={{ width: 200, height: 200 }}
+            variant={'rounded'}
+          />
         </Box>
         <Box>
-          <Box textAlign={'center'} margin={0} color={blue[800]}>
-            {currentUser.email}
+          <Box textAlign={'center'} margin={0} color={grey[800]}>
+            {currentUser.saintName}
           </Box>
-          <Box textAlign={'center'} component={'h1'} mt={0} color={blue[800]}>
+          <Box textAlign={'center'} component={'h2'} mt={0} color={grey[800]}>
             {`${currentUser.firstName} ${currentUser.lastName}`}
           </Box>
+          <Typography fontSize={'0.825rem'}>{currentUser.email}</Typography>
+          <Typography fontSize={'0.825rem'}>{currentUser.phoneNumber}</Typography>
         </Box>
         <Button
           startIcon={<EditIcon />}

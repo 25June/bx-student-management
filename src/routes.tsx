@@ -8,6 +8,8 @@ const ScoreBookComponent = lazy(() => import('pages/score-book/ScoreBook.compone
 const AssessmentComponent = lazy(() => import('pages/assessment/Assessment.component'))
 const DiligentComponent = lazy(() => import('pages/diligent/Diligent.component'))
 const UserComponent = lazy(() => import('pages/user/User.component'))
+const RegisterComponent = lazy(() => import('pages/register/Register.component'))
+
 export const Router = {
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
@@ -17,6 +19,7 @@ export const Router = {
   DILIGENT: '/diligent',
   HOME: '/',
   USER: '/user',
+  REGISTER: '/register',
 }
 
 const ROUTES = [
@@ -67,6 +70,12 @@ const ROUTES = [
     component: <UserComponent />,
     path: Router.USER,
     isPrivate: true,
+  },
+  {
+    name: 'Register',
+    component: <RegisterComponent />,
+    path: Router.REGISTER,
+    isPrivate: false,
   },
 ]
 

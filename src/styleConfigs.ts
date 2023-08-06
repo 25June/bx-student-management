@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material'
-import { pink, blue, lightGreen, brown, amber } from '@mui/material/colors'
+import { pink, blue, lightGreen, brown, amber, red } from '@mui/material/colors'
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -9,6 +9,7 @@ declare module '@mui/material/styles' {
     ts: Palette['primary']
     bd: Palette['primary']
     vd: Palette['primary']
+    dt: Palette['primary']
     score5: Palette['primary']
     score15: Palette['primary']
     score45: Palette['primary']
@@ -23,6 +24,7 @@ declare module '@mui/material/styles' {
     ts?: PaletteOptions['primary']
     bd?: PaletteOptions['primary']
     vd?: PaletteOptions['primary']
+    dt?: PaletteOptions['primary']
     score5?: PaletteOptions['primary']
     score15?: PaletteOptions['primary']
     score45?: PaletteOptions['primary']
@@ -43,6 +45,7 @@ declare module '@mui/material/Chip' {
     ts: true
     bd: true
     vd: true
+    dt: true
   }
 }
 
@@ -104,6 +107,12 @@ const theme = createTheme({
       main: brown[500],
       light: brown[100],
       dark: brown[800],
+      contrastText: '#fff',
+    },
+    dt: {
+      main: red[500],
+      light: red[100],
+      dark: red[800],
       contrastText: '#fff',
     },
     score5: {

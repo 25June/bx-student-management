@@ -1,5 +1,4 @@
 import {
-  convertStringToDate,
   mockDataFormatFirstName,
   mockDataFormatBirthday,
   mockDataFormatPhone,
@@ -10,7 +9,6 @@ import {
 import { formatPhone, splitFullName, formatStudentTable } from './formatDataForTable'
 
 export {
-  convertStringToDate,
   mockDataFormatFirstName,
   mockDataFormatBirthday,
   mockDataFormatPhone,

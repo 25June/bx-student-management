@@ -41,13 +41,13 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
       />
       <Box sx={{ display: 'flex', gap: 1 }}>
         <IconButton
-          color={'warning'}
+          color={'info'}
           onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
         >
           <ScoreIcon />
         </IconButton>
         <IconButton
-          color={'warning'}
+          color={'info'}
           onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
         >
           <PermIdentityIcon />

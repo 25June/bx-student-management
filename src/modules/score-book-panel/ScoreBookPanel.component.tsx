@@ -103,10 +103,15 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
       sx={{ width: '100%', maxWidth: 350 }}
     >
       <Box pt={9} pr={2} pl={2} mb={5}>
-        <Box display={'flex'} alignItems={'center'} mb={2}>
-          <Button color={'primary'} onClick={onClose} startIcon={<KeyboardBackspaceIcon />}>
-            Back
-          </Button>
+        <Box display={'flex'} alignItems={'center'} mb={0.5}>
+          <Chip
+            color={'default'}
+            size={'small'}
+            icon={<KeyboardBackspaceIcon />}
+            onClick={onClose}
+            label="Trở về"
+            variant="outlined"
+          />
         </Box>
         <Box sx={{ display: 'flex' }}>
           <ImageBoxComponent
@@ -128,28 +133,28 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                   <Chip
                     label="KT 5'"
-                    color="primary"
+                    color="info"
                     size={'small'}
                     variant={activeTab === ScoreEnum.SCORE_5 ? 'filled' : 'outlined'}
                     onClick={() => setActiveTab(ScoreEnum.SCORE_5)}
                   />
                   <Chip
                     label="KT 15'"
-                    color="primary"
+                    color="info"
                     size={'small'}
                     variant={activeTab === ScoreEnum.SCORE_15 ? 'filled' : 'outlined'}
                     onClick={() => setActiveTab(ScoreEnum.SCORE_15)}
                   />
                   <Chip
                     label="KT 45'"
-                    color="primary"
+                    color="info"
                     size={'small'}
                     variant={activeTab === ScoreEnum.SCORE_45 ? 'filled' : 'outlined'}
                     onClick={() => setActiveTab(ScoreEnum.SCORE_45)}
                   />
                   <Chip
                     label="Thi"
-                    color="primary"
+                    color="info"
                     size={'small'}
                     variant={activeTab === ScoreEnum.SCORE_60 ? 'filled' : 'outlined'}
                     onClick={() => setActiveTab(ScoreEnum.SCORE_60)}

@@ -7,4 +7,5 @@ export interface User {
   phoneNumber: string
   classId: string
   avatarPath: string
+  saintName: string
 }

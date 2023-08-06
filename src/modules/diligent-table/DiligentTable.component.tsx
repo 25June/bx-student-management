@@ -108,9 +108,9 @@ const DiligentTableComponent = ({
 
   if (!attendances || !rollCallDates || rollCallDates.length === 0) {
     return (
-      <Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
         <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
-          <i>Chưa có ngày điểm danh. Tạo ngày điểm danh.</i>
+          <i>Chưa có ngày điểm danh. Thêm ngày điểm danh.</i>
         </Typography>
         <Button
           variant={'contained'}
@@ -123,7 +123,7 @@ const DiligentTableComponent = ({
             )
           }
         >
-          Tạo bài kiểm tra
+          Thêm ngày điểm danh
         </Button>
       </Box>
     )

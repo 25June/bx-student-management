@@ -1,12 +1,11 @@
 import React from 'react'
-import { Box, TextField, Button } from '@mui/material'
+import { Box, TextField, Button, Chip } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import EditIcon from '@mui/icons-material/Edit'
 import { StudentActionType } from 'constant'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Student } from 'models'
-import { formatDate } from 'utils/formatDataForTable'
 import { ImageBoxComponent } from 'modules'
 
 interface InfoPanelComponentProps {
@@ -39,14 +38,19 @@ const InfoPanelComponent = ({
       onClose={onClose}
       onKeyDown={onClose}
       sx={{
-        [`& .MuiDrawer-paper`]: { width: 350, boxSizing: 'border-box' },
+        [`& .MuiDrawer-paper`]: { width: 325, boxSizing: 'border-box' },
       }}
     >
       <Box pt={9} pr={2} pl={2} mb={5}>
-        <Box display={'flex'} alignItems={'center'} mb={2}>
-          <Button color={'primary'} onClick={onClose} startIcon={<KeyboardBackspaceIcon />}>
-            Back
-          </Button>
+        <Box display={'flex'} alignItems={'center'} mb={1}>
+          <Chip
+            color={'default'}
+            size={'small'}
+            icon={<KeyboardBackspaceIcon />}
+            onClick={onClose}
+            label="Trở về"
+            variant="outlined"
+          />
         </Box>
         <Box display={'flex'}>
           <ImageBoxComponent
@@ -56,10 +60,10 @@ const InfoPanelComponent = ({
           />
         </Box>
         <Box>
-          <Box textAlign={'center'} component={'h2'} margin={0}>
+          <Box textAlign={'center'} component={'h5'} fontWeight={400} margin={0}>
             {studentInfo.saintName}
           </Box>
-          <Box textAlign={'center'} component={'h1'} mt={0}>
+          <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
             {`${studentInfo.lastName} ${studentInfo.firstName}`}
           </Box>
           <Box mb={2} width={'100%'}>
@@ -69,7 +73,7 @@ const InfoPanelComponent = ({
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
               type={'date'}
-              value={formatDate(studentInfo.birthday, false)}
+              value={studentInfo.birthday}
               variant={'standard'}
               sx={{ width: '100%' }}
             />

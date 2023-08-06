@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { Button } from '@mui/material'
+import { Chip } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import React from 'react'
 import { ImageBoxComponent } from 'modules/index'
@@ -29,10 +29,15 @@ const DiligentPanelContentComponent = ({
 }: DiligentPanelComponentProps) => {
   return (
     <Box pt={9} pr={2} pl={2} mb={5}>
-      <Box display={'flex'} alignItems={'center'} mb={2}>
-        <Button color={'primary'} onClick={onClose} startIcon={<KeyboardBackspaceIcon />}>
-          Back
-        </Button>
+      <Box display={'flex'} alignItems={'center'} mb={1}>
+        <Chip
+          color={'default'}
+          size={'small'}
+          icon={<KeyboardBackspaceIcon />}
+          onClick={onClose}
+          label="Trở về"
+          variant="outlined"
+        />
       </Box>
       <Box sx={{ display: 'flex' }}>
         <ImageBoxComponent

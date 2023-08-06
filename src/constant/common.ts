@@ -45,6 +45,7 @@ export const BaseClasses: Class[] = [
   { id: 'bd1', name: 'Bao Đồng 1' },
   { id: 'bd2', name: 'Bao Đồng 2' },
   { id: 'vd', name: 'Vào Đời' },
+  { id: 'dt', name: 'Dự Trưởng' },
 ]
 
 export const BaseClassObj: Record<string, string> = {
@@ -59,6 +60,7 @@ export const BaseClassObj: Record<string, string> = {
   bd1: 'Bao Đồng 1',
   bd2: 'Bao Đồng 2',
   vd: 'Vào Đời',
+  dt: 'Dự Trưởng',
 }
 
 export enum AssessmentEnum {
@@ -139,7 +141,7 @@ export const UserRoles = [
   },
 ]
 
-export type extendedColorPalettes = 'kt' | 'rl' | 'ts' | 'bd' | 'vd'
+export type extendedColorPalettes = 'kt' | 'rl' | 'ts' | 'bd' | 'vd' | 'dt'
 
 export const Semesters = [
   {

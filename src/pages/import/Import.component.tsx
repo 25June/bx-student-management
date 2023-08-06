@@ -77,6 +77,11 @@ const ImportComponent = () => {
     })
   }
 
+  // const handleUpdateSchoolYearForAllStudent = () => {
+  //   removeAllStudent().then(() => console.log('success'))
+  //   // updateSchoolYearForAllStudent().then(() => console.info('success'))
+  // }
+
   const handleChangeClass = (e: SelectChangeEvent) => {
     const selectedClass = BaseClasses.find((c: Class) => c.id === (e.target.value as string))
     if (typeof selectedClass === 'undefined') {

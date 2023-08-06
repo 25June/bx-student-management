@@ -18,7 +18,7 @@ import {
 import { StudentActionType } from 'constant'
 import { Class, Student } from 'models'
 import { splitFullName } from 'utils'
-import { formatDate, formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
+import { formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
 import {
   removeImage,
   uploadAvatar,
@@ -137,7 +137,7 @@ const StudentDialogComponent = ({
         id: student.id,
         firstName,
         lastName,
-        birthday: formatDate(data.birthday, true),
+        birthday: data.birthday,
         phones: [
           { ...data.phone1, number: formatPhone(data.phone1.number) },
           { ...data.phone2, number: formatPhone(data.phone2.number) },
@@ -164,7 +164,7 @@ const StudentDialogComponent = ({
       ...data,
       firstName,
       lastName,
-      birthday: formatDate(data.birthday, true),
+      birthday: data.birthday,
       phones: [
         { ...data.phone1, number: formatPhone(data.phone1.number) },
         { ...data.phone2, number: formatPhone(data.phone2.number) },

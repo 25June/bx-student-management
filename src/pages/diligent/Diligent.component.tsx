@@ -223,7 +223,7 @@ const DiligentComponent = () => {
                 />
                 {isMobile && selectedRollCallDate && (
                   <IconButton
-                    color="default"
+                    color="warning"
                     size="small"
                     onClick={() =>
                       handleOpenDiligentDialog(

@@ -24,6 +24,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { useClassContext } from 'contexts/ClassContext'
+import { useAssessmentContext } from 'contexts/AssessmentContext'
 
 type AssessmentForm = {
   bookDate: string
@@ -75,6 +76,8 @@ const AssessmentDialogComponent = ({
   const deleteAssessment = useDeleteAssessment()
   const { showSnackbar } = useSnackbarContext()
   const { schoolYearId } = useClassContext()
+  const { onFetchAssessments } = useAssessmentContext()
+  const { classId } = useClassContext()
 
   const { handleSubmit, control, reset, setValue } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
@@ -113,7 +116,8 @@ const AssessmentDialogComponent = ({
         onComplete: () => {
           setTimeout(() => {
             setLoading(false)
-            onClose(true)
+            onClose(false)
+            onFetchAssessments(classId)
           }, 20)
         },
       })
@@ -137,7 +141,8 @@ const AssessmentDialogComponent = ({
         onComplete: () => {
           setTimeout(() => {
             setLoading(false)
-            onClose(true)
+            onClose(false)
+            onFetchAssessments(classId)
           }, 20)
         },
       })
@@ -166,7 +171,8 @@ const AssessmentDialogComponent = ({
       onComplete: () => {
         setTimeout(() => {
           setLoading(false)
-          onClose(true)
+          onClose(false)
+          onFetchAssessments(classId)
         }, 20)
       },
     })
