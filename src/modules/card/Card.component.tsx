@@ -26,7 +26,7 @@ const CardComponent = ({
         sx={{ objectFit: 'contain' }}
       />
       <CardContent
-        sx={{ height: isMobile ? 60 : 120, padding: isMobile ? 1 : 2 }}
+        sx={{ maxHeight: isMobile ? 80 : 120, padding: isMobile ? 1 : 2 }}
         onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       >
         <Typography

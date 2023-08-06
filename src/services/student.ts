@@ -153,7 +153,14 @@ interface UpdateStudentParams {
 export const useUpdateStudent = () => {
   return ({ dataInput, onSuccess, onError, onComplete }: UpdateStudentParams) => {
     const ref = doc(fireStoreDB, StudentCollection, dataInput.id)
-    updateDoc(ref, { updatedDate: serverTimestamp(), ...dataInput, note: dataInput.note || '' })
+    updateDoc(ref, {
+      updatedDate: serverTimestamp(),
+      ...dataInput,
+      note: dataInput.note || '',
+      grade: dataInput.grade || '',
+      saintName: dataInput.saintName || '',
+      address: dataInput.address || '',
+    })
       .then((value) => {
         console.info(value)
         onSuccess()
