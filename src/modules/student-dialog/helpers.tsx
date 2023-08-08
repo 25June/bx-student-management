@@ -1,6 +1,7 @@
 import { Class, Student } from 'models'
 import { formatPhoneWithoutDot } from 'utils/formatDataForTable'
 import { BaseClasses } from 'constant/common'
+import { RegisterStudent } from 'models/student'
 
 export type Phone = {
   name: string
@@ -62,5 +63,98 @@ export const getValues = (stu?: Student | null) => {
     avatarPath: '',
     class: BaseClasses[0],
     note: '',
+  }
+}
+
+export type StudentRegisterForm = {
+  saintName: string
+  fullName: string
+  birthday: string
+  bornIn?: string
+  address: string
+  shortTermAddress: string
+  grade: string
+  schoolName: string
+  phone1: Phone
+  phone2: Phone
+  gender: boolean
+  class?: Class
+  note: string
+  parent: {
+    fatherName: string
+    motherName: string
+  }
+  baptismDate: string
+  baptismChurch: string
+  baptismByPriest: string
+  eucharistAndReconciliationDate: string
+  eucharistAndReconciliationChurch: string
+  eucharistAndReconciliationByPriest: string
+}
+
+export const getRegisterValues = (student?: Omit<RegisterStudent, 'id'>) => {
+  if (student) {
+    return {
+      saintName: student.saintName,
+      fullName: student.fullName,
+      birthday: student.birthday,
+      bornIn: student.bornIn,
+      address: student.address,
+      shortTermAddress: student.address,
+      grade: student.grade,
+      schoolName: student.schoolName,
+      gender: false,
+      phone1: {
+        name: student.phones[0].name,
+        number: student.phones[0].number,
+      },
+      phone2: {
+        name: student.phones[1].name,
+        number: student.phones[1].number,
+      },
+      class: student.class,
+      note: student.note,
+      parent: {
+        fatherName: student.parent.fatherName,
+        motherName: student.parent.motherName,
+      },
+      baptismDate: student.baptismDate,
+      baptismChurch: student.baptismChurch,
+      baptismByPriest: student.baptismByPriest,
+      eucharistAndReconciliationDate: student.eucharistAndReconciliationDate,
+      eucharistAndReconciliationChurch: student.eucharistAndReconciliationChurch,
+      eucharistAndReconciliationByPriest: student.eucharistAndReconciliationByPriest,
+    }
+  }
+  return {
+    saintName: '',
+    fullName: '',
+    birthday: '',
+    bornIn: '',
+    address: '',
+    shortTermAddress: '',
+    grade: '1',
+    schoolName: '',
+    gender: false,
+    phone1: {
+      name: '',
+      number: '',
+    },
+    phone2: {
+      name: '',
+      number: '',
+    },
+    class: BaseClasses[0],
+    note: '',
+    parent: {
+      fatherName: '',
+      motherName: '',
+    },
+    baptismDate: '',
+    baptismChurch: '',
+    baptismByPriest: '',
+    eucharistAndReconciliationDate: '',
+    eucharistAndReconciliationChurch: '',
+    eucharistAndReconciliationByPriest: '',
   }
 }

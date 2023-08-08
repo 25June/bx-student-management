@@ -222,9 +222,11 @@ const ScoreBookComponent = () => {
       {assessments.length !== 0 ? (
         <ScoreBookDisplayComponent {...displayProps} />
       ) : (
-        <Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
-            <i>Chưa có bài kiểm tra nào, tạo ngay thôi</i>
+            <i>Chưa có bài kiểm tra nào, thêm ngay thôi</i>
+          </Typography>
+          <Box>
             <Button
               variant={'contained'}
               onClick={() =>
@@ -236,9 +238,9 @@ const ScoreBookComponent = () => {
                 )
               }
             >
-              Tạo bài kiểm tra
+              Thêm bài kiểm tra
             </Button>
-          </Typography>
+          </Box>
         </Box>
       )}
       {!!selectedScoreBook && (

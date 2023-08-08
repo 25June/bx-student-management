@@ -1,4 +1,4 @@
-import { format, parse } from 'date-fns'
+import { format, parse, isValid } from 'date-fns'
 
 const fullDateHyphenFormat = 'dd-MM-yyyy'
 const fullDateInputHyphenFormat = 'yyyy-MM-dd'
@@ -30,5 +30,8 @@ export const parseToNumber = (date: string) => {
 }
 
 export const formatYYYMMDDToDDMMYYYY = (date: string) => {
-  return format(parse(date, fullDateInputHyphenFormat, new Date()), DateMonthYearSlashFormat)
+  const parseDate = parse(date, fullDateInputHyphenFormat, new Date())
+  if (isValid(parseDate)) {
+    return format(parseDate, DateMonthYearSlashFormat)
+  }
 }
