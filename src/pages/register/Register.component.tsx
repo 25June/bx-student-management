@@ -50,26 +50,26 @@ const RegisterComponent = () => {
           maxWidth: 500,
         }}
       />
-      <Box sx={{ zIndex: 2, position: 'relative' }}>
-        {step === Step.INPUT_FORM && (
-          <RegisterFormComponent
-            student={student}
-            setStudent={setStudent}
-            onMoveToFinalStep={() => setStep(Step.CONFIRM_INPUT)}
-          />
-        )}
-        {step === Step.CONFIRM_INPUT && student && (
-          <GoogleReCaptchaProvider reCaptchaKey={'6LdA4Y4nAAAAACPfA9KRoGEGVBjr30UcOx2x5NF3'}>
+      <GoogleReCaptchaProvider reCaptchaKey={'6LdA4Y4nAAAAACPfA9KRoGEGVBjr30UcOx2x5NF3'}>
+        <Box sx={{ zIndex: 2, position: 'relative' }}>
+          {step === Step.INPUT_FORM && (
+            <RegisterFormComponent
+              student={student}
+              setStudent={setStudent}
+              onMoveToFinalStep={() => setStep(Step.CONFIRM_INPUT)}
+            />
+          )}
+          {step === Step.CONFIRM_INPUT && student && (
             <ConfirmationFormComponent
               studentForm={student}
               onConfirm={handleConfirm}
               onBack={() => setStep(Step.FINISH)}
               loading={loading}
             />
-          </GoogleReCaptchaProvider>
-        )}
-        {step === Step.FINISH && <FinishRegisterComponent />}
-      </Box>
+          )}
+          {step === Step.FINISH && <FinishRegisterComponent />}
+        </Box>
+      </GoogleReCaptchaProvider>
     </Box>
   )
 }

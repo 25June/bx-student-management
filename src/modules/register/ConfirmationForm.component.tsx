@@ -1,5 +1,5 @@
 import { Box, Typography, Button, Divider, CircularProgress } from '@mui/material'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { RegisterStudent } from 'models/student'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { blue } from '@mui/material/colors'
@@ -17,6 +17,7 @@ const ConfirmationFormComponent = ({
   onBack: any
   loading: boolean
 }) => {
+  const [captchaV3token, setToken] = useState<string>()
   const { executeRecaptcha } = useGoogleReCaptcha()
   // Create an event handler so you can call the verification on button click event or form submit
   const handleReCaptchaVerify = useCallback(async () => {
@@ -25,10 +26,12 @@ const ConfirmationFormComponent = ({
       return
     }
 
-    const token = await executeRecaptcha(onConfirm)
-    console.log({ token })
+    const token = await executeRecaptcha('submit')
+    if (token) {
+      setToken(token)
+    }
     // Do whatever you want with the token
-  }, [onConfirm, executeRecaptcha])
+  }, [executeRecaptcha])
 
   useEffect(() => {
     handleReCaptchaVerify()
@@ -111,11 +114,12 @@ const ConfirmationFormComponent = ({
             Chỉnh sửa lại
           </Button>
           <Button
-            onClick={handleReCaptchaVerify}
+            onClick={onConfirm}
             color={'primary'}
             variant={'contained'}
-            disabled={loading}
+            disabled={loading || !captchaV3token}
             endIcon={loading ? <CircularProgress size={'1rem'} /> : <DoneAllIcon />}
+            data-id={captchaV3token}
           >
             Xác nhận
           </Button>
