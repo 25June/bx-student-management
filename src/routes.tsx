@@ -2,13 +2,14 @@ import React, { lazy } from 'react'
 
 const HomeComponent = lazy(() => import('pages/homepage/Home.component'))
 const ImportComponent = lazy(() => import('pages/import/Import.component'))
-const SignUpComponent = lazy(() => import('modules/auth/SignUp.component'))
+// const SignUpComponent = lazy(() => import('modules/auth/SignUp.component'))
 const SignInComponent = lazy(() => import('modules/auth/SignIn.component'))
 const ScoreBookComponent = lazy(() => import('pages/score-book/ScoreBook.component'))
 const AssessmentComponent = lazy(() => import('pages/assessment/Assessment.component'))
 const DiligentComponent = lazy(() => import('pages/diligent/Diligent.component'))
 const UserComponent = lazy(() => import('pages/user/User.component'))
 const RegisterComponent = lazy(() => import('pages/register/Register.component'))
+const RegisterDashboardComponent = lazy(() => import('pages/register/RegisterDashBoard.component'))
 
 export const Router = {
   SIGN_UP: '/sign-up',
@@ -20,6 +21,7 @@ export const Router = {
   HOME: '/',
   USER: '/user',
   REGISTER: '/register',
+  REGISTER_DASHBOARD: '/register-dashboard',
 }
 
 const ROUTES = [
@@ -59,12 +61,12 @@ const ROUTES = [
     path: Router.SIGN_IN,
     isPrivate: false,
   },
-  {
-    name: 'SignUp',
-    component: <SignUpComponent />,
-    path: Router.SIGN_UP,
-    isPrivate: false,
-  },
+  // {
+  //   name: 'SignUp',
+  //   component: <SignUpComponent />,
+  //   path: Router.SIGN_UP,
+  //   isPrivate: false,
+  // },
   {
     name: 'User',
     component: <UserComponent />,
@@ -76,6 +78,12 @@ const ROUTES = [
     component: <RegisterComponent />,
     path: Router.REGISTER,
     isPrivate: false,
+  },
+  {
+    name: 'Register Dashboard',
+    component: <RegisterDashboardComponent />,
+    path: Router.REGISTER_DASHBOARD,
+    isPrivate: true,
   },
 ]
 

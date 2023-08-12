@@ -5,6 +5,8 @@ import { Student } from 'models'
 import { buildImageUrl, useIsMobile } from 'utils/common'
 import ScoreIcon from '@mui/icons-material/Score'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
+import Box from '@mui/material/Box'
+import Chip from '@mui/material/Chip'
 
 const CardComponent = ({
   student,
@@ -16,6 +18,11 @@ const CardComponent = ({
   const isMobile = useIsMobile()
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
   const avatar = buildImageUrl(student.avatarPath, student.gender)
+  const transferHistoryContent =
+    student.transferHistory && student.transferHistory[0] !== 'new'
+      ? { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
+      : { label: 'Thiếu nhi mới', color: 'success' }
+
   return (
     <Card sx={{ maxWidth: isMobile ? 275 : 300, minWidth: isMobile ? 275 : 300 }}>
       <CardMedia
@@ -43,6 +50,22 @@ const CardComponent = ({
         >
           {fullName}
         </Typography>
+        {student.transferHistory && (
+          <Box sx={{ textAlign: 'center' }}>
+            <Chip
+              sx={{
+                height: 'auto',
+                '& .MuiChip-label': {
+                  display: 'block',
+                  whiteSpace: 'normal',
+                },
+              }}
+              size={'small'}
+              color={transferHistoryContent.color as any}
+              label={transferHistoryContent.label}
+            />
+          </Box>
+        )}
       </CardContent>
       <CardActions
         sx={{

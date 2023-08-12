@@ -6,6 +6,7 @@ export enum StudentActionType {
   DELETE_STUDENT = 'DELETE_STUDENT',
   VIEW_STUDENT = 'VIEW_STUDENT',
   VIEW_SCORE_BOOK = 'VIEW_SCORE_BOOK',
+  TRANSFER_CLASS = 'TRANSFER_CLASS',
 }
 
 export enum AssessmentActionType {
@@ -26,6 +27,13 @@ export enum RollCallDateActionType {
   ADD_STUDY_DATE = 'ADD_STUDY_DATE',
   EDIT_STUDY_DATE = 'EDIT_STUDY_DATE',
   ADD_NOTE = 'ADD_NOTE',
+}
+
+export enum RegisterActionType {
+  ADD_NEW_REGISTER = 'ADD_NEW_REGISTER',
+  DISABLE_QR_CODE = 'DISABLE_QR_CODE',
+  CONFIRM_NEW_REGISTER = 'CONFIRM_NEW_REGISTER',
+  VIEW_DETAIL = 'VIEW_DETAIL',
 }
 
 export enum AttendanceType {

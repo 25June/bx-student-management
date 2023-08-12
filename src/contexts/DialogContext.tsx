@@ -17,6 +17,7 @@ import DiligentDialogComponent from 'modules/diligent-dialog/DiligentDialog.comp
 import { Assessment, Student } from 'models'
 import NoteDialogComponent from 'modules/diligent/NoteDialog.component'
 import ConfigDialogComponent from 'modules/config-dialog/ConfigDialog.component'
+import TransferStudentDialogComponent from 'modules/student/TransferStudentDialog.component'
 
 type ActionType = AssessmentActionType | StudentActionType | RollCallDateActionType
 type RollCallDate = {
@@ -88,11 +89,18 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
   return (
     <DialogContext.Provider value={value}>
       {children}
-      {dialog === DialogType.STUDENT_DIALOG && (
+      {dialog === DialogType.STUDENT_DIALOG && action !== 'TRANSFER_CLASS' && (
         <StudentDialogComponent
           isOpen={open}
           onClose={handleCloseDialog}
           action={action || ''}
+          student={data as Student}
+        />
+      )}
+      {dialog === DialogType.STUDENT_DIALOG && action === 'TRANSFER_CLASS' && (
+        <TransferStudentDialogComponent
+          isOpen={open}
+          onClose={handleCloseDialog}
           student={data as Student}
         />
       )}

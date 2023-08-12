@@ -51,17 +51,17 @@ const HomeComponent = () => {
 
   const handleClickAction = (data: Student, type: StudentActionType | ScoreBookActionType) => {
     if (type === StudentActionType.VIEW_SCORE_BOOK) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setSelectedStudent(data)
         setOpenScoreBook(true)
-      }, 100)
+      })
       return
     }
     if (type === StudentActionType.VIEW_STUDENT) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         setSelectedStudent(data)
         setOpenInfoPanel(true)
-      }, 100)
+      })
       return
     }
     const student = students.find((std: Student) => std.id === data.id)

@@ -83,7 +83,7 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
         <Box sx={{ textAlign: 'center', '.MuiAvatar-root': { margin: '0 auto' } }}>
           <Avatar
             src={buildImageUrl(currentUser.avatarPath, false, true)}
-            sx={{ width: 200, height: 200 }}
+            sx={{ width: 200, height: 200, objectPosition: 'contain' }}
             variant={'rounded'}
           />
         </Box>

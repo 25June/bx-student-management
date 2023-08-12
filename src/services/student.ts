@@ -161,8 +161,7 @@ export const useUpdateStudent = () => {
       saintName: dataInput.saintName || '',
       address: dataInput.address || '',
     })
-      .then((value) => {
-        console.info(value)
+      .then(() => {
         onSuccess()
       })
       .catch((error) => {

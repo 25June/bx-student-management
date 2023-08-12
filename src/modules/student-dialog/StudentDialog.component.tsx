@@ -143,6 +143,11 @@ const StudentDialogComponent = ({
           { ...data.phone2, number: formatPhone(data.phone2.number) },
         ],
         avatarPath: downloadPath || data.avatarPath || '',
+        transferHistory: student.class?.name
+          ? student.transferHistory
+            ? [student.class.name, ...student.transferHistory]
+            : ['new']
+          : [''],
       }
       return updateStudent({
         dataInput: updatedStudent,
@@ -170,6 +175,7 @@ const StudentDialogComponent = ({
         { ...data.phone2, number: formatPhone(data.phone2.number) },
       ],
       avatarPath: downloadPath || '',
+      transferHistory: ['new'],
     }
     return addNewStudent({
       dataInput: newStudent,

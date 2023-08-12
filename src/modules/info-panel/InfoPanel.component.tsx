@@ -7,6 +7,7 @@ import { StudentActionType } from 'constant'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Student } from 'models'
 import { ImageBoxComponent } from 'modules'
+import MoveUpIcon from '@mui/icons-material/MoveUp'
 
 interface InfoPanelComponentProps {
   isOpen: boolean
@@ -179,6 +180,15 @@ const InfoPanelComponent = ({
               variant="outlined"
             >
               Sửa
+            </Button>
+            <Button
+              startIcon={<MoveUpIcon />}
+              size="small"
+              onClick={() => onClickAction(studentInfo, StudentActionType.TRANSFER_CLASS)}
+              color="success"
+              variant="contained"
+            >
+              Chuyển lớp
             </Button>
             <Button
               startIcon={<DeleteIcon />}

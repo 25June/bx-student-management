@@ -20,6 +20,7 @@ export type Student = {
   isDeleted?: boolean
   schoolYears?: string[]
   note?: string
+  transferHistory?: string[]
 }
 
 export type RegisterStudent = {

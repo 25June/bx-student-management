@@ -8,6 +8,7 @@ import { Student } from 'models/student'
 import ScoreIcon from '@mui/icons-material/Score'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import { StudentActionType } from 'constant'
+import Chip from '@mui/material/Chip'
 
 interface SingleScoreViewComponentProps {
   student: Student
@@ -23,36 +24,61 @@ const Item = styled(Paper)(({ theme }) => ({
 }))
 
 const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComponentProps) => {
+  const transferHistoryContent =
+    student.transferHistory && student.transferHistory[0] !== 'new'
+      ? { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
+      : { label: 'Thiếu nhi mới', color: 'success' }
   return (
     <Item
       sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         marginBottom: 2,
       }}
     >
-      <TableFullNameCellComponent
-        avatarPath={student.avatarPath}
-        saintName={student.saintName}
-        lastName={student.lastName}
-        firstName={student.firstName}
-        gender={!!student.gender}
-      />
-      <Box sx={{ display: 'flex', gap: 1 }}>
-        <IconButton
-          color={'info'}
-          onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
-        >
-          <ScoreIcon />
-        </IconButton>
-        <IconButton
-          color={'info'}
-          onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
-        >
-          <PermIdentityIcon />
-        </IconButton>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <TableFullNameCellComponent
+          avatarPath={student.avatarPath}
+          saintName={student.saintName}
+          lastName={student.lastName}
+          firstName={student.firstName}
+          gender={!!student.gender}
+        />
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <IconButton
+            color={'info'}
+            onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
+          >
+            <ScoreIcon />
+          </IconButton>
+          <IconButton
+            color={'info'}
+            onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+          >
+            <PermIdentityIcon />
+          </IconButton>
+        </Box>
       </Box>
+      {student.transferHistory && (
+        <Box sx={{ textAlign: 'left' }}>
+          <Chip
+            sx={{
+              height: 'auto',
+              '& .MuiChip-label': {
+                display: 'block',
+                whiteSpace: 'normal',
+              },
+            }}
+            size={'small'}
+            color={transferHistoryContent.color as any}
+            label={transferHistoryContent.label}
+          />
+        </Box>
+      )}
     </Item>
   )
 }

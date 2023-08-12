@@ -1,8 +1,10 @@
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { addDoc, collection, serverTimestamp, query, onSnapshot } from 'firebase/firestore'
 import { fireStoreDB } from '../firebase'
 import { RegisterStudent } from 'models/student'
+import { useState, useEffect } from 'react'
 
 const StudentRegisterCollection = 'newRegister'
+export const newRegisterRef = collection(fireStoreDB, StudentRegisterCollection)
 
 interface AddNewStudentParams {
   dataInput: Omit<RegisterStudent, 'id'>
@@ -30,4 +32,31 @@ export const useRegisterNewStudent = () => {
         onComplete()
       })
   }
+}
+
+export const useGetNewRegisterStudent = () => {
+  const [registerStudents, setRegisterStudent] = useState<RegisterStudent[] | null>()
+  useEffect(() => {
+    const queryNewRegisterStudents = query(newRegisterRef)
+    const listener = onSnapshot(
+      queryNewRegisterStudents,
+      (snapshot) => {
+        setRegisterStudent(
+          snapshot.docs.map((snap) => {
+            return {
+              ...snap.data(),
+              id: snap.id,
+            } as RegisterStudent
+          })
+        )
+      },
+      (error) => {
+        console.error(error)
+        setRegisterStudent(null)
+      }
+    )
+    return listener
+  }, [])
+
+  return { registerStudents, isLoading: typeof registerStudents === 'undefined' }
 }
