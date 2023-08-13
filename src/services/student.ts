@@ -28,12 +28,16 @@ export const useGetStudents = (classId: string) => {
         queryStudents,
         (snapshot) => {
           setStudents(
-            snapshot.docs.reduce((acc: Student[], data) => {
-              if (!(data.data() as Student).isDeleted) {
-                return [...acc, { ...data.data(), id: data.id } as Student]
-              }
-              return acc
-            }, [])
+            snapshot.docs
+              .sort((snapA, snapB) =>
+                snapA.data()?.firstName.localeCompare(snapB.data()?.firstName)
+              )
+              .reduce((acc: Student[], data) => {
+                if (!(data.data() as Student).isDeleted) {
+                  return [...acc, { ...data.data(), id: data.id } as Student]
+                }
+                return acc
+              }, [])
           )
         },
         (error) => {

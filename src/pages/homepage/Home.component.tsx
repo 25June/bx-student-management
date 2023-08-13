@@ -13,6 +13,7 @@ import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType } from 'constant/common'
 import SingleInfoViewComponent from 'modules/student/SingleInfoViewComponent'
+import { useClassContext } from 'contexts/ClassContext'
 
 const HomeComponent = () => {
   const [isOpenInfoPanel, setOpenInfoPanel] = useState(false)
@@ -22,6 +23,7 @@ const HomeComponent = () => {
   const { students } = useStudentContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
+  const { classId } = useClassContext()
 
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   useEffect(() => {
@@ -110,7 +112,7 @@ const HomeComponent = () => {
           }}
         >
           <Box>
-            <SearchComponent onChange={handleFilterStudentByName} />
+            <SearchComponent onChange={handleFilterStudentByName} key={classId} />
           </Box>
           <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
