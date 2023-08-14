@@ -11,9 +11,11 @@ import {
   Box,
   FormControl,
   FormLabel,
-  FormControlLabel,
-  Switch,
+  // FormControlLabel,
+  // Switch,
   CircularProgress,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material'
 import { StudentActionType } from 'constant'
 import { Class, Student } from 'models'
@@ -94,11 +96,17 @@ const StudentDialogComponent = ({
   const addNewStudent = useAddNewStudent()
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
-  const { handleSubmit, control, setValue, reset, formState } = useForm<StudentForm>({
+  const { handleSubmit, control, setValue, reset, formState, watch } = useForm<StudentForm>({
     defaultValues: getValues(student),
   })
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   const [isLoading, setLoading] = useState<boolean>(false)
+
+  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: boolean) => {
+    console.log({ gender: newAlignment })
+    setValue('gender', newAlignment)
+  }
+
   useEffect(() => {
     if (action === StudentActionType.EDIT_STUDENT) {
       const stu: StudentForm = getValues(student)
@@ -262,10 +270,21 @@ const StudentDialogComponent = ({
                   render={({ field }) => (
                     <FormControl component="fieldset" variant="standard" sx={{ width: '25%' }}>
                       <FormLabel component="legend">Giới tính</FormLabel>
-                      <FormControlLabel
-                        control={<Switch {...field} checked={field.value} name="gender" />}
-                        label={field.value ? 'Nữ' : 'Nam'}
-                      />
+                      <ToggleButtonGroup
+                        size={'small'}
+                        color="primary"
+                        value={watch('gender')}
+                        onChange={handleChange}
+                        aria-label="gender"
+                        exclusive={true}
+                      >
+                        <ToggleButton value={false}>Nam</ToggleButton>
+                        <ToggleButton value={true}>Nữ</ToggleButton>
+                      </ToggleButtonGroup>
+                      {/*<FormControlLabel*/}
+                      {/*  control={<Switch {...field} checked={field.value} name="gender" />}*/}
+                      {/*  label={field.value ? 'Nữ' : 'Nam'}*/}
+                      {/*/>*/}
                     </FormControl>
                   )}
                 />

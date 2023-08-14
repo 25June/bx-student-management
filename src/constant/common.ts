@@ -111,6 +111,7 @@ export enum Role {
   CEO = 3,
   CTO = 4,
   SECRECTARY = 5,
+  COLLABORATOR = 6,
 }
 
 export enum DialogType {
@@ -146,6 +147,10 @@ export const UserRoles = [
   {
     title: 'Thư Ký',
     id: 5,
+  },
+  {
+    title: 'Hỗ Trợ',
+    id: 6,
   },
 ]
 

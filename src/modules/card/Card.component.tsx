@@ -31,6 +31,7 @@ const CardComponent = ({
         src={avatar}
         alt="student-girl"
         sx={{ objectFit: 'contain' }}
+        onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       />
       <CardContent
         sx={{ maxHeight: isMobile ? 80 : 120, padding: isMobile ? 1 : 2 }}
