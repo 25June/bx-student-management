@@ -19,13 +19,13 @@ export const formatDate = (date: string, forDataSave: boolean): string => {
 
 export const formatPhone = (phone: string): string => {
   // from 0973173484 to 0973.173.484
-  if (phone) {
+  if (phone && phone.length > 9) {
     const splitNumber = phone.split('')
     splitNumber[3] = splitNumber[3] + '.'
     splitNumber[6] = splitNumber[6] + '.'
     return splitNumber.join('')
   }
-  return ''
+  return phone || ''
 }
 
 export const formatPhoneWithoutDot = (phone: string): string => {

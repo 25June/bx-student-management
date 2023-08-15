@@ -6,6 +6,7 @@ import {
   UploadTaskSnapshot,
   deleteObject,
 } from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid'
 
 const storage = getStorage()
 const storageRef = (pathName: string) => ref(storage, pathName)
@@ -17,10 +18,10 @@ export const metadata = {
 }
 
 export const uploadAvatar = async (
-  file: File,
+  file: File | Blob,
   updateProgress: (progress: number) => void
 ): Promise<string> => {
-  const referencePath = avatarRef(file.name)
+  const referencePath = avatarRef(uuidv4())
   const handleUpload = uploadBytesResumable(referencePath, file, metadata)
   handleUpload.on(
     'state_changed',
@@ -62,7 +63,7 @@ export const removeImage = (avatarPath: string) => {
     .then(() => {
       console.log(`Remove ${avatarPath} successfully`)
     })
-    .catch((error) => {
+    .catch(() => {
       console.log(`Remove ${avatarPath} failed`)
     })
 }

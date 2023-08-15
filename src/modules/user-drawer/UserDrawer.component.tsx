@@ -15,6 +15,8 @@ import { useState } from 'react'
 import { User } from 'models/user'
 import { buildImageUrl } from 'utils/common'
 import Chip from '@mui/material/Chip'
+import AccountBoxIcon from '@mui/icons-material/AccountBox'
+import CroppingImageComponent from 'modules/cropping-image/CroppingImage.component'
 
 interface UserDrawerComponentProps {
   onClose: () => void
@@ -26,6 +28,8 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
   const [currentUser, setCurrentUser] = useState<User>()
   const { user } = useAuthentication()
   const signOut = useSignOut()
+
+  const [isOpenCroppingDialog, setOpenCroppingDialog] = useState<boolean>(false)
 
   useEffect(() => {
     if (user && user.id) {
@@ -50,6 +54,17 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
       })
     }
     openUpdateInfoDialog(false)
+  }
+
+  const handleCloseCroppingDialog = (refreshData?: boolean) => {
+    if (refreshData) {
+      getUserInfo(user?.id || '').then((res) => {
+        if (res) {
+          setCurrentUser(res)
+        }
+      })
+    }
+    setOpenCroppingDialog(false)
   }
 
   if (!user || !currentUser) {
@@ -106,6 +121,14 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           Cập nhật thông tin
         </Button>
         <Button
+          startIcon={<AccountBoxIcon />}
+          sx={{ justifyContent: 'flex-start' }}
+          variant={'outlined'}
+          onClick={() => setOpenCroppingDialog(true)}
+        >
+          Chỉnh avatar
+        </Button>
+        <Button
           startIcon={<ExitToAppIcon />}
           sx={{ justifyContent: 'flex-start' }}
           onClick={handleSignOut}
@@ -119,6 +142,14 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           onClose={handleCloseUpdateDialog}
           isOpen={isOpenUpdateInfoDialog}
           user={currentUser}
+        />
+      )}
+      {currentUser.avatarPath && (
+        <CroppingImageComponent
+          avatarPath={currentUser.avatarPath}
+          userId={currentUser.id}
+          isOpen={isOpenCroppingDialog}
+          onClose={handleCloseCroppingDialog}
         />
       )}
     </Drawer>

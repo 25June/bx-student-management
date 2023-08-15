@@ -28,6 +28,7 @@ const ImageBoxComponent = ({
         aspectRatio: '1/1',
         objectFit: 'cover',
         margin: '0 auto',
+        boxShadow: 2,
         ...customStyles,
       }}
     />

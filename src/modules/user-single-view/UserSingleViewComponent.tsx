@@ -54,9 +54,11 @@ const SecondaryText = ({ role, classId }: SecondaryTextProps) => {
 const UserItem = ({
   user,
   onClickMenu,
+  onClickAction,
 }: {
   user: User
   onClickMenu: (event: any, user: User) => void
+  onClickAction: (action: string, selectedRow: User) => void
 }) => {
   return (
     <>
@@ -73,10 +75,11 @@ const UserItem = ({
           </IconButton>
         }
       >
-        <ListItemAvatar>
-          <Avatar src={buildImageUrl(user.avatarPath, false, true)} />
+        <ListItemAvatar onClick={() => onClickAction(UserAction.VIEW_PROFILE, user)}>
+          <Avatar src={buildImageUrl(user.avatarPath, false, true)} sx={{ boxShadow: 2 }} />
         </ListItemAvatar>
         <ListItemText
+          onClick={() => onClickAction(UserAction.VIEW_PROFILE, user)}
           primary={
             <PrimaryText saintName={''} firstName={user.firstName} lastName={user.lastName} />
           }
@@ -116,7 +119,12 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
     <Box>
       <List disablePadding={true} sx={{ width: '100%', bgcolor: 'background.paper' }}>
         {users.map((user) => (
-          <UserItem key={user.id} user={user} onClickMenu={handleClickMenu} />
+          <UserItem
+            key={user.id}
+            user={user}
+            onClickAction={onClickAction}
+            onClickMenu={handleClickMenu}
+          />
         ))}
       </List>
       {selectedRow && currentUser?.role === Role.CTO && (

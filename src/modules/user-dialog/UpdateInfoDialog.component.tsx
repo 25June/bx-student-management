@@ -8,7 +8,7 @@ import {
   TextField,
   Box,
 } from '@mui/material'
-import { BaseClasses, BaseClassObj } from 'constant/common'
+import { BaseClasses, BaseClassObj, Role } from 'constant/common'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { User } from 'models/user'
@@ -137,6 +137,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
                 margin={'normal'}
                 type={'email'}
                 fullWidth={true}
+                disabled={user.role !== Role.CTO}
                 error={!!fieldState.error}
                 {...field}
               />

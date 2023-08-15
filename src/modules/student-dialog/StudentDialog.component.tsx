@@ -11,14 +11,12 @@ import {
   Box,
   FormControl,
   FormLabel,
-  // FormControlLabel,
-  // Switch,
   CircularProgress,
   ToggleButtonGroup,
   ToggleButton,
 } from '@mui/material'
 import { StudentActionType } from 'constant'
-import { Class, Student } from 'models'
+import { Student } from 'models'
 import { splitFullName } from 'utils'
 import { formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
 import {
@@ -30,9 +28,6 @@ import {
 } from 'services'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules'
 import { useIsMobile } from 'utils/common'
-import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
-import { SelectChangeEvent } from '@mui/material/Select'
-import { BaseClasses } from 'constant/common'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { getValues, StudentForm } from './helpers'
 import ClearIcon from '@mui/icons-material/Clear'
@@ -103,7 +98,6 @@ const StudentDialogComponent = ({
   const [isLoading, setLoading] = useState<boolean>(false)
 
   const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: boolean) => {
-    console.log({ gender: newAlignment })
     setValue('gender', newAlignment)
   }
 
@@ -140,6 +134,10 @@ const StudentDialogComponent = ({
       delete data.avatar
     }
     if (action === StudentActionType.EDIT_STUDENT && student?.id) {
+      Object.keys(data).forEach((key: any) =>
+        data[key as keyof StudentForm] === undefined ? delete data[key as keyof StudentForm] : {}
+      )
+
       const updatedStudent: Student = {
         ...data,
         id: student.id,
@@ -154,8 +152,8 @@ const StudentDialogComponent = ({
         transferHistory: student.class?.name
           ? student.transferHistory
             ? [student.class.name, ...student.transferHistory]
-            : ['new']
-          : [''],
+            : []
+          : ['new'],
       }
       return updateStudent({
         dataInput: updatedStudent,
@@ -196,15 +194,6 @@ const StudentDialogComponent = ({
         setTimeout(() => onClose(), 100)
       },
     })
-  }
-
-  const handleChangeClass = (event: SelectChangeEvent) => {
-    const selectedClass = BaseClasses.find((c: Class) => c.id === (event.target.value as string))
-    if (typeof selectedClass === 'undefined') {
-      console.error('Error at Selected class')
-      return
-    }
-    setValue('class', selectedClass || BaseClasses[0])
   }
 
   return (
@@ -267,7 +256,7 @@ const StudentDialogComponent = ({
                 <Controller
                   control={control}
                   name={'gender'}
-                  render={({ field }) => (
+                  render={() => (
                     <FormControl component="fieldset" variant="standard" sx={{ width: '25%' }}>
                       <FormLabel component="legend">Giới tính</FormLabel>
                       <ToggleButtonGroup
@@ -281,10 +270,6 @@ const StudentDialogComponent = ({
                         <ToggleButton value={false}>Nam</ToggleButton>
                         <ToggleButton value={true}>Nữ</ToggleButton>
                       </ToggleButtonGroup>
-                      {/*<FormControlLabel*/}
-                      {/*  control={<Switch {...field} checked={field.value} name="gender" />}*/}
-                      {/*  label={field.value ? 'Nữ' : 'Nam'}*/}
-                      {/*/>*/}
                     </FormControl>
                   )}
                 />
@@ -338,16 +323,6 @@ const StudentDialogComponent = ({
                   )}
                 />
               </Box>
-              <Controller
-                control={control}
-                name={'class'}
-                render={({ field }) => (
-                  <ClassDropdownComponent
-                    classObj={field.value}
-                    onChangeClass={handleChangeClass}
-                  />
-                )}
-              />
               <Controller
                 control={control}
                 name={'address'}

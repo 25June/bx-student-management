@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import Box from '@mui/material/Box'
-import { Typography } from '@mui/material'
+import { Typography, Drawer } from '@mui/material'
 import SearchComponent from 'modules/common/Search.component'
 import Button from '@mui/material/Button'
 import AssignmentIcon from '@mui/icons-material/Assignment'
@@ -14,6 +14,7 @@ import PermissionDialogComponent from 'modules/user-dialog/PermissionDialog.comp
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import { useIsMobile } from 'utils/common'
 import UserSingleViewComponent from 'modules/user-single-view/UserSingleViewComponent'
+import UserProfilePanelComponent from 'modules/user-drawer/UserProfilePanel.component'
 
 const UserComponent = () => {
   const isMobile = useIsMobile()
@@ -25,6 +26,8 @@ const UserComponent = () => {
   const [isOpenPermissionDialog, openPermissionDialog] = useState<boolean>(false)
   const [isOpenUpdateInfoDialog, openUpdateInfoDialog] = useState<boolean>(false)
   const [selectedUser, setSelectedUser] = useState<User>()
+  const [openUserDrawer, setOpenUserDrawer] = useState<boolean>(false)
+
   const handleFilterUserByName = (value: string) => {
     console.log(value)
     console.log(users)
@@ -70,6 +73,9 @@ const UserComponent = () => {
         return openUpdateInfoDialog(true)
       case UserAction.CHANGE_PASSWORD:
         return openChangePasswordDialog(true)
+      case UserAction.VIEW_PROFILE:
+        setSelectedUser(selectedRow)
+        return setOpenUserDrawer(true)
     }
   }
 
@@ -135,6 +141,14 @@ const UserComponent = () => {
           />
         </>
       )}
+      <Drawer anchor={'right'} open={openUserDrawer} onClose={() => setOpenUserDrawer(false)}>
+        {selectedUser && (
+          <UserProfilePanelComponent
+            profile={selectedUser}
+            onClose={() => setOpenUserDrawer(false)}
+          />
+        )}
+      </Drawer>
     </Box>
   )
 }

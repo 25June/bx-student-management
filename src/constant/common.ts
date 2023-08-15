@@ -102,6 +102,7 @@ export enum UserAction {
   CHANGE_PASSWORD = 'CHANGE_PASSWORD',
   RESET_PASSWORD = 'RESET_PASSWORD',
   UPDATE_INFO = 'UPDATE_INFO',
+  VIEW_PROFILE = 'VIEW_PROFILE',
 }
 
 export enum Role {

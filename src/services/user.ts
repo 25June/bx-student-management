@@ -113,6 +113,10 @@ export const useUpdateRole = () => {
   }
 }
 
+export const updateUserAvatar = (userId: string, downloadPath: string) => {
+  return setDoc(userRef(userId), { avatarPath: downloadPath }, { merge: true })
+}
+
 export const useUpdateUserInfo = () => {
   const { showSnackbar } = useSnackbarContext()
   return (user: User) => {
