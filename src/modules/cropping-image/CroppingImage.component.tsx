@@ -10,15 +10,17 @@ import {
   Typography,
 } from '@mui/material'
 import ClearIcon from '@mui/icons-material/Clear'
-import ContactsIcon from '@mui/icons-material/Contacts'
+// import ContactsIcon from '@mui/icons-material/Contacts'
 import CheckIcon from '@mui/icons-material/Check'
 import { buildImageUrl, useIsMobile } from 'utils/common'
-import Cropper, { ReactCropperElement } from 'react-cropper'
-import 'cropperjs/dist/cropper.css'
+import ReactCrop, { PixelCrop, Crop, centerCrop, makeAspectCrop } from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
 import { removeImage, uploadAvatar } from 'services'
 import { updateUserAvatar } from 'services/user'
 import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { useDebounceEffect } from './useDebounceEffect'
+import { canvasPreview } from 'modules/cropping-image/canvasPreview'
 
 interface CroppingImageProps {
   avatarPath: string
@@ -27,26 +29,61 @@ interface CroppingImageProps {
   onClose: (refreshData?: boolean) => void
 }
 
+function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number) {
+  return centerCrop(
+    makeAspectCrop(
+      {
+        unit: '%',
+        width: 90,
+      },
+      aspect,
+      mediaWidth,
+      mediaHeight
+    ),
+    mediaWidth,
+    mediaHeight
+  )
+}
+
 const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: CroppingImageProps) => {
   const isMobile = useIsMobile()
-  const cropperRef = useRef<ReactCropperElement>(null)
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
+
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
+
+  const [crop, setCrop] = useState<Crop>()
   const [isLoading, setLoading] = useState<boolean>(false)
   const [isImageReady, setImageReady] = useState<boolean>(false)
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   const { showSnackbar } = useSnackbarContext()
-  const [previewImage, setPreviewImage] = useState<string>()
-  const cropTest = () => {
-    const cropper = cropperRef.current?.cropper
-    if (cropper) {
-      setPreviewImage(cropper.getCroppedCanvas().toDataURL())
-    }
+
+  useDebounceEffect(
+    async () => {
+      if (
+        completedCrop?.width &&
+        completedCrop?.height &&
+        imgRef.current &&
+        previewCanvasRef.current
+      ) {
+        // We use canvasPreview as it's much faster than imgPreview.
+        canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop)
+      }
+    },
+    100,
+    [completedCrop]
+  )
+  const handleClose = (fresherData?: boolean) => {
+    onClose(fresherData)
   }
 
   const onCrop = async () => {
     setLoading(true)
-    const cropper = cropperRef.current?.cropper
-    if (cropper) {
-      cropper.getCroppedCanvas().toBlob(async (blobFile) => {
+    if (!previewCanvasRef.current) {
+      throw new Error('Crop canvas does not exist')
+    }
+    previewCanvasRef.current.toBlob(
+      async (blobFile) => {
         if (blobFile) {
           const downloadPath = await uploadAvatar(blobFile, setUploadImageProgress)
           if (downloadPath && userId && avatarPath) {
@@ -61,15 +98,24 @@ const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: Croppin
               })
               .finally(() => {
                 setLoading(false)
-                onClose(true)
+                handleClose(true)
               })
           }
         }
-      })
-    }
+      },
+      'image/png',
+      1
+    )
   }
+
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget
+    setCrop(centerAspectCrop(width, height, 1))
+    setImageReady(true)
+  }
+
   return (
-    <Dialog open={isOpen} onClose={() => onClose(false)} fullWidth={isMobile}>
+    <Dialog open={isOpen} onClose={() => handleClose(false)} fullWidth={isMobile}>
       <DialogTitle>Cropping Image</DialogTitle>
       <DialogContent dividers={true}>
         {!isImageReady && (
@@ -84,21 +130,34 @@ const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: Croppin
             <CircularProgress />
           </Box>
         )}
-        <Cropper
-          ready={() => setImageReady(true)}
-          src={buildImageUrl(avatarPath, false, true, true)}
-          style={{ height: 400, width: '100%' }}
-          // Cropper.js options
-          initialAspectRatio={1}
-          aspectRatio={1}
-          zoomable={false}
-          guides={false}
-          ref={cropperRef}
-        />
-        {previewImage && (
+        <ReactCrop
+          crop={crop}
+          onChange={(_, percentCrop) => setCrop(percentCrop)}
+          onComplete={(c) => setCompletedCrop(c)}
+          aspect={1}
+        >
+          <img
+            crossOrigin={'anonymous'}
+            ref={imgRef}
+            alt="Crop me"
+            src={buildImageUrl(avatarPath, false, true, true)}
+            onLoad={onImageLoad}
+          />
+        </ReactCrop>
+        {!!completedCrop && (
           <Box>
             <Typography sx={{ marginBottom: 1, marginTop: 1 }}>Kết quả:</Typography>
-            <Box component={'img'} sx={{ width: '100%' }} src={previewImage} />
+            <Box sx={{ width: '100%' }}>
+              <canvas
+                ref={previewCanvasRef}
+                style={{
+                  border: '1px solid black',
+                  objectFit: 'contain',
+                  width: completedCrop.width,
+                  height: completedCrop.height,
+                }}
+              />
+            </Box>
           </Box>
         )}
       </DialogContent>
@@ -110,7 +169,7 @@ const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: Croppin
         )}
         <Button
           autoFocus={true}
-          onClick={() => onClose(false)}
+          onClick={() => handleClose(false)}
           variant="outlined"
           color={'neutral'}
           disabled={isLoading}
@@ -118,16 +177,16 @@ const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: Croppin
         >
           Huỷ
         </Button>
-        <Button
-          autoFocus={true}
-          onClick={cropTest}
-          variant="contained"
-          color={'success'}
-          disabled={isLoading}
-          startIcon={<ContactsIcon />}
-        >
-          Crop Thử
-        </Button>
+        {/*<Button*/}
+        {/*  autoFocus={true}*/}
+        {/*  onClick={cropTest}*/}
+        {/*  variant="contained"*/}
+        {/*  color={'success'}*/}
+        {/*  disabled={isLoading}*/}
+        {/*  startIcon={<ContactsIcon />}*/}
+        {/*>*/}
+        {/*  Crop Thử*/}
+        {/*</Button>*/}
         <Button
           type={'button'}
           onClick={onCrop}

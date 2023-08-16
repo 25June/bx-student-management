@@ -28,7 +28,6 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
   const [currentUser, setCurrentUser] = useState<User>()
   const { user } = useAuthentication()
   const signOut = useSignOut()
-
   const [isOpenCroppingDialog, setOpenCroppingDialog] = useState<boolean>(false)
 
   useEffect(() => {
