@@ -7,8 +7,10 @@ import {
   Button,
   CircularProgress,
   Box,
+  Typography,
 } from '@mui/material'
 import ClearIcon from '@mui/icons-material/Clear'
+import ContactsIcon from '@mui/icons-material/Contacts'
 import CheckIcon from '@mui/icons-material/Check'
 import { buildImageUrl, useIsMobile } from 'utils/common'
 import Cropper, { ReactCropperElement } from 'react-cropper'
@@ -29,8 +31,16 @@ const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: Croppin
   const isMobile = useIsMobile()
   const cropperRef = useRef<ReactCropperElement>(null)
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [isImageReady, setImageReady] = useState<boolean>(false)
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   const { showSnackbar } = useSnackbarContext()
+  const [previewImage, setPreviewImage] = useState<string>()
+  const cropTest = () => {
+    const cropper = cropperRef.current?.cropper
+    if (cropper) {
+      setPreviewImage(cropper.getCroppedCanvas().toDataURL())
+    }
+  }
 
   const onCrop = async () => {
     setLoading(true)
@@ -62,14 +72,35 @@ const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: Croppin
     <Dialog open={isOpen} onClose={() => onClose(false)} fullWidth={isMobile}>
       <DialogTitle>Cropping Image</DialogTitle>
       <DialogContent dividers={true}>
+        {!isImageReady && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
         <Cropper
+          ready={() => setImageReady(true)}
           src={buildImageUrl(avatarPath, false, true, true)}
           style={{ height: 400, width: '100%' }}
           // Cropper.js options
           initialAspectRatio={1}
+          aspectRatio={1}
+          zoomable={false}
           guides={false}
           ref={cropperRef}
         />
+        {previewImage && (
+          <Box>
+            <Typography sx={{ marginBottom: 1, marginTop: 1 }}>Kết quả:</Typography>
+            <Box component={'img'} sx={{ width: '100%' }} src={previewImage} />
+          </Box>
+        )}
       </DialogContent>
       <DialogActions>
         {isLoading && (
@@ -86,6 +117,16 @@ const CroppingImageComponent = ({ avatarPath, userId, isOpen, onClose }: Croppin
           startIcon={<ClearIcon />}
         >
           Huỷ
+        </Button>
+        <Button
+          autoFocus={true}
+          onClick={cropTest}
+          variant="contained"
+          color={'success'}
+          disabled={isLoading}
+          startIcon={<ContactsIcon />}
+        >
+          Crop Thử
         </Button>
         <Button
           type={'button'}

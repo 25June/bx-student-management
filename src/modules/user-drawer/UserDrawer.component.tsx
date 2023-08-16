@@ -102,7 +102,7 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
             variant={'rounded'}
           />
         </Box>
-        <Box>
+        <Box data-id={currentUser.id}>
           <Box textAlign={'center'} margin={0} color={grey[800]}>
             {currentUser.saintName}
           </Box>
