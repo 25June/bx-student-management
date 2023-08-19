@@ -13,7 +13,7 @@ import { grey } from '@mui/material/colors'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import { useState } from 'react'
 import { User } from 'models/user'
-import { buildImageUrl } from 'utils/common'
+import { buildImageUrl, useIsMobile } from 'utils/common'
 import Chip from '@mui/material/Chip'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import CroppingImageComponent from 'modules/cropping-image/CroppingImage.component'
@@ -29,6 +29,7 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
   const { user } = useAuthentication()
   const signOut = useSignOut()
   const [isOpenCroppingDialog, setOpenCroppingDialog] = useState<boolean>(false)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     if (user && user.id) {
@@ -124,8 +125,12 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           sx={{ justifyContent: 'flex-start' }}
           variant={'outlined'}
           onClick={() => setOpenCroppingDialog(true)}
+          disabled={isMobile}
         >
-          Chỉnh avatar
+          <Box sx={{ textAlign: 'left' }}>
+            <Typography>Chỉnh avatar</Typography>
+            <Typography fontSize={'0.75rem'}>Lên máy tính để chỉnh!</Typography>
+          </Box>
         </Button>
         <Button
           startIcon={<ExitToAppIcon />}

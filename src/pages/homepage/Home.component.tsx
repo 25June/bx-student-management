@@ -182,7 +182,7 @@ const HomeComponent = () => {
         />
         <InfoPanelComponent
           isOpen={!!(selectedStudent?.id && isOpenInfoPanel)}
-          studentInfo={selectedStudent}
+          student={selectedStudent}
           onClose={() => setOpenInfoPanel(false)}
           onClickAction={handleClickAction}
         />

@@ -149,11 +149,6 @@ const StudentDialogComponent = ({
           { ...data.phone2, number: formatPhone(data.phone2.number) },
         ],
         avatarPath: downloadPath || data.avatarPath || '',
-        transferHistory: student.class?.name
-          ? student.transferHistory
-            ? [student.class.name, ...student.transferHistory]
-            : []
-          : ['new'],
       }
       return updateStudent({
         dataInput: updatedStudent,
@@ -329,7 +324,7 @@ const StudentDialogComponent = ({
                 render={({ field }) => (
                   <TextField
                     id="outlined-Address"
-                    label="Dia Chi"
+                    label="Địa Chỉ"
                     helperText="Ex: 231/83/13T Duong Ba Trac, p1, q8"
                     margin="normal"
                     multiline={true}

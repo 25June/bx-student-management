@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, TextField, Button, Chip } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
@@ -8,26 +8,29 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { Student } from 'models'
 import { ImageBoxComponent } from 'modules'
 import MoveUpIcon from '@mui/icons-material/MoveUp'
+import EditInfoPanelComponent from 'modules/info-panel/EditInfoPanel.component'
 
 interface InfoPanelComponentProps {
   isOpen: boolean
-  studentInfo?: Student
+  student?: Student
   onClose: () => void
   onClickAction: (student: any, actionType: StudentActionType) => void
 }
 
 const InfoPanelComponent = ({
   isOpen,
-  studentInfo,
+  student,
   onClose,
   onClickAction,
 }: InfoPanelComponentProps) => {
-  if (!studentInfo) {
+  const [editMode, setEditMode] = useState<boolean>(false)
+
+  if (!student) {
     return null
   }
 
   const handleRemoveStudent = () => {
-    onClickAction(studentInfo, StudentActionType.DELETE_STUDENT)
+    onClickAction(student, StudentActionType.DELETE_STUDENT)
     onClose()
   }
 
@@ -37,7 +40,6 @@ const InfoPanelComponent = ({
       anchor={'right'}
       open={isOpen}
       onClose={onClose}
-      onKeyDown={onClose}
       sx={{
         [`& .MuiDrawer-paper`]: { width: 325, boxSizing: 'border-box' },
       }}
@@ -55,152 +57,157 @@ const InfoPanelComponent = ({
         </Box>
         <Box display={'flex'}>
           <ImageBoxComponent
-            imagePath={studentInfo.avatarPath}
-            gender={studentInfo.gender}
+            imagePath={student.avatarPath}
+            gender={student.gender}
             maxWidth={200}
           />
         </Box>
         <Box>
-          <Box textAlign={'center'} component={'h5'} fontWeight={400} margin={0}>
-            {studentInfo.saintName}
-          </Box>
-          <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
-            {`${studentInfo.lastName} ${studentInfo.firstName}`}
-          </Box>
-          <Box mb={2} width={'100%'}>
-            <TextField
-              id={'birthday'}
-              label={'Ngày sinh'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              type={'date'}
-              value={studentInfo.birthday}
-              variant={'standard'}
-              sx={{ width: '100%' }}
-            />
-          </Box>
-          <Box mb={2} width={'100%'}>
-            <TextField
-              id={'address'}
-              label={'Địa chỉ'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              value={studentInfo.address}
-              variant={'standard'}
-              sx={{ width: '100%' }}
-              multiline={true}
-            />
-          </Box>
-          <Box
-            mb={2}
-            width={'100%'}
-            display={'flex'}
-            justifyContent={'space-between'}
-            flexWrap={'wrap'}
-          >
-            <TextField
-              id={'grade'}
-              label={'Văn hoá'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              value={studentInfo.grade}
-              variant={'standard'}
-              sx={{ width: '45%' }}
-            />
-            <TextField
-              id={'gender'}
-              label={'Giới tính'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              value={studentInfo.gender ? 'Nữ' : 'Nam'}
-              variant={'standard'}
-              sx={{ width: '45%' }}
-            />
-          </Box>
-          <Box
-            sx={{
-              width: '100%',
-              marginBottom: 2,
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <TextField
-              id={'phone-name-1'}
-              label={'Tên'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              value={studentInfo.phones[0].name}
-              sx={{ width: '100%' }}
-              variant={'standard'}
-            />
-            <TextField
-              id={'phone-number-2'}
-              label={'Số điện thoại'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              value={studentInfo.phones[0].number}
-              sx={{ width: '100%' }}
-              variant={'standard'}
-            />
-          </Box>
-          <Box
-            sx={{
-              width: '100%',
-              marginBottom: 2,
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <TextField
-              id={'phone-name-1'}
-              label={'Tên'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              value={studentInfo.phones[1].name}
-              sx={{ width: '100%' }}
-              variant={'standard'}
-            />
-            <TextField
-              id={'phone-number-2'}
-              label={'Số điện thoại'}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ readOnly: true }}
-              value={studentInfo.phones[1].number}
-              sx={{ width: '100%' }}
-              variant={'standard'}
-            />
-          </Box>
-          <Box display={'flex'} justifyContent={'space-between'}>
-            <Button
-              startIcon={<EditIcon />}
-              size="small"
-              onClick={() => onClickAction(studentInfo, StudentActionType.EDIT_STUDENT)}
-              color="warning"
-              variant="outlined"
-            >
-              Sửa
-            </Button>
-            <Button
-              startIcon={<MoveUpIcon />}
-              size="small"
-              onClick={() => onClickAction(studentInfo, StudentActionType.TRANSFER_CLASS)}
-              color="success"
-              variant="contained"
-            >
-              Chuyển lớp
-            </Button>
-            <Button
-              startIcon={<DeleteIcon />}
-              size="small"
-              onClick={handleRemoveStudent}
-              color="error"
-              variant="outlined"
-              disabled={studentInfo.isDeleted}
-            >
-              Xoá
-            </Button>
-          </Box>
+          {editMode && <EditInfoPanelComponent student={student} setEditMode={setEditMode} />}
+          {!editMode && (
+            <Box>
+              <Box textAlign={'center'} component={'h5'} fontWeight={400} margin={0}>
+                {student.saintName}
+              </Box>
+              <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
+                {`${student.lastName} ${student.firstName}`}
+              </Box>
+              <Box mb={2} width={'100%'}>
+                <TextField
+                  id={'birthday'}
+                  label={'Ngày sinh'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  type={'date'}
+                  value={student.birthday}
+                  variant={'standard'}
+                  sx={{ width: '100%' }}
+                />
+              </Box>
+              <Box mb={2} width={'100%'}>
+                <TextField
+                  id={'address'}
+                  label={'Địa chỉ'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  value={student.address}
+                  variant={'standard'}
+                  sx={{ width: '100%' }}
+                  multiline={true}
+                />
+              </Box>
+              <Box
+                mb={2}
+                width={'100%'}
+                display={'flex'}
+                justifyContent={'space-between'}
+                flexWrap={'wrap'}
+              >
+                <TextField
+                  id={'grade'}
+                  label={'Văn hoá'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  value={student.grade}
+                  variant={'standard'}
+                  sx={{ width: '45%' }}
+                />
+                <TextField
+                  id={'gender'}
+                  label={'Giới tính'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  value={student.gender ? 'Nữ' : 'Nam'}
+                  variant={'standard'}
+                  sx={{ width: '45%' }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  width: '100%',
+                  marginBottom: 2,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <TextField
+                  id={'phone-name-1'}
+                  label={'Tên'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  value={student.phones[0].name}
+                  sx={{ width: '100%' }}
+                  variant={'standard'}
+                />
+                <TextField
+                  id={'phone-number-2'}
+                  label={'Số điện thoại'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  value={student.phones[0].number}
+                  sx={{ width: '100%' }}
+                  variant={'standard'}
+                />
+              </Box>
+              <Box
+                sx={{
+                  width: '100%',
+                  marginBottom: 2,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <TextField
+                  id={'phone-name-1'}
+                  label={'Tên'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  value={student.phones[1].name}
+                  sx={{ width: '100%' }}
+                  variant={'standard'}
+                />
+                <TextField
+                  id={'phone-number-2'}
+                  label={'Số điện thoại'}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{ readOnly: true }}
+                  value={student.phones[1].number}
+                  sx={{ width: '100%' }}
+                  variant={'standard'}
+                />
+              </Box>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Button
+                  startIcon={<EditIcon />}
+                  size="small"
+                  onClick={() => setEditMode(true)}
+                  color="warning"
+                  variant="outlined"
+                >
+                  Sửa
+                </Button>
+                <Button
+                  startIcon={<MoveUpIcon />}
+                  size="small"
+                  onClick={() => onClickAction(student, StudentActionType.TRANSFER_CLASS)}
+                  color="success"
+                  variant="contained"
+                >
+                  Chuyển lớp
+                </Button>
+                <Button
+                  startIcon={<DeleteIcon />}
+                  size="small"
+                  onClick={handleRemoveStudent}
+                  color="error"
+                  variant="outlined"
+                  disabled={student.isDeleted}
+                >
+                  Xoá
+                </Button>
+              </Box>
+            </Box>
+          )}
         </Box>
       </Box>
     </MuiDrawer>

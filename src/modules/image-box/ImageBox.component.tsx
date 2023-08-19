@@ -29,6 +29,7 @@ const ImageBoxComponent = ({
         objectFit: 'cover',
         margin: '0 auto',
         boxShadow: 2,
+        borderRadius: '5px',
         ...customStyles,
       }}
     />

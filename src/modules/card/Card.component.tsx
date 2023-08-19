@@ -24,7 +24,10 @@ const CardComponent = ({
       : { label: 'Thiếu nhi mới', color: 'success' }
 
   return (
-    <Card sx={{ maxWidth: isMobile ? 275 : 300, minWidth: isMobile ? 275 : 300 }}>
+    <Card
+      sx={{ maxWidth: isMobile ? 275 : 300, minWidth: isMobile ? 275 : 300 }}
+      data-id={student.id}
+    >
       <CardMedia
         component="img"
         height={isMobile ? 275 : 300}

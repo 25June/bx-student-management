@@ -10,7 +10,6 @@ import {
   Typography,
 } from '@mui/material'
 import ClearIcon from '@mui/icons-material/Clear'
-// import ContactsIcon from '@mui/icons-material/Contacts'
 import CheckIcon from '@mui/icons-material/Check'
 import { buildImageUrl, useIsMobile } from 'utils/common'
 import ReactCrop, { PixelCrop, Crop, centerCrop, makeAspectCrop } from 'react-image-crop'
