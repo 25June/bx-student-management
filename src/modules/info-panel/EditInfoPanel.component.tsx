@@ -15,8 +15,11 @@ import CheckIcon from '@mui/icons-material/Check'
 import ClearIcon from '@mui/icons-material/Clear'
 import { getValues, StudentForm } from 'modules/student-dialog/helpers'
 import { Student } from 'models'
-import { useUpdateStudent } from 'services'
+import { removeImage, uploadAvatar, useUpdateStudent } from 'services'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import FemaleIcon from '@mui/icons-material/Female'
+import MaleIcon from '@mui/icons-material/Male'
+import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
 
 interface EditInfoPanelProps {
   student: Student
@@ -28,6 +31,8 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
   const { handleSubmit, control, setValue, watch } = useForm<StudentForm>({
     defaultValues: getValues(student),
   })
+  const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
+
   const handleChangeGender = (event: React.MouseEvent<HTMLElement>, newAlignment: boolean) => {
     setValue('gender', newAlignment)
   }
@@ -43,6 +48,12 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
       }
     })
 
+    let downloadPath: string = ''
+    if (data.avatar) {
+      downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
+      delete data.avatar
+    }
+
     const updatedStudent: Student = {
       ...data,
       id: student.id,
@@ -53,6 +64,7 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
         { ...data.phone1, number: formatPhone(data.phone1.number) },
         { ...data.phone2, number: formatPhone(data.phone2.number) },
       ],
+      avatarPath: downloadPath || data.avatarPath || '',
     }
     return updateStudent({
       dataInput: updatedStudent,
@@ -60,6 +72,10 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
         showSnackbar(`Cập Nhật Thiếu Nhi ${lastName} ${firstName} Thành Công`, 'success'),
       onError: () => showSnackbar(`Cập Nhật Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
       onComplete: () => {
+        setUploadImageProgress(0)
+        if (downloadPath && data.avatarPath) {
+          removeImage(data.avatarPath)
+        }
         setLoading(false)
         setTimeout(() => setEditMode(false), 100)
       },
@@ -68,6 +84,34 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
 
   return (
     <form>
+      <Box mb={2}>
+        <TextField
+          sx={{ maxWidth: '100%' }}
+          id="outlined-avatar"
+          label="Ảnh đại diện"
+          helperText="Chỉ upload ảnh .jpg, .png"
+          InputLabelProps={{ shrink: true }}
+          margin="normal"
+          fullWidth={true}
+          type={'file'}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            if (event.target.files?.[0]) {
+              setValue('avatar', event.target.files[0])
+            }
+          }}
+        />
+        {uploadImageProgress !== 0 && (
+          <Box sx={{ width: '100%' }}>
+            <LinearProgressComponent progress={uploadImageProgress} />
+          </Box>
+        )}
+
+        {student?.avatarPath && (
+          <Box textAlign={'center'}>
+            <ImageBoxComponent imagePath={student.avatarPath} gender={student.gender} />
+          </Box>
+        )}
+      </Box>
       <Box mb={2}>
         <Controller
           control={control}
@@ -155,7 +199,7 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
           control={control}
           name={'gender'}
           render={() => (
-            <FormControl component="fieldset" variant="standard" sx={{ width: '25%' }}>
+            <FormControl component="fieldset" variant="standard">
               <FormLabel component="legend" sx={{ fontSize: '0.825rem' }}>
                 Giới tính
               </FormLabel>
@@ -168,10 +212,10 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
                 exclusive={true}
               >
                 <ToggleButton size={'small'} value={false}>
-                  Nam
+                  <MaleIcon />
                 </ToggleButton>
                 <ToggleButton size={'small'} value={true}>
-                  Nữ
+                  <FemaleIcon />
                 </ToggleButton>
               </ToggleButtonGroup>
             </FormControl>

@@ -44,7 +44,12 @@ const ListStudent = ({
   onClickMenu: (row: StudentRows) => void
 }) => {
   return (
-    <>
+    <Box
+      sx={{
+        background: 'transparent',
+        backdropFilter: 'blur(2px)',
+      }}
+    >
       <ListItem
         onClick={() => onClickMenu(row)}
         secondaryAction={
@@ -62,7 +67,7 @@ const ListStudent = ({
         />
       </ListItem>
       <Divider variant="inset" component="li" />
-    </>
+    </Box>
   )
 }
 

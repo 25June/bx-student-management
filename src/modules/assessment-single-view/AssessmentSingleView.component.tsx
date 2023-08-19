@@ -74,7 +74,12 @@ const AssessmentSingleViewComponent = ({
     <Box>
       <List
         disablePadding={true}
-        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+        sx={{
+          width: '100%',
+          maxWidth: 360,
+          background: 'transparent',
+          backdropFilter: 'blur(2px)',
+        }}
       >
         {assessments.map((assessment) => (
           <AssessmentItem

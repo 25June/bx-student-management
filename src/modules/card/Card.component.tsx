@@ -25,7 +25,12 @@ const CardComponent = ({
 
   return (
     <Card
-      sx={{ maxWidth: isMobile ? 275 : 300, minWidth: isMobile ? 275 : 300 }}
+      sx={{
+        maxWidth: isMobile ? 275 : 300,
+        minWidth: isMobile ? 275 : 300,
+        background: 'transparent',
+        backdropFilter: 'blur(4px)',
+      }}
       data-id={student.id}
     >
       <CardMedia

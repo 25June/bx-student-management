@@ -39,7 +39,12 @@ const SingleDateViewComponent = ({
   const { openDialog } = useDialogContext()
   const note = get(attendance, [`${rollCallDate.key}`, 'note'], '')
   return (
-    <Item>
+    <Item
+      sx={{
+        background: 'transparent',
+        backdropFilter: 'blur(4px)',
+      }}
+    >
       <TableFullNameCellComponent
         avatarPath={student.avatarPath}
         saintName={student.saintName}

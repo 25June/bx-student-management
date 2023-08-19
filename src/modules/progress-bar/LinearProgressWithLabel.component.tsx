@@ -51,7 +51,7 @@ const LinearWithValueLabelComponent = ({
 const LinearProgressComponent = ({ progress }: { progress: number }) => {
   return (
     <Box sx={{ width: '100%' }}>
-      <LinearProgress color="primary" variant="determinate" value={progress || 90} />
+      <LinearProgress color="primary" variant="determinate" value={progress || 0} />
     </Box>
   )
 }

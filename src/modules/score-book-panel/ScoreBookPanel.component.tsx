@@ -102,7 +102,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
       onClose={onClose}
       sx={{ width: '100%', maxWidth: 350 }}
     >
-      <Box pt={9} pr={2} pl={2} mb={5}>
+      <Box pt={9} pr={2} pl={2} mb={5} key={studentId}>
         <Box display={'flex'} alignItems={'center'} mb={0.5}>
           <Chip
             color={'default'}

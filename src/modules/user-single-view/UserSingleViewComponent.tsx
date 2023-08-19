@@ -61,7 +61,12 @@ const UserItem = ({
   onClickAction: (action: string, selectedRow: User) => void
 }) => {
   return (
-    <>
+    <Box
+      sx={{
+        background: 'transparent',
+        backdropFilter: 'blur(2px)',
+      }}
+    >
       <ListItem
         disableGutters={true}
         secondaryAction={
@@ -88,7 +93,7 @@ const UserItem = ({
         />
       </ListItem>
       <Divider variant="middle" component="li" />
-    </>
+    </Box>
   )
 }
 
@@ -117,7 +122,7 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
 
   return (
     <Box>
-      <List disablePadding={true} sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      <List disablePadding={true} sx={{ width: '100%' }}>
         {users.map((user) => (
           <UserItem
             key={user.id}
