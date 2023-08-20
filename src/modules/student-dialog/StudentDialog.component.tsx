@@ -32,6 +32,7 @@ import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { getValues, StudentForm } from './helpers'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -94,6 +95,7 @@ const StudentDialogComponent = ({
   const { handleSubmit, control, setValue, reset, formState, watch } = useForm<StudentForm>({
     defaultValues: getValues(student),
   })
+  const { classObj } = useClassContext()
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   const [isLoading, setLoading] = useState<boolean>(false)
 
@@ -177,6 +179,7 @@ const StudentDialogComponent = ({
       ],
       avatarPath: downloadPath || '',
       transferHistory: ['new'],
+      class: classObj,
     }
     return addNewStudent({
       dataInput: newStudent,
