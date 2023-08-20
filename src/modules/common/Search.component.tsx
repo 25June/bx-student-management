@@ -5,7 +5,7 @@ import InputBase from '@mui/material/InputBase'
 import ClearIcon from '@mui/icons-material/Clear'
 import { debounce } from 'lodash'
 import IconButton from '@mui/material/IconButton'
-import { useIsMobile } from 'utils/common'
+import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -76,7 +76,7 @@ const SearchComponent = ({ onChange, label }: SearchComponentProps) => {
   const isMobile = useIsMobile()
   const handleInputChange = debounce(
     (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-      onChange(event.target.value)
+      onChange(toLowerCaseNonAccentVietnamese(event.target.value))
     },
     300
   )
