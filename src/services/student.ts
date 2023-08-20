@@ -20,6 +20,7 @@ const StudentCollection = 'students'
 export const studentRef = collection(fireStoreDB, StudentCollection)
 export const useGetStudents = (classId: string) => {
   const [students, setStudents] = useState<Student[] | null>()
+  const [deletedStudents, setDeletedStudents] = useState<Student[]>([])
   const [listener, setListener] = useState<Unsubscribe>()
   useEffect(() => {
     if (classId) {
@@ -27,18 +28,26 @@ export const useGetStudents = (classId: string) => {
       const listenerData = onSnapshot(
         queryStudents,
         (snapshot) => {
-          setStudents(
-            snapshot.docs
-              .sort((snapA, snapB) =>
-                snapA.data()?.firstName.localeCompare(snapB.data()?.firstName)
-              )
-              .reduce((acc: Student[], data) => {
-                if (!(data.data() as Student).isDeleted) {
-                  return [...acc, { ...data.data(), id: data.id } as Student]
+          const groupStudents: { students: Student[]; deletedStudents: Student[] } = snapshot.docs
+            .sort((snapA, snapB) => snapA.data()?.firstName.localeCompare(snapB.data()?.firstName))
+            .reduce(
+              (acc: { students: Student[]; deletedStudents: Student[] }, data) => {
+                const stu = data.data() as Student
+                if (!stu.isDeleted) {
+                  return { ...acc, students: [...acc.students, { ...stu, id: data.id }] }
+                }
+                if (stu.isDeleted) {
+                  return {
+                    ...acc,
+                    deletedStudents: [...acc.deletedStudents, { ...stu, id: data.id }],
+                  }
                 }
                 return acc
-              }, [])
-          )
+              },
+              { students: [], deletedStudents: [] }
+            )
+          setStudents(groupStudents.students)
+          setDeletedStudents(groupStudents.deletedStudents)
         },
         (error) => {
           console.error(error)
@@ -59,7 +68,7 @@ export const useGetStudents = (classId: string) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId])
 
-  return { students, isLoading: typeof students === 'undefined', listener }
+  return { students, isLoading: typeof students === 'undefined', listener, deletedStudents }
 }
 
 export const useGetStudentById = (id: string) => {
@@ -152,6 +161,17 @@ interface UpdateStudentParams {
   onSuccess: () => void
   onError: () => void
   onComplete: () => void
+}
+
+export const restoreStudent = (studentId: string) => {
+  const ref = doc(fireStoreDB, StudentCollection, studentId)
+  if (!studentId) {
+    return Promise.reject('Invalid Data')
+  }
+  return updateDoc(ref, {
+    updatedDate: serverTimestamp(),
+    isDeleted: false,
+  })
 }
 
 export const useUpdateStudent = () => {

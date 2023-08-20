@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, ToggleButtonGroup, Typography } from '@mui/material'
+import { Box, ToggleButtonGroup, Typography, FormControlLabel, Switch } from '@mui/material'
 import { ScoreBookActionType, StudentActionType } from 'constant'
 import { Student } from 'models'
 import TableRowsIcon from '@mui/icons-material/TableRows'
@@ -18,9 +18,10 @@ import { useClassContext } from 'contexts/ClassContext'
 const HomeComponent = () => {
   const [isOpenInfoPanel, setOpenInfoPanel] = useState(false)
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
+  const [viewDeletedStudent, setViewDeletedStudent] = useState<boolean>(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<string | null>('card')
-  const { students } = useStudentContext()
+  const { students, deletedStudents } = useStudentContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
   const { classId } = useClassContext()
@@ -29,6 +30,7 @@ const HomeComponent = () => {
   useEffect(() => {
     if (students) {
       setFilteredStudents(students)
+      setViewDeletedStudent(false)
     }
   }, [students])
   useEffect(() => {
@@ -94,6 +96,15 @@ const HomeComponent = () => {
     }
   }
 
+  const handleSwitchStudentViewMode = (isDeleted: boolean) => {
+    setViewDeletedStudent(isDeleted)
+    if (isDeleted) {
+      setFilteredStudents(deletedStudents)
+    } else {
+      setFilteredStudents(students)
+    }
+  }
+
   return (
     <Box>
       <Box p={isMobile ? 1 : 2}>
@@ -129,6 +140,17 @@ const HomeComponent = () => {
                   <StyleIcon />
                 </ToggleButton>
               </ToggleButtonGroup>
+            </Box>
+            <Box>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={viewDeletedStudent}
+                    onChange={(event) => handleSwitchStudentViewMode(event.target.checked)}
+                  />
+                }
+                label={viewDeletedStudent ? 'Danh sách đã xoá' : 'Danh sách hiện tại'}
+              />
             </Box>
           </Box>
         </Box>

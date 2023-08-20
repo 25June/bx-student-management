@@ -9,6 +9,8 @@ import ScoreIcon from '@mui/icons-material/Score'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import { StudentActionType } from 'constant'
 import Chip from '@mui/material/Chip'
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
+import { restoreStudent } from 'services/student'
 
 interface SingleScoreViewComponentProps {
   student: Student
@@ -50,18 +52,27 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
           gender={!!student.gender}
         />
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <IconButton
-            color={'info'}
-            onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
-          >
-            <ScoreIcon />
-          </IconButton>
-          <IconButton
-            color={'info'}
-            onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
-          >
-            <PermIdentityIcon />
-          </IconButton>
+          {!student.isDeleted && (
+            <>
+              <IconButton
+                color={'info'}
+                onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
+              >
+                <ScoreIcon />
+              </IconButton>
+              <IconButton
+                color={'info'}
+                onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+              >
+                <PermIdentityIcon />
+              </IconButton>
+            </>
+          )}
+          {student.isDeleted && (
+            <IconButton onClick={() => restoreStudent(student.id)} color="success">
+              <RestoreFromTrashIcon />
+            </IconButton>
+          )}
         </Box>
       </Box>
       {student.transferHistory && (

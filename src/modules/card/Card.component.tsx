@@ -7,6 +7,8 @@ import ScoreIcon from '@mui/icons-material/Score'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
+import { restoreStudent } from 'services/student'
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 
 const CardComponent = ({
   student,
@@ -48,7 +50,7 @@ const CardComponent = ({
         onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       />
       <CardContent
-        sx={{ maxHeight: isMobile ? 80 : 120, padding: isMobile ? 1 : 2 }}
+        sx={{ maxHeight: 120, padding: isMobile ? 1 : 2 }}
         onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       >
         <Typography
@@ -90,24 +92,39 @@ const CardComponent = ({
         }}
         disableSpacing={true}
       >
-        <Button
-          startIcon={<PermIdentityIcon />}
-          size="small"
-          onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
-          color="info"
-          variant="outlined"
-        >
-          Thông Tin
-        </Button>
-        <Button
-          startIcon={<ScoreIcon />}
-          size="small"
-          onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
-          color="info"
-          variant="outlined"
-        >
-          Bảng Điểm
-        </Button>
+        {student.isDeleted && (
+          <Button
+            startIcon={<RestoreFromTrashIcon />}
+            size="small"
+            onClick={() => restoreStudent(student.id)}
+            color="success"
+            variant="outlined"
+          >
+            Khôi phục
+          </Button>
+        )}
+        {!student.isDeleted && (
+          <>
+            <Button
+              startIcon={<PermIdentityIcon />}
+              size="small"
+              onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+              color="info"
+              variant="outlined"
+            >
+              Thông Tin
+            </Button>
+            <Button
+              startIcon={<ScoreIcon />}
+              size="small"
+              onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
+              color="info"
+              variant="outlined"
+            >
+              Bảng Điểm
+            </Button>
+          </>
+        )}
       </CardActions>
     </Card>
   )

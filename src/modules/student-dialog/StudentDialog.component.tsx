@@ -53,7 +53,7 @@ const RemoveStudentDialog = ({ handleSubmit, onClose, fullName }: RemoveStudentD
       <DialogTitle>Xoá thông tin thiếu nhi</DialogTitle>
       <DialogContent dividers={true}>
         <DialogContentText>
-          {`Bạn có chắc chắn muốn xoá thông tin thiếu nhi ${fullName}`}
+          {`Bạn có chắc chắn muốn xoá thông tin thiếu nhi`} <strong>{fullName}</strong>
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
@@ -200,7 +200,7 @@ const StudentDialogComponent = ({
         <RemoveStudentDialog
           onClose={onClose}
           handleSubmit={handleSubmit(onSubmit)}
-          fullName={student?.fullName}
+          fullName={student?.fullName || `${student?.lastName} ${student?.firstName}`}
         />
       )}
       {action !== StudentActionType.DELETE_STUDENT && (

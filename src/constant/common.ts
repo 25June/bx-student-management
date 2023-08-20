@@ -7,6 +7,7 @@ export enum StudentActionType {
   VIEW_STUDENT = 'VIEW_STUDENT',
   VIEW_SCORE_BOOK = 'VIEW_SCORE_BOOK',
   TRANSFER_CLASS = 'TRANSFER_CLASS',
+  RESTORE = 'RESTORE',
 }
 
 export enum AssessmentActionType {

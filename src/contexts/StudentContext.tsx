@@ -5,17 +5,18 @@ import { useGetStudents } from 'services/student'
 
 const studentDefaultValue = {
   students: [],
-} as { students: Student[] }
+  deletedStudents: [],
+} as { students: Student[]; deletedStudents: Student[] }
 
 const StudentContext = createContext(studentDefaultValue)
 
 export const StudentProvider = ({ children }: PropsWithChildren) => {
   const { classId } = useClassContext()
-  const { students } = useGetStudents(classId)
+  const { students, deletedStudents } = useGetStudents(classId)
 
   const value = useMemo(() => {
-    return students ? { students } : { students: [] }
-  }, [students])
+    return students ? { students, deletedStudents } : { students: [], deletedStudents }
+  }, [students, deletedStudents])
   return <StudentContext.Provider value={value}>{children}</StudentContext.Provider>
 }
 
