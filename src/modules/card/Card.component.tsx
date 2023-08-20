@@ -18,10 +18,16 @@ const CardComponent = ({
   const isMobile = useIsMobile()
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
   const avatar = buildImageUrl(student.avatarPath, student.gender)
-  const transferHistoryContent =
-    student.transferHistory && student.transferHistory[0] !== 'new'
-      ? { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
-      : { label: 'Thiếu nhi mới', color: 'success' }
+  const transferHistoryContent = student.transferHistory
+    ? student.transferHistory[0] === 'new'
+      ? { label: 'Thiếu nhi mới', color: 'success' }
+      : student.transferHistory[0] === 'standStill'
+      ? {
+          label: 'Học lại',
+          color: 'warning',
+        }
+      : { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
+    : undefined
 
   return (
     <Card
@@ -59,7 +65,7 @@ const CardComponent = ({
         >
           {fullName}
         </Typography>
-        {student.transferHistory && (
+        {student.transferHistory && transferHistoryContent && (
           <Box sx={{ textAlign: 'center' }}>
             <Chip
               sx={{

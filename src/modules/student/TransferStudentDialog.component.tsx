@@ -5,8 +5,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 import ClearIcon from '@mui/icons-material/Clear'
@@ -19,6 +21,7 @@ import { BaseClasses } from 'constant/common'
 
 interface TransferForm {
   class: Class
+  standStill: boolean
 }
 
 interface TransferStudentDialogProps {
@@ -38,18 +41,33 @@ const TransferStudentDialogComponent = ({
   const { handleSubmit, setValue, reset, watch } = useForm<TransferForm>({
     defaultValues: {
       class: student.class || BaseClasses[0],
+      standStill: false,
     },
   })
   const selectedClass = watch('class')
   const [isLoading, setLoading] = useState<boolean>(false)
   const onSubmit = async (data: TransferForm) => {
     setLoading(true)
+    let status: string[] = []
+    if (student.transferHistory) {
+      if (data.standStill) {
+        status = ['standStill', ...student.transferHistory]
+      }
+      if (student.class?.name) {
+        status = [student.class.name, ...student.transferHistory]
+      }
+    } else {
+      if (data.standStill) {
+        status = ['standStill']
+      }
+      if (student.class?.name) {
+        status = [student.class.name]
+      }
+    }
     const updatedStudent: Student = {
       ...student,
       class: data.class,
-      transferHistory: student.transferHistory
-        ? [student.class?.name || '', ...student.transferHistory]
-        : [student.class?.name || ''],
+      transferHistory: status,
     }
     return updateStudent({
       dataInput: updatedStudent,
@@ -84,6 +102,17 @@ const TransferStudentDialogComponent = ({
       </DialogTitle>
       <DialogContent dividers={true} sx={{ margin: '1rem 0' }}>
         <ClassDropdownComponent onChangeClass={handleChangeClass} classObj={selectedClass} />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={!!watch('standStill')}
+              onChange={(event: ChangeEvent<any>) => {
+                setValue('standStill', event.target.checked)
+              }}
+            />
+          }
+          label="Học lại"
+        />
       </DialogContent>
       <DialogActions>
         <Button
