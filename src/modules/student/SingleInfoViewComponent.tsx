@@ -16,7 +16,8 @@ interface SingleScoreViewComponentProps {
 }
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : 'transparent',
+  backdropFilter: 'blur(2px)',
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: 'center',
