@@ -34,4 +34,5 @@ export const formatYYYMMDDToDDMMYYYY = (date: string) => {
   if (isValid(parseDate)) {
     return format(parseDate, DateMonthYearSlashFormat)
   }
+  return date
 }

@@ -20,8 +20,7 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle'
 import MuiDrawer from '@mui/material/Drawer'
 import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
-import { useAuthentication } from 'contexts/AuthContext'
-import { DialogType, Role, SemesterObj } from 'constant/common'
+import { DialogType, SemesterObj } from 'constant/common'
 import { useIsMobile } from 'utils/common'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import { blue, grey } from '@mui/material/colors'
@@ -57,7 +56,7 @@ const Menu = {
     to: Router.ASSESSMENT,
   },
   IMPORT: {
-    text: 'Nhập dữ liệu',
+    text: 'Xuất dữ liệu',
     icon: (isActive: boolean) => <ImportExportIcon color={isActive ? 'primary' : undefined} />,
     to: Router.IMPORT,
   },
@@ -110,7 +109,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 )
 
 const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
-  const { user } = useAuthentication()
   const { semesterId, schoolYearId } = useClassContext()
   const { openDialog } = useDialogContext()
   const navigate = useNavigate()
@@ -145,9 +143,6 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
     <Drawer variant="permanent" open={isOpen}>
       <List sx={{ paddingTop: 8, height: '100vh' }}>
         {Object.values(Menu).map(({ text, icon, to }) => {
-          if ([Router.IMPORT].includes(to) && user && user.role !== Role.CTO) {
-            return null
-          }
           return (
             <ListItem key={text} disablePadding={true}>
               <ListItemButton

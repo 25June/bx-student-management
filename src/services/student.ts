@@ -184,6 +184,7 @@ export const useUpdateStudent = () => {
       grade: dataInput.grade || '',
       saintName: dataInput.saintName || '',
       address: dataInput.address || '',
+      firstName: dataInput.firstName.toUpperCase(),
     })
       .then(() => {
         onSuccess()
