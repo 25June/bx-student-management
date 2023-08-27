@@ -16,6 +16,7 @@ export type StudentForm = {
   grade: string
   phone1: Phone
   phone2: Phone
+  phone3: Phone
   gender: boolean
   avatar?: File | null
   avatarPath?: string
@@ -39,7 +40,11 @@ export const getValues = (stu?: Student | null) => {
       },
       phone2: {
         ...stu.phones[1],
-        number: formatPhoneWithoutDot(stu.phones[1].number),
+        number: formatPhoneWithoutDot(stu.phones[1]?.number),
+      },
+      phone3: {
+        name: stu.phones[2]?.name || '',
+        number: formatPhoneWithoutDot(stu.phones[2]?.number),
       },
       note: stu.note,
     }
@@ -56,6 +61,10 @@ export const getValues = (stu?: Student | null) => {
       number: '',
     },
     phone2: {
+      name: '',
+      number: '',
+    },
+    phone3: {
       name: '',
       number: '',
     },
@@ -77,6 +86,7 @@ export type StudentRegisterForm = {
   schoolName: string
   phone1: Phone
   phone2: Phone
+  phone3: Phone
   gender: boolean
   class?: Class
   note: string

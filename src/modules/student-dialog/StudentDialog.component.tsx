@@ -149,6 +149,7 @@ const StudentDialogComponent = ({
         phones: [
           { ...data.phone1, number: formatPhone(data.phone1.number) },
           { ...data.phone2, number: formatPhone(data.phone2.number) },
+          { ...data.phone3, number: formatPhone(data.phone3.number) },
         ],
         avatarPath: downloadPath || data.avatarPath || '',
       }
@@ -176,6 +177,7 @@ const StudentDialogComponent = ({
       phones: [
         { ...data.phone1, number: formatPhone(data.phone1.number) },
         { ...data.phone2, number: formatPhone(data.phone2.number) },
+        { ...data.phone3, number: formatPhone(data.phone3.number) },
       ],
       avatarPath: downloadPath || '',
       transferHistory: ['new'],
@@ -360,7 +362,7 @@ const StudentDialogComponent = ({
                     <TextField
                       sx={{ marginLeft: 1 }}
                       id={`outlined-number-phone1`}
-                      label="Sdt"
+                      label="Số Điện Thoại"
                       helperText="Ex: 0973173484"
                       margin="normal"
                       type="number"
@@ -396,7 +398,42 @@ const StudentDialogComponent = ({
                     <TextField
                       sx={{ marginLeft: 1 }}
                       id={`outlined-number-phone2`}
-                      label="Sdt"
+                      label="Số Điện Thoại"
+                      helperText="Ex: 0973173484"
+                      margin="normal"
+                      type="number"
+                      fullWidth={true}
+                      InputLabelProps={{ shrink: true }}
+                      {...field}
+                      value={formatPhoneWithoutDot(field.value)}
+                    />
+                  )}
+                />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Controller
+                  control={control}
+                  name={'phone3.name'}
+                  render={({ field }) => (
+                    <TextField
+                      id={`outlined-name-phone3`}
+                      label="Tên"
+                      margin="normal"
+                      type="text"
+                      fullWidth={true}
+                      InputLabelProps={{ shrink: true }}
+                      {...field}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name={'phone3.number'}
+                  render={({ field }) => (
+                    <TextField
+                      sx={{ marginLeft: 1 }}
+                      id={`outlined-number-phone3`}
+                      label="Số Điện Thoại"
                       helperText="Ex: 0973173484"
                       margin="normal"
                       type="number"

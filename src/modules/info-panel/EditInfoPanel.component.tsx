@@ -63,6 +63,7 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
       phones: [
         { ...data.phone1, number: formatPhone(data.phone1.number) },
         { ...data.phone2, number: formatPhone(data.phone2.number) },
+        { ...data.phone3, number: formatPhone(data.phone3.number) },
       ],
       avatarPath: downloadPath || data.avatarPath || '',
     }
@@ -251,7 +252,7 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
           render={({ field }) => (
             <TextField
               id={`outlined-number-phone1`}
-              label="Sdt"
+              label="Số Điện Thoại"
               type="number"
               fullWidth={true}
               InputLabelProps={{ shrink: true }}
@@ -291,11 +292,51 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
           render={({ field }) => (
             <TextField
               id={`outlined-number-phone2`}
-              label="Sdt"
+              label="Số Điện Thoại"
               type="number"
               fullWidth={true}
               variant={'standard'}
               InputLabelProps={{ shrink: true }}
+              {...field}
+              value={formatPhoneWithoutDot(field.value)}
+            />
+          )}
+        />
+      </Box>
+      <Box
+        mb={2}
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Controller
+          control={control}
+          name={'phone3.name'}
+          render={({ field }) => (
+            <TextField
+              id={`outlined-name-phone1`}
+              label="Tên"
+              type="text"
+              fullWidth={true}
+              variant={'standard'}
+              InputLabelProps={{ shrink: true }}
+              {...field}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name={'phone3.number'}
+          render={({ field }) => (
+            <TextField
+              id={`outlined-number-phone1`}
+              label="Số Điện Thoại"
+              type="number"
+              fullWidth={true}
+              InputLabelProps={{ shrink: true }}
+              variant={'standard'}
               {...field}
               value={formatPhoneWithoutDot(field.value)}
             />

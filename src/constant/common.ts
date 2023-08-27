@@ -45,7 +45,8 @@ export enum AttendanceType {
 export const BaseClasses: Class[] = [
   { id: 'kt1', name: 'Khai Tâm 1' },
   { id: 'kt2', name: 'Khai Tâm 2' },
-  { id: 'rl1', name: 'Rước Lễ 1' },
+  { id: 'rl1', name: 'Rước Lễ 1A' },
+  { id: 'rl1b', name: 'Rước Lễ 1B' },
   { id: 'rl2a', name: 'Rước Lễ 2A' },
   { id: 'rl2b', name: 'Rước Lễ 2B' },
   { id: 'ts1a', name: 'Thêm Sức 1A' },

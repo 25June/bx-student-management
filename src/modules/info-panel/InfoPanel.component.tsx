@@ -143,7 +143,7 @@ const InfoPanelComponent = ({
                     variant={'standard'}
                   />
                   <TextField
-                    id={'phone-number-2'}
+                    id={'phone-number-1'}
                     label={'Số điện thoại'}
                     InputLabelProps={{ shrink: true }}
                     InputProps={{ readOnly: true }}
@@ -161,7 +161,7 @@ const InfoPanelComponent = ({
                   }}
                 >
                   <TextField
-                    id={'phone-name-1'}
+                    id={'phone-name-2'}
                     label={'Tên'}
                     InputLabelProps={{ shrink: true }}
                     InputProps={{ readOnly: true }}
@@ -179,6 +179,35 @@ const InfoPanelComponent = ({
                     variant={'standard'}
                   />
                 </Box>
+                {student.phones[2] && (
+                  <Box
+                    sx={{
+                      width: '100%',
+                      marginBottom: 2,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <TextField
+                      id={'phone-name-3'}
+                      label={'Tên'}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{ readOnly: true }}
+                      value={student.phones[2]?.name || ''}
+                      sx={{ width: '100%' }}
+                      variant={'standard'}
+                    />
+                    <TextField
+                      id={'phone-number-3'}
+                      label={'Số điện thoại'}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{ readOnly: true }}
+                      value={student.phones[2]?.number || ''}
+                      sx={{ width: '100%' }}
+                      variant={'standard'}
+                    />
+                  </Box>
+                )}
                 <Box display={'flex'} justifyContent={'space-between'}>
                   <Button
                     startIcon={<EditIcon />}

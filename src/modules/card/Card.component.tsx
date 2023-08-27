@@ -5,8 +5,8 @@ import { Student } from 'models'
 import { buildImageUrl, useIsMobile } from 'utils/common'
 import ScoreIcon from '@mui/icons-material/Score'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
-import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
+// import Box from '@mui/material/Box'
+// import Chip from '@mui/material/Chip'
 import { restoreStudent } from 'services/student'
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 
@@ -20,16 +20,16 @@ const CardComponent = ({
   const isMobile = useIsMobile()
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
   const avatar = buildImageUrl(student.avatarPath, student.gender)
-  const transferHistoryContent = student.transferHistory
-    ? student.transferHistory[0] === 'new'
-      ? { label: 'Thiếu nhi mới', color: 'success' }
-      : student.transferHistory[0] === 'standStill'
-      ? {
-          label: 'Học lại',
-          color: 'warning',
-        }
-      : { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
-    : undefined
+  // const transferHistoryContent = student.transferHistory
+  //   ? student.transferHistory[0] === 'new'
+  //     ? { label: 'Thiếu nhi mới', color: 'success' }
+  //     : student.transferHistory[0] === 'standStill'
+  //     ? {
+  //         label: 'Học lại',
+  //         color: 'warning',
+  //       }
+  //     : { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
+  //   : undefined
 
   return (
     <Card
@@ -67,22 +67,22 @@ const CardComponent = ({
         >
           {fullName}
         </Typography>
-        {student.transferHistory && transferHistoryContent && (
-          <Box sx={{ textAlign: 'center' }}>
-            <Chip
-              sx={{
-                height: 'auto',
-                '& .MuiChip-label': {
-                  display: 'block',
-                  whiteSpace: 'normal',
-                },
-              }}
-              size={'small'}
-              color={transferHistoryContent.color as any}
-              label={transferHistoryContent.label}
-            />
-          </Box>
-        )}
+        {/*{student.transferHistory && transferHistoryContent && (*/}
+        {/*  <Box sx={{ textAlign: 'center' }}>*/}
+        {/*    <Chip*/}
+        {/*      sx={{*/}
+        {/*        height: 'auto',*/}
+        {/*        '& .MuiChip-label': {*/}
+        {/*          display: 'block',*/}
+        {/*          whiteSpace: 'normal',*/}
+        {/*        },*/}
+        {/*      }}*/}
+        {/*      size={'small'}*/}
+        {/*      color={transferHistoryContent.color as any}*/}
+        {/*      label={transferHistoryContent.label}*/}
+        {/*    />*/}
+        {/*  </Box>*/}
+        {/*)}*/}
       </CardContent>
       <CardActions
         sx={{
