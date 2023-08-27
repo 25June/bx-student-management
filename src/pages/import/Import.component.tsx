@@ -142,7 +142,7 @@ const ImportComponent = () => {
       null,
       null,
       {
-        value: `Danh Sách Học Sinh Giáo Lý`,
+        value: `Danh Sách Thiếu Nhi Giáo Lý`,
         fontWeight: 'bold',
         span: 5,
         align: 'center',
