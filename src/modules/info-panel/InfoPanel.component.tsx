@@ -9,6 +9,12 @@ import { Student } from 'models'
 import { ImageBoxComponent } from 'modules'
 import MoveUpIcon from '@mui/icons-material/MoveUp'
 import EditInfoPanelComponent from 'modules/info-panel/EditInfoPanel.component'
+import CropIcon from '@mui/icons-material/Crop'
+import CroppingImageComponent from 'modules/cropping-image/CroppingImage.component'
+import NoAccountsIcon from '@mui/icons-material/NoAccounts'
+import { updateStudentAvatar } from 'services/student'
+import { removeImage } from 'services'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 interface InfoPanelComponentProps {
   isOpen: boolean
@@ -24,6 +30,8 @@ const InfoPanelComponent = ({
   onClickAction,
 }: InfoPanelComponentProps) => {
   const [editMode, setEditMode] = useState<boolean>(false)
+  const [isOpenCroppingDialog, setOpenCroppingDialog] = useState<boolean>(false)
+  const { showSnackbar } = useSnackbarContext()
 
   useEffect(() => {
     return () => setEditMode(false)
@@ -32,6 +40,28 @@ const InfoPanelComponent = ({
   const handleRemoveStudent = () => {
     onClickAction(student, StudentActionType.DELETE_STUDENT)
     onClose()
+  }
+  const handleCloseCroppingDialog = (refreshData?: boolean) => {
+    if (refreshData) {
+      onClose()
+    }
+    setOpenCroppingDialog(false)
+  }
+
+  const removeAvatar = () => {
+    if (window.confirm('Xác nhận bỏ avatar này')) {
+      if (student?.avatarPath && student.id) {
+        updateStudentAvatar(student.id, '')
+          .then(() => {
+            showSnackbar(`Remove avatar success`, 'success')
+            removeImage(student.avatarPath || '')
+          })
+          .catch((error) => {
+            showSnackbar(`Remove avatar failed`, 'error')
+            console.error(error)
+          })
+      }
+    }
   }
 
   return (
@@ -46,7 +76,7 @@ const InfoPanelComponent = ({
     >
       {student && (
         <Box pt={9} pr={2} pl={2} mb={5} key={student.id}>
-          <Box display={'flex'} alignItems={'center'} mb={1}>
+          <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'} mb={1}>
             <Chip
               color={'default'}
               size={'small'}
@@ -56,6 +86,40 @@ const InfoPanelComponent = ({
               variant="outlined"
             />
           </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              gap: '2rem',
+              marginBottom: 1,
+            }}
+          >
+            <Chip
+              color={'info'}
+              size={'small'}
+              icon={<CropIcon />}
+              onClick={() => setOpenCroppingDialog(true)}
+              label="Cắt avatar"
+              variant="outlined"
+            />
+            <Chip
+              color={'warning'}
+              size={'small'}
+              icon={<NoAccountsIcon />}
+              onClick={removeAvatar}
+              label="Bỏ avatar"
+              variant="outlined"
+            />
+          </Box>
+          {student?.avatarPath && (
+            <CroppingImageComponent
+              avatarPath={student.avatarPath}
+              studentId={student.id}
+              isOpen={isOpenCroppingDialog}
+              onClose={handleCloseCroppingDialog}
+            />
+          )}
           {!editMode && (
             <Box display={'flex'}>
               <ImageBoxComponent

@@ -13,6 +13,7 @@ import {
   updateDoc,
   deleteDoc,
   Unsubscribe,
+  setDoc,
 } from 'firebase/firestore'
 import { Student } from 'models'
 
@@ -197,6 +198,10 @@ export const useUpdateStudent = () => {
         onComplete()
       })
   }
+}
+
+export const updateStudentAvatar = (studentId: string, downloadPath: string) => {
+  return setDoc(doc(studentRef, studentId), { avatarPath: downloadPath }, { merge: true })
 }
 
 interface DeleteStudentParams {
