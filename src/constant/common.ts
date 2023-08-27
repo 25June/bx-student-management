@@ -61,7 +61,8 @@ export const BaseClasses: Class[] = [
 export const BaseClassObj: Record<string, string> = {
   kt1: 'Khai Tâm 1',
   kt2: 'Khai Tâm 2',
-  rl1: 'Rước Lễ 1',
+  rl1: 'Rước Lễ 1A',
+  rl1b: 'Rước Lễ 1B',
   rl2a: 'Rước Lễ 2A',
   rl2b: 'Rước Lễ 2B',
   ts1a: 'Thêm Sức 1A',
