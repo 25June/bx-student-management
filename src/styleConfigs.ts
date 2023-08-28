@@ -14,6 +14,12 @@ declare module '@mui/material/styles' {
     score15: Palette['primary']
     score45: Palette['primary']
     score60: Palette['primary']
+    absentWarning1: Palette['primary']
+    absentWarning2: Palette['primary']
+    absentWarning3: Palette['primary']
+    presentInform1: Palette['primary']
+    presentInform2: Palette['primary']
+    presentInform3: Palette['primary']
   }
 
   // allow configuration using `createTheme`
@@ -29,6 +35,12 @@ declare module '@mui/material/styles' {
     score15?: PaletteOptions['primary']
     score45?: PaletteOptions['primary']
     score60?: PaletteOptions['primary']
+    absentWarning1: Palette['primary']
+    absentWarning2: Palette['primary']
+    absentWarning3: Palette['primary']
+    presentInform1: Palette['primary']
+    presentInform2: Palette['primary']
+    presentInform3: Palette['primary']
   }
 }
 
@@ -46,6 +58,12 @@ declare module '@mui/material/Chip' {
     bd: true
     vd: true
     dt: true
+    absentWarning1: true
+    absentWarning2: true
+    absentWarning3: true
+    presentInform1: true
+    presentInform2: true
+    presentInform3: true
   }
 }
 
@@ -137,6 +155,42 @@ const theme = createTheme({
       main: '#EF8F88',
       light: brown[100],
       dark: brown[800],
+      contrastText: '#fff',
+    },
+    absentWarning1: {
+      main: red[300],
+      light: red[300],
+      dark: red[300],
+      contrastText: '#fff',
+    },
+    absentWarning2: {
+      main: red[400],
+      light: red[400],
+      dark: red[400],
+      contrastText: '#fff',
+    },
+    absentWarning3: {
+      main: red[500],
+      light: red[500],
+      dark: red[500],
+      contrastText: '#fff',
+    },
+    presentInform1: {
+      main: amber[700],
+      light: amber[700],
+      dark: amber[700],
+      contrastText: '#fff',
+    },
+    presentInform2: {
+      main: amber[800],
+      light: amber[800],
+      dark: amber[800],
+      contrastText: '#fff',
+    },
+    presentInform3: {
+      main: amber[900],
+      light: amber[900],
+      dark: amber[900],
       contrastText: '#fff',
     },
   },

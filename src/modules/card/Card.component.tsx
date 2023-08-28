@@ -38,6 +38,8 @@ const CardComponent = ({
         minWidth: isMobile ? 275 : 300,
         background: 'transparent',
         backdropFilter: 'blur(4px)',
+        display: 'flex',
+        flexDirection: 'column',
       }}
       data-id={student.id}
     >
@@ -50,7 +52,7 @@ const CardComponent = ({
         onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       />
       <CardContent
-        sx={{ maxHeight: 120, padding: isMobile ? 1 : 2 }}
+        sx={{ maxHeight: 120, padding: isMobile ? 1 : 2, flex: 1 }}
         onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       >
         <Typography

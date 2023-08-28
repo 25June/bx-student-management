@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, ToggleButtonGroup, Typography, FormControlLabel, Switch } from '@mui/material'
+import { Box, ToggleButtonGroup, Typography, Link } from '@mui/material'
 import { ScoreBookActionType, StudentActionType } from 'constant'
 import { Student } from 'models'
 import TableRowsIcon from '@mui/icons-material/TableRows'
@@ -141,16 +141,14 @@ const HomeComponent = () => {
                 </ToggleButton>
               </ToggleButtonGroup>
             </Box>
-            <Box>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={viewDeletedStudent}
-                    onChange={(event) => handleSwitchStudentViewMode(event.target.checked)}
-                  />
-                }
-                label={viewDeletedStudent ? 'Danh sách đã xoá' : 'Danh sách hiện tại'}
-              />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Link
+                onClick={() => handleSwitchStudentViewMode(!viewDeletedStudent)}
+                color="primary"
+                sx={{ cursor: 'pointer' }}
+              >
+                {viewDeletedStudent ? 'Xem danh sách đã xoá' : 'Xem danh sách hiện tại'}
+              </Link>
             </Box>
           </Box>
         </Box>

@@ -102,6 +102,7 @@ const InfoPanelComponent = ({
               onClick={() => setOpenCroppingDialog(true)}
               label="Cắt avatar"
               variant="outlined"
+              disabled={!student?.avatarPath}
             />
             <Chip
               color={'warning'}
@@ -110,6 +111,7 @@ const InfoPanelComponent = ({
               onClick={removeAvatar}
               label="Bỏ avatar"
               variant="outlined"
+              disabled={!student?.avatarPath}
             />
           </Box>
           {student?.avatarPath && (
