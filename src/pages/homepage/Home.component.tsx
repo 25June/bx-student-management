@@ -147,7 +147,7 @@ const HomeComponent = () => {
                 color="primary"
                 sx={{ cursor: 'pointer' }}
               >
-                {viewDeletedStudent ? 'Xem danh sách đã xoá' : 'Xem danh sách hiện tại'}
+                {!viewDeletedStudent ? 'Xem danh sách đã xoá' : 'Xem danh sách hiện tại'}
               </Link>
             </Box>
           </Box>
