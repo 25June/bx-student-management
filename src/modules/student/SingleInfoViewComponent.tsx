@@ -11,6 +11,7 @@ import { StudentActionType } from 'constant'
 // import Chip from '@mui/material/Chip'
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import { restoreStudent } from 'services/student'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface SingleScoreViewComponentProps {
   student: Student
@@ -27,6 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }))
 
 const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComponentProps) => {
+  const { disableUpdate } = useClassContext()
   // const transferHistoryContent =
   //   student.transferHistory && student.transferHistory[0] !== 'new'
   //     ? { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
@@ -57,19 +59,25 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
               <IconButton
                 color={'info'}
                 onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
+                disabled={disableUpdate}
               >
                 <ScoreIcon />
               </IconButton>
               <IconButton
                 color={'info'}
                 onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+                disabled={disableUpdate}
               >
                 <PermIdentityIcon />
               </IconButton>
             </>
           )}
           {student.isDeleted && (
-            <IconButton onClick={() => restoreStudent(student.id)} color="success">
+            <IconButton
+              onClick={() => restoreStudent(student.id)}
+              color="success"
+              disabled={disableUpdate}
+            >
               <RestoreFromTrashIcon />
             </IconButton>
           )}

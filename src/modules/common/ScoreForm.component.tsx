@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import React, { useEffect } from 'react'
 import { useIsMobile } from 'utils/common'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
+import { useClassContext } from 'contexts/ClassContext'
 
 const ScoreForm = ({
   data,
@@ -27,6 +28,7 @@ const ScoreForm = ({
     defaultValues: data ? { score: data } : { score: 0 },
   })
   const isMobile = useIsMobile()
+  const { disableUpdate } = useClassContext()
 
   useEffect(() => {
     setValue('score', data)
@@ -34,6 +36,9 @@ const ScoreForm = ({
   }, [data])
 
   const onSubmit = (value: { score: number }) => {
+    if (disableUpdate) {
+      return
+    }
     if (isNaN(Number(value.score)) || Number(value.score) > 10) {
       setError('score', { message: 'Invalid input' }, { shouldFocus: true })
       return
@@ -61,6 +66,7 @@ const ScoreForm = ({
             helperText={errors.score?.message}
             error={!!errors.score}
             size={isMobile ? 'small' : 'medium'}
+            disabled={disableUpdate}
             {...field}
           />
         )}
@@ -71,7 +77,7 @@ const ScoreForm = ({
           color={'success'}
           sx={{ border: !isDirty ? 'none' : '1px solid #2e7d32', borderRadius: '5px', top: 5 }}
           onClick={handleSubmit(onSubmit)}
-          disabled={!isDirty}
+          disabled={!isDirty || disableUpdate}
           size={isMobile ? 'small' : 'medium'}
         >
           <CheckIcon />
@@ -83,7 +89,7 @@ const ScoreForm = ({
           color={'error'}
           sx={{ border: !isDirty ? 'none' : '1px solid #d32f2f', borderRadius: '5px', top: 5 }}
           onClick={() => reset({ score: data })}
-          disabled={!isDirty}
+          disabled={!isDirty || disableUpdate}
           size={isMobile ? 'small' : 'medium'}
         >
           <CloseIcon />

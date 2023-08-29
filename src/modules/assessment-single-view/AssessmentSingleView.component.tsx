@@ -13,6 +13,9 @@ import { AssessmentActionType } from 'constant'
 import { colorPalettes } from 'constant/common'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { useClassContext } from 'contexts/ClassContext'
+import { blueGrey } from '@mui/material/colors'
+import Button from '@mui/material/Button'
 
 const AssessmentItem = ({
   assessment,
@@ -21,6 +24,8 @@ const AssessmentItem = ({
   assessment: Assessment
   onClickAction: (data: Assessment, actionType: AssessmentActionType) => void
 }) => {
+  const { disableUpdate } = useClassContext()
+
   return (
     <>
       <ListItem
@@ -30,12 +35,14 @@ const AssessmentItem = ({
             <IconButton
               color={'warning'}
               onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
+              disabled={disableUpdate}
             >
               <EditIcon />
             </IconButton>
             <IconButton
               color={'error'}
               onClick={() => onClickAction(assessment, AssessmentActionType.DELETE_ASSESSMENT)}
+              disabled={disableUpdate}
             >
               <DeleteIcon />
             </IconButton>
@@ -63,13 +70,31 @@ const AssessmentItem = ({
 
 interface AssessmentSingleViewComponentProps {
   assessments: Assessment[]
-  onClickAction: (data: Assessment, actionType: AssessmentActionType) => void
+  onClickAction: (data: Assessment | null, actionType: AssessmentActionType) => void
 }
 
 const AssessmentSingleViewComponent = ({
   assessments,
   onClickAction,
 }: AssessmentSingleViewComponentProps) => {
+  const { disableUpdate } = useClassContext()
+  if (assessments.length === 0) {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
+          <i>Chưa có bài kiểm tra nào.</i>
+        </Typography>
+        <Button
+          variant={'contained'}
+          onClick={() => onClickAction(null, AssessmentActionType.ADD_NEW_ASSESSMENT)}
+          disabled={disableUpdate}
+        >
+          Thêm bài kiểm tra
+        </Button>
+      </Box>
+    )
+  }
+
   return (
     <Box>
       <List

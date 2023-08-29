@@ -8,6 +8,7 @@ interface DiligentFormComponentProps {
   TL: boolean
   GL: boolean
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
+  disabled: boolean
 }
 
 const DiligentFormComponent = ({
@@ -15,6 +16,7 @@ const DiligentFormComponent = ({
   TL,
   GL,
   onSubmitAttendance,
+  disabled,
 }: DiligentFormComponentProps) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexGrow: 2, gap: 1.5 }}>
@@ -31,6 +33,7 @@ const DiligentFormComponent = ({
                 isMissal: true,
               })
             }
+            disabled={disabled}
           />
         }
         label="Thánh Lễ"
@@ -50,6 +53,7 @@ const DiligentFormComponent = ({
                 isMissal: false,
               })
             }
+            disabled={disabled}
           />
         }
         label={'Giáo Lý'}

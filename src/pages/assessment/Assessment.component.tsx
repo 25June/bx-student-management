@@ -15,21 +15,26 @@ import AssessmentSingleViewComponent from 'modules/assessment-single-view/Assess
 
 const AssessmentComponent = () => {
   const { assessments, setAssessments } = useAssessmentContext()
-  const { classId } = useClassContext()
+  const { classId, disableUpdate, schoolYearId } = useClassContext()
   const { openDialog } = useDialogContext()
   const isMobile = useIsMobile()
 
   const callback = (refreshData?: boolean): void => {
     if (refreshData) {
-      fetchAssessments(classId).then((res) => {
+      fetchAssessments(classId, schoolYearId).then((res) => {
         setAssessments(res)
       })
     }
   }
 
   const openStudentDialog = (assessment: Assessment | null, type: AssessmentActionType): void => {
+    if (disableUpdate) {
+      return
+    }
     openDialog(DialogType.ASSESSMENT_DIALOG, type, assessment, callback)
   }
+
+  console.log({ assessments })
 
   return (
     <Box>

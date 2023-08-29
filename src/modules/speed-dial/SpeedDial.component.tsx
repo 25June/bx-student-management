@@ -43,7 +43,7 @@ const actions = [
 const SpeedDialComponent = () => {
   const { openDialog } = useDialogContext()
   const { setAssessments } = useAssessmentContext()
-  const { classId } = useClassContext()
+  const { classId, disableUpdate, schoolYearId } = useClassContext()
 
   const [open, setOpen] = useState<boolean>(false)
   const handleOpen = useCallback(() => setOpen(true), [])
@@ -51,15 +51,18 @@ const SpeedDialComponent = () => {
 
   const assessmentCallBack = useCallback(() => {
     setTimeout(() => {
-      fetchAssessments(classId).then((res) => {
+      fetchAssessments(classId, schoolYearId).then((res) => {
         setAssessments(res)
       })
     }, 500)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [classId, schoolYearId])
 
   const handleOpenDialog = useCallback(
     (dialogType: DialogType, actionType: ActionType) => {
+      if (disableUpdate) {
+        return
+      }
       if (
         dialogType === DialogType.ASSESSMENT_DIALOG &&
         actionType === AssessmentActionType.ADD_NEW_ASSESSMENT
@@ -71,8 +74,12 @@ const SpeedDialComponent = () => {
       openDialog(dialogType, actionType, null)
       setOpen(false)
     },
-    [assessmentCallBack, openDialog]
+    [assessmentCallBack, openDialog, disableUpdate]
   )
+
+  if (disableUpdate) {
+    return null
+  }
 
   return (
     <Box

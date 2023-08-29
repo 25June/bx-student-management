@@ -34,8 +34,12 @@ export const updateAllValueOfAssessment = () => {
   })
 }
 
-export const fetchAssessments = (classId: string) => {
-  const queryAssessments = query(assessmentRef, where('classId', '==', classId))
+export const fetchAssessments = (classId: string, schoolYear: string) => {
+  const queryAssessments = query(
+    assessmentRef,
+    where('classId', '==', classId),
+    where('schoolYear', '==', schoolYear)
+  )
   return getDocs(queryAssessments).then((snapshot) => {
     if (snapshot.empty) {
       return []

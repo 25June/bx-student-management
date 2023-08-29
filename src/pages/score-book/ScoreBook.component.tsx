@@ -25,7 +25,7 @@ import { fetchAssessments } from 'services'
 
 const ScoreBookComponent = () => {
   const { students } = useStudentContext()
-  const { classId, schoolYearId, semesterId } = useClassContext()
+  const { classId, schoolYearId, semesterId, disableUpdate } = useClassContext()
   const isMobile = useIsMobile()
   const { assessments, setAssessments } = useAssessmentContext()
   const { openDialog } = useDialogContext()
@@ -81,7 +81,7 @@ const ScoreBookComponent = () => {
 
   const callback = (refreshData?: boolean): void => {
     if (refreshData) {
-      fetchAssessments(classId).then((res) => {
+      fetchAssessments(classId, schoolYearId).then((res) => {
         setAssessments(res)
       })
     }
@@ -228,6 +228,7 @@ const ScoreBookComponent = () => {
           </Typography>
           <Box>
             <Button
+              disabled={disableUpdate}
               variant={'contained'}
               onClick={() =>
                 openDialog(

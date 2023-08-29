@@ -32,6 +32,8 @@ import IconButton from '@mui/material/IconButton'
 import Drawer from '@mui/material/Drawer'
 import DiligentPanelContentComponent from 'modules/diligent/DiligentPanelContent.component'
 
+// import Chip from '@mui/material/Chip'
+
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
 }
@@ -66,6 +68,12 @@ const ListStudent = ({
           gender={!!row.gender}
         />
       </ListItem>
+      {/*{false && (*/}
+      {/*  <Box sx={{ marginBottom: 1, paddingLeft: 10, textAlign: 'left' }}>*/}
+      {/*    <Chip label="Chăm chỉ" variant="outlined" color={'absentWarning1'} size={'small'} />*/}
+      {/*  </Box>*/}
+      {/*)}*/}
+
       <Divider variant="inset" component="li" />
     </Box>
   )
@@ -86,7 +94,7 @@ const DiligentTableComponent = ({
   selectedRollCallDate,
   attendances,
 }: DiligentTableProps) => {
-  const { classId, semesterId, schoolYearId } = useClassContext()
+  const { classId, semesterId, schoolYearId, disableUpdate } = useClassContext()
   const { openDialog } = useDialogContext()
   const isMobile = useIsMobile()
   const [selectedStuRow, setSelectedStuRow] = useState<StudentRows>()
@@ -94,6 +102,9 @@ const DiligentTableComponent = ({
   const handleSubmitAttendance =
     (studentId: string) =>
     ({ value, rollCallKey, isMissal }: OnSubmitAttendanceProps) => {
+      if (disableUpdate) {
+        return Promise.reject('wrong class')
+      }
       if (rollCallKey) {
         return submitAttendance({
           studentId,
@@ -127,6 +138,7 @@ const DiligentTableComponent = ({
               undefined
             )
           }
+          disabled={disableUpdate}
         >
           Thêm ngày điểm danh
         </Button>

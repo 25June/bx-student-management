@@ -24,7 +24,7 @@ const HomeComponent = () => {
   const { students, deletedStudents } = useStudentContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
-  const { classId } = useClassContext()
+  const { classId, disableUpdate } = useClassContext()
 
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   useEffect(() => {
@@ -54,6 +54,9 @@ const HomeComponent = () => {
   }
 
   const handleClickAction = (data: Student, type: StudentActionType | ScoreBookActionType) => {
+    if (disableUpdate) {
+      return
+    }
     if (type === StudentActionType.VIEW_SCORE_BOOK) {
       Promise.resolve().then(() => {
         setSelectedStudent(data)

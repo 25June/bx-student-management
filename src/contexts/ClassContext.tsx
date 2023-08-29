@@ -1,5 +1,12 @@
-import React, { useContext, createContext, PropsWithChildren, useState, useMemo } from 'react'
-import { BaseClasses } from 'constant/common'
+import React, {
+  useContext,
+  createContext,
+  PropsWithChildren,
+  useState,
+  useMemo,
+  useEffect,
+} from 'react'
+import { BaseClasses, Role } from 'constant/common'
 import { Class } from 'models'
 import { useAuthentication } from 'contexts/AuthContext'
 
@@ -11,6 +18,7 @@ interface ClassContextProps {
   classObj?: Class
   setSchoolYearId: (value: any) => void
   setSemesterId: (value: any) => void
+  disableUpdate: boolean
 }
 
 const classContextDefaultProps: ClassContextProps = {
@@ -21,15 +29,24 @@ const classContextDefaultProps: ClassContextProps = {
   semesterId: '',
   setSchoolYearId: () => null,
   setSemesterId: () => null,
+  disableUpdate: true,
 }
 
 const ClassContext = createContext(classContextDefaultProps)
 
 export const ClassProvider = ({ children }: PropsWithChildren) => {
-  const { isSignedIn } = useAuthentication()
+  const { isSignedIn, user } = useAuthentication()
   const [classId, setClassId] = useState<string>(BaseClasses[0].id)
   const [schoolYearId, setSchoolYearId] = useState<string>('2023-2024')
   const [semesterId, setSemesterId] = useState<string>('hk1')
+  useEffect(() => {
+    if (user?.classId) {
+      setClassId(user.classId)
+    }
+  }, [user])
+  const disableUpdate = useMemo(() => {
+    return user?.classId !== classId && user?.role !== Role.CTO
+  }, [user, classId])
   const value = useMemo(() => {
     return {
       classId: isSignedIn ? classId : '',
@@ -39,8 +56,9 @@ export const ClassProvider = ({ children }: PropsWithChildren) => {
       semesterId,
       setSchoolYearId,
       setSemesterId,
+      disableUpdate,
     }
-  }, [classId, isSignedIn, schoolYearId, semesterId])
+  }, [classId, isSignedIn, schoolYearId, semesterId, disableUpdate])
   return <ClassContext.Provider value={value}>{children}</ClassContext.Provider>
 }
 

@@ -51,11 +51,10 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
   const handleOpenAssessmentDialog = useCallback(() => {
     const assessmentCallBack = () => {
       setTimeout(() => {
-        fetchAssessments(classId).then((res) => {
+        fetchAssessments(classId, schoolYearId).then((res) => {
           setAssessments(res)
         })
       }, 100)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
     openDialog(
       DialogType.ASSESSMENT_DIALOG,
@@ -63,7 +62,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
       null,
       assessmentCallBack
     )
-  }, [openDialog, classId, setAssessments])
+  }, [openDialog, classId, setAssessments, schoolYearId])
 
   useEffect(() => {
     if (studentId) {

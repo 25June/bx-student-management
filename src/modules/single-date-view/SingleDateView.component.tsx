@@ -14,6 +14,7 @@ import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { grey } from '@mui/material/colors'
 import { get } from 'lodash'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface SingleDateViewComponentProps {
   student: StudentRows
@@ -36,6 +37,7 @@ const SingleDateViewComponent = ({
   onSubmitAttendance,
   attendance,
 }: SingleDateViewComponentProps) => {
+  const { disableUpdate } = useClassContext()
   const { openDialog } = useDialogContext()
   const note = get(attendance, [`${rollCallDate.key}`, 'note'], '')
   return (
@@ -58,6 +60,7 @@ const SingleDateViewComponent = ({
           GL={!!get(attendance, [`${rollCallDate.key}`, 'gl'], false)}
           TL={!!get(attendance, [`${rollCallDate.key}`, 'tl'], false)}
           onSubmitAttendance={onSubmitAttendance}
+          disabled={disableUpdate}
         />
         <IconButton
           onClick={() =>
@@ -67,6 +70,7 @@ const SingleDateViewComponent = ({
               note,
             })
           }
+          disabled={disableUpdate}
         >
           <ShortTextIcon color={'disabled'} />
         </IconButton>

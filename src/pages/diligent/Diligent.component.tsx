@@ -23,7 +23,7 @@ import { submitAttendanceAllStudentsInClass } from 'services/diligent'
 const DiligentComponent = () => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
   const { students } = useStudentContext()
-  const { classId, semesterId, schoolYearId } = useClassContext()
+  const { classId, semesterId, schoolYearId, disableUpdate } = useClassContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
@@ -152,8 +152,11 @@ const DiligentComponent = () => {
   }
 
   const handleMarkAllStudentPresent = () => {
+    if (disableUpdate) {
+      return
+    }
     if (selectedRollCallDate?.key && students?.length !== 0 && classId) {
-      const confirmation = window.confirm('Chắc chưa?')
+      const confirmation = window.confirm('Xác nhận đánh dấu tất cả!')
       if (confirmation) {
         return submitAttendanceAllStudentsInClass({
           studentIds: students.map((stu) => stu.id),
@@ -231,6 +234,7 @@ const DiligentComponent = () => {
                         selectedRollCallDate.key
                       )
                     }
+                    disabled={disableUpdate}
                   >
                     <EditIcon />
                   </IconButton>
@@ -254,6 +258,7 @@ const DiligentComponent = () => {
               variant={'outlined'}
               onClick={handleMarkAllStudentPresent}
               endIcon={<DoneAllIcon />}
+              disabled={disableUpdate}
             >
               Đánh dấu tất cả đều có mặt
             </Button>

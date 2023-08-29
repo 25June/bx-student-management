@@ -23,16 +23,19 @@ const AssessmentDefaultValue = {
 const AssessmentContext = createContext(AssessmentDefaultValue)
 
 export const AssessmentProvider = ({ children }: PropsWithChildren) => {
-  const { classId } = useClassContext()
+  const { classId, schoolYearId } = useClassContext()
   const [assessments, setAssessments] = useState<Assessment[]>()
 
-  const handleFetchAssessments = useCallback((selectedClassId: string) => {
-    if (selectedClassId) {
-      fetchAssessments(selectedClassId).then((res) => {
-        setAssessments(res)
-      })
-    }
-  }, [])
+  const handleFetchAssessments = useCallback(
+    (selectedClassId: string) => {
+      if (selectedClassId) {
+        fetchAssessments(selectedClassId, schoolYearId).then((res) => {
+          setAssessments(res)
+        })
+      }
+    },
+    [schoolYearId]
+  )
 
   useEffect(() => {
     if (classId) {

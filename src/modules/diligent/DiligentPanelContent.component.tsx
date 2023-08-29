@@ -11,6 +11,7 @@ import { formatDisplayTable } from 'utils/datetime'
 import DiligentFormComponent from 'modules/diligent/DiligentForm.component'
 import { get } from 'lodash'
 import { RollCallDate } from 'utils/customHooks'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface DiligentPanelComponentProps {
   studentAttendance: StudentRows
@@ -27,6 +28,7 @@ const DiligentPanelContentComponent = ({
   onSubmitAttendance,
   onClose,
 }: DiligentPanelComponentProps) => {
+  const { disableUpdate } = useClassContext()
   return (
     <Box pt={9} pr={2} pl={2} mb={5}>
       <Box display={'flex'} alignItems={'center'} mb={1}>
@@ -82,6 +84,7 @@ const DiligentPanelContentComponent = ({
                   rollCallKey={key}
                   TL={!!get(attendance, [`${key}`, 'tl'], false)}
                   GL={!!get(attendance, [`${key}`, 'gl'], false)}
+                  disabled={disableUpdate}
                 />
               </FormControl>
             )

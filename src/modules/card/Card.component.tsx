@@ -9,6 +9,7 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 // import Chip from '@mui/material/Chip'
 import { restoreStudent } from 'services/student'
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
+import { useClassContext } from 'contexts/ClassContext'
 
 const CardComponent = ({
   student,
@@ -20,6 +21,7 @@ const CardComponent = ({
   const isMobile = useIsMobile()
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
   const avatar = buildImageUrl(student.avatarPath, student.gender)
+  const { disableUpdate } = useClassContext()
   // const transferHistoryContent = student.transferHistory
   //   ? student.transferHistory[0] === 'new'
   //     ? { label: 'Thiếu nhi mới', color: 'success' }
@@ -101,6 +103,7 @@ const CardComponent = ({
             onClick={() => restoreStudent(student.id)}
             color="success"
             variant="outlined"
+            disabled={disableUpdate}
           >
             Khôi phục
           </Button>
@@ -113,6 +116,7 @@ const CardComponent = ({
               onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
               color="info"
               variant="outlined"
+              disabled={disableUpdate}
             >
               Thông Tin
             </Button>
@@ -122,6 +126,7 @@ const CardComponent = ({
               onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
               color="info"
               variant="outlined"
+              disabled={disableUpdate}
             >
               Bảng Điểm
             </Button>

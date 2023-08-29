@@ -8,13 +8,14 @@ import { getUsers, useSendPasswordResetEmail } from 'services/user'
 import UserTableComponent from 'modules/user-table/UserTable.component'
 import UserDialogComponent from 'modules/user-dialog/UserDialog.component'
 import { User } from 'models/user'
-import { UserAction } from 'constant/common'
+import { Role, UserAction } from 'constant/common'
 import ChangePasswordDialogComponent from 'modules/user-dialog/ChangePasswordDialog.component'
 import PermissionDialogComponent from 'modules/user-dialog/PermissionDialog.component'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import { useIsMobile } from 'utils/common'
 import UserSingleViewComponent from 'modules/user-single-view/UserSingleViewComponent'
 import UserProfilePanelComponent from 'modules/user-drawer/UserProfilePanel.component'
+import { useAuthentication } from 'contexts/AuthContext'
 
 const UserComponent = () => {
   const isMobile = useIsMobile()
@@ -27,6 +28,7 @@ const UserComponent = () => {
   const [isOpenUpdateInfoDialog, openUpdateInfoDialog] = useState<boolean>(false)
   const [selectedUser, setSelectedUser] = useState<User>()
   const [openUserDrawer, setOpenUserDrawer] = useState<boolean>(false)
+  const { user } = useAuthentication()
 
   const handleFilterUserByName = (value: string) => {
     console.log(value)
@@ -106,14 +108,16 @@ const UserComponent = () => {
         <Box>
           <SearchComponent onChange={handleFilterUserByName} label={'Tìm Tên GLV'} />
         </Box>
-        <Button
-          sx={{ width: '100%', maxWidth: 'fit-content' }}
-          variant="contained"
-          startIcon={<AssignmentIcon />}
-          onClick={useCallback(() => openUserDialog(true), [])}
-        >
-          Thêm GLV
-        </Button>
+        {user?.role === Role.CTO && (
+          <Button
+            sx={{ width: '100%', maxWidth: 'fit-content' }}
+            variant="contained"
+            startIcon={<AssignmentIcon />}
+            onClick={() => openUserDialog(true)}
+          >
+            Thêm GLV
+          </Button>
+        )}
       </Box>
       <Box>
         {isMobile ? (
