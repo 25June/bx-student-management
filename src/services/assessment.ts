@@ -12,7 +12,6 @@ import {
   getDocs,
 } from 'firebase/firestore'
 import { app } from '../firebase'
-import { useClassContext } from 'contexts/ClassContext'
 
 const db = getFirestore(app)
 const AssessmentCollection = 'assessments'
@@ -57,28 +56,28 @@ interface AddNewAssessmentProps {
   onComplete: () => void
 }
 
-export const useAddNewAssessment = () => {
-  const { classId } = useClassContext()
-  return ({ dataInput, onSuccess, onError, onComplete }: AddNewAssessmentProps) => {
-    const time = serverTimestamp() as Timestamp
-    const data = {
-      ...dataInput,
-      createdDate: time,
-      classId,
-    }
-    addDoc(collection(db, AssessmentCollection), data)
-      .then((value) => {
-        console.info(value)
-        onSuccess()
-      })
-      .catch((error) => {
-        console.error(error)
-        onError()
-      })
-      .finally(() => {
-        onComplete()
-      })
+export const addNewAssessment = ({
+  dataInput,
+  onSuccess,
+  onError,
+  onComplete,
+}: AddNewAssessmentProps) => {
+  const time = serverTimestamp() as Timestamp
+  const data = {
+    ...dataInput,
+    createdDate: time,
   }
+  addDoc(collection(db, AssessmentCollection), data)
+    .then(() => {
+      onSuccess()
+    })
+    .catch((error) => {
+      console.error(error)
+      onError()
+    })
+    .finally(() => {
+      onComplete()
+    })
 }
 
 interface EditAssessmentProps {

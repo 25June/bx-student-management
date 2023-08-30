@@ -55,6 +55,10 @@ export const buildImageUrl = (
   return prefix + imageName + dimension
 }
 
+export const buildFileUrl = (filePath: string) => {
+  return `https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/` + filePath
+}
+
 export const getToday = () => {
   const now = new Date()
 

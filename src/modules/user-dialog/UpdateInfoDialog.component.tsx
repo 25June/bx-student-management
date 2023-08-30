@@ -18,7 +18,7 @@ import { SelectChangeEvent } from '@mui/material/Select'
 import { Class } from 'models'
 import { useUpdateUserInfo } from 'services/user'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
-import { uploadAvatar } from 'services'
+import { uploadFile } from 'services'
 import { useIsMobile } from 'utils/common'
 
 interface UserInfoProps {
@@ -81,7 +81,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
   const onSubmit = async (data: UserInfoProps) => {
     let downloadPath: string = ''
     if (data.avatar) {
-      downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
+      downloadPath = await uploadFile(data.avatar, setUploadImageProgress)
       delete data.avatar
     }
     updateUserInfo({

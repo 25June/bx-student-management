@@ -34,8 +34,6 @@ const AssessmentComponent = () => {
     openDialog(DialogType.ASSESSMENT_DIALOG, type, assessment, callback)
   }
 
-  console.log({ assessments })
-
   return (
     <Box>
       <Box

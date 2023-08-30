@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box } from '@mui/material'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -16,6 +16,53 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { useClassContext } from 'contexts/ClassContext'
 import { blueGrey } from '@mui/material/colors'
 import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
+import DownloadIcon from '@mui/icons-material/Download'
+import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
+import { getDownloadLink } from 'services/storage'
+import { CircularProgress } from '@mui/material'
+
+interface SecondaryTextProps {
+  bookDate: string
+  fileName: string
+}
+
+const SecondaryText = ({ bookDate, fileName }: SecondaryTextProps) => {
+  const [downloading, setDownloading] = useState<boolean>(false)
+  const handleDownloadAssessment = (event: any) => {
+    event.stopPropagation()
+    setDownloading(true)
+    getDownloadLink(fileName).then((url) => {
+      setDownloading(false)
+
+      const link = document.createElement('a')
+      link.setAttribute('download', url)
+      link.setAttribute('target', '_blank')
+      link.href = url
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    })
+  }
+  return (
+    <Box sx={{ display: 'flex', gap: 0.25, flexDirection: 'column' }}>
+      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'}>
+        {bookDate}
+      </Box>
+      {fileName && (
+        <Box>
+          <Chip
+            icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
+            size={'small'}
+            label={'File kiểm tra'}
+            color={'info'}
+            onClick={handleDownloadAssessment}
+          />
+        </Box>
+      )}
+    </Box>
+  )
+}
 
 const AssessmentItem = ({
   assessment,
@@ -29,6 +76,7 @@ const AssessmentItem = ({
   return (
     <>
       <ListItem
+        alignItems={'flex-start'}
         disableGutters={true}
         secondaryAction={
           <>
@@ -60,7 +108,12 @@ const AssessmentItem = ({
         <ListItemText
           onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
           primary={assessment.lesson}
-          secondary={assessment.bookDate}
+          secondary={
+            <SecondaryText
+              bookDate={formatYYYMMDDToDDMMYYYY(assessment.bookDate)}
+              fileName={assessment.documentPath || ''}
+            />
+          }
         />
       </ListItem>
       <Divider variant="middle" component="li" />

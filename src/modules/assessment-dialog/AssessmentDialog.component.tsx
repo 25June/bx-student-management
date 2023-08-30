@@ -15,7 +15,7 @@ import { AssessmentActionType } from 'constant'
 import { Controller, useForm } from 'react-hook-form'
 import { Assessment } from 'models/assessment'
 import { getToday } from 'utils'
-import { useAddNewAssessment, useDeleteAssessment, useEditAssessment } from 'services'
+import { addNewAssessment, useDeleteAssessment, useEditAssessment } from 'services/assessment'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { AssessmentEnum } from 'constant/common'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
@@ -25,11 +25,14 @@ import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { useClassContext } from 'contexts/ClassContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
+import { uploadFile } from 'services/storage'
+import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
 
 type AssessmentForm = {
   bookDate: string
   type: AssessmentEnum
   lesson: string
+  uploadDocument?: File | null
 }
 
 const AssessmentFormDefaultValue = (data: Assessment | null) => {
@@ -45,6 +48,7 @@ const AssessmentFormDefaultValue = (data: Assessment | null) => {
     bookDate: getToday(),
     type: AssessmentEnum.KT5,
     lesson: '',
+    uploadDocument: null,
   }
 }
 
@@ -71,13 +75,13 @@ const AssessmentDialogComponent = ({
   onClose,
   isOpen,
 }: AssessmentDialogComponentProps) => {
-  const addNewAssessment = useAddNewAssessment()
   const editAssessment = useEditAssessment()
   const deleteAssessment = useDeleteAssessment()
   const { showSnackbar } = useSnackbarContext()
   const { schoolYearId } = useClassContext()
   const { onFetchAssessments } = useAssessmentContext()
   const { classId } = useClassContext()
+  const [uploadFileProgress, setUploadFileProgress] = useState<number>(0)
 
   const { handleSubmit, control, reset, setValue } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
@@ -149,14 +153,20 @@ const AssessmentDialogComponent = ({
       return
     }
     const newAssessment: Omit<Assessment, 'id'> = {
-      classId: '', // TODO Add more field class to the form
+      classId,
       bookDate: submitData.bookDate,
       type: submitData.type,
       lesson: submitData.lesson,
       schoolYear: schoolYearId,
     }
+
+    let documentPath = ''
+    if (submitData.uploadDocument) {
+      documentPath = await uploadFile(submitData.uploadDocument, setUploadFileProgress, false)
+    }
+
     addNewAssessment({
-      dataInput: newAssessment,
+      dataInput: { ...newAssessment, documentPath },
       onSuccess: () =>
         showSnackbar(
           `Thêm Bài Kiểm Tra ${newAssessment.type} Thành Công vào ${newAssessment.bookDate}`,
@@ -169,11 +179,11 @@ const AssessmentDialogComponent = ({
         )
       },
       onComplete: () => {
-        setTimeout(() => {
-          setLoading(false)
-          onClose(false)
+        setLoading(false)
+        onClose(false)
+        Promise.resolve().then(() => {
           onFetchAssessments(classId)
-        }, 20)
+        })
       },
     })
     return
@@ -242,10 +252,30 @@ const AssessmentDialogComponent = ({
                   />
                 )}
               />
+              <TextField
+                id="outlined-bookDate"
+                label="Bài kiểm tra"
+                type="file"
+                helperText="Đính kèm file .doc/.docx/.pdf"
+                margin="normal"
+                InputLabelProps={{ shrink: true }}
+                fullWidth={true}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.files?.[0]) {
+                    setValue('uploadDocument', event.target.files[0])
+                  }
+                }}
+                inputProps={{ accept: 'application/msword,application/pdf' }}
+              />
             </Box>
           )}
         </DialogContent>
         <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
+          {isLoading && (
+            <Box sx={{ width: '100%', position: 'absolute', top: 0, left: 0 }}>
+              <LinearProgressComponent progress={uploadFileProgress} />
+            </Box>
+          )}
           <Button
             color={'neutral'}
             onClick={() => onClose()}

@@ -11,4 +11,5 @@ export type Assessment = {
   type: AssessmentEnum
   isDeleted?: boolean
   schoolYear: string
+  documentPath?: string
 }

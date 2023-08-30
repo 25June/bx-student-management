@@ -15,7 +15,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import ClearIcon from '@mui/icons-material/Clear'
 import { getValues, StudentForm } from 'modules/student-dialog/helpers'
 import { Student } from 'models'
-import { removeImage, uploadAvatar, useUpdateStudent } from 'services'
+import { removeImage, uploadFile, useUpdateStudent } from 'services'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import FemaleIcon from '@mui/icons-material/Female'
 import MaleIcon from '@mui/icons-material/Male'
@@ -50,7 +50,7 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
 
     let downloadPath: string = ''
     if (data.avatar) {
-      downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
+      downloadPath = await uploadFile(data.avatar, setUploadImageProgress)
       delete data.avatar
     }
 

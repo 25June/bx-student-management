@@ -21,7 +21,7 @@ import { splitFullName } from 'utils'
 import { formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
 import {
   removeImage,
-  uploadAvatar,
+  uploadFile,
   useAddNewStudent,
   useDeleteStudent,
   useUpdateStudent,
@@ -132,7 +132,7 @@ const StudentDialogComponent = ({
 
     let downloadPath: string = ''
     if (data.avatar) {
-      downloadPath = await uploadAvatar(data.avatar, setUploadImageProgress)
+      downloadPath = await uploadFile(data.avatar, setUploadImageProgress)
       delete data.avatar
     }
     if (action === StudentActionType.EDIT_STUDENT && student?.id) {

@@ -5,24 +5,34 @@ import {
   getDownloadURL,
   UploadTaskSnapshot,
   deleteObject,
+  StorageReference,
 } from 'firebase/storage'
 import { v4 as uuidv4 } from 'uuid'
 
 const storage = getStorage()
-const storageRef = (pathName: string) => ref(storage, pathName)
-const avatarRef = (filename: string) => ref(storage, `avatars/${filename}`)
-const getAvatarRef = (path: string) => ref(storage, path)
+const storageRef = (pathName: string): StorageReference => ref(storage, pathName)
+const avatarRef = (filename: string): StorageReference => ref(storage, `avatars/${filename}`)
+const getAvatarRef = (path: string): StorageReference => ref(storage, path)
+const assessmentRef = (filename: string): StorageReference => ref(storage, `assessment/${filename}`)
 
 export const metadata = {
   contentType: 'image/jpeg',
 }
 
-export const uploadAvatar = async (
+export const uploadFile = async (
   file: File | Blob,
-  updateProgress: (progress: number) => void
+  updateProgress: (progress: number) => void,
+  isUploadImage: boolean = true
 ): Promise<string> => {
-  const referencePath = avatarRef(uuidv4())
-  const handleUpload = uploadBytesResumable(referencePath, file, metadata)
+  let fileRef: StorageReference
+  if (isUploadImage) {
+    fileRef = avatarRef(uuidv4())
+  } else {
+    fileRef = assessmentRef(uuidv4())
+  }
+  const handleUpload = uploadBytesResumable(fileRef, file, {
+    contentType: file.type,
+  })
   handleUpload.on(
     'state_changed',
     (snapshot) => {
@@ -38,7 +48,7 @@ export const uploadAvatar = async (
 
 export const getDownloadLink = (imagePath: string) =>
   getDownloadURL(getAvatarRef(imagePath)).then((downloadURL) => {
-    console.log('File available at', downloadURL)
+    return downloadURL
   })
 
 export const uploadProgress = (snapshot: UploadTaskSnapshot) => {

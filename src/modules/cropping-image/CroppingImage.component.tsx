@@ -14,7 +14,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import { buildImageUrl, useIsMobile } from 'utils/common'
 import ReactCrop, { PixelCrop, Crop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import { removeImage, uploadAvatar } from 'services'
+import { removeImage, uploadFile } from 'services'
 import { updateUserAvatar } from 'services/user'
 import { updateStudentAvatar } from 'services/student'
 import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
@@ -92,7 +92,7 @@ const CroppingImageComponent = ({
     previewCanvasRef.current.toBlob(
       async (blobFile) => {
         if (blobFile) {
-          const downloadPath = await uploadAvatar(blobFile, setUploadImageProgress)
+          const downloadPath = await uploadFile(blobFile, setUploadImageProgress)
           if (downloadPath && userId && avatarPath) {
             updateUserAvatar(userId, downloadPath)
               .then(() => {
