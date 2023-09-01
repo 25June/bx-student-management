@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import React, { useState, useEffect, useCallback } from 'react'
 import AddIcon from '@mui/icons-material/Add'
@@ -93,6 +93,9 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
     return null
   }
 
+  const listScore: number[] = Object.values(scoreBook?.[activeTab as keyof ScoreBook] as any || {})
+  const average = listScore.length !== 0 ? listScore.reduce((a, b) => a + b, 0) / listScore.length : 0;
+
   return (
     <Drawer
       variant="temporary"
@@ -158,6 +161,9 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
                     variant={activeTab === ScoreEnum.SCORE_60 ? 'filled' : 'outlined'}
                     onClick={() => setActiveTab(ScoreEnum.SCORE_60)}
                   />
+                </Box>
+                <Box sx={{ textAlign: 'right', marginTop: 1 }}>
+                  <Typography>Điểm Trung Bình: <strong>{average.toFixed(2)}</strong></Typography>
                 </Box>
                 <Box>
                   {assessments

@@ -22,7 +22,7 @@ interface ClassContextProps {
 }
 
 const classContextDefaultProps: ClassContextProps = {
-  classId: BaseClasses[0].id,
+  classId: '',
   setClassId: () => null,
   classObj: BaseClasses[0],
   schoolYearId: '',
@@ -36,7 +36,7 @@ const ClassContext = createContext(classContextDefaultProps)
 
 export const ClassProvider = ({ children }: PropsWithChildren) => {
   const { isSignedIn, user } = useAuthentication()
-  const [classId, setClassId] = useState<string>(BaseClasses[0].id)
+  const [classId, setClassId] = useState<string>('')
   const [schoolYearId, setSchoolYearId] = useState<string>('2023-2024')
   const [semesterId, setSemesterId] = useState<string>('hk1')
   useEffect(() => {

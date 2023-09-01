@@ -67,6 +67,7 @@ const ScoreForm = ({
             error={!!errors.score}
             size={isMobile ? 'small' : 'medium'}
             disabled={disableUpdate}
+            sx={{ width: '100%' }}
             {...field}
           />
         )}

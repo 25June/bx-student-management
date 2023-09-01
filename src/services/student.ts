@@ -12,64 +12,47 @@ import {
   serverTimestamp,
   updateDoc,
   deleteDoc,
-  Unsubscribe,
   setDoc,
 } from 'firebase/firestore'
 import { Student } from 'models'
+import { formatStudentSnapshot } from 'utils/formatStudentSnapshot'
 
 const StudentCollection = 'students'
 export const studentRef = collection(fireStoreDB, StudentCollection)
-export const useGetStudents = (classId: string) => {
+export const useGetStudents = () => {
   const [students, setStudents] = useState<Student[] | null>()
   const [deletedStudents, setDeletedStudents] = useState<Student[]>([])
-  const [listener, setListener] = useState<Unsubscribe>()
-  useEffect(() => {
-    if (classId) {
-      const queryStudents = query(studentRef, where('class.id', '==', classId))
-      const listenerData = onSnapshot(
-        queryStudents,
-        (snapshot) => {
-          const groupStudents: { students: Student[]; deletedStudents: Student[] } = snapshot.docs
-            .sort((snapA, snapB) => snapA.data()?.firstName.localeCompare(snapB.data()?.firstName))
-            .reduce(
-              (acc: { students: Student[]; deletedStudents: Student[] }, data) => {
-                const stu = data.data() as Student
-                if (!stu.isDeleted) {
-                  return { ...acc, students: [...acc.students, { ...stu, id: data.id }] }
-                }
-                if (stu.isDeleted) {
-                  return {
-                    ...acc,
-                    deletedStudents: [...acc.deletedStudents, { ...stu, id: data.id }],
-                  }
-                }
-                return acc
-              },
-              { students: [], deletedStudents: [] }
-            )
-          setStudents(groupStudents.students)
-          setDeletedStudents(groupStudents.deletedStudents)
-        },
-        (error) => {
-          console.error(error)
-          setStudents(null)
+  const fetchStudents = (classId: string) => {
+    const queryStudents = query(studentRef, where('class.id', '==', classId))
+    getDocs(
+      queryStudents
+    ).then((snapshot) => {
+      const groupStudents: { students: Student[]; deletedStudents: Student[] } = formatStudentSnapshot(snapshot.docs)
+      const chunkSize = 2;
+      for (let i = 0; i < groupStudents.students.length; i += chunkSize) {
+        const chunk = groupStudents.students.slice(i, i + chunkSize);
+        if (i === 0) {
+          setStudents(() => {
+            return ([] as Student[]).concat(chunk)
+          })
+        } else {
+          setTimeout(() => {
+            setStudents((prev) => {
+              return (prev || []).concat(chunk)
+            })
+          }, (i + chunkSize) * 100);
         }
-      )
-      setListener(() => listenerData)
-      return listenerData
-    }
-  }, [classId])
 
-  useEffect(() => {
-    if (listener && students) {
-      console.log('stop listener when class change')
-      listener()
-      setListener(undefined)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId])
+      }
+      setDeletedStudents(groupStudents.deletedStudents)
+    },
+      (error) => {
+        console.error(error)
+        setStudents(null)
+      })
+  }
 
-  return { students, isLoading: typeof students === 'undefined', listener, deletedStudents }
+  return { students, fetchStudents, deletedStudents }
 }
 
 export const useGetStudentById = (id: string) => {

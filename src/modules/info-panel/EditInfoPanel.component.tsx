@@ -20,6 +20,7 @@ import { useSnackbarContext } from 'contexts/SnackbarContext'
 import FemaleIcon from '@mui/icons-material/Female'
 import MaleIcon from '@mui/icons-material/Male'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
+import { useStudentContext } from 'contexts/StudentContext'
 
 interface EditInfoPanelProps {
   student: Student
@@ -28,6 +29,7 @@ interface EditInfoPanelProps {
 
 const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) => {
   const updateStudent = useUpdateStudent()
+  const { fetchStudents } = useStudentContext()
   const { handleSubmit, control, setValue, watch } = useForm<StudentForm>({
     defaultValues: getValues(student),
   })
@@ -78,7 +80,10 @@ const EditInfoPanelComponent = ({ student, setEditMode }: EditInfoPanelProps) =>
           removeImage(data.avatarPath)
         }
         setLoading(false)
-        setTimeout(() => setEditMode(false), 100)
+        setTimeout(() => {
+          setEditMode(false)
+          fetchStudents(student.class?.id || '')
+        }, 100)
       },
     })
   }

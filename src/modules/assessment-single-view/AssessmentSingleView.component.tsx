@@ -21,6 +21,7 @@ import DownloadIcon from '@mui/icons-material/Download'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { getDownloadLink } from 'services/storage'
 import { CircularProgress } from '@mui/material'
+import { grey } from '@mui/material/colors'
 
 interface SecondaryTextProps {
   bookDate: string
@@ -46,7 +47,7 @@ const SecondaryText = ({ bookDate, fileName }: SecondaryTextProps) => {
   }
   return (
     <Box sx={{ display: 'flex', gap: 0.25, flexDirection: 'column' }}>
-      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'}>
+      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'} color={grey[500]} marginBottom={0.5}>
         {bookDate}
       </Box>
       {fileName && (
@@ -107,6 +108,7 @@ const AssessmentItem = ({
         </ListItemAvatar>
         <ListItemText
           onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
+          disableTypography={true}
           primary={assessment.lesson}
           secondary={
             <SecondaryText

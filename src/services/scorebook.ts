@@ -156,7 +156,7 @@ export const setNewStudentScore = ({
   schoolYearId,
   type,
 }: SetNewStudentScoreProps) => {
-  if (score && assessmentId && semesterId && studentId && classId && schoolYearId && type) {
+  if (typeof score === 'number' && assessmentId && semesterId && studentId && classId && schoolYearId && type) {
     return set(
       ref(
         realtimeDB,

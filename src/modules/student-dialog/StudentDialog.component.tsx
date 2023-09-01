@@ -33,6 +33,7 @@ import { getValues, StudentForm } from './helpers'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { useClassContext } from 'contexts/ClassContext'
+import { useStudentContext } from 'contexts/StudentContext'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -88,7 +89,7 @@ const StudentDialogComponent = ({
 }: StudentDialogComponentProps) => {
   const fullScreen = useIsMobile()
   const { showSnackbar } = useSnackbarContext()
-
+  const { fetchStudents } = useStudentContext()
   const addNewStudent = useAddNewStudent()
   const updateStudent = useUpdateStudent()
   const deleteStudent = useDeleteStudent()
@@ -125,7 +126,11 @@ const StudentDialogComponent = ({
         onError: () => showSnackbar(`Xoá Thiếu Nhi ${lastName} ${firstName} Thất Bại`, 'error'),
         onComplete: () => {
           setLoading(false)
-          setTimeout(() => onClose(), 100)
+          setTimeout(() => {
+            fetchStudents(classObj?.id || '')
+            onClose()
+          }, 100)
+
         },
       })
     }
@@ -165,7 +170,10 @@ const StudentDialogComponent = ({
             removeImage(data.avatarPath)
           }
           setLoading(false)
-          setTimeout(() => onClose(), 100)
+          setTimeout(() => {
+            onClose()
+            fetchStudents(classObj?.id || '')
+          }, 100)
         },
       })
     }
@@ -191,7 +199,10 @@ const StudentDialogComponent = ({
       onComplete: () => {
         setUploadImageProgress(0)
         setLoading(false)
-        setTimeout(() => onClose(), 100)
+        setTimeout(() => {
+          onClose()
+          fetchStudents(classObj?.id || '')
+        }, 100)
       },
     })
   }

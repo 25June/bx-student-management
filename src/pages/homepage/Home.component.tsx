@@ -20,7 +20,7 @@ const HomeComponent = () => {
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [viewDeletedStudent, setViewDeletedStudent] = useState<boolean>(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
-  const [displayType, setDisplayType] = React.useState<string | null>('card')
+  const [displayType, setDisplayType] = React.useState<'card' | 'table' | string>('table')
   const { students, deletedStudents } = useStudentContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
@@ -46,7 +46,9 @@ const HomeComponent = () => {
     event: React.MouseEvent<HTMLElement>,
     newDisplayType: string | null
   ) => {
-    setDisplayType(newDisplayType)
+    if (newDisplayType) {
+      setDisplayType(newDisplayType)
+    }
   }
 
   const openStudentDialog = (type: StudentActionType, student: Student): void => {
