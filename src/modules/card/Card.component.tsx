@@ -3,10 +3,8 @@ import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@
 import { StudentActionType } from 'constant'
 import { Student } from 'models'
 import { buildImageUrl, useIsMobile } from 'utils/common'
-import ScoreIcon from '@mui/icons-material/Score'
-import PermIdentityIcon from '@mui/icons-material/PermIdentity'
-// import Box from '@mui/material/Box'
-// import Chip from '@mui/material/Chip'
+import StudentIcon from 'modules/common/StudentIcon'
+import HolyBibleIcon from 'modules/common/HolyBibleIcon'
 import { restoreStudent } from 'services/student'
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import { useClassContext } from 'contexts/ClassContext'
@@ -22,16 +20,6 @@ const CardComponent = ({
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
   const avatar = buildImageUrl(student.avatarPath, student.gender)
   const { disableUpdate } = useClassContext()
-  // const transferHistoryContent = student.transferHistory
-  //   ? student.transferHistory[0] === 'new'
-  //     ? { label: 'Thiếu nhi mới', color: 'success' }
-  //     : student.transferHistory[0] === 'standStill'
-  //     ? {
-  //         label: 'Học lại',
-  //         color: 'warning',
-  //       }
-  //     : { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
-  //   : undefined
 
   return (
     <Card
@@ -71,22 +59,6 @@ const CardComponent = ({
         >
           {fullName}
         </Typography>
-        {/*{student.transferHistory && transferHistoryContent && (*/}
-        {/*  <Box sx={{ textAlign: 'center' }}>*/}
-        {/*    <Chip*/}
-        {/*      sx={{*/}
-        {/*        height: 'auto',*/}
-        {/*        '& .MuiChip-label': {*/}
-        {/*          display: 'block',*/}
-        {/*          whiteSpace: 'normal',*/}
-        {/*        },*/}
-        {/*      }}*/}
-        {/*      size={'small'}*/}
-        {/*      color={transferHistoryContent.color as any}*/}
-        {/*      label={transferHistoryContent.label}*/}
-        {/*    />*/}
-        {/*  </Box>*/}
-        {/*)}*/}
       </CardContent>
       <CardActions
         sx={{
@@ -111,7 +83,7 @@ const CardComponent = ({
         {!student.isDeleted && (
           <>
             <Button
-              startIcon={<PermIdentityIcon />}
+              startIcon={<StudentIcon color={'info'} />}
               size="small"
               onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
               color="info"
@@ -121,7 +93,7 @@ const CardComponent = ({
               Thông Tin
             </Button>
             <Button
-              startIcon={<ScoreIcon />}
+              startIcon={<HolyBibleIcon color={'info'} />}
               size="small"
               onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
               color="info"

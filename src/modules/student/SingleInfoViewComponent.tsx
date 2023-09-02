@@ -5,13 +5,12 @@ import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import IconButton from '@mui/material/IconButton'
 import { Student } from 'models/student'
-import ScoreIcon from '@mui/icons-material/Score'
-import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import { StudentActionType } from 'constant'
-// import Chip from '@mui/material/Chip'
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import { restoreStudent } from 'services/student'
 import { useClassContext } from 'contexts/ClassContext'
+import StudentIcon from 'modules/common/StudentIcon'
+import HolyBibleIcon from 'modules/common/HolyBibleIcon'
 
 interface SingleScoreViewComponentProps {
   student: Student
@@ -61,14 +60,14 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
                 onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
                 disabled={disableUpdate}
               >
-                <ScoreIcon />
+                <HolyBibleIcon color={'info'} />
               </IconButton>
               <IconButton
                 color={'info'}
                 onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
                 disabled={disableUpdate}
               >
-                <PermIdentityIcon />
+                <StudentIcon color={'info'} />
               </IconButton>
             </>
           )}

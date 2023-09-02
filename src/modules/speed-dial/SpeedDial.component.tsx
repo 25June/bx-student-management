@@ -3,9 +3,7 @@ import Box from '@mui/material/Box'
 import Backdrop from '@mui/material/Backdrop'
 import SpeedDial from '@mui/material/SpeedDial'
 import SpeedDialIcon from '@mui/material/SpeedDialIcon'
-import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import SpeedDialAction from '@mui/material/SpeedDialAction'
-import AssignmentIcon from '@mui/icons-material/Assignment'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import {
   ActionType,
@@ -18,16 +16,18 @@ import { useDialogContext } from 'contexts/DialogContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { fetchAssessments } from 'services'
 import { useClassContext } from 'contexts/ClassContext'
+import StudentIcon from 'modules/common/StudentIcon'
+import RiceIcon from 'modules/common/RiceIcon'
 
 const actions = [
   {
-    icon: <PermIdentityIcon />,
+    icon: <StudentIcon />,
     name: 'Thêm thiếu nhi',
     dialogType: DialogType.STUDENT_DIALOG,
     actionType: StudentActionType.ADD_NEW_STUDENT,
   },
   {
-    icon: <AssignmentIcon />,
+    icon: <RiceIcon />,
     name: 'Thêm bài kiểm tra',
     dialogType: DialogType.ASSESSMENT_DIALOG,
     actionType: AssessmentActionType.ADD_NEW_ASSESSMENT,
