@@ -119,7 +119,6 @@ const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentPro
             <Avatar alt="GLV-avatar">
               <ImageBoxComponent imagePath={user?.avatarPath} isGLV={true} />
             </Avatar>
-            {/*<ExitToAppIcon />*/}
           </IconButton>
         </Box>
       </Toolbar>

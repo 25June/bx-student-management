@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Box, TextField, Button, Chip } from '@mui/material'
+import { Box, TextField, Button, Chip, CircularProgress } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import EditIcon from '@mui/icons-material/Edit'
@@ -308,6 +308,9 @@ const InfoPanelComponent = ({
             )}
           </Box>
         </Box>
+      )}
+      {!student && (
+        <CircularProgress size={'3rem'} />
       )}
     </MuiDrawer>
   )

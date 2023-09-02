@@ -11,12 +11,12 @@ import {
   Theme,
   Typography,
 } from '@mui/material'
-import AssignmentIcon from '@mui/icons-material/Assignment'
-import CoPresentIcon from '@mui/icons-material/CoPresent'
-import PermIdentityIcon from '@mui/icons-material/PermIdentity'
-import ImportExportIcon from '@mui/icons-material/ImportExport'
-import ScoreIcon from '@mui/icons-material/Score'
-import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle'
+// import AssignmentIcon from '@mui/icons-material/Assignment'
+// import CoPresentIcon from '@mui/icons-material/CoPresent'
+// import PermIdentityIcon from '@mui/icons-material/PermIdentity'
+// import ImportExportIcon from '@mui/icons-material/ImportExport'
+// import ScoreIcon from '@mui/icons-material/Score'
+// import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle'
 import MuiDrawer from '@mui/material/Drawer'
 import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
@@ -28,6 +28,14 @@ import { debounce } from 'lodash'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useDialogContext } from 'contexts/DialogContext'
 import { useClassContext } from 'contexts/ClassContext'
+import HolyGrailIcon from 'modules/common/HolyGrailIcon'
+import HolyBibleIcon from 'modules/common/HolyBibleIcon'
+import StudentIcon from 'modules/common/StudentIcon'
+import RiceIcon from 'modules/common/RiceIcon'
+// import ApostlesIcon from 'modules/common/ApostlesIcon'
+// import BellIcon from 'modules/common/BellIcon'
+import PrayIcon from 'modules/common/PrayIcon'
+import CandleIcon from 'modules/common/CandleIcon'
 
 interface DrawerComponentProps {
   isOpen: boolean
@@ -37,33 +45,33 @@ interface DrawerComponentProps {
 const Menu = {
   LIST: {
     text: 'Danh Sách',
-    icon: (isActive: boolean) => <PermIdentityIcon color={isActive ? 'primary' : undefined} />,
+    icon: (isActive: boolean) => <StudentIcon color={isActive ? 'primary' : undefined} />,
     to: Router.HOME,
   },
   DILIGENT: {
     text: 'Điểm Chuyên Cần',
-    icon: (isActive: boolean) => <CoPresentIcon color={isActive ? 'primary' : undefined} />,
+    icon: (isActive: boolean) => <HolyGrailIcon color={isActive ? 'primary' : undefined} />,
     to: Router.DILIGENT,
   },
   SCORE: {
     text: 'Điểm Học Tập',
-    icon: (isActive: boolean) => <ScoreIcon color={isActive ? 'primary' : undefined} />,
+    icon: (isActive: boolean) => <HolyBibleIcon color={isActive ? 'primary' : undefined} />,
     to: Router.SCORE_BOOK,
   },
   ASSESSMENT: {
     text: 'Bài Kiểm Tra',
-    icon: (isActive: boolean) => <AssignmentIcon color={isActive ? 'primary' : undefined} />,
+    icon: (isActive: boolean) => <RiceIcon color={isActive ? 'primary' : undefined} />,
     to: Router.ASSESSMENT,
   },
   IMPORT: {
     text: 'Xuất dữ liệu',
-    icon: (isActive: boolean) => <ImportExportIcon color={isActive ? 'primary' : undefined} />,
+    icon: (isActive: boolean) => <PrayIcon color={isActive ? 'primary' : undefined} />,
     to: Router.IMPORT,
   },
   USER: {
     text: 'Giáo Lý Viên',
     icon: (isActive: boolean) => (
-      <SupervisedUserCircleIcon color={isActive ? 'primary' : undefined} />
+      <CandleIcon color={isActive ? 'primary' : undefined} />
     ),
     to: Router.USER,
   },

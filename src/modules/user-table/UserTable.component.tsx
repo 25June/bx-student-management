@@ -6,6 +6,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
+import Avatar from '@mui/material/Avatar'
 import { Box, Tooltip, Typography } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -20,6 +21,7 @@ import { useIsMobile } from 'utils/common'
 import { grey } from '@mui/material/colors'
 import Chip from '@mui/material/Chip'
 import { useAuthentication } from 'contexts/AuthContext'
+import { buildImageUrl } from 'utils/common'
 
 interface UserTableComponentProps {
   rows: User[]
@@ -49,11 +51,11 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
 
   const tableBodyClass = isMobile
     ? {
-        '&:before': { content: `attr(data-cell)`, fontWeight: 500 },
-        display: 'grid',
-        gridTemplateColumns: '10ch auto',
-        borderBottom: 0,
-      }
+      '&:before': { content: `attr(data-cell)`, fontWeight: 500 },
+      display: 'grid',
+      gridTemplateColumns: '10ch auto',
+      borderBottom: 0,
+    }
     : {}
 
   return (
@@ -61,7 +63,10 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
       <Table stickyHeader={true} sx={{ minWidth: isMobile ? 0 : 650 }} aria-label="simple table">
         <TableHead>
           <TableRow sx={{ display: isMobile ? 'none' : '' }}>
-            <TableCell key={'email'}>Email</TableCell>
+            <TableCell key={'avatarPath'}>Ảnh</TableCell>
+            <TableCell key={'saintName'}>Tên Thánh</TableCell>
+            <TableCell key={'lastName'}>Họ và</TableCell>
+            <TableCell key={'firstName'}>Tên</TableCell>
             <TableCell key={'classId'}>Lớp</TableCell>
             <TableCell key={'role'}>Chức vụ</TableCell>
             {user?.role === Role.CTO && <TableCell key={'action'} />}
@@ -76,6 +81,50 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
                 background: index % 2 === 0 ? '#fff' : grey[50],
               }}
             >
+              <TableCell
+                data-cell={'Ảnh'}
+                sx={{
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  ...tableBodyClass,
+                }}
+              >
+                <Avatar
+                  src={buildImageUrl(row.avatarPath, false, true)}
+                  sx={{ width: 32, height: 32, objectPosition: 'contain', boxShadow: 3 }}
+                  variant={'rounded'}
+                />
+              </TableCell>
+              <TableCell
+                data-cell={'Tên Thánh'}
+                sx={{
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  ...tableBodyClass,
+                }}
+              >
+                {row.saintName}
+              </TableCell>
+              <TableCell
+                data-cell={'Họ và'}
+                sx={{
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  ...tableBodyClass,
+                }}
+              >
+                {row.lastName}
+              </TableCell>
+              <TableCell
+                data-cell={'Tên'}
+                sx={{
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  ...tableBodyClass,
+                }}
+              >
+                {row.firstName}
+              </TableCell>
               <TableCell
                 data-cell={'Email'}
                 sx={{
