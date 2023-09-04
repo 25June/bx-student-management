@@ -16,6 +16,7 @@ import { useIsMobile } from 'utils/common'
 import UserSingleViewComponent from 'modules/user-single-view/UserSingleViewComponent'
 import UserProfilePanelComponent from 'modules/user-drawer/UserProfilePanel.component'
 import { useAuthentication } from 'contexts/AuthContext'
+import { toLowerCaseNonAccentVietnamese } from 'utils/common'
 
 const UserComponent = () => {
   const isMobile = useIsMobile()
@@ -31,8 +32,20 @@ const UserComponent = () => {
   const { user } = useAuthentication()
 
   const handleFilterUserByName = (value: string) => {
-    console.log(value)
-    console.log(users)
+    if (users && users.length !== 0) {
+      if (!value) {
+        setFilteredUsers(users)
+        return
+      }
+
+      const filtered = users.filter((user) => {
+        const keywordArr = [...user.lastName.split(' '), ...user.firstName.split(' ')].map(
+          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
+        )
+        return keywordArr.includes(value.toLowerCase())
+      })
+      setFilteredUsers(filtered)
+    }
   }
 
   const fetchUsers = useCallback(() => {
@@ -90,8 +103,7 @@ const UserComponent = () => {
         }}
       >
         <Typography variant={'h1'} sx={{ fontSize: isMobile ? '1rem' : '2rem' }}>
-          {' '}
-          Thông Tin GLV
+          Giáo Lý Viên
         </Typography>
       </Box>
       <Box
@@ -105,7 +117,7 @@ const UserComponent = () => {
           flexDirection: isMobile ? 'column' : 'row',
         }}
       >
-        <Box>
+        <Box sx={{ width: '100%' }}>
           <SearchComponent onChange={handleFilterUserByName} label={'Tìm Tên GLV'} />
         </Box>
         {user?.role === Role.CTO && (

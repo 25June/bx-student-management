@@ -127,7 +127,7 @@ const HomeComponent = () => {
             gap: isMobile ? 1 : 2,
           }}
         >
-          <Box>
+          <Box sx={{ width: '100%' }}>
             <SearchComponent onChange={handleFilterStudentByName} key={classId} />
           </Box>
           <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>

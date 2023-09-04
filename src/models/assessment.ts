@@ -12,4 +12,6 @@ export type Assessment = {
   isDeleted?: boolean
   schoolYear: string
   documentPath?: string
+  documentName?: string
+  documentType?: string
 }

@@ -25,37 +25,37 @@ import { grey } from '@mui/material/colors'
 
 interface SecondaryTextProps {
   bookDate: string
+  filePath: string
   fileName: string
 }
 
-const SecondaryText = ({ bookDate, fileName }: SecondaryTextProps) => {
+const SecondaryText = ({ bookDate, fileName, filePath }: SecondaryTextProps) => {
   const [downloading, setDownloading] = useState<boolean>(false)
   const handleDownloadAssessment = (event: any) => {
     event.stopPropagation()
     setDownloading(true)
-    getDownloadLink(fileName).then((url) => {
+    getDownloadLink(filePath).then((url) => {
       setDownloading(false)
 
       const link = document.createElement('a')
-      link.setAttribute('download', url)
-      link.setAttribute('target', '_blank')
-      link.href = url
+      link.setAttribute('href', url)
+      link.setAttribute('download', fileName)
       document.body.appendChild(link)
       link.click()
-      link.remove()
+      document.body.removeChild(link)
     })
   }
   return (
     <Box sx={{ display: 'flex', gap: 0.25, flexDirection: 'column' }}>
-      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'} color={grey[500]} marginBottom={0.5}>
+      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'} color={grey[500]} marginBottom={0.5} marginTop={0.5}>
         {bookDate}
       </Box>
       {fileName && (
-        <Box>
+        <Box sx={{ width: 100 }}>
           <Chip
             icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
             size={'small'}
-            label={'File kiểm tra'}
+            label={fileName}
             color={'info'}
             onClick={handleDownloadAssessment}
           />
@@ -100,6 +100,7 @@ const AssessmentItem = ({
       >
         <ListItemAvatar>
           <Avatar
+            onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
             variant={'rounded'}
             sx={{ width: 48, height: 48, bgcolor: colorPalettes[assessment.type] }}
           >
@@ -113,7 +114,8 @@ const AssessmentItem = ({
           secondary={
             <SecondaryText
               bookDate={formatYYYMMDDToDDMMYYYY(assessment.bookDate)}
-              fileName={assessment.documentPath || ''}
+              fileName={assessment.documentName || ''}
+              filePath={assessment.documentPath || ''}
             />
           }
         />

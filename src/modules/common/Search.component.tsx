@@ -19,19 +19,21 @@ const Search = styled('div')(({ theme }) => ({
   },
   marginLeft: 0,
   width: '100%',
+  display: 'flex',
   [theme.breakpoints.up('sm')]: {
-    width: 'auto',
+    width: '100%',
   },
 }))
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 1),
   height: '100%',
-  position: 'absolute',
+  position: 'relative',
   pointerEvents: 'none',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  minHeight: 40,
   color: alpha(theme.palette.common.black, 0.55),
 }))
 
@@ -51,18 +53,9 @@ const StyledInputBase = styled(InputBase, { shouldForwardProp: (props) => props 
 }>(({ theme, isMobile }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
-    padding: isMobile ? theme.spacing(1, 1, 1, 0) : theme.spacing(0.5, 0.5, 0.5, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(isMobile ? 2.5 : 4)})`,
+    padding: isMobile ? theme.spacing(1, 1, 1, 2) : theme.spacing(0.5, 0.5, 0.5, 1),
     transition: theme.transitions.create('width'),
-    maxWidth: '25ch',
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: '15ch',
-      '&:focus': {
-        maxWidth: '25ch',
-      },
-    },
   },
 }))
 

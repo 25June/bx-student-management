@@ -191,7 +191,7 @@ const DiligentComponent = () => {
             variant={'h1'}
             sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }}
           >
-            Điểm Chuyên Cần{' '}
+            Chuyên Cần
           </Typography>
         </Box>
         <Box

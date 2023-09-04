@@ -10,6 +10,7 @@ import {
   DialogTitle,
   TextField,
   CircularProgress,
+  Chip,
 } from '@mui/material'
 import { AssessmentActionType } from 'constant'
 import { Controller, useForm } from 'react-hook-form'
@@ -21,12 +22,14 @@ import { AssessmentEnum } from 'constant/common'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
+import DownloadIcon from '@mui/icons-material/Download'
 import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { useClassContext } from 'contexts/ClassContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { uploadFile } from 'services/storage'
 import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
+import { getDownloadLink } from 'services/storage'
 
 type AssessmentForm = {
   bookDate: string
@@ -92,6 +95,22 @@ const AssessmentDialogComponent = ({
   useEffect(() => {
     return () => reset()
   }, [reset])
+
+  const [downloading, setDownloading] = useState<boolean>(false)
+  const handleDownloadAssessment = (event: any, fileName: string) => {
+    event.stopPropagation()
+    setDownloading(true)
+    getDownloadLink(fileName).then((url) => {
+      setDownloading(false)
+
+      const link = document.createElement('a')
+      link.setAttribute('download', url)
+      link.setAttribute('href', url)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    })
+  }
 
   const onSubmit = async (submitData: AssessmentForm) => {
     setLoading(true)
@@ -161,12 +180,16 @@ const AssessmentDialogComponent = ({
     }
 
     let documentPath = ''
+    let documentName = ''
+    let documentType = ''
     if (submitData.uploadDocument) {
       documentPath = await uploadFile(submitData.uploadDocument, setUploadFileProgress, false)
+      documentName = submitData.uploadDocument.name
+      documentType = submitData.uploadDocument.type
     }
 
     addNewAssessment({
-      dataInput: { ...newAssessment, documentPath },
+      dataInput: { ...newAssessment, documentPath, documentName, documentType },
       onSuccess: () =>
         showSnackbar(
           `Thêm Bài Kiểm Tra ${newAssessment.type} Thành Công vào ${newAssessment.bookDate}`,
@@ -216,7 +239,7 @@ const AssessmentDialogComponent = ({
                 render={({ field }) => (
                   <TextField
                     id="outlined-lesson"
-                    label="Bài kiểm tra"
+                    label="Tên bài"
                     type="text"
                     margin="normal"
                     fullWidth={true}
@@ -253,8 +276,8 @@ const AssessmentDialogComponent = ({
                 )}
               />
               <TextField
-                id="outlined-bookDate"
-                label="Bài kiểm tra"
+                id="outlined-bookFile"
+                label="File đính kèm"
                 type="file"
                 helperText="Đính kèm file .doc/.docx/.pdf"
                 margin="normal"
@@ -265,8 +288,17 @@ const AssessmentDialogComponent = ({
                     setValue('uploadDocument', event.target.files[0])
                   }
                 }}
-                inputProps={{ accept: 'application/msword,application/pdf' }}
+                inputProps={{ accept: 'application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document' }}
               />
+              {data?.documentPath && (
+                <Chip
+                  icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
+                  size={'small'}
+                  label={data?.documentName}
+                  color={'info'}
+                  onClick={(e) => handleDownloadAssessment(e, data.documentPath || '')}
+                />
+              )}
             </Box>
           )}
         </DialogContent>

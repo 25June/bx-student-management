@@ -20,6 +20,7 @@ import PasswordIcon from '@mui/icons-material/Password'
 import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
 import { useAuthentication } from 'contexts/AuthContext'
 import { Role } from 'constant/common'
+import { grey } from '@mui/material/colors'
 
 interface PrimaryTextProps {
   saintName: string
@@ -39,7 +40,7 @@ interface SecondaryTextProps {
 const SecondaryText = ({ role, classId }: SecondaryTextProps) => {
   return (
     <Box sx={{ display: 'flex', gap: 0.25, justifyContent: 'space-between', alignItems: 'center' }}>
-      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'}>
+      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'} color={grey[700]}>
         {UserRoles[role]?.title || ''}
       </Box>
       <Chip

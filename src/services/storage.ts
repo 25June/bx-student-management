@@ -26,9 +26,9 @@ export const uploadFile = async (
 ): Promise<string> => {
   let fileRef: StorageReference
   if (isUploadImage) {
-    fileRef = avatarRef(uuidv4())
+    fileRef = avatarRef(uuidv4() + '-' + (file as File).name as string)
   } else {
-    fileRef = assessmentRef(uuidv4())
+    fileRef = assessmentRef(uuidv4() + '-' + (file as File).name as string)
   }
   const handleUpload = uploadBytesResumable(fileRef, file, {
     contentType: file.type,
