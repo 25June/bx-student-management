@@ -24,6 +24,7 @@ import { useClassContext } from 'contexts/ClassContext'
 import writeXlsxFile from 'write-excel-file'
 import { format } from 'date-fns'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
+import AssignmentSetupComponent from 'pages/assignment/AssignmentSetup.component'
 
 type ImportProps = {
   value: string
@@ -397,6 +398,7 @@ const ImportComponent = () => {
             <Button onClick={saveData} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
               Confirm Save Date
             </Button>
+            <AssignmentSetupComponent />
           </Box>
         </Box>
       </CustomTabPanel>
