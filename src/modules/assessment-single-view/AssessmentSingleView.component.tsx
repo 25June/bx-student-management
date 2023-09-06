@@ -9,6 +9,7 @@ import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import { Assessment } from 'models'
+import { Document } from 'models/assessment'
 import { AssessmentActionType } from 'constant'
 import { colorPalettes } from 'constant/common'
 import EditIcon from '@mui/icons-material/Edit'
@@ -25,21 +26,20 @@ import { grey } from '@mui/material/colors'
 
 interface SecondaryTextProps {
   bookDate: string
-  filePath: string
-  fileName: string
+  documents: Document[]
 }
 
-const SecondaryText = ({ bookDate, fileName, filePath }: SecondaryTextProps) => {
+const SecondaryText = ({ bookDate, documents }: SecondaryTextProps) => {
   const [downloading, setDownloading] = useState<boolean>(false)
-  const handleDownloadAssessment = (event: any) => {
+  const handleDownloadAssessment = (event: any, doc: Document) => {
     event.stopPropagation()
     setDownloading(true)
-    getDownloadLink(filePath).then((url) => {
+    getDownloadLink(doc.path).then((url) => {
       setDownloading(false)
 
       const link = document.createElement('a')
       link.setAttribute('href', url)
-      link.setAttribute('download', fileName)
+      link.setAttribute('download', doc.name)
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -50,17 +50,17 @@ const SecondaryText = ({ bookDate, fileName, filePath }: SecondaryTextProps) => 
       <Box fontWeight={500} fontSize={'0.825rem'} component={'span'} color={grey[500]} marginBottom={0.5} marginTop={0.5}>
         {bookDate}
       </Box>
-      {fileName && (
-        <Box sx={{ width: 100 }}>
+      {documents && documents.map((doc) => (
+        <Box sx={{ width: 150 }}>
           <Chip
             icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
             size={'small'}
-            label={fileName}
+            label={doc.name}
             color={'info'}
-            onClick={handleDownloadAssessment}
+            onClick={(event: any) => handleDownloadAssessment(event, doc)}
           />
         </Box>
-      )}
+      ))}
     </Box>
   )
 }
@@ -114,8 +114,7 @@ const AssessmentItem = ({
           secondary={
             <SecondaryText
               bookDate={formatYYYMMDDToDDMMYYYY(assessment.bookDate)}
-              fileName={assessment.documentName || ''}
-              filePath={assessment.documentPath || ''}
+              documents={assessment.documents || []}
             />
           }
         />

@@ -55,16 +55,15 @@ const UserProfilePanelComponent = ({ profile, onClose }: UserProfilePanelCompone
         <Box textAlign={'center'} component={'h2'} mt={0} color={grey[800]}>
           {`${profile.firstName} ${profile.lastName}`}
         </Box>
-        <Box
-          textAlign={'center'}
-          fontWeight={400}
-          fontSize={'0.825rem'}
-          color={grey[500]}
-          sx={{ marginBottom: 1 }}
-        >
-          {UserRoles[profile.role]?.title || ''}
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 1 }}>
+          <Box
+            textAlign={'center'}
+            fontWeight={400}
+            fontSize={'0.825rem'}
+            color={grey[500]}
+          >
+            {UserRoles[profile.role]?.title || ''}
+          </Box>
           <Chip
             size={'small'}
             label={<b>{profile.classId ? BaseClassObj[profile.classId] : 'Chưa có lớp'}</b>}
@@ -77,10 +76,14 @@ const UserProfilePanelComponent = ({ profile, onClose }: UserProfilePanelCompone
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
             gap: '1rem',
+            backgroundColor: blue[50],
+            padding: '0.25rem',
+            borderRadius: 10,
+            marginBottom: 1
           }}
         >
-          <EmailIcon color={'info'} />
-          <Typography fontSize={'1rem'} color={blue[700]} sx={{ wordBreak: 'break-word' }}>
+          <EmailIcon color={'info'} fontSize={'small'} />
+          <Typography fontSize={'0.75rem'} color={blue[700]} sx={{ wordBreak: 'break-word' }} fontWeight={700}>
             {profile.email}
           </Typography>
         </Box>
@@ -90,10 +93,13 @@ const UserProfilePanelComponent = ({ profile, onClose }: UserProfilePanelCompone
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
             gap: '1rem',
+            backgroundColor: amber[50],
+            padding: '0.25rem',
+            borderRadius: 10
           }}
         >
-          <PhoneIcon color={'warning'} />
-          <Typography fontSize={'1rem'} color={amber[700]}>
+          <PhoneIcon color={'warning'} fontSize={'small'} />
+          <Typography fontSize={'0.75rem'} color={amber[700]} fontWeight={700}>
             {formatPhone(profile.phoneNumber)}
           </Typography>
         </Box>

@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { getUserInfo, useSignOut } from 'services/user'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import { useAuthentication } from 'contexts/AuthContext'
-import { grey } from '@mui/material/colors'
+import { grey, blue, amber } from '@mui/material/colors'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import { useState } from 'react'
 import { User } from 'models/user'
@@ -17,6 +17,10 @@ import { buildImageUrl, useIsMobile } from 'utils/common'
 import Chip from '@mui/material/Chip'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import CroppingImageComponent from 'modules/cropping-image/CroppingImage.component'
+import EmailIcon from '@mui/icons-material/Email'
+import PhoneIcon from '@mui/icons-material/Phone'
+import { formatPhone } from 'utils'
+import { BaseClassObj, extendedColorPalettes, UserRoles } from 'constant/common'
 
 interface UserDrawerComponentProps {
   onClose: () => void
@@ -80,6 +84,7 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           paddingTop: 8,
           paddingLeft: 2,
           paddingRight: 2,
+          paddingBottom: 5,
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
@@ -109,8 +114,54 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
           <Box textAlign={'center'} component={'h2'} mt={0} color={grey[800]}>
             {`${currentUser.firstName} ${currentUser.lastName}`}
           </Box>
-          <Typography fontSize={'0.825rem'}>{currentUser.email}</Typography>
-          <Typography fontSize={'0.825rem'}>{currentUser.phoneNumber}</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 1 }}>
+            <Box
+              textAlign={'center'}
+              fontWeight={400}
+              fontSize={'0.825rem'}
+              color={grey[500]}
+            >
+              {UserRoles[user.role]?.title || ''}
+            </Box>
+            <Chip
+              size={'small'}
+              label={<b>{user.classId ? BaseClassObj[user.classId] : 'Chưa có lớp'}</b>}
+              color={(user.classId.slice(0, 2) as extendedColorPalettes) || 'default'}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              gap: '1rem',
+              backgroundColor: blue[50],
+              padding: '0.25rem',
+              borderRadius: 10,
+              marginBottom: 1
+            }}
+          >
+            <EmailIcon color={'info'} fontSize={'small'} />
+            <Typography fontSize={'0.75rem'} color={blue[700]} sx={{ wordBreak: 'break-word' }} fontWeight={700}>
+              {user.email}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              gap: '1rem',
+              backgroundColor: amber[50],
+              padding: '0.25rem',
+              borderRadius: 10
+            }}
+          >
+            <PhoneIcon color={'warning'} fontSize={'small'} />
+            <Typography fontSize={'0.75rem'} color={amber[700]} fontWeight={700}>
+              {formatPhone(user.phoneNumber)}
+            </Typography>
+          </Box>
         </Box>
         <Button
           startIcon={<EditIcon />}

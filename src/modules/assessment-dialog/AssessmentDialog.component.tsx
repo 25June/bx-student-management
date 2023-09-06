@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { AssessmentActionType } from 'constant'
 import { Controller, useForm } from 'react-hook-form'
-import { Assessment } from 'models/assessment'
+import { Assessment, Document } from 'models/assessment'
 import { getToday } from 'utils'
 import { addNewAssessment, useDeleteAssessment, useEditAssessment } from 'services/assessment'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
@@ -35,7 +35,7 @@ type AssessmentForm = {
   bookDate: string
   type: AssessmentEnum
   lesson: string
-  uploadDocument?: File | null
+  uploadDocuments?: File[] | null
 }
 
 const AssessmentFormDefaultValue = (data: Assessment | null) => {
@@ -86,7 +86,7 @@ const AssessmentDialogComponent = ({
   const { classId } = useClassContext()
   const [uploadFileProgress, setUploadFileProgress] = useState<number>(0)
 
-  const { handleSubmit, control, reset, setValue } = useForm<AssessmentForm>({
+  const { handleSubmit, control, reset, setValue, watch } = useForm<AssessmentForm>({
     defaultValues: AssessmentFormDefaultValue(data),
   })
 
@@ -109,6 +109,18 @@ const AssessmentDialogComponent = ({
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+    })
+  }
+
+  const handleUploadFiles = async (uploadDocuments: File[]) => {
+    const promises = uploadDocuments.map((doc: File) => {
+      return uploadFile(doc, setUploadFileProgress, false)
+    })
+    return Promise.all(promises).then((res) => {
+      return uploadDocuments.map((doc, index) => ({
+        name: doc.name,
+        path: res[index]
+      } as Document))
     })
   }
 
@@ -179,17 +191,13 @@ const AssessmentDialogComponent = ({
       schoolYear: schoolYearId,
     }
 
-    let documentPath = ''
-    let documentName = ''
-    let documentType = ''
-    if (submitData.uploadDocument) {
-      documentPath = await uploadFile(submitData.uploadDocument, setUploadFileProgress, false)
-      documentName = submitData.uploadDocument.name
-      documentType = submitData.uploadDocument.type
+    let documents: Document[] = []
+    if (submitData.uploadDocuments) {
+      documents = await handleUploadFiles(submitData.uploadDocuments)
     }
 
     addNewAssessment({
-      dataInput: { ...newAssessment, documentPath, documentName, documentType },
+      dataInput: { ...newAssessment, documents },
       onSuccess: () =>
         showSnackbar(
           `Thêm Bài Kiểm Tra ${newAssessment.type} Thành Công vào ${newAssessment.bookDate}`,
@@ -279,26 +287,36 @@ const AssessmentDialogComponent = ({
                 id="outlined-bookFile"
                 label="File đính kèm"
                 type="file"
-                helperText="Đính kèm file .doc/.docx/.pdf"
+                helperText="Đính kèm file .doc/.docx/.pdf - Có thể đính kèm nhiều files"
                 margin="normal"
                 InputLabelProps={{ shrink: true }}
                 fullWidth={true}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  if (event.target.files?.[0]) {
-                    setValue('uploadDocument', event.target.files[0])
+                  if (event.target.files) {
+                    setValue('uploadDocuments', Array.from(event.target.files) as File[])
                   }
                 }}
-                inputProps={{ accept: 'application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document' }}
+                inputProps={{ multiple: true, accept: 'application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document' }}
               />
-              {data?.documentPath && (
+              {watch('uploadDocuments') && (watch('uploadDocuments') || []).map((doc) => (
+                <Box key={doc.name} sx={{ marginBottom: 0.5 }}>
+                  <Chip
+                    size={'small'}
+                    label={doc.name}
+                    color={'info'}
+                  />
+                </Box>
+              ))}
+
+              {data?.documents && data.documents.map((doc) => (
                 <Chip
                   icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
                   size={'small'}
-                  label={data?.documentName}
+                  label={doc.name}
                   color={'info'}
-                  onClick={(e) => handleDownloadAssessment(e, data.documentPath || '')}
+                  onClick={(e) => handleDownloadAssessment(e, doc.path || '')}
                 />
-              )}
+              ))}
             </Box>
           )}
         </DialogContent>
