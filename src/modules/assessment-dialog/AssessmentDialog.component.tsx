@@ -22,14 +22,12 @@ import { AssessmentEnum } from 'constant/common'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
-import DownloadIcon from '@mui/icons-material/Download'
 import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { useClassContext } from 'contexts/ClassContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
-import { uploadFile } from 'services/storage'
+import { uploadFile, removeImage } from 'services/storage'
 import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
-import { getDownloadLink } from 'services/storage'
 
 type AssessmentForm = {
   bookDate: string
@@ -37,6 +35,16 @@ type AssessmentForm = {
   lesson: string
   uploadDocuments?: File[] | null
 }
+
+const handleRemoveDocuments = (existingDocuments?: Document[], documents?: Document[]) => {
+  if (existingDocuments && documents && existingDocuments.length !== documents.length) {
+    const documentPaths = documents.map(doc => doc.path)
+    const uniqItems = (documents || []).filter(doc => !documentPaths.includes(doc.path))
+    const removeList = uniqItems.map(doc => removeImage(doc.path))
+    Promise.all(removeList).then(() => console.log('remove success'))
+  }
+}
+
 
 const AssessmentFormDefaultValue = (data: Assessment | null) => {
   if (data) {
@@ -91,26 +99,17 @@ const AssessmentDialogComponent = ({
   })
 
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [existingDocs, setExistingDocs] = useState<Document[]>()
+
+  useEffect(() => {
+    if (action === AssessmentActionType.EDIT_ASSESSMENT && data?.documents) {
+      setExistingDocs(data.documents)
+    }
+  }, [action, data])
 
   useEffect(() => {
     return () => reset()
   }, [reset])
-
-  const [downloading, setDownloading] = useState<boolean>(false)
-  const handleDownloadAssessment = (event: any, fileName: string) => {
-    event.stopPropagation()
-    setDownloading(true)
-    getDownloadLink(fileName).then((url) => {
-      setDownloading(false)
-
-      const link = document.createElement('a')
-      link.setAttribute('download', url)
-      link.setAttribute('href', url)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    })
-  }
 
   const handleUploadFiles = async (uploadDocuments: File[]) => {
     const promises = uploadDocuments.map((doc: File) => {
@@ -134,9 +133,17 @@ const AssessmentDialogComponent = ({
         type: submitData.type,
         lesson: submitData.lesson,
         schoolYear: data.schoolYear,
+        documents: data.documents
       }
+
+      let documents: Document[] = []
+      if (submitData.uploadDocuments) {
+        documents = await handleUploadFiles(submitData.uploadDocuments)
+      }
+      documents = (existingDocs || []).concat(documents)
+
       editAssessment({
-        dataInput: updatedAssessment,
+        dataInput: { ...updatedAssessment, documents },
         onSuccess: () =>
           showSnackbar(
             `Cập Nhật Bài Kiểm Tra ${updatedAssessment.type} Thành Công vào ${updatedAssessment.bookDate}`,
@@ -149,9 +156,10 @@ const AssessmentDialogComponent = ({
           )
         },
         onComplete: () => {
+          setLoading(false)
           setTimeout(() => {
-            setLoading(false)
             onClose(false)
+            handleRemoveDocuments(existingDocs, updatedAssessment.documents)
             onFetchAssessments(classId)
           }, 20)
         },
@@ -174,10 +182,11 @@ const AssessmentDialogComponent = ({
           )
         },
         onComplete: () => {
+          setLoading(false)
           setTimeout(() => {
-            setLoading(false)
             onClose(false)
             onFetchAssessments(classId)
+            handleRemoveDocuments([], data.documents)
           }, 20)
         },
       })
@@ -223,6 +232,8 @@ const AssessmentDialogComponent = ({
   const handleChangeAssessmentType = (value: AssessmentEnum) => {
     setValue('type', value)
   }
+
+  const uploadDocumentWatch = watch('uploadDocuments')
 
   return (
     <Dialog open={isOpen} onClose={() => onClose()} aria-labelledby="assessment-dialog-title">
@@ -298,23 +309,23 @@ const AssessmentDialogComponent = ({
                 }}
                 inputProps={{ multiple: true, accept: 'application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document' }}
               />
-              {watch('uploadDocuments') && (watch('uploadDocuments') || []).map((doc) => (
+              {uploadDocumentWatch && (uploadDocumentWatch || []).map((doc) => (
                 <Box key={doc.name} sx={{ marginBottom: 0.5 }}>
                   <Chip
                     size={'small'}
                     label={doc.name}
                     color={'info'}
+                    onDelete={() => setValue('uploadDocuments', uploadDocumentWatch.filter(d => d.name !== doc.name))}
                   />
                 </Box>
               ))}
 
-              {data?.documents && data.documents.map((doc) => (
+              {existingDocs && existingDocs.map((doc) => (
                 <Chip
-                  icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
                   size={'small'}
                   label={doc.name}
                   color={'info'}
-                  onClick={(e) => handleDownloadAssessment(e, doc.path || '')}
+                  onDelete={() => setExistingDocs(existingDocs.filter(d => d.name !== doc.name))}
                 />
               ))}
             </Box>
