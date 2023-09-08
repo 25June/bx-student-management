@@ -36,7 +36,7 @@ export const formatPhoneWithoutDot = (phone?: string): string => {
 }
 
 export const splitFullName = (fullName: string) => {
-  const lastBlankSpace = fullName.lastIndexOf(' ')
+  const lastBlankSpace = fullName.trim().lastIndexOf(' ')
   if (lastBlankSpace === -1) {
     return {
       firstName: fullName,
