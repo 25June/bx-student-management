@@ -17,6 +17,7 @@ import { useDialogContext } from 'contexts/DialogContext'
 import { fetchAssessments } from 'services'
 import Chip from '@mui/material/Chip'
 import { get } from 'lodash'
+import SpiritScorecomponent from 'modules/score-book/SpiritScore.component'
 
 interface ScoreBookPanelComponentProps {
   isOpen: boolean
@@ -130,6 +131,10 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
             {`${studentInfo.lastName} ${studentInfo.firstName}`}
           </Box>
           <Box>
+            <SpiritScorecomponent key={studentInfo.id + studentInfo.spiritScore || ''} studentId={studentInfo.id} spiritScore={studentInfo.spiritScore} />
+          </Box>
+          <Box>
+
             {scoreBook && (
               <Box>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}>

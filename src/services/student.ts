@@ -28,22 +28,23 @@ export const useGetStudents = () => {
       queryStudents
     ).then((snapshot) => {
       const groupStudents: { students: Student[]; deletedStudents: Student[] } = formatStudentSnapshot(snapshot.docs)
-      const chunkSize = 2;
-      for (let i = 0; i < groupStudents.students.length; i += chunkSize) {
-        const chunk = groupStudents.students.slice(i, i + chunkSize);
-        if (i === 0) {
-          setStudents(() => {
-            return ([] as Student[]).concat(chunk)
-          })
-        } else {
-          setTimeout(() => {
-            setStudents((prev) => {
-              return (prev || []).concat(chunk)
-            })
-          }, (i + chunkSize) * 100);
-        }
+      // const chunkSize = 2;
+      // for (let i = 0; i < groupStudents.students.length; i += chunkSize) {
+      //   const chunk = groupStudents.students.slice(i, i + chunkSize);
+      //   if (i === 0) {
+      //     setStudents(() => {
+      //       return ([] as Student[]).concat(chunk)
+      //     })
+      //   } else {
+      //     setTimeout(() => {
+      //       setStudents((prev) => {
+      //         return (prev || []).concat(chunk)
+      //       })
+      //     }, (i + chunkSize) * 100);
+      //   }
 
-      }
+      // }
+      setStudents(groupStudents.students)
       setDeletedStudents(groupStudents.deletedStudents)
     },
       (error) => {
@@ -53,6 +54,22 @@ export const useGetStudents = () => {
   }
 
   return { students, fetchStudents, deletedStudents }
+}
+
+export const getStudentByClassId = async (classId: string): Promise<Student[]> => {
+  if (!classId) {
+    return Promise.resolve([])
+  }
+  const queryStudents = query(studentRef, where('class.id', '==', classId), where('isDeleted', '==', false))
+  return getDocs(
+    queryStudents
+  ).then((snapshot) => {
+    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Student[]
+  },
+    (error) => {
+      console.error(error)
+      return []
+    })
 }
 
 export const useGetStudentById = (id: string) => {
@@ -181,6 +198,16 @@ export const useUpdateStudent = () => {
         onComplete()
       })
   }
+}
+
+export const updateSpiritScore = (studentId: string, spiritScore: number) => {
+  if (!studentId || typeof spiritScore !== 'number') {
+    return Promise.reject('invalid Data')
+  }
+  const ref = doc(fireStoreDB, StudentCollection, studentId)
+  return updateDoc(ref, {
+    spiritScore
+  })
 }
 
 export const updateStudentAvatar = (studentId: string, downloadPath: string) => {

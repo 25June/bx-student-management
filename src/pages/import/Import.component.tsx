@@ -19,11 +19,11 @@ import { Class, Student } from 'models'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 import { useAuthentication } from 'contexts/AuthContext'
-import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import writeXlsxFile from 'write-excel-file'
 import { format } from 'date-fns'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
+import { getStudentByClassId } from 'services/student'
 
 type ImportProps = {
   value: string
@@ -67,7 +67,6 @@ const ImportComponent = () => {
   const [value, setValue] = useState<Student[]>([])
   const { showSnackbar } = useSnackbarContext()
   const { user } = useAuthentication()
-  const { students } = useStudentContext()
   const { classObj: currentClass } = useClassContext()
 
   const [classObj, setClassObj] = useState<Class>(BaseClasses[0])
@@ -245,6 +244,7 @@ const ImportComponent = () => {
         borderStyle: 'thin',
       },
     ]
+    const students = await getStudentByClassId(currentClass?.id || '')
     const DATA_ROWS = students.map((stu, index) => {
       return [
         {
@@ -344,10 +344,9 @@ const ImportComponent = () => {
       },
     ]
     const data = [BANNER_ROW, PREPARE_ROW, HEADER_ROW, ...DATA_ROWS]
-    console.log(data)
     await writeXlsxFile(data as any, {
       columns: COLUMNS,
-      fileName: `${currentClass?.id || 'file'}.xlsx`,
+      fileName: `${currentClass?.name || 'file'}.xlsx`,
       fontFamily: 'Times New Roman',
       fontSize: 13,
       orientation: 'landscape',

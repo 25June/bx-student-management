@@ -21,6 +21,7 @@ export type Student = {
   schoolYears?: string[]
   note?: string
   transferHistory?: string[]
+  spiritScore?: number
 }
 
 export type RegisterStudent = {
