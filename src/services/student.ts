@@ -60,11 +60,11 @@ export const getStudentByClassId = async (classId: string): Promise<Student[]> =
   if (!classId) {
     return Promise.resolve([])
   }
-  const queryStudents = query(studentRef, where('class.id', '==', classId), where('isDeleted', '==', false))
+  const queryStudents = query(studentRef, where('class.id', '==', classId))
   return getDocs(
     queryStudents
   ).then((snapshot) => {
-    return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Student[]
+    return snapshot.docs.filter(doc => !doc.data().isDeleted).map(doc => ({ ...doc.data(), id: doc.id })) as Student[]
   },
     (error) => {
       console.error(error)
