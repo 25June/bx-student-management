@@ -21,6 +21,8 @@ import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWith
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useDebounceEffect } from './useDebounceEffect'
 import { canvasPreview } from 'modules/cropping-image/canvasPreview'
+import { useStudentContext } from 'contexts/StudentContext'
+import { useClassContext } from 'contexts/ClassContext'
 
 interface CroppingImageProps {
   avatarPath: string
@@ -64,6 +66,8 @@ const CroppingImageComponent = ({
   const [isImageReady, setImageReady] = useState<boolean>(false)
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   const { showSnackbar } = useSnackbarContext()
+  const { fetchStudents } = useStudentContext()
+  const { classId } = useClassContext()
 
   useDebounceEffect(
     async () => {
@@ -105,7 +109,8 @@ const CroppingImageComponent = ({
               })
               .finally(() => {
                 setLoading(false)
-                handleClose(true)
+                handleClose(false)
+                fetchStudents(classId)
               })
           }
           if (downloadPath && studentId && avatarPath) {
@@ -120,7 +125,7 @@ const CroppingImageComponent = ({
               })
               .finally(() => {
                 setLoading(false)
-                handleClose(true)
+                handleClose(false)
               })
           }
         }
@@ -156,7 +161,7 @@ const CroppingImageComponent = ({
           sx={{
             display: 'flex',
             justifyContent: 'space-around',
-            alignItems: 'flex-end',
+            alignItems: 'flex-start',
             gap: '2em',
           }}
         >

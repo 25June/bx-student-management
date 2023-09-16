@@ -28,22 +28,6 @@ export const useGetStudents = () => {
       queryStudents
     ).then((snapshot) => {
       const groupStudents: { students: Student[]; deletedStudents: Student[] } = formatStudentSnapshot(snapshot.docs)
-      // const chunkSize = 2;
-      // for (let i = 0; i < groupStudents.students.length; i += chunkSize) {
-      //   const chunk = groupStudents.students.slice(i, i + chunkSize);
-      //   if (i === 0) {
-      //     setStudents(() => {
-      //       return ([] as Student[]).concat(chunk)
-      //     })
-      //   } else {
-      //     setTimeout(() => {
-      //       setStudents((prev) => {
-      //         return (prev || []).concat(chunk)
-      //       })
-      //     }, (i + chunkSize) * 100);
-      //   }
-
-      // }
       setStudents(groupStudents.students)
       setDeletedStudents(groupStudents.deletedStudents)
     },

@@ -8,6 +8,7 @@ import HolyBibleIcon from 'modules/common/HolyBibleIcon'
 import { restoreStudent } from 'services/student'
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import { useClassContext } from 'contexts/ClassContext'
+import { useStudentContext } from 'contexts/StudentContext'
 
 const CardComponent = ({
   student,
@@ -16,10 +17,17 @@ const CardComponent = ({
   student: Student
   onClickAction: (student: any, actionType: StudentActionType) => void
 }) => {
+  const { fetchStudents } = useStudentContext()
   const isMobile = useIsMobile()
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
   const avatar = buildImageUrl(student.avatarPath, student.gender)
-  const { disableUpdate } = useClassContext()
+  const { disableUpdate, classId } = useClassContext()
+
+  const handleRestoreStudent = (studentId: string) => {
+    restoreStudent(studentId).then(() => {
+      fetchStudents(classId)
+    })
+  }
 
   return (
     <Card
@@ -72,7 +80,7 @@ const CardComponent = ({
           <Button
             startIcon={<RestoreFromTrashIcon />}
             size="small"
-            onClick={() => restoreStudent(student.id)}
+            onClick={() => handleRestoreStudent(student.id)}
             color="success"
             variant="outlined"
             disabled={disableUpdate}
