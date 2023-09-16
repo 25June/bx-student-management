@@ -123,11 +123,14 @@ const UserDrawerComponent = ({ onClose, open }: UserDrawerComponentProps) => {
             >
               {UserRoles[user.role]?.title || ''}
             </Box>
-            <Chip
-              size={'small'}
-              label={<b>{user.classId ? BaseClassObj[user.classId] : 'Chưa có lớp'}</b>}
-              color={(user.classId.slice(0, 2) as extendedColorPalettes) || 'default'}
-            />
+            {user.classId && (
+              <Chip
+                size={'small'}
+                label={<b>{user.classId ? BaseClassObj[user.classId] : 'Chưa có lớp'}</b>}
+                color={(user.classId.slice(0, 2) as extendedColorPalettes) || 'default'}
+              />
+            )}
+
           </Box>
           <Box
             sx={{

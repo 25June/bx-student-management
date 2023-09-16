@@ -210,7 +210,7 @@ const ScoreBookComponent = () => {
             onChangeDate={handleChangeShowScoreDate}
           />
         </Box>
-        {assessments.length !== 0 && <SearchComponent onChange={handleFilterStudentByName} />}
+        <SearchComponent onChange={handleFilterStudentByName} />
       </Box>
       {scoreBookSummary && (
         <ScoreBookSummaryInfoComponent

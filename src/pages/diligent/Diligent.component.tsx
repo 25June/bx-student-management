@@ -242,9 +242,7 @@ const DiligentComponent = () => {
               </>
             )}
           </Box>
-          {formatAttendances && formatAttendances.length !== 0 && (
-            <SearchComponent onChange={handleFilterStudentByName} />
-          )}
+          <SearchComponent onChange={handleFilterStudentByName} />
         </Box>
         {studentAttendanceCount && (
           <AttendanceCountComponent

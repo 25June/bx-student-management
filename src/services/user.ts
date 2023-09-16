@@ -42,7 +42,7 @@ export const useCreateUser = () => {
       .then((res) => {
         showSnackbar(`Create ${email} in google auth success`, 'success')
 
-        setDoc(userDocRef(res.user.uid), { email, id: res.user.uid })
+        setDoc(userDocRef(res.user.uid), { email, id: res.user.uid, firstName: '', lastName: '' })
           .then(() => {
             showSnackbar(`Create ${email} in database success`, 'success')
           })
