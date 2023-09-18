@@ -110,7 +110,6 @@ const CroppingImageComponent = ({
               .finally(() => {
                 setLoading(false)
                 handleClose(false)
-                fetchStudents(classId)
               })
           }
           if (downloadPath && studentId && avatarPath) {
@@ -126,6 +125,7 @@ const CroppingImageComponent = ({
               .finally(() => {
                 setLoading(false)
                 handleClose(false)
+                fetchStudents(classId)
               })
           }
         }
@@ -184,7 +184,7 @@ const CroppingImageComponent = ({
           {!!completedCrop && (
             <Box>
               <Typography sx={{ marginBottom: 1, marginTop: 1 }}>Kết quả:</Typography>
-              <Box sx={{ width: '100%' }}>
+              <Box sx={{ width: 500, height: 500 }}>
                 <canvas
                   ref={previewCanvasRef}
                   style={{

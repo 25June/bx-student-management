@@ -76,8 +76,8 @@ const SingleDateViewComponent = ({
         </IconButton>
       </Box>
       {note && (
-        <Typography fontSize={'0.5rem'} sx={{ color: grey[600], textAlign: 'left' }}>
-          <i>Ghi chú: {note}</i>
+        <Typography fontSize={'0.75rem'} sx={{ color: grey[600], textAlign: 'left' }}>
+          <b>Ghi chú:</b> <i>{note}</i>
         </Typography>
       )}
     </Item>

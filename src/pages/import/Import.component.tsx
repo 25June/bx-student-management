@@ -391,7 +391,7 @@ const ImportComponent = () => {
             </form>
             {value.length !== 0 && <TableComponent columns={studentColumns} rows={value} />}
             <Box mt={2} mb={2}>
-              <ClassDropdownComponent classObj={classObj} onChangeClass={handleChangeClass} />
+              <ClassDropdownComponent useDarkMode={false} classObj={classObj} onChangeClass={handleChangeClass} />
             </Box>
             <Button onClick={saveData} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
               Confirm Save Date

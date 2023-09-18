@@ -52,6 +52,7 @@ const StyledInputBase = styled(InputBase, { shouldForwardProp: (props) => props 
   isMobile: boolean
 }>(({ theme, isMobile }) => ({
   color: 'inherit',
+  flexGrow: 1,
   '& .MuiInputBase-input': {
     padding: isMobile ? theme.spacing(1, 1, 1, 2) : theme.spacing(0.5, 0.5, 0.5, 1),
     transition: theme.transitions.create('width'),
