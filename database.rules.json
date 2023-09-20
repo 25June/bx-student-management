@@ -1,24 +1,230 @@
 {
   "rules": {
     ".read": "auth.uid !== null",
+    "users": {
+      ".read": "auth.uid === T34940cgVXeGhOfGg1acrfVKSbL2",
+      ".write": "auth.uid === T34940cgVXeGhOfGg1acrfVKSbL2"
+    },
     "attendance": {
+      "kt1": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('kt1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "kt2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('kt2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
       "rl1": {
         "$uid": {
           ".read": "auth.uid !== null",
-          ".write": "root.child('users').child(auth.uid).child('rl').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+          ".write": "root.child('users').child(auth.uid).child('rl1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "rl1b": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl1b').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "rl2a": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl2a').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts1a": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts1a').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts1b": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts1b').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "bd1": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('bd1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "bd2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('bd2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "vd": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('vd').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "dt": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('dt').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
         }
       }
     },
     "rollCall": {
+      "kt1": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('kt1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "kt2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('kt2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
       "rl1": {
-        ".read": "auth.uid !== null",
-        ".write": "root.child('users').child(auth.uid).child('rl').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "rl1b": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl1b').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "rl2a": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl2a').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts1a": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts1a').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts1b": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts1b').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "bd1": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('bd1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "bd2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('bd2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "vd": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('vd').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "dt": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('dt').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
       }
     },
     "scorebook": {
+      "kt1": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('kt1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "kt2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('kt2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
       "rl1": {
-        ".read": "auth.uid !== null",
-        ".write": "root.child('users').child(auth.uid).child('rl').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "rl1b": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl1b').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "rl2a": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('rl2a').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts1a": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts1a').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts1b": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts1b').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "ts2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('ts2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "bd1": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('bd1').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "bd2": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('bd2').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "vd": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('vd').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
+      },
+      "dt": {
+        "$uid": {
+          ".read": "auth.uid !== null",
+          ".write": "root.child('users').child(auth.uid).child('dt').val() === true || root.child('users').child(auth.uid).child('admin').val() === true"
+        }
       }
     }
   }

@@ -1,4 +1,5 @@
-import { auth, fireStoreDB } from '../firebase'
+import { auth, fireStoreDB, realtimeDB } from '../firebase'
+import { update, ref, } from 'firebase/database'
 import { getDocs, query, collection, doc, updateDoc, setDoc, getDoc } from 'firebase/firestore'
 import {
   createUserWithEmailAndPassword,
@@ -119,9 +120,16 @@ export const updateUserAvatar = (userId: string, downloadPath: string) => {
 
 export const useUpdateUserInfo = () => {
   const { showSnackbar } = useSnackbarContext()
-  return (user: User) => {
+  return async (user: User) => {
+    const currentUserInfo = await getUserInfo(user.id)
+    if (!currentUserInfo) {
+      return Promise.reject('Invalid Data')
+    }
     return setDoc(userRef(user.id), user, { merge: true })
       .then(() => {
+        if (currentUserInfo.classId !== user.classId) {
+          grantPermissionForUser(user.id, currentUserInfo.classId, user.classId)
+        }
         showSnackbar(`Update info for ${user.email} success`, 'success')
       })
       .catch((error) => {
@@ -138,4 +146,12 @@ export const getUserInfo = (id: string) => {
     }
     return null
   })
+}
+
+export const grantPermissionForUser = async (id: string, oldClassId: string, newClassId: string) => {
+  if (id) {
+    update(ref(realtimeDB, `users/${id}`), { [oldClassId]: false, [newClassId]: true })
+      .then(() => console.info(`Updated`, 'success'))
+      .catch((error: any) => console.error(error, 'error'))
+  }
 }

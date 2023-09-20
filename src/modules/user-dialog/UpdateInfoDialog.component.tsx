@@ -220,7 +220,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
           }}
         />
         <Box sx={{ marginTop: '1rem' }}>
-          <ClassDropdownComponent onChangeClass={handleChangeClass} classObj={classObj} />
+          <ClassDropdownComponent useDarkMode={false} onChangeClass={handleChangeClass} classObj={classObj} />
         </Box>
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>

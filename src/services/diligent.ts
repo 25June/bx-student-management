@@ -196,8 +196,7 @@ export const submitAttendance = ({
     return set(
       ref(
         realtimeDB,
-        `${attendancePathName(classId, schoolYearId, semesterId)}/${studentId}/${rollDateId}/${
-          isMissal ? AttendanceType.THANH_LE : AttendanceType.GIAO_LY
+        `${attendancePathName(classId, schoolYearId, semesterId)}/${studentId}/${rollDateId}/${isMissal ? AttendanceType.THANH_LE : AttendanceType.GIAO_LY
         }`
       ),
       attendance
