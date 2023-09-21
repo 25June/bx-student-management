@@ -23,7 +23,7 @@ export const getUsers = () => {
       if (!snapshot.empty) {
         return snapshot.docs
           .filter((snapshotDoc) => snapshotDoc.exists())
-          .sort((snapA, snapB) => snapA.data()?.firstName.localeCompare(snapB.data()?.firstName))
+          .sort((snapA, snapB) => (snapA.data()?.classId || '').localeCompare((snapB.data()?.classId || '')))
           .map((snapshotDoc) => {
             return { id: snapshotDoc.id, ...snapshotDoc.data() } as User
           })
