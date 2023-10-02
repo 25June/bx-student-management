@@ -2,7 +2,6 @@ import { auth, fireStoreDB, realtimeDB } from '../firebase'
 import { update, ref, } from 'firebase/database'
 import { getDocs, query, collection, doc, updateDoc, setDoc, getDoc } from 'firebase/firestore'
 import {
-  createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   updatePassword,
   getAuth,
@@ -38,21 +37,14 @@ export const getUsers = () => {
 
 export const useCreateUser = () => {
   const { showSnackbar } = useSnackbarContext()
-  return (email: string, password: string) =>
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        showSnackbar(`Create ${email} in google auth success`, 'success')
-        setDoc(userDocRef(res.user.uid), { email, id: res.user.uid, firstName: '', lastName: '' })
-          .then(() => {
-            showSnackbar(`Create ${email} in database success`, 'success')
-          })
-          .catch((error) => {
-            console.error(error)
-            showSnackbar(`Create ${email} in database error`, 'error')
-          })
+  return ({ firstName, lastName, email, classId, id }: { id: string, email: string, firstName: string, lastName: string, classId: string }) =>
+    setDoc(userDocRef(id), { email, id: id, firstName, lastName, classId })
+      .then(() => {
+        showSnackbar(`Create ${email} in database success`, 'success')
       })
       .catch((error) => {
-        console.error('error on the cdk', error)
+        console.error(error)
+        showSnackbar(`Create ${email} in database error`, 'error')
       })
 }
 

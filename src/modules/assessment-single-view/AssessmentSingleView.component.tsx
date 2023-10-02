@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -23,6 +23,12 @@ import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { getDownloadLink } from 'services/storage'
 import { CircularProgress } from '@mui/material'
 import { grey } from '@mui/material/colors'
+import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
+import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
+import { useStudentContext } from 'contexts/StudentContext'
+import { StudentScoreBooks } from 'models/ScoreBook'
+import { Student } from 'models/student'
+
 
 interface SecondaryTextProps {
   bookDate: string
@@ -68,12 +74,28 @@ const SecondaryText = ({ bookDate, documents }: SecondaryTextProps) => {
 const AssessmentItem = ({
   assessment,
   onClickAction,
+  stuScoreBooks,
 }: {
   assessment: Assessment
-  onClickAction: (data: Assessment, actionType: AssessmentActionType) => void
+  onClickAction: (data: Assessment, actionType: AssessmentActionType) => void,
+  stuScoreBooks: StudentScoreBooks[] | Student[]
 }) => {
+  const { students } = useStudentContext()
   const { disableUpdate } = useClassContext()
-
+  const [scoreBookSummary, setScoreBookSummary] = useState<ScoreBookSummaryResponse>()
+  useEffect(() => {
+    if (stuScoreBooks?.length !== 0 && assessment) {
+      Promise.resolve().then(() => {
+        setScoreBookSummary(
+          getScoreBookSummary({
+            assessmentType: assessment.type,
+            assessmentId: assessment.id,
+            studentScoreBooks: stuScoreBooks as StudentScoreBooks[],
+          })
+        )
+      })
+    }
+  }, [stuScoreBooks, assessment])
   return (
     <>
       <ListItem
@@ -119,6 +141,13 @@ const AssessmentItem = ({
           }
         />
       </ListItem>
+      {scoreBookSummary && (
+        <ScoreBookSummaryInfoComponent
+          onFilterStudentByGrade={() => null}
+          totalStudents={students.length}
+          {...scoreBookSummary}
+        />
+      )}
       <Divider variant="middle" component="li" />
     </>
   )
@@ -127,11 +156,13 @@ const AssessmentItem = ({
 interface AssessmentSingleViewComponentProps {
   assessments: Assessment[]
   onClickAction: (data: Assessment | null, actionType: AssessmentActionType) => void
+  stuScoreBooks: StudentScoreBooks[] | Student[]
 }
 
 const AssessmentSingleViewComponent = ({
   assessments,
   onClickAction,
+  stuScoreBooks,
 }: AssessmentSingleViewComponentProps) => {
   const { disableUpdate } = useClassContext()
   if (assessments.length === 0) {
@@ -167,6 +198,7 @@ const AssessmentSingleViewComponent = ({
             key={assessment.id}
             assessment={assessment}
             onClickAction={onClickAction}
+            stuScoreBooks={stuScoreBooks}
           />
         ))}
       </List>

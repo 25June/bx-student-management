@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import { AssessmentTableComponent } from 'modules/index'
@@ -12,12 +12,30 @@ import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType } from 'constant/common'
 import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 import AssessmentSingleViewComponent from 'modules/assessment-single-view/AssessmentSingleView.component'
+import { useGetStudentScoreBooks } from 'services/scorebook'
+import { useStudentContext } from 'contexts/StudentContext'
+import { StudentScoreBooks } from 'models/ScoreBook'
+import { Student } from 'models/student'
 
 const AssessmentComponent = () => {
   const { assessments, setAssessments } = useAssessmentContext()
   const { classId, disableUpdate, schoolYearId } = useClassContext()
   const { openDialog } = useDialogContext()
   const isMobile = useIsMobile()
+  const { studentScoreBooks } = useGetStudentScoreBooks()
+  const { students } = useStudentContext()
+
+  const stuScoreBooks: StudentScoreBooks[] | Student[] = useMemo(() => {
+    return (students || []).map((stu) => {
+      if (studentScoreBooks?.[stu.id]) {
+        return {
+          ...stu,
+          ...studentScoreBooks[stu.id],
+        }
+      }
+      return stu
+    })
+  }, [students, studentScoreBooks])
 
   const callback = (refreshData?: boolean): void => {
     if (refreshData) {
@@ -58,6 +76,7 @@ const AssessmentComponent = () => {
             <AssessmentSingleViewComponent
               assessments={assessments}
               onClickAction={openStudentDialog}
+              stuScoreBooks={stuScoreBooks}
             />
           ) : (
             <AssessmentTableComponent rows={assessments} onClickAction={openStudentDialog} />

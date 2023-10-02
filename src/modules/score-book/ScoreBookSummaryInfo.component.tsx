@@ -90,6 +90,7 @@ const ScoreBookSummaryInfoComponent = ({
       isBelong: (score: number) => score >= 9 && score <= 10,
     },
   ]
+  const numOfStuCompleteTest = excellent + wellDome + good + upperAverage + average + needToImprove
 
   return (
     <Box
@@ -134,7 +135,7 @@ const ScoreBookSummaryInfoComponent = ({
         })}
       </Box>
       <Box color={grey[700]}>
-        {selectedType ? `${selectedType?.score} em ${selectedType.text}` : 'Thống kê theo điểm'}
+        {selectedType ? `${selectedType?.score} em ${selectedType.text}` : `Có ${numOfStuCompleteTest}/${totalStudents} em làm bài`}
       </Box>
     </Box>
   )

@@ -38,9 +38,10 @@ const defaultUserInfo = (user: User) => {
     firstName: user.firstName || '',
     lastName: user.lastName || '',
     phoneNumber: user.phoneNumber || '',
-    classId: user.classId || '',
+    classId: user.classId || 'kt1',
     avatarPath: user.avatarPath || '',
     saintName: user.saintName || '',
+    id: user.id || '',
   }
 }
 
@@ -56,7 +57,7 @@ const UpdateInfoDialogComponent = ({ onClose, isOpen, user }: UpdateInfoDialogCo
   })
   const isMobile = useIsMobile()
   const updateUserInfo = useUpdateUserInfo()
-  const [classObj, setClassObj] = useState<{ id: string; name: string }>()
+  const [classObj, setClassObj] = useState<{ id: string; name: string }>(BaseClasses[0])
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
 
   useEffect(() => {

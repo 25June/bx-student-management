@@ -48,7 +48,6 @@ export const ClassProvider = ({ children }: PropsWithChildren) => {
     return user?.classId !== classId && user?.role !== Role.CTO
   }, [user, classId])
   const value = useMemo(() => {
-    console.log(disableUpdate)
     return {
       classId: isSignedIn ? classId : '',
       setClassId,
@@ -57,7 +56,7 @@ export const ClassProvider = ({ children }: PropsWithChildren) => {
       semesterId,
       setSchoolYearId,
       setSemesterId,
-      disableUpdate: false,
+      disableUpdate: disableUpdate,
     }
   }, [classId, isSignedIn, schoolYearId, semesterId, disableUpdate])
   return <ClassContext.Provider value={value}>{children}</ClassContext.Provider>
