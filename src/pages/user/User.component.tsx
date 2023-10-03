@@ -1,22 +1,21 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import Box from '@mui/material/Box'
-import { Typography, Drawer } from '@mui/material'
+import { Typography, Drawer, Button, Box } from '@mui/material'
 import SearchComponent from 'modules/common/Search.component'
-import Button from '@mui/material/Button'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import { getUsers, useSendPasswordResetEmail } from 'services/user'
+import { User } from 'models/user'
+import { useIsMobile, toLowerCaseNonAccentVietnamese } from 'utils/common'
+import { Role, UserAction } from 'constant/common'
+import { useAuthentication } from 'contexts/AuthContext'
 import UserTableComponent from 'modules/user-table/UserTable.component'
 import UserDialogComponent from 'modules/user-dialog/UserDialog.component'
-import { User } from 'models/user'
-import { Role, UserAction } from 'constant/common'
 import ChangePasswordDialogComponent from 'modules/user-dialog/ChangePasswordDialog.component'
 import PermissionDialogComponent from 'modules/user-dialog/PermissionDialog.component'
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
-import { useIsMobile } from 'utils/common'
 import UserSingleViewComponent from 'modules/user-single-view/UserSingleViewComponent'
 import UserProfilePanelComponent from 'modules/user-drawer/UserProfilePanel.component'
-import { useAuthentication } from 'contexts/AuthContext'
-import { toLowerCaseNonAccentVietnamese } from 'utils/common'
+
+
 
 const UserComponent = () => {
   const isMobile = useIsMobile()

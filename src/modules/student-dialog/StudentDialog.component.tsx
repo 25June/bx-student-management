@@ -15,25 +15,24 @@ import {
   ToggleButtonGroup,
   ToggleButton,
 } from '@mui/material'
-import { StudentActionType } from 'constant'
-import { Student } from 'models'
-import { splitFullName } from 'utils'
-import { formatPhoneWithoutDot, formatPhone } from 'utils/formatDataForTable'
+import { StudentActionType } from 'constant/common'
+import { Student } from 'models/student'
+import { formatPhoneWithoutDot, formatPhone, splitFullName } from 'utils/formatDataForTable'
 import {
-  removeImage,
-  uploadFile,
   useAddNewStudent,
   useDeleteStudent,
   useUpdateStudent,
-} from 'services'
-import { ImageBoxComponent, LinearProgressComponent } from 'modules'
+} from 'services/student'
+import { removeImage, uploadFile } from 'services/storage'
 import { useIsMobile } from 'utils/common'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { useClassContext } from 'contexts/ClassContext'
+import { useStudentContext } from 'contexts/StudentContext'
 import { getValues, StudentForm } from './helpers'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
-import { useClassContext } from 'contexts/ClassContext'
-import { useStudentContext } from 'contexts/StudentContext'
+import { ImageBoxComponent, LinearProgressComponent } from 'modules'
+
 
 interface StudentDialogComponentProps {
   isOpen: boolean

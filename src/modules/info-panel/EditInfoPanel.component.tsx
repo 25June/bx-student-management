@@ -6,21 +6,22 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  CircularProgress,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { formatPhone, formatPhoneWithoutDot, splitFullName } from 'utils/formatDataForTable'
 import React, { useState } from 'react'
-import CircularProgress from '@mui/material/CircularProgress'
 import CheckIcon from '@mui/icons-material/Check'
 import ClearIcon from '@mui/icons-material/Clear'
-import { getValues, StudentForm } from 'modules/student-dialog/helpers'
-import { Student } from 'models'
-import { removeImage, uploadFile, useUpdateStudent } from 'services'
-import { useSnackbarContext } from 'contexts/SnackbarContext'
 import FemaleIcon from '@mui/icons-material/Female'
 import MaleIcon from '@mui/icons-material/Male'
-import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
+import { getValues, StudentForm } from 'modules/student-dialog/helpers'
+import { Student } from 'models/student'
+import { removeImage, uploadFile } from 'services/storage'
+import { useUpdateStudent } from 'services/student'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useStudentContext } from 'contexts/StudentContext'
+import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
 
 interface EditInfoPanelProps {
   student: Student

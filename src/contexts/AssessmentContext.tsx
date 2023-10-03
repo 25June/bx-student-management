@@ -7,7 +7,7 @@ import {
   useState,
   useCallback,
 } from 'react'
-import { fetchAssessments } from 'services'
+import { fetchAssessments } from 'services/assessment'
 import { Assessment } from 'models'
 import { useClassContext } from 'contexts/ClassContext'
 

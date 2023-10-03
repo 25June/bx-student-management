@@ -7,17 +7,18 @@ import {
   DialogTitle,
   Checkbox,
   FormControlLabel,
+  SelectChangeEvent,
 } from '@mui/material'
-import React, { ChangeEvent, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
+import React, { ChangeEvent, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
-import { useUpdateStudent } from 'services'
-import { Class, Student } from 'models'
-import { SelectChangeEvent } from '@mui/material/Select'
+import { useUpdateStudent } from 'services/student'
+import { Student } from 'models/student'
+import { Class } from 'models/class'
 import { BaseClasses } from 'constant/common'
+import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
 
 interface TransferForm {
   class: Class

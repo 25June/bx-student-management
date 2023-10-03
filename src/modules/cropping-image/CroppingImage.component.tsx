@@ -14,15 +14,15 @@ import CheckIcon from '@mui/icons-material/Check'
 import { buildImageUrl, useIsMobile } from 'utils/common'
 import ReactCrop, { PixelCrop, Crop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import { removeImage, uploadFile } from 'services'
+import { removeImage, uploadFile } from 'services/storage'
 import { updateUserAvatar } from 'services/user'
 import { updateStudentAvatar } from 'services/student'
-import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useDebounceEffect } from './useDebounceEffect'
-import { canvasPreview } from 'modules/cropping-image/canvasPreview'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
+import { canvasPreview } from 'modules/cropping-image/canvasPreview'
+import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
 
 interface CroppingImageProps {
   avatarPath: string

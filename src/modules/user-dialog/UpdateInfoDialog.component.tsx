@@ -7,19 +7,19 @@ import {
   DialogTitle,
   TextField,
   Box,
+  SelectChangeEvent,
 } from '@mui/material'
 import { BaseClasses, BaseClassObj, Role } from 'constant/common'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { User } from 'models/user'
+import { Class } from 'models/class'
 import { useForm, Controller } from 'react-hook-form'
-import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
-import { SelectChangeEvent } from '@mui/material/Select'
-import { Class } from 'models'
 import { useUpdateUserInfo } from 'services/user'
-import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
-import { uploadFile } from 'services'
+import { uploadFile } from 'services/storage'
 import { useIsMobile } from 'utils/common'
+import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
+import { ImageBoxComponent, LinearProgressComponent } from 'modules/index'
 
 interface UserInfoProps {
   email: string
