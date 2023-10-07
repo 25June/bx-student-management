@@ -15,8 +15,6 @@ import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.comp
 import UserSingleViewComponent from 'modules/user-single-view/UserSingleViewComponent'
 import UserProfilePanelComponent from 'modules/user-drawer/UserProfilePanel.component'
 
-
-
 const UserComponent = () => {
   const isMobile = useIsMobile()
   const sendPasswordResetEmail = useSendPasswordResetEmail()
