@@ -9,7 +9,7 @@ import {
   Avatar,
   ListItemText,
 } from '@mui/material'
-import { lightGreen, lightBlue } from '@mui/material/colors'
+import { pink, red } from '@mui/material/colors'
 
 const ProgressBarContainer = ({
   title,
@@ -59,7 +59,15 @@ const DiligentReportItem = ({ data }: { data: MonthlyDiligentReport }) => {
     <>
       <ListItem alignItems={'flex-start'} disableGutters={true}>
         <ListItemAvatar>
-          <Avatar variant={'rounded'} sx={{ width: 48, height: 48, bgcolor: lightGreen[800] }}>
+          <Avatar
+            variant={'rounded'}
+            sx={{
+              width: 48,
+              height: 48,
+              backgroundImage:
+                'linear-gradient(to right top, #ffafbd, #ffb3b4, #ffb7ac, #ffbda5, #ffc3a0)',
+            }}
+          >
             <Typography>
               {splitDate.at(2)}
               <Box sx={{ fontSize: '0.5rem' }} component="sub">
@@ -75,8 +83,8 @@ const DiligentReportItem = ({ data }: { data: MonthlyDiligentReport }) => {
               <ProgressBarContainer
                 current={data.tl}
                 total={data.total}
-                backgroundCurrent={lightGreen[500]}
-                backgroundTotal={lightGreen[100]}
+                backgroundCurrent={'#ffafbd'}
+                backgroundTotal={pink[50]}
                 title={'Thánh Lễ'}
               />
             </Box>
@@ -85,8 +93,8 @@ const DiligentReportItem = ({ data }: { data: MonthlyDiligentReport }) => {
             <ProgressBarContainer
               current={data.gl}
               total={data.total}
-              backgroundCurrent={lightBlue[500]}
-              backgroundTotal={lightBlue[100]}
+              backgroundCurrent={'#ffc3a0'}
+              backgroundTotal={red[50]}
               title={'Giáo Lý'}
             />
           }
