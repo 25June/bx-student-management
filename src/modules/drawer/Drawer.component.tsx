@@ -64,15 +64,13 @@ const Menu = {
     to: Router.ASSESSMENT,
   },
   IMPORT: {
-    text: 'Xuất dữ liệu',
+    text: 'Tổng Kết',
     icon: (isActive: boolean) => <PrayIcon color={isActive ? 'primary' : undefined} />,
-    to: Router.IMPORT,
+    to: Router.REPORT,
   },
   USER: {
     text: 'Giáo Lý Viên',
-    icon: (isActive: boolean) => (
-      <CandleIcon color={isActive ? 'primary' : undefined} />
-    ),
+    icon: (isActive: boolean) => <CandleIcon color={isActive ? 'primary' : undefined} />,
     to: Router.USER,
   },
 }

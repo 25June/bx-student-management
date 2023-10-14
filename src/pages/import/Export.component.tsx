@@ -235,7 +235,7 @@ const ExportComponent = ({ currentClass }: Props) => {
   }
   return (
     <Box sx={{ textAlign: 'left', padding: 1 }}>
-      <Typography fontSize={'1rem'} fontWeight={400} sx={{ marginBottom: 1 }}>
+      <Typography fontSize={'1rem'} fontWeight={500} sx={{ marginBottom: 2 }}>
         Xuất Thông Tin Thiếu Nhi
       </Typography>
       <Typography fontSize={'1rem'} fontWeight={500} sx={{ marginBottom: 2 }}>

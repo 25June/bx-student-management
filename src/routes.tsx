@@ -1,7 +1,6 @@
 import React, { lazy } from 'react'
 
 const HomeComponent = lazy(() => import('pages/homepage/Home.component'))
-const ImportComponent = lazy(() => import('pages/import/Import.component'))
 // const SignUpComponent = lazy(() => import('modules/auth/SignUp.component'))
 const SignInComponent = lazy(() => import('modules/auth/SignIn.component'))
 const ScoreBookComponent = lazy(() => import('pages/score-book/ScoreBook.component'))
@@ -10,11 +9,12 @@ const DiligentComponent = lazy(() => import('pages/diligent/Diligent.component')
 const UserComponent = lazy(() => import('pages/user/User.component'))
 const RegisterComponent = lazy(() => import('pages/register/Register.component'))
 const RegisterDashboardComponent = lazy(() => import('pages/register/RegisterDashBoard.component'))
+const ReportComponent = lazy(() => import('pages/report/Report.component'))
 
 export const Router = {
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
-  IMPORT: '/import',
+  REPORT: '/report',
   SCORE_BOOK: '/score-book',
   ASSESSMENT: '/assessment',
   DILIGENT: '/diligent',
@@ -50,9 +50,9 @@ const ROUTES = [
     isPrivate: true,
   },
   {
-    name: 'Import',
-    component: <ImportComponent />,
-    path: Router.IMPORT,
+    name: 'Report',
+    component: <ReportComponent />,
+    path: Router.REPORT,
     isPrivate: true,
   },
   {

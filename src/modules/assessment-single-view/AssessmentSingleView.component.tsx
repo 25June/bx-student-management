@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Box } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Divider from '@mui/material/Divider'
@@ -15,14 +15,12 @@ import { colorPalettes } from 'constant/common'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useClassContext } from 'contexts/ClassContext'
-import { blueGrey } from '@mui/material/colors'
+import { blueGrey, grey } from '@mui/material/colors'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import DownloadIcon from '@mui/icons-material/Download'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { getDownloadLink } from 'services/storage'
-import { CircularProgress } from '@mui/material'
-import { grey } from '@mui/material/colors'
 import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
 import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
 import { useStudentContext } from 'contexts/StudentContext'
@@ -56,8 +54,8 @@ const SecondaryText = ({ bookDate, documents }: SecondaryTextProps) => {
       <Box fontWeight={500} fontSize={'0.825rem'} component={'span'} color={grey[500]} marginBottom={0.5} marginTop={0.5}>
         {bookDate}
       </Box>
-      {documents && documents.map((doc) => (
-        <Box sx={{ width: 150 }}>
+      {documents?.map((doc) => (
+        <Box sx={{ width: 150 }} key={doc.path}>
           <Chip
             icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
             size={'small'}
@@ -136,7 +134,7 @@ const AssessmentItem = ({
           secondary={
             <SecondaryText
               bookDate={formatYYYMMDDToDDMMYYYY(assessment.bookDate)}
-              documents={assessment.documents || []}
+              documents={assessment.documents ?? []}
             />
           }
         />
