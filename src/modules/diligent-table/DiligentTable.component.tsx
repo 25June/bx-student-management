@@ -1,38 +1,38 @@
 import React, { useState } from 'react'
-import { Student } from 'models'
-import TableContainer from '@mui/material/TableContainer'
-import Paper from '@mui/material/Paper'
-import Table from '@mui/material/Table'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import TableCell from '@mui/material/TableCell'
-import TableBody from '@mui/material/TableBody'
+import { Student } from 'models/student'
+import { OnSubmitAttendanceProps } from 'models/diligent'
+import {
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Grow,
+  Stack,
+  Box,
+  List,
+  ListItem,
+  Divider,
+  IconButton,
+  Drawer,
+  Typography,
+  Button,
+} from '@mui/material'
+import { blueGrey } from '@mui/material/colors'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import DiligentPanelContentComponent from 'modules/diligent/DiligentPanelContent.component'
 import AttendanceHeaderComponent from 'modules/common/AttendanceHeader.component'
 import AttendanceCheckboxComponent from 'modules/common/AttendanceCheckbox.component'
-import { OnSubmitAttendanceProps } from 'models/diligent'
-import { Attendances, submitAttendance } from 'services/diligent'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
+import SingleDateViewComponent from 'modules/single-date-view/SingleDateView.component'
 import { RollCallDate } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
-import { Box } from '@mui/material'
-import Grow from '@mui/material/Grow'
-import Stack from '@mui/material/Stack'
-import SingleDateViewComponent from 'modules/single-date-view/SingleDateView.component'
-import { useClassContext } from 'contexts/ClassContext'
-import { blueGrey } from '@mui/material/colors'
-import Typography from '@mui/material/Typography'
 import { DialogType, RollCallDateActionType } from 'constant/common'
-import Button from '@mui/material/Button'
 import { useDialogContext } from 'contexts/DialogContext'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import Divider from '@mui/material/Divider'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import IconButton from '@mui/material/IconButton'
-import Drawer from '@mui/material/Drawer'
-import DiligentPanelContentComponent from 'modules/diligent/DiligentPanelContent.component'
-
-// import Chip from '@mui/material/Chip'
+import { useClassContext } from 'contexts/ClassContext'
+import { Attendances, submitAttendance } from 'services/diligent'
 
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -68,12 +68,6 @@ const ListStudent = ({
           gender={!!row.gender}
         />
       </ListItem>
-      {/*{false && (*/}
-      {/*  <Box sx={{ marginBottom: 1, paddingLeft: 10, textAlign: 'left' }}>*/}
-      {/*    <Chip label="Chăm chỉ" variant="outlined" color={'absentWarning1'} size={'small'} />*/}
-      {/*  </Box>*/}
-      {/*)}*/}
-
       <Divider variant="inset" component="li" />
     </Box>
   )
@@ -197,7 +191,10 @@ const DiligentTableComponent = ({
     )
   }
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 500, boxShadow: 3 }}>
+    <TableContainer
+      component={Paper}
+      sx={{ maxHeight: 500, boxShadow: 3, background: 'rgba(255,255,255, 0.6)' }}
+    >
       <Table stickyHeader={true} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>

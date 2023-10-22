@@ -1,24 +1,26 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Typography, IconButton, Button } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import { Box, Typography, IconButton, Button, SelectChangeEvent } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
+import DoneAllIcon from '@mui/icons-material/DoneAll'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import { submitAttendanceAllStudentsInClass } from 'services/diligent'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
-import { KeyValueProp, Student } from 'models'
+import { useDialogContext } from 'contexts/DialogContext'
+import { useDiligentContext } from 'contexts/DiligentContext'
+import { countStudentPresent } from 'utils/diligentSummary'
+import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
+import { groupRollCallToSortedMonths, RollCallDate } from 'utils/customHooks'
+import { Student } from 'models/student'
+import { KeyValueProp } from 'models/common'
 import DiligentTableComponent from 'modules/diligent-table/DiligentTable.component'
 import MonthDropdownComponent from 'modules/common/MonthDropdown.component'
-import { groupRollCallToSortedMonths, RollCallDate } from 'utils/customHooks'
-import { SelectChangeEvent } from '@mui/material/Select'
 import SearchComponent from 'modules/common/Search.component'
-import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
-import { useDialogContext } from 'contexts/DialogContext'
 import DateDropdownComponent from 'modules/common/DateDropdown.component'
 import DiligentSkeletonComponent from 'modules/diligent/DiligentSkeleton.component'
-import { useDiligentContext } from 'contexts/DiligentContext'
-import EditIcon from '@mui/icons-material/Edit'
-import { countStudentPresent } from 'utils/diligentSummary'
 import AttendanceCountComponent from 'modules/diligent/AttendanceCountComponent'
-import DoneAllIcon from '@mui/icons-material/DoneAll'
-import { submitAttendanceAllStudentsInClass } from 'services/diligent'
+import OverviewReportComponent from 'modules/report/Overview.component'
 
 const DiligentComponent = () => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
@@ -27,7 +29,7 @@ const DiligentComponent = () => {
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
-  const [selectedRollCallDate, setSelectedRollCallDate] = useState<RollCallDate>()
+  const [selectedDate, setSelectedDate] = useState<RollCallDate>()
 
   const [groupRollDate, setGroupRollDate] = useState<Record<string, RollCallDate[]>>({})
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
@@ -40,14 +42,14 @@ const DiligentComponent = () => {
     }
   }, [students])
 
-  const getRollCallDates = useCallback(() => {
+  const getRollCallDates = () => {
     if (fetchRollCallDates !== null) {
       fetchRollCallDates({ classId, semesterId, schoolYearId }).then(
         (res: Record<string, string> | null) => {
           if (res) {
             const sortedMonthDate = groupRollCallToSortedMonths(res)
             setGroupRollDate(sortedMonthDate)
-            setSelectedMonth(Object.keys(sortedMonthDate)[0])
+            // setSelectedMonth(Object.keys(sortedMonthDate)[0])
             return
           }
           setGroupRollDate({})
@@ -55,29 +57,28 @@ const DiligentComponent = () => {
         }
       )
     }
-  }, [classId, fetchRollCallDates, semesterId, schoolYearId])
+  }
 
   useEffect(() => {
     if (classId) {
       getRollCallDates()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, getRollCallDates])
+  }, [classId])
 
   useEffect(() => {
-    if (selectedRollCallDate && attendances) {
+    if (selectedDate && attendances) {
       Promise.resolve().then(() => {
-        setStudentAttendanceCount(countStudentPresent(selectedRollCallDate.key, attendances))
+        setStudentAttendanceCount(countStudentPresent(selectedDate.key, attendances))
       })
     }
-  }, [selectedRollCallDate, attendances])
+  }, [selectedDate, attendances])
 
   useEffect(() => {
     if (rollCallDates) {
       Promise.resolve().then(() => {
         const sortedMonthDate = groupRollCallToSortedMonths(rollCallDates)
         setGroupRollDate(sortedMonthDate)
-        setSelectedMonth(Object.keys(sortedMonthDate)[0])
       })
     }
   }, [rollCallDates])
@@ -88,41 +89,50 @@ const DiligentComponent = () => {
     } else {
       setSelectedMonth(event.target.value)
     }
-    setSelectedRollCallDate(undefined)
+    setSelectedDate(undefined)
   }
 
-  const handleChangeDate = (updatedDate?: KeyValueProp) => {
+  const handleChangeDate = (updatedDate?: KeyValueProp, month?: string) => {
     if (updatedDate && updatedDate.value === 'all') {
       Promise.resolve().then(() => {
-        setSelectedRollCallDate(undefined)
+        setSelectedDate(undefined)
       })
       return
     }
 
-    Promise.resolve().then(() => {
-      const rollCallDate = groupRollDate[selectedMonth].find(
+    if (month) {
+      const rollCallDate = groupRollDate[month].find(
         (date) => date.dateAsString === updatedDate?.value
       )
-      setSelectedRollCallDate(rollCallDate)
+      Promise.resolve().then(() => {
+        setSelectedDate(rollCallDate)
+      })
+      return
+    }
+
+    const rollCallDate = groupRollDate[selectedMonth].find(
+      (date) => date.dateAsString === updatedDate?.value
+    )
+    Promise.resolve().then(() => {
+      setSelectedDate(rollCallDate)
     })
   }
 
   const handleOpenDiligentDialog = (date: string, id: string) => {
     const callback = (refreshData?: boolean) => {
       if (refreshData) {
-        setSelectedRollCallDate(undefined)
+        setSelectedDate(undefined)
         getRollCallDates()
       }
     }
 
-    const rollCall = {
-      date,
-      id,
-    }
     openDialog(
       DialogType.STUDY_DATE_DIALOG,
       RollCallDateActionType.EDIT_STUDY_DATE,
-      rollCall,
+      {
+        date,
+        id,
+      },
       callback
     )
   }
@@ -155,13 +165,13 @@ const DiligentComponent = () => {
     if (disableUpdate) {
       return
     }
-    if (selectedRollCallDate?.key && students?.length !== 0 && classId) {
+    if (selectedDate?.key && students?.length !== 0 && classId) {
       const confirmation = window.confirm('Xác nhận đánh dấu tất cả!')
       if (confirmation) {
         return submitAttendanceAllStudentsInClass({
           studentIds: students.map((stu) => stu.id),
           classId,
-          rollDateId: selectedRollCallDate.key,
+          rollDateId: selectedDate.key,
           attendance: true,
           semesterId,
           schoolYearId,
@@ -170,111 +180,128 @@ const DiligentComponent = () => {
     }
   }
 
+  const handleSelectDate = (date: KeyValueProp, month: string) => {
+    handleChangeMonth(month)
+    handleChangeDate(date, month)
+  }
   const showSubmitAllButton =
-    selectedRollCallDate?.key &&
+    selectedDate?.key &&
     (studentAttendanceCount?.tl !== students?.length ||
       studentAttendanceCount?.gl !== students?.length)
 
   return (
     <Box>
-      <Box p={isMobile ? 1 : 2}>
+      <Box p={1}>
         <Box
           sx={{
             display: 'flex',
-            gap: isMobile ? 1 : 2,
+            gap: 1,
             width: '100%',
-            alignItems: isMobile ? 'flex-start' : 'center',
-            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: 'center',
           }}
         >
+          {selectedMonth && selectedDate && (
+            <IconButton
+              onClick={() => {
+                setSelectedDate(undefined)
+                setSelectedMonth('')
+              }}
+              size="small"
+            >
+              <ArrowBackIosNewIcon fontSize="inherit" />
+            </IconButton>
+          )}
           <Typography
             variant={'h1'}
-            sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }}
+            sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem', marginBottom: 0 }}
           >
             Chuyên Cần
           </Typography>
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: isMobile ? 2 : 4,
-            marginTop: 1,
-            alignItems: isMobile ? 'flex-start' : 'center',
-            flexDirection: isMobile ? 'column' : 'row',
-            gap: 2,
-            width: '100%',
-          }}
-        >
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
-            {rollCallDates && selectedMonth && (
-              <MonthDropdownComponent
-                selectedMonth={selectedMonth}
-                dates={Object.keys(groupRollDate)}
-                onChangeMonth={handleChangeMonth}
+        {!selectedDate && !selectedMonth ? (
+          <OverviewReportComponent onViewDetail={handleSelectDate} />
+        ) : (
+          <>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginBottom: isMobile ? 2 : 4,
+                marginTop: 1,
+                alignItems: isMobile ? 'flex-start' : 'center',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: 2,
+                width: '100%',
+              }}
+            >
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
+                {rollCallDates && selectedMonth && (
+                  <MonthDropdownComponent
+                    selectedMonth={selectedMonth}
+                    dates={Object.keys(groupRollDate)}
+                    onChangeMonth={handleChangeMonth}
+                  />
+                )}
+                {groupRollDate && selectedMonth && (
+                  <>
+                    <DateDropdownComponent
+                      selectedDate={selectedDate?.dateAsString}
+                      dates={groupRollDate[selectedMonth].map((date) => ({
+                        key: date.key,
+                        value: date.dateAsString,
+                      }))}
+                      onChangeDate={handleChangeDate}
+                    />
+                    {isMobile && selectedDate && (
+                      <IconButton
+                        color="warning"
+                        size="small"
+                        onClick={() =>
+                          handleOpenDiligentDialog(selectedDate.dateAsString, selectedDate.key)
+                        }
+                        disabled={disableUpdate}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                  </>
+                )}
+              </Box>
+              <SearchComponent onChange={handleFilterStudentByName} />
+            </Box>
+            {studentAttendanceCount && (
+              <AttendanceCountComponent
+                studentAttendanceCount={studentAttendanceCount}
+                totalStudents={students?.length || 0}
               />
             )}
-            {groupRollDate && selectedMonth && (
-              <>
-                <DateDropdownComponent
-                  selectedDate={selectedRollCallDate?.dateAsString}
-                  dates={groupRollDate[selectedMonth].map((date) => ({
-                    key: date.key,
-                    value: date.dateAsString,
-                  }))}
-                  onChangeDate={handleChangeDate}
-                />
-                {isMobile && selectedRollCallDate && (
-                  <IconButton
-                    color="warning"
-                    size="small"
-                    onClick={() =>
-                      handleOpenDiligentDialog(
-                        selectedRollCallDate.dateAsString,
-                        selectedRollCallDate.key
-                      )
-                    }
-                    disabled={disableUpdate}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                )}
-              </>
+            {showSubmitAllButton && (
+              <Box sx={{ padding: '0.5rem 0' }}>
+                <Button
+                  variant={'outlined'}
+                  onClick={handleMarkAllStudentPresent}
+                  endIcon={<DoneAllIcon />}
+                  disabled={disableUpdate}
+                >
+                  Đánh dấu tất cả đều có mặt
+                </Button>
+              </Box>
             )}
-          </Box>
-          <SearchComponent onChange={handleFilterStudentByName} />
-        </Box>
-        {studentAttendanceCount && (
-          <AttendanceCountComponent
-            studentAttendanceCount={studentAttendanceCount}
-            totalStudents={students?.length || 0}
-          />
+            <Box mt={2} mb={2}>
+              {!formatAttendances || formatAttendances.length === 0 ? (
+                <DiligentSkeletonComponent />
+              ) : (
+                <DiligentTableComponent
+                  rows={formatAttendances || []}
+                  rollCallDates={groupRollDate[selectedMonth || Object.keys(groupRollDate)[0]]}
+                  openDiligentDialog={handleOpenDiligentDialog}
+                  selectedRollCallDate={selectedDate}
+                  attendances={attendances || {}}
+                />
+              )}
+            </Box>
+          </>
         )}
-        {showSubmitAllButton && (
-          <Box sx={{ padding: '0.5rem 0' }}>
-            <Button
-              variant={'outlined'}
-              onClick={handleMarkAllStudentPresent}
-              endIcon={<DoneAllIcon />}
-              disabled={disableUpdate}
-            >
-              Đánh dấu tất cả đều có mặt
-            </Button>
-          </Box>
-        )}
-        <Box mt={2} mb={2}>
-          {!formatAttendances || formatAttendances.length === 0 ? (
-            <DiligentSkeletonComponent />
-          ) : (
-            <DiligentTableComponent
-              rows={formatAttendances || []}
-              rollCallDates={groupRollDate[selectedMonth || Object.keys(groupRollDate)[0]]}
-              openDiligentDialog={handleOpenDiligentDialog}
-              selectedRollCallDate={selectedRollCallDate}
-              attendances={attendances || {}}
-            />
-          )}
-        </Box>
       </Box>
     </Box>
   )

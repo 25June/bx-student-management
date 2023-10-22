@@ -1,6 +1,6 @@
 import { RollCallDate } from 'utils/customHooks'
 
-export interface MonthlyDiligentReport {
+export interface OverviewReport {
   gl: number
   tl: number
   note: number
