@@ -1,26 +1,35 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, ToggleButtonGroup, Typography, Link } from '@mui/material'
-import { ScoreBookActionType, StudentActionType } from 'constant'
-import { Student } from 'models'
-import TableRowsIcon from '@mui/icons-material/TableRows'
-import StyleIcon from '@mui/icons-material/Style'
-import ToggleButton from '@mui/material/ToggleButton'
-import { renderStudentActions, studentColumns } from 'modules/Table/helpers'
-import { CardComponent, InfoPanelComponent, ScoreBookPanelComponent, TableComponent } from 'modules'
-import { useStudentContext } from 'contexts/StudentContext'
-import SearchComponent from 'modules/common/Search.component'
+import { Box, ToggleButtonGroup, Typography, ToggleButton, IconButton } from '@mui/material'
+import { green, red } from '@mui/material/colors'
+import { Student } from 'models/student'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
-import { DialogType } from 'constant/common'
-import SingleInfoViewComponent from 'modules/student/SingleInfoViewComponent'
+import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
+import { DialogType, ScoreBookActionType, StudentActionType } from 'constant/common'
+import TableRowsIcon from '@mui/icons-material/TableRows'
+import StyleIcon from '@mui/icons-material/Style'
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove'
+import { renderStudentActions, studentColumns } from 'modules/Table/helpers'
+import SearchComponent from 'modules/common/Search.component'
+import CardComponent from 'modules/card/Card.component'
+import InfoPanelComponent from 'modules/info-panel/InfoPanel.component'
+import ScoreBookPanelComponent from 'modules/score-book-panel/ScoreBookPanel.component'
+import TableComponent from 'modules/Table/Table.component'
+import SingleInfoViewComponent from 'modules/student/SingleInfoViewComponent'
+
+enum DisplayType {
+  CARD = 'card',
+  TABLE = 'table',
+}
 
 const HomeComponent = () => {
   const [isOpenInfoPanel, setOpenInfoPanel] = useState(false)
   const [isOpenScoreBook, setOpenScoreBook] = useState(false)
   const [viewDeletedStudent, setViewDeletedStudent] = useState<boolean>(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
-  const [displayType, setDisplayType] = React.useState<'card' | 'table' | string>('table')
+  const [displayType, setDisplayType] = React.useState<DisplayType>(DisplayType.TABLE)
   const { students, deletedStudents } = useStudentContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
@@ -44,7 +53,7 @@ const HomeComponent = () => {
 
   const handleChangeDisplay = (
     event: React.MouseEvent<HTMLElement>,
-    newDisplayType: string | null
+    newDisplayType: DisplayType | null
   ) => {
     if (newDisplayType) {
       setDisplayType(newDisplayType)
@@ -130,31 +139,34 @@ const HomeComponent = () => {
           <Box sx={{ width: '100%' }}>
             <SearchComponent onChange={handleFilterStudentByName} key={classId} />
           </Box>
-          <Box display={'flex'} sx={{ gap: isMobile ? 1 : 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <ToggleButtonGroup
-                color={'info'}
-                value={displayType}
-                exclusive={true}
-                onChange={handleChangeDisplay}
-              >
-                <ToggleButton value="table" aria-label="display-table" size="small">
-                  <TableRowsIcon />
-                </ToggleButton>
-                <ToggleButton value="card" aria-label="display-card" size="small">
-                  <StyleIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Link
-                onClick={() => handleSwitchStudentViewMode(!viewDeletedStudent)}
-                color="primary"
-                sx={{ cursor: 'pointer' }}
-              >
-                {!viewDeletedStudent ? 'Xem danh sách đã xoá' : 'Xem danh sách hiện tại'}
-              </Link>
-            </Box>
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: isMobile ? 1 : 2,
+            }}
+          >
+            <ToggleButtonGroup
+              color={'info'}
+              value={displayType}
+              exclusive={true}
+              onChange={handleChangeDisplay}
+            >
+              <ToggleButton value={DisplayType.TABLE} size="small">
+                <TableRowsIcon />
+              </ToggleButton>
+              <ToggleButton value={DisplayType.CARD} size="small">
+                <StyleIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <IconButton
+              onClick={() => handleSwitchStudentViewMode(!viewDeletedStudent)}
+              color={viewDeletedStudent ? 'success' : 'error'}
+              sx={{ background: viewDeletedStudent ? green[100] : red[100] }}
+            >
+              {viewDeletedStudent ? <PlaylistAddCheckIcon /> : <PlaylistRemoveIcon />}
+            </IconButton>
           </Box>
         </Box>
         {displayType === 'table' ? (
