@@ -67,12 +67,12 @@ const DiligentComponent = () => {
   }, [classId])
 
   useEffect(() => {
-    if (selectedDate && attendances) {
+    if (selectedDate && attendances && students) {
       Promise.resolve().then(() => {
-        setStudentAttendanceCount(countStudentPresent(selectedDate.key, attendances))
+        setStudentAttendanceCount(countStudentPresent(selectedDate.key, attendances, students))
       })
     }
-  }, [selectedDate, attendances])
+  }, [selectedDate, attendances, students])
 
   useEffect(() => {
     if (rollCallDates) {

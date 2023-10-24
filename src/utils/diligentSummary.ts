@@ -1,3 +1,4 @@
+import { Student } from 'models/student'
 import { Attendances } from 'services/diligent'
 
 export interface CountStudentPresentResponse {
@@ -7,13 +8,14 @@ export interface CountStudentPresentResponse {
 
 export const countStudentPresent = (
   rollCallDate: string,
-  attendances: Attendances
+  attendances: Attendances,
+  students: Student[]
 ): CountStudentPresentResponse => {
   let tl = 0
   let gl = 0
-  Object.keys(attendances).forEach((studentId: string) => {
-    if (attendances[studentId]) {
-      const attendanceOfStudent = attendances[studentId][rollCallDate]
+  students.forEach(({ id }) => {
+    if (attendances[id]) {
+      const attendanceOfStudent = attendances[id][rollCallDate]
       if (attendanceOfStudent) {
         if (attendanceOfStudent.tl) {
           tl += 1
