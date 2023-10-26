@@ -48,7 +48,7 @@ const OverviewReportComponent = ({ onViewDetail }: Props) => {
   const { students } = useStudentContext()
 
   useEffect(() => {
-    if (classId && semesterId && schoolYearId) {
+    if (classId && semesterId && schoolYearId && fetchRollCallDates) {
       fetchRollCallDates({ classId, semesterId, schoolYearId })
     }
   }, [classId, semesterId, schoolYearId, fetchRollCallDates])

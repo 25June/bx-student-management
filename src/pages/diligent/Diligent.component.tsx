@@ -43,7 +43,7 @@ const DiligentComponent = () => {
   }, [students])
 
   const getRollCallDates = () => {
-    if (fetchRollCallDates !== null) {
+    if (!!fetchRollCallDates && classId && semesterId && schoolYearId) {
       fetchRollCallDates({ classId, semesterId, schoolYearId }).then(
         (res: Record<string, string> | null) => {
           if (res) {

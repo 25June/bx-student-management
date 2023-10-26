@@ -79,12 +79,14 @@ const DiligentReportItem = ({
                 'linear-gradient(to right top, #ffafbd, #ffb3b4, #ffb7ac, #ffbda5, #ffc3a0)',
             }}
           >
-            <Typography>
-              {splitDate.at(2)}
-              <Box sx={{ fontSize: '0.5rem' }} component="sub">
-                /{splitDate.at(1)}
-              </Box>
-            </Typography>
+            {splitDate?.length !== 0 && (
+              <Typography>
+                {splitDate[2]}
+                <Box sx={{ fontSize: '0.5rem' }} component="sub">
+                  /{splitDate[1]}
+                </Box>
+              </Typography>
+            )}
           </Avatar>
         </ListItemAvatar>
         <ListItemText
