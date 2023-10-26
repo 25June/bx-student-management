@@ -51,8 +51,7 @@ const OverviewReportComponent = ({ onViewDetail }: Props) => {
     if (classId && semesterId && schoolYearId) {
       fetchRollCallDates({ classId, semesterId, schoolYearId })
     }
-    // eslint-disable-next-line
-  }, [classId, semesterId, schoolYearId])
+  }, [classId, semesterId, schoolYearId, fetchRollCallDates])
 
   const groupDate = useMemo(() => {
     if (!isEmpty(rollCallDates) && !isEmpty(attendances)) {
