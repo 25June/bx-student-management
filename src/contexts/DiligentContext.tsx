@@ -17,19 +17,17 @@ interface FetchRollCallDatesProps {
 interface DiligentContextProps {
   attendances?: Attendances | null
   rollCallDates: Record<string, string>
-  fetchRollCallDates:
-    | (({
-        classId,
-        schoolYearId,
-        semesterId,
-      }: FetchRollCallDatesProps) => Promise<Record<string, string> | null>)
-    | null
+  fetchRollCallDates: ({
+    classId,
+    schoolYearId,
+    semesterId,
+  }: FetchRollCallDatesProps) => Promise<Record<string, string> | null>
 }
 
 const DiligentContextDefaultValue = {
   attendances: null,
   rollCallDates: {},
-  fetchRollCallDates: null,
+  fetchRollCallDates: () => Promise.resolve({}),
 } as DiligentContextProps
 
 const DiligentContext = createContext(DiligentContextDefaultValue)

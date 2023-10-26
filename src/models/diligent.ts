@@ -6,10 +6,18 @@ export interface AttendanceProps {
   tl: boolean
   gl: boolean
   note?: string
+  givingNotice?: boolean
+  adoration?: boolean
 }
 
 export interface OnSubmitAttendanceProps {
   value: boolean
   rollCallKey: string
   isMissal: boolean
+}
+
+export interface NoteForm {
+  givingNotice: boolean
+  adoration: boolean
+  note: string
 }

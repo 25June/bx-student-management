@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles'
 import ShortTextIcon from '@mui/icons-material/ShortText'
 import { useDialogContext } from 'contexts/DialogContext'
 import { DialogType, RollCallDateActionType } from 'constant/common'
-import { grey } from '@mui/material/colors'
+import { grey, amber, teal } from '@mui/material/colors'
 import { get } from 'lodash'
 import { useClassContext } from 'contexts/ClassContext'
 
@@ -40,6 +40,8 @@ const SingleDateViewComponent = ({
   const { disableUpdate } = useClassContext()
   const { openDialog } = useDialogContext()
   const note = get(attendance, [`${rollCallDate.key}`, 'note'], '')
+  const givingNotice = get(attendance, [`${rollCallDate.key}`, 'givingNotice'], false)
+  const adoration = get(attendance, [`${rollCallDate.key}`, 'adoration'], false)
   return (
     <Item
       sx={{
@@ -68,6 +70,8 @@ const SingleDateViewComponent = ({
               studentId: student.id,
               rollCallDateId: rollCallDate.key,
               note,
+              givingNotice,
+              adoration,
             })
           }
           disabled={disableUpdate}
@@ -76,9 +80,23 @@ const SingleDateViewComponent = ({
         </IconButton>
       </Box>
       {note && (
-        <Typography fontSize={'0.75rem'} sx={{ color: grey[600], textAlign: 'left' }}>
-          <b>Ghi chú:</b> <i>{note}</i>
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '0.125rem' }}>
+          {note && (
+            <Typography fontSize={'0.75rem'} sx={{ color: grey[600], textAlign: 'left' }}>
+              <b>Ghi chú:</b> <i>{note}</i>
+            </Typography>
+          )}
+          {givingNotice && (
+            <Typography fontSize={'0.75rem'} sx={{ color: amber[800], textAlign: 'left' }}>
+              Vắng có phép
+            </Typography>
+          )}
+          {adoration && (
+            <Typography fontSize={'0.75rem'} sx={{ color: teal[800], textAlign: 'left' }}>
+              Có đi chầu
+            </Typography>
+          )}
+        </Box>
       )}
     </Item>
   )

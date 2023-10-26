@@ -7,6 +7,9 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  FormControlLabel,
+  Checkbox,
+  Box,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import ClearIcon from '@mui/icons-material/Clear'
@@ -14,35 +17,31 @@ import CheckIcon from '@mui/icons-material/Check'
 import { updateNoteAttendance } from 'services/diligent'
 import { useClassContext } from 'contexts/ClassContext'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { NoteForm } from 'models/diligent'
 
-interface NoteDialogComponentProps {
+interface Props {
   onClose: (refreshData?: boolean) => void
   isOpen: boolean
-  note: string
   rollCallDateId: string
   studentId: string
+  data: NoteForm
 }
 
-const NoteDialogComponent = ({
-  onClose,
-  isOpen,
-  note,
-  rollCallDateId,
-  studentId,
-}: NoteDialogComponentProps) => {
+const NoteDialogComponent = ({ onClose, isOpen, data, rollCallDateId, studentId }: Props) => {
   const { classId, schoolYearId, semesterId } = useClassContext()
   const { showSnackbar } = useSnackbarContext()
-  const { handleSubmit, control } = useForm<{ note: string }>({
-    defaultValues: { note: note || '' },
+  const { handleSubmit, control, setValue, watch } = useForm<NoteForm>({
+    defaultValues: { ...data },
   })
+
   const [isLoading, setLoading] = useState<boolean>(false)
 
-  const onSubmit = (data: { note: string }) => {
+  const onSubmit = (data: NoteForm) => {
     setLoading(true)
     updateNoteAttendance({
       rollDateId: rollCallDateId,
       studentId,
-      note: data.note,
+      data,
       classId,
       schoolYearId,
       semesterId,
@@ -81,6 +80,36 @@ const NoteDialogComponent = ({
             />
           )}
         />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                sx={{ padding: 0.5 }}
+                size={'small'}
+                checked={watch('adoration')}
+                onChange={(event) => {
+                  setValue('adoration', event.target.checked)
+                }}
+              />
+            }
+            label="Chầu Thánh Thể"
+            sx={{ margin: 0, fontSize: '0.825rem' }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                sx={{ padding: 0.5 }}
+                size={'small'}
+                checked={watch('givingNotice')}
+                onChange={(event) => {
+                  setValue('givingNotice', event.target.checked)
+                }}
+              />
+            }
+            label="Vắng có phép"
+            sx={{ margin: 0, fontSize: '0.825rem' }}
+          />
+        </Box>
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px', position: 'relative' }}>
         <Button

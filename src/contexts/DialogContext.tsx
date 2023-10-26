@@ -28,6 +28,8 @@ type Attendance = {
   note: string
   studentId: string
   rollCallDateId: string
+  givingNotice: boolean
+  adoration: boolean
 }
 type DataType = Student | Assessment | RollCallDate | Attendance | null
 
@@ -124,7 +126,7 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
         <NoteDialogComponent
           isOpen={open}
           onClose={handleCloseDialog}
-          note={(data as Attendance)?.note || ''}
+          data={data as Attendance}
           rollCallDateId={(data as Attendance)?.rollCallDateId || ''}
           studentId={(data as Attendance)?.studentId}
         />
