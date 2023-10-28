@@ -14,7 +14,6 @@ const AttendanceHeaderComponent = ({
   rollCallDates = [],
   openDiligentDialog,
 }: AttendanceHeaderProps) => {
-  const isMobile = useIsMobile()
   const onOpenDiligentDialog = (
     event: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>,
     date: string,
@@ -29,33 +28,36 @@ const AttendanceHeaderComponent = ({
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        gap: isMobile ? 1 : 2,
+        gap: 2,
       }}
     >
-      {rollCallDates.map((sortedRollCall: RollCallDate) => (
-        <Box
-          key={`date-${sortedRollCall.key}`}
-          sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end', width: isMobile ? 64 : 84 }}
-        >
-          <Typography variant={'body1'} sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}>
-            {formatDisplayTable(sortedRollCall.dateAsString)}
-          </Typography>
-          <IconButton
-            aria-label="update"
-            size={'small'}
-            sx={{ padding: isMobile ? 0 : 0.625 }}
-            onClick={(event) =>
-              onOpenDiligentDialog(event, sortedRollCall.dateAsString, sortedRollCall.key)
-            }
+      {rollCallDates
+        .sort((a, b) => (a.dateAsNumber > b.dateAsNumber ? 1 : -1))
+        .map((sortedRollCall: RollCallDate) => (
+          <Box
+            key={`date-${sortedRollCall.key}`}
+            sx={{
+              display: 'flex',
+              gap: 0.5,
+              justifyContent: 'center',
+              width: 120,
+            }}
           >
-            <EditIcon
-              fontSize={'small'}
-              color={'action'}
-              sx={{ fontSize: isMobile ? '0.75rem' : '1rem' }}
-            />
-          </IconButton>
-        </Box>
-      ))}
+            <Typography variant={'body1'} sx={{ fontSize: '1rem' }}>
+              {formatDisplayTable(sortedRollCall.dateAsString)}
+            </Typography>
+            <IconButton
+              aria-label="update"
+              size={'small'}
+              sx={{ padding: 0.625 }}
+              onClick={(event) =>
+                onOpenDiligentDialog(event, sortedRollCall.dateAsString, sortedRollCall.key)
+              }
+            >
+              <EditIcon fontSize={'small'} color={'action'} sx={{ fontSize: '1rem' }} />
+            </IconButton>
+          </Box>
+        ))}
     </Box>
   )
 }

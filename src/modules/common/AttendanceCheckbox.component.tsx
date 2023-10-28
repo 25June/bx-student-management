@@ -1,9 +1,10 @@
 import React, { ChangeEvent } from 'react'
-import { Box, Checkbox } from '@mui/material'
-import FormControlLabel from '@mui/material/FormControlLabel'
+import { get } from 'lodash'
+import { Box, Checkbox, Typography, FormControlLabel } from '@mui/material'
 import { RollCallDate } from 'utils/customHooks'
 import { useIsMobile } from 'utils/common'
 import { AttendanceProps, OnSubmitAttendanceProps } from 'models/diligent'
+import { grey, amber, teal } from '@mui/material/colors'
 
 interface OnCheckboxChangeProps {
   event: ChangeEvent<HTMLInputElement>
@@ -26,6 +27,7 @@ const AttendanceCheckboxComponent = ({
   const handleChange = ({ event, rollCallKey, isMissal }: OnCheckboxChangeProps) => {
     onSubmitAttendance({ value: event.target.checked, rollCallKey, isMissal })
   }
+
   return (
     <Box
       sx={{
@@ -35,36 +37,70 @@ const AttendanceCheckboxComponent = ({
         gap: isMobile ? 1 : 2,
       }}
     >
-      {rollCallDates.map(({ key }: { key: string; dateAsString: string }) => (
-        <Box
-          key={`checkbox-date-${key}`}
-          sx={{ display: 'flex', gap: 0.5, width: isMobile ? 42 : 84, flexDirection: 'column' }}
-        >
-          <FormControlLabel
-            control={
-              <Checkbox
-                sx={{ padding: isMobile ? 0.5 : 1, marginRight: isMobile ? 0 : 2 }}
-                size={isMobile ? 'small' : 'medium'}
-                checked={!!(attendance && attendance?.[key] && attendance[key].tl)}
-                onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: true })}
-              />
-            }
-            label="TL"
-          />
+      {rollCallDates.map(({ key }: { key: string; dateAsString: string }) => {
+        const note = get(attendance, [`${key}`, 'note'], '')
+        const givingNotice = get(attendance, [`${key}`, 'givingNotice'], false)
+        const adoration = get(attendance, [`${key}`, 'adoration'], false)
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                sx={{ padding: isMobile ? 0.5 : 1, marginRight: isMobile ? 0 : 2 }}
-                size={isMobile ? 'small' : 'medium'}
-                checked={!!(attendance && attendance?.[key] && attendance[key].gl)}
-                onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: false })}
+        return (
+          <Box key={`checkbox-date-${key}`}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '1rem',
+                width: 120,
+                rowGap: '0.25rem',
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    sx={{ padding: 1 }}
+                    size={isMobile ? 'small' : 'medium'}
+                    checked={!!(attendance && attendance?.[key] && attendance[key].tl)}
+                    onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: true })}
+                  />
+                }
+                sx={{ marginRight: 0 }}
+                label="TL"
               />
-            }
-            label={'GL'}
-          />
-        </Box>
-      ))}
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    sx={{ padding: 1 }}
+                    size={isMobile ? 'small' : 'medium'}
+                    checked={!!(attendance && attendance?.[key] && attendance[key].gl)}
+                    onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: false })}
+                  />
+                }
+                label={'GL'}
+                sx={{ marginRight: 0 }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '0.125rem',
+                width: '100%',
+              }}
+            >
+              {givingNotice && (
+                <Typography fontSize={'0.75rem'} sx={{ color: amber[800], textAlign: 'left' }}>
+                  Có phép
+                </Typography>
+              )}
+              {adoration && (
+                <Typography fontSize={'0.75rem'} sx={{ color: teal[800], textAlign: 'left' }}>
+                  Có chầu
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        )
+      })}
     </Box>
   )
 }
