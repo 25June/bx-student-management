@@ -69,7 +69,6 @@ const OverviewReportComponent = ({ onViewDetail }: Props) => {
 
   return (
     <Box sx={{ marginTop: '1rem' }}>
-      Tổng kết Các Ngày Điểm Danh
       {groupDate.length !== 0 && <DiligentReport data={groupDate} onViewDetail={onViewDetail} />}
     </Box>
   )

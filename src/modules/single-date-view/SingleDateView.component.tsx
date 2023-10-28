@@ -79,25 +79,23 @@ const SingleDateViewComponent = ({
           <ShortTextIcon color={'disabled'} />
         </IconButton>
       </Box>
-      {note && (
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '0.125rem' }}>
-          {note && (
-            <Typography fontSize={'0.75rem'} sx={{ color: grey[600], textAlign: 'left' }}>
-              <b>Ghi chú:</b> <i>{note}</i>
-            </Typography>
-          )}
-          {givingNotice && (
-            <Typography fontSize={'0.75rem'} sx={{ color: amber[800], textAlign: 'left' }}>
-              Vắng có phép
-            </Typography>
-          )}
-          {adoration && (
-            <Typography fontSize={'0.75rem'} sx={{ color: teal[800], textAlign: 'left' }}>
-              Có đi chầu
-            </Typography>
-          )}
-        </Box>
-      )}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '0.125rem' }}>
+        {note && (
+          <Typography fontSize={'0.75rem'} sx={{ color: grey[600], textAlign: 'left' }}>
+            <b>Ghi chú:</b> <i>{note}</i>
+          </Typography>
+        )}
+        {givingNotice && (
+          <Typography fontSize={'0.75rem'} sx={{ color: amber[800], textAlign: 'left' }}>
+            Vắng có phép
+          </Typography>
+        )}
+        {adoration && (
+          <Typography fontSize={'0.75rem'} sx={{ color: teal[800], textAlign: 'left' }}>
+            Có đi chầu
+          </Typography>
+        )}
+      </Box>
     </Item>
   )
 }

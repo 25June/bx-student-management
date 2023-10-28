@@ -9,10 +9,10 @@ import {
   Avatar,
   ListItemText,
 } from '@mui/material'
-import { pink, red } from '@mui/material/colors'
 import { KeyValueProp } from 'models/common'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import IconButton from '@mui/material/IconButton'
+import { useClassContext } from 'contexts/ClassContext'
 
 const ProgressBarContainer = ({
   title,
@@ -38,7 +38,7 @@ const ProgressBarContainer = ({
         sx={{
           flex: 1,
           height: 20,
-          background: backgroundTotal,
+          backgroundColor: backgroundTotal,
           width: '100%',
           borderRadius: '5px',
         }}
@@ -46,7 +46,7 @@ const ProgressBarContainer = ({
         <Box
           sx={{
             width: `${(current / total) * 100}%`,
-            background: backgroundCurrent,
+            backgroundColor: backgroundCurrent,
             textAlign: 'right',
             borderRadius: '5px',
           }}
@@ -65,7 +65,9 @@ const DiligentReportItem = ({
   data: OverviewReport
   onViewDetail: (date: KeyValueProp, month: string) => void
 }) => {
+  const { classId } = useClassContext()
   const splitDate = data.date.dateAsString.split('-')
+  const color = classId.slice(0, 2)
   return (
     <>
       <ListItem alignItems={'flex-start'} disableGutters={true}>
@@ -75,8 +77,7 @@ const DiligentReportItem = ({
             sx={{
               width: 48,
               height: 48,
-              backgroundImage:
-                'linear-gradient(to right top, #ffafbd, #ffb3b4, #ffb7ac, #ffbda5, #ffc3a0)',
+              backgroundColor: `${color}.dark`,
             }}
           >
             {splitDate?.length !== 0 && (
@@ -117,15 +118,15 @@ const DiligentReportItem = ({
                 <ProgressBarContainer
                   current={data.tl}
                   total={data.total}
-                  backgroundCurrent={'#ffafbd'}
-                  backgroundTotal={pink[50]}
+                  backgroundCurrent={`${color}.main`}
+                  backgroundTotal={`${color}.light`}
                   title={'Thánh Lễ'}
                 />
                 <ProgressBarContainer
                   current={data.gl}
                   total={data.total}
-                  backgroundCurrent={'#ffc3a0'}
-                  backgroundTotal={red[50]}
+                  backgroundCurrent={`${color}.dark`}
+                  backgroundTotal={`${color}.light`}
                   title={'Giáo Lý'}
                 />
               </Box>
