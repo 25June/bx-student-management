@@ -18,6 +18,7 @@ import InfoPanelComponent from 'modules/info-panel/InfoPanel.component'
 import ScoreBookPanelComponent from 'modules/score-book-panel/ScoreBookPanel.component'
 import TableComponent from 'modules/Table/Table.component'
 import SingleInfoViewComponent from 'modules/student/SingleInfoViewComponent'
+import DiligentPanelContentComponent from 'modules/diligent/DiligentPanelContent.component'
 
 enum DisplayType {
   CARD = 'card',
@@ -25,8 +26,9 @@ enum DisplayType {
 }
 
 const HomeComponent = () => {
-  const [isOpenInfoPanel, setOpenInfoPanel] = useState(false)
-  const [isOpenScoreBook, setOpenScoreBook] = useState(false)
+  const [isOpenInfoPanel, setOpenInfoPanel] = useState<boolean>(false)
+  const [isOpenScoreBook, setOpenScoreBook] = useState<boolean>(false)
+  const [isOpenDiligentPanel, setOpenDiligentPanel] = useState<boolean>(false)
   const [viewDeletedStudent, setViewDeletedStudent] = useState<boolean>(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<DisplayType>(DisplayType.TABLE)
@@ -69,17 +71,19 @@ const HomeComponent = () => {
       return
     }
     if (type === StudentActionType.VIEW_SCORE_BOOK) {
-      Promise.resolve().then(() => {
-        setSelectedStudent(data)
-        setOpenScoreBook(true)
-      })
+      setSelectedStudent(data)
+      setOpenScoreBook(true)
       return
     }
     if (type === StudentActionType.VIEW_STUDENT) {
-      Promise.resolve().then(() => {
-        setSelectedStudent(data)
-        setOpenInfoPanel(true)
-      })
+      setSelectedStudent(data)
+      setOpenInfoPanel(true)
+      return
+    }
+
+    if (type === StudentActionType.VIEW_STUDENT_DILIGENT) {
+      setSelectedStudent(data)
+      setOpenDiligentPanel(true)
       return
     }
     const student = students.find((std: Student) => std.id === data.id)
@@ -222,6 +226,11 @@ const HomeComponent = () => {
           student={selectedStudent}
           onClose={() => setOpenInfoPanel(false)}
           onClickAction={handleClickAction}
+        />
+        <DiligentPanelContentComponent
+          open={isOpenDiligentPanel}
+          onClose={() => setOpenDiligentPanel(false)}
+          student={selectedStudent}
         />
       </Box>
     </Box>

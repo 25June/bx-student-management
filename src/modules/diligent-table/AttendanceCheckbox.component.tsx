@@ -1,10 +1,13 @@
 import React, { ChangeEvent } from 'react'
 import { get } from 'lodash'
-import { Box, Checkbox, Typography, FormControlLabel } from '@mui/material'
+import { Box, Checkbox, Typography, IconButton, FormControlLabel } from '@mui/material'
 import { RollCallDate } from 'utils/customHooks'
-import { useIsMobile } from 'utils/common'
 import { AttendanceProps, OnSubmitAttendanceProps } from 'models/diligent'
-import { grey, amber, teal } from '@mui/material/colors'
+import { amber, teal } from '@mui/material/colors'
+import { useDialogContext } from 'contexts/DialogContext'
+import { DialogType, RollCallDateActionType } from 'constant/common'
+import { useClassContext } from 'contexts/ClassContext'
+import ShortTextIcon from '@mui/icons-material/ShortText'
 
 interface OnCheckboxChangeProps {
   event: ChangeEvent<HTMLInputElement>
@@ -12,7 +15,8 @@ interface OnCheckboxChangeProps {
   isMissal: boolean
 }
 
-interface AttendanceCheckboxComponentProps {
+interface Props {
+  studentId: string
   rollCallDates: RollCallDate[]
   attendance: Record<string, AttendanceProps>
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
@@ -22,8 +26,11 @@ const AttendanceCheckboxComponent = ({
   rollCallDates = [],
   attendance,
   onSubmitAttendance,
-}: AttendanceCheckboxComponentProps) => {
-  const isMobile = useIsMobile()
+  studentId,
+}: Props) => {
+  const { openDialog } = useDialogContext()
+  const { disableUpdate } = useClassContext()
+
   const handleChange = ({ event, rollCallKey, isMissal }: OnCheckboxChangeProps) => {
     onSubmitAttendance({ value: event.target.checked, rollCallKey, isMissal })
   }
@@ -34,7 +41,7 @@ const AttendanceCheckboxComponent = ({
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        gap: isMobile ? 1 : 2,
+        gap: 2,
       }}
     >
       {rollCallDates.map(({ key }: { key: string; dateAsString: string }) => {
@@ -49,7 +56,7 @@ const AttendanceCheckboxComponent = ({
                 display: 'flex',
                 justifyContent: 'space-between',
                 gap: '1rem',
-                width: 120,
+                width: 135,
                 rowGap: '0.25rem',
               }}
             >
@@ -57,7 +64,7 @@ const AttendanceCheckboxComponent = ({
                 control={
                   <Checkbox
                     sx={{ padding: 1 }}
-                    size={isMobile ? 'small' : 'medium'}
+                    size={'medium'}
                     checked={!!(attendance && attendance?.[key] && attendance[key].tl)}
                     onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: true })}
                   />
@@ -70,7 +77,7 @@ const AttendanceCheckboxComponent = ({
                 control={
                   <Checkbox
                     sx={{ padding: 1 }}
-                    size={isMobile ? 'small' : 'medium'}
+                    size={'medium'}
                     checked={!!(attendance && attendance?.[key] && attendance[key].gl)}
                     onChange={(event) => handleChange({ event, rollCallKey: key, isMissal: false })}
                   />
@@ -83,17 +90,33 @@ const AttendanceCheckboxComponent = ({
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
+                alignItems: 'center',
                 gap: '0.125rem',
                 width: '100%',
               }}
             >
+              <IconButton
+                onClick={() =>
+                  openDialog(DialogType.STUDY_DATE_DIALOG, RollCallDateActionType.ADD_NOTE, {
+                    studentId,
+                    rollCallDateId: key,
+                    note,
+                    givingNotice,
+                    adoration,
+                  })
+                }
+                disabled={disableUpdate}
+                sx={{ padding: 0 }}
+              >
+                <ShortTextIcon color={'disabled'} />
+              </IconButton>
               {givingNotice && (
-                <Typography fontSize={'0.75rem'} sx={{ color: amber[800], textAlign: 'left' }}>
+                <Typography fontSize={'0.625rem'} sx={{ color: amber[800], textAlign: 'left' }}>
                   Có phép
                 </Typography>
               )}
               {adoration && (
-                <Typography fontSize={'0.75rem'} sx={{ color: teal[800], textAlign: 'left' }}>
+                <Typography fontSize={'0.625rem'} sx={{ color: teal[800], textAlign: 'left' }}>
                   Có chầu
                 </Typography>
               )}

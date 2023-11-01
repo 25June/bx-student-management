@@ -3,7 +3,6 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { formatDisplayTable } from 'utils/datetime'
 import EditIcon from '@mui/icons-material/Edit'
 import { RollCallDate } from 'utils/customHooks'
-import { useIsMobile } from 'utils/common'
 
 interface AttendanceHeaderProps {
   rollCallDates: RollCallDate[]
@@ -40,7 +39,7 @@ const AttendanceHeaderComponent = ({
               display: 'flex',
               gap: 0.5,
               justifyContent: 'center',
-              width: 120,
+              width: 135,
             }}
           >
             <Typography variant={'body1'} sx={{ fontSize: '1rem' }}>

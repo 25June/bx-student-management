@@ -71,16 +71,6 @@ const SignUpComponent = () => {
       setSnackbarContent({ severity: 'error', message: `Mật khẩu không trùng khớp` })
       setOpenSnackbar(true)
     }
-    // createUserWithEmailAndPassword(auth, values.email, values.password)
-    //   .then(({ user }: UserCredential) => {
-    //     setSnackbarContent({ severity: 'success', message: `${user.email} Đăng nhập thành công` })
-    //     setOpenSnackbar(true)
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //     setSnackbarContent({ severity: 'error', message: `Đăng nhập thất bại` })
-    //     setOpenSnackbar(true)
-    //   })
   }
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)

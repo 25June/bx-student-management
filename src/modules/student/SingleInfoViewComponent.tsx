@@ -11,6 +11,7 @@ import { restoreStudent } from 'services/student'
 import { useClassContext } from 'contexts/ClassContext'
 import StudentIcon from 'modules/common/StudentIcon'
 import HolyBibleIcon from 'modules/common/HolyBibleIcon'
+import HolyGrailIcon from 'modules/common/HolyGrailIcon'
 
 interface SingleScoreViewComponentProps {
   student: Student
@@ -28,10 +29,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComponentProps) => {
   const { disableUpdate } = useClassContext()
-  // const transferHistoryContent =
-  //   student.transferHistory && student.transferHistory[0] !== 'new'
-  //     ? { label: `Chuyển từ ${student.transferHistory[0]}`, color: 'info' }
-  //     : { label: 'Thiếu nhi mới', color: 'success' }
   return (
     <Item
       sx={{
@@ -43,6 +40,8 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexDirection: 'column',
+          width: '100%',
         }}
       >
         <TableFullNameCellComponent
@@ -52,13 +51,14 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
           firstName={student.firstName}
           gender={!!student.gender}
         />
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-evenly', gap: 1, width: '100%' }}>
           {!student.isDeleted && (
             <>
               <IconButton
                 color={'info'}
                 onClick={() => onClickAction(student, StudentActionType.VIEW_SCORE_BOOK)}
                 disabled={disableUpdate}
+                size="small"
               >
                 <HolyBibleIcon color={'info'} />
               </IconButton>
@@ -66,8 +66,17 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
                 color={'info'}
                 onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
                 disabled={disableUpdate}
+                size="small"
               >
                 <StudentIcon color={'info'} />
+              </IconButton>
+              <IconButton
+                color={'info'}
+                onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT_DILIGENT)}
+                disabled={disableUpdate}
+                size="small"
+              >
+                <HolyGrailIcon color={'info'} />
               </IconButton>
             </>
           )}

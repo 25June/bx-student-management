@@ -49,7 +49,6 @@ const DiligentComponent = () => {
           if (res) {
             const sortedMonthDate = groupRollCallToSortedMonths(res)
             setGroupRollDate(sortedMonthDate)
-            // setSelectedMonth(Object.keys(sortedMonthDate)[0])
             return
           }
           setGroupRollDate({})

@@ -5,6 +5,7 @@ import { Student } from 'models'
 import { buildImageUrl, useIsMobile } from 'utils/common'
 import StudentIcon from 'modules/common/StudentIcon'
 import HolyBibleIcon from 'modules/common/HolyBibleIcon'
+import HolyGrailIcon from 'modules/common/HolyGrailIcon'
 import { restoreStudent } from 'services/student'
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import { useClassContext } from 'contexts/ClassContext'
@@ -71,8 +72,10 @@ const CardComponent = ({
       <CardActions
         sx={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: isMobile ? 'center' : 'space-around',
-          gap: isMobile ? 1 : 2,
+          columnGap: isMobile ? 1 : 2,
+          rowGap: 1,
         }}
         disableSpacing={true}
       >
@@ -91,14 +94,14 @@ const CardComponent = ({
         {!student.isDeleted && (
           <>
             <Button
-              startIcon={<StudentIcon color={'info'} />}
+              startIcon={<HolyGrailIcon color={'info'} />}
               size="small"
-              onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+              onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT_DILIGENT)}
               color="info"
               variant="outlined"
               disabled={disableUpdate}
             >
-              Thông Tin
+              Chuyên Cần
             </Button>
             <Button
               startIcon={<HolyBibleIcon color={'info'} />}
@@ -109,6 +112,16 @@ const CardComponent = ({
               disabled={disableUpdate}
             >
               Bảng Điểm
+            </Button>
+            <Button
+              startIcon={<StudentIcon color={'info'} />}
+              size="small"
+              onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
+              color="info"
+              variant="outlined"
+              disabled={disableUpdate}
+            >
+              Thông Tin
             </Button>
           </>
         )}
