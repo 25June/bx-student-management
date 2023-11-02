@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Box, TextField, Button, Chip, CircularProgress, InputAdornment, IconButton } from '@mui/material'
+import {
+  Box,
+  TextField,
+  Button,
+  Chip,
+  CircularProgress,
+  InputAdornment,
+  IconButton,
+} from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
@@ -18,19 +26,14 @@ import { formatPhoneWithoutDot } from 'utils/formatDataForTable'
 import EditInfoPanelComponent from 'modules/info-panel/EditInfoPanel.component'
 import CroppingImageComponent from 'modules/cropping-image/CroppingImage.component'
 
-interface InfoPanelComponentProps {
+interface Props {
   isOpen: boolean
   student?: Student
   onClose: () => void
   onClickAction: (student: any, actionType: StudentActionType) => void
 }
 
-const InfoPanelComponent = ({
-  isOpen,
-  student,
-  onClose,
-  onClickAction,
-}: InfoPanelComponentProps) => {
+const InfoPanelComponent = ({ isOpen, student, onClose, onClickAction }: Props) => {
   const [editMode, setEditMode] = useState<boolean>(false)
   const [isOpenCroppingDialog, setOpenCroppingDialog] = useState<boolean>(false)
   const { showSnackbar } = useSnackbarContext()
@@ -77,8 +80,8 @@ const InfoPanelComponent = ({
       }}
     >
       {student && (
-        <Box pt={9} pr={2} pl={2} mb={5} key={student.id}>
-          <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'} mb={1}>
+        <Box pt={2} pr={2} pl={2} mb={5} key={student.id}>
+          <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'} mb={2}>
             <Chip
               color={'default'}
               size={'small'}
@@ -215,21 +218,24 @@ const InfoPanelComponent = ({
                     label={'Số điện thoại'}
                     InputLabelProps={{ shrink: true }}
                     InputProps={{
-                      readOnly: true, endAdornment: (
+                      readOnly: true,
+                      endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="copy icon"
                             onClick={() => {
-                              navigator.clipboard.writeText(formatPhoneWithoutDot(student.phones[0]?.number || '')).then(() => {
-                                showSnackbar('Copied', 'success')
-                              })
+                              navigator.clipboard
+                                .writeText(formatPhoneWithoutDot(student.phones[0]?.number || ''))
+                                .then(() => {
+                                  showSnackbar('Copied', 'success')
+                                })
                             }}
                             edge="end"
                           >
-                            <ContentCopyIcon fontSize='small' />
+                            <ContentCopyIcon fontSize="small" />
                           </IconButton>
                         </InputAdornment>
-                      )
+                      ),
                     }}
                     value={student.phones[0].number}
                     sx={{ width: '100%' }}
@@ -258,21 +264,24 @@ const InfoPanelComponent = ({
                     label={'Số điện thoại'}
                     InputLabelProps={{ shrink: true }}
                     InputProps={{
-                      readOnly: true, endAdornment: (
+                      readOnly: true,
+                      endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
                             aria-label="copy icon"
                             onClick={() => {
-                              navigator.clipboard.writeText(formatPhoneWithoutDot(student.phones[1]?.number || '')).then(() => {
-                                showSnackbar('Copied', 'success')
-                              })
+                              navigator.clipboard
+                                .writeText(formatPhoneWithoutDot(student.phones[1]?.number || ''))
+                                .then(() => {
+                                  showSnackbar('Copied', 'success')
+                                })
                             }}
                             edge="end"
                           >
-                            <ContentCopyIcon fontSize='small' />
+                            <ContentCopyIcon fontSize="small" />
                           </IconButton>
                         </InputAdornment>
-                      )
+                      ),
                     }}
                     value={student.phones[1].number}
                     sx={{ width: '100%' }}
@@ -308,16 +317,18 @@ const InfoPanelComponent = ({
                             <IconButton
                               aria-label="copy icon"
                               onClick={() => {
-                                navigator.clipboard.writeText(formatPhoneWithoutDot(student.phones[2]?.number || '')).then(() => {
-                                  showSnackbar('Copied', 'success')
-                                })
+                                navigator.clipboard
+                                  .writeText(formatPhoneWithoutDot(student.phones[2]?.number || ''))
+                                  .then(() => {
+                                    showSnackbar('Copied', 'success')
+                                  })
                               }}
                               edge="end"
                             >
-                              <ContentCopyIcon fontSize='small' />
+                              <ContentCopyIcon fontSize="small" />
                             </IconButton>
                           </InputAdornment>
-                        )
+                        ),
                       }}
                       value={student.phones[2]?.number || ''}
                       sx={{ width: '100%' }}
@@ -359,14 +370,9 @@ const InfoPanelComponent = ({
             )}
           </Box>
         </Box>
-      )
-      }
-      {
-        !student && (
-          <CircularProgress size={'3rem'} />
-        )
-      }
-    </MuiDrawer >
+      )}
+      {!student && <CircularProgress size={'3rem'} />}
+    </MuiDrawer>
   )
 }
 

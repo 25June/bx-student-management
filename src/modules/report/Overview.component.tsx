@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { useEffect, useMemo } from 'react'
-import { flatMap, get, sortBy, isEmpty } from 'lodash'
+import { flatMap, get, orderBy, isEmpty } from 'lodash'
 import { useDiligentContext } from 'contexts/DiligentContext'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
@@ -56,11 +56,13 @@ const OverviewReportComponent = ({ onViewDetail }: Props) => {
   const groupDate = useMemo(() => {
     if (!isEmpty(rollCallDates) && !isEmpty(attendances)) {
       const sortedMonthDate = groupRollCallToSortedMonths(rollCallDates)
-      const sortedGroupDate = sortBy(flatMap(Object.values(sortedMonthDate)), ['dateAsNumber']).map(
-        (date) => {
-          return countStudentPresentPerDate(date, attendances, students)
-        }
-      )
+      const sortedGroupDate = orderBy(
+        flatMap(Object.values(sortedMonthDate)),
+        ['dateAsNumber'],
+        ['desc']
+      ).map((date) => {
+        return countStudentPresentPerDate(date, attendances, students)
+      })
       return sortedGroupDate
     }
     return []

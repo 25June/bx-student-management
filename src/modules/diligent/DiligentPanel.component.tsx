@@ -7,18 +7,18 @@ import { OnSubmitAttendanceProps } from 'models/diligent'
 import { formatDisplayTable } from 'utils/datetime'
 import { groupRollCallToSortedMonths, RollCallDate } from 'utils/customHooks'
 import DiligentFormComponent from 'modules/diligent/DiligentForm.component'
-import { get, isEmpty, sortBy } from 'lodash'
+import { get, isEmpty, orderBy } from 'lodash'
 import { useClassContext } from 'contexts/ClassContext'
 import { useDiligentContext } from 'contexts/DiligentContext'
 import { submitAttendance } from 'services/diligent'
 
-interface DiligentPanelComponentProps {
+interface Props {
   student?: Student
   open: boolean
   onClose: () => void
 }
 
-const DiligentPanelContentComponent = ({ student, open, onClose }: DiligentPanelComponentProps) => {
+const DiligentPanelComponent = ({ student, open, onClose }: Props) => {
   const { attendances, rollCallDates, fetchRollCallDates } = useDiligentContext()
   const { disableUpdate, classId, schoolYearId, semesterId } = useClassContext()
   const [groupRollDate, setGroupRollDate] = useState<Record<string, RollCallDate[]>>()
@@ -63,8 +63,8 @@ const DiligentPanelContentComponent = ({ student, open, onClose }: DiligentPanel
       sx={{ width: 325, maxWidth: 325 }}
     >
       {student && attendance && !isEmpty(groupRollDate) && (
-        <Box pt={9} pr={2} pl={2} mb={5}>
-          <Box display={'flex'} alignItems={'center'} mb={1}>
+        <Box pt={2} pr={2} pl={2} mb={5}>
+          <Box display={'flex'} alignItems={'center'} mb={2}>
             <Chip
               color={'default'}
               size={'small'}
@@ -88,40 +88,42 @@ const DiligentPanelContentComponent = ({ student, open, onClose }: DiligentPanel
             <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
               {`${student.lastName} ${student.firstName}`}
             </Box>
-            {sortBy(Object.keys(groupRollDate)).map((monthKey) => (
+            {orderBy(Object.keys(groupRollDate), [], ['desc']).map((monthKey) => (
               <Box key={monthKey}>
                 <Typography sx={{ margin: '0.5rem 0' }}>{monthKey}</Typography>
-                {groupRollDate[monthKey].map(({ dateAsString, key }) => (
-                  <FormControl
-                    component="fieldset"
-                    variant="standard"
-                    key={`checkbox-date-${key}`}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-evenly',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      width: '100%',
-                      paddingTop: 1,
-                      paddingBottom: 1,
-                      borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                      '&:last-child': { borderBottom: 0 },
-                      boxSizing: 'border-box',
-                    }}
-                  >
-                    <FormLabel component="span" sx={{ flexGrow: 1 }}>
-                      {formatDisplayTable(dateAsString)}
-                    </FormLabel>
-                    <DiligentFormComponent
-                      onSubmitAttendance={onSubmitAttendance}
-                      rollCallKey={key}
-                      TL={!!get(attendance, [`${key}`, 'tl'], false)}
-                      GL={!!get(attendance, [`${key}`, 'gl'], false)}
-                      disabled={disableUpdate}
-                    />
-                  </FormControl>
-                ))}
+                {orderBy(groupRollDate[monthKey], ['dateAsNumber'], ['desc']).map(
+                  ({ dateAsString, key }) => (
+                    <FormControl
+                      component="fieldset"
+                      variant="standard"
+                      key={`checkbox-date-${key}`}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-evenly',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        width: '100%',
+                        paddingTop: 1,
+                        paddingBottom: 1,
+                        borderBottom: '1px solid rgba(224, 224, 224, 1)',
+                        '&:last-child': { borderBottom: 0 },
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <FormLabel component="span" sx={{ flexGrow: 1 }}>
+                        {formatDisplayTable(dateAsString)}
+                      </FormLabel>
+                      <DiligentFormComponent
+                        onSubmitAttendance={onSubmitAttendance}
+                        rollCallKey={key}
+                        TL={!!get(attendance, [`${key}`, 'tl'], false)}
+                        GL={!!get(attendance, [`${key}`, 'gl'], false)}
+                        disabled={disableUpdate}
+                      />
+                    </FormControl>
+                  )
+                )}
               </Box>
             ))}
           </Box>
@@ -131,4 +133,4 @@ const DiligentPanelContentComponent = ({ student, open, onClose }: DiligentPanel
   )
 }
 
-export default DiligentPanelContentComponent
+export default DiligentPanelComponent

@@ -18,7 +18,7 @@ import InfoPanelComponent from 'modules/info-panel/InfoPanel.component'
 import ScoreBookPanelComponent from 'modules/score-book-panel/ScoreBookPanel.component'
 import TableComponent from 'modules/Table/Table.component'
 import SingleInfoViewComponent from 'modules/student/SingleInfoViewComponent'
-import DiligentPanelContentComponent from 'modules/diligent/DiligentPanelContent.component'
+import DiligentPanelComponent from 'modules/diligent/DiligentPanel.component'
 
 enum DisplayType {
   CARD = 'card',
@@ -227,7 +227,7 @@ const HomeComponent = () => {
           onClose={() => setOpenInfoPanel(false)}
           onClickAction={handleClickAction}
         />
-        <DiligentPanelContentComponent
+        <DiligentPanelComponent
           open={isOpenDiligentPanel}
           onClose={() => setOpenDiligentPanel(false)}
           student={selectedStudent}

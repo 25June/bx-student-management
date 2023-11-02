@@ -16,13 +16,13 @@ import SpiritScorecomponent from 'modules/score-book/SpiritScore.component'
 import ScoreForm from 'modules/common/ScoreForm.component'
 import { ImageBoxComponent } from 'modules/index'
 
-interface ScoreBookPanelComponentProps {
+interface Props {
   isOpen: boolean
   studentId: string
   onClose: () => void
 }
 
-const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelComponentProps) => {
+const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
   const { student: studentInfo } = useGetStudentById(studentId)
   const { assessments, setAssessments } = useAssessmentContext()
   const { showSnackbar } = useSnackbarContext()
@@ -87,12 +87,11 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
     }
   }
 
-  if (!studentInfo) {
-    return null
-  }
-
-  const listScore: number[] = Object.values(scoreBook?.[activeTab as keyof ScoreBook] as any || {})
-  const average = listScore.length !== 0 ? listScore.reduce((a, b) => a + b, 0) / listScore.length : 0;
+  const listScore: number[] = Object.values(
+    (scoreBook?.[activeTab as keyof ScoreBook] as any) || {}
+  )
+  const average =
+    listScore.length !== 0 ? listScore.reduce((a, b) => a + b, 0) / listScore.length : 0
 
   return (
     <Drawer
@@ -102,100 +101,109 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: ScoreBookPanelC
       onClose={onClose}
       sx={{ width: '100%', maxWidth: 350 }}
     >
-      <Box pt={9} pr={2} pl={2} mb={5} key={studentId}>
-        <Box display={'flex'} alignItems={'center'} mb={0.5}>
-          <Chip
-            color={'default'}
-            size={'small'}
-            icon={<KeyboardBackspaceIcon />}
-            onClick={onClose}
-            label="Trở về"
-            variant="outlined"
-          />
-        </Box>
-        <Box sx={{ display: 'flex' }}>
-          <ImageBoxComponent
-            imagePath={studentInfo.avatarPath}
-            gender={studentInfo.gender}
-            maxWidth={200}
-          />
-        </Box>
-        <Box mt={1.5}>
-          <Box textAlign={'center'} component={'h5'} fontWeight={400} margin={0}>
-            {studentInfo.saintName}
+      {studentInfo && (
+        <Box pt={2} pr={2} pl={2} mb={5} key={studentId}>
+          <Box display={'flex'} alignItems={'center'} mb={2}>
+            <Chip
+              color={'default'}
+              size={'small'}
+              icon={<KeyboardBackspaceIcon />}
+              onClick={onClose}
+              label="Trở về"
+              variant="outlined"
+            />
           </Box>
-          <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
-            {`${studentInfo.lastName} ${studentInfo.firstName}`}
+          <Box sx={{ display: 'flex' }}>
+            <ImageBoxComponent
+              imagePath={studentInfo.avatarPath}
+              gender={studentInfo.gender}
+              maxWidth={200}
+            />
           </Box>
-          <Box>
-            <SpiritScorecomponent key={studentInfo.id + studentInfo.spiritScore || ''} studentId={studentInfo.id} spiritScore={studentInfo.spiritScore} />
-          </Box>
-          <Box>
-
-            {scoreBook && (
-              <Box>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                  <Chip
-                    label="KT 5'"
-                    color="info"
-                    size={'small'}
-                    variant={activeTab === ScoreEnum.SCORE_5 ? 'filled' : 'outlined'}
-                    onClick={() => setActiveTab(ScoreEnum.SCORE_5)}
-                  />
-                  <Chip
-                    label="KT 15'"
-                    color="info"
-                    size={'small'}
-                    variant={activeTab === ScoreEnum.SCORE_15 ? 'filled' : 'outlined'}
-                    onClick={() => setActiveTab(ScoreEnum.SCORE_15)}
-                  />
-                  <Chip
-                    label="KT 45'"
-                    color="info"
-                    size={'small'}
-                    variant={activeTab === ScoreEnum.SCORE_45 ? 'filled' : 'outlined'}
-                    onClick={() => setActiveTab(ScoreEnum.SCORE_45)}
-                  />
-                  <Chip
-                    label="Thi"
-                    color="info"
-                    size={'small'}
-                    variant={activeTab === ScoreEnum.SCORE_60 ? 'filled' : 'outlined'}
-                    onClick={() => setActiveTab(ScoreEnum.SCORE_60)}
-                  />
-                </Box>
-                <Box sx={{ textAlign: 'right', marginTop: 1 }}>
-                  <Typography>Điểm Trung Bình: <strong>{average.toFixed(2)}</strong></Typography>
-                </Box>
+          <Box mt={1.5}>
+            <Box textAlign={'center'} component={'h5'} fontWeight={400} margin={0}>
+              {studentInfo.saintName}
+            </Box>
+            <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
+              {`${studentInfo.lastName} ${studentInfo.firstName}`}
+            </Box>
+            <Box>
+              <SpiritScorecomponent
+                key={studentInfo.id + studentInfo.spiritScore || ''}
+                studentId={studentInfo.id}
+                spiritScore={studentInfo.spiritScore}
+              />
+            </Box>
+            <Box>
+              {scoreBook && (
                 <Box>
-                  {assessments
-                    .filter((assessment) => assessment.type === activeTab)
-                    .map((assessment: Assessment) => {
-                      return (
-                        <ScoreForm
-                          data={get(scoreBook, [`${activeTab}`, `${assessment.id}`], 0)}
-                          assessment={assessment}
-                          key={`${assessment.id}`}
-                          onChangeData={handleChangeData(activeTab)}
-                        />
-                      )
-                    })}
-                </Box>
-                <Box sx={{ textAlign: 'right', paddingTop: 1 }}>
-                  <Button
-                    variant="contained"
-                    size={'small'}
-                    startIcon={<AddIcon />}
-                    onClick={handleOpenAssessmentDialog}
+                  <Box
+                    sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}
                   >
-                    Thêm bài kiểm tra
-                  </Button>
+                    <Chip
+                      label="KT 5'"
+                      color="info"
+                      size={'small'}
+                      variant={activeTab === ScoreEnum.SCORE_5 ? 'filled' : 'outlined'}
+                      onClick={() => setActiveTab(ScoreEnum.SCORE_5)}
+                    />
+                    <Chip
+                      label="KT 15'"
+                      color="info"
+                      size={'small'}
+                      variant={activeTab === ScoreEnum.SCORE_15 ? 'filled' : 'outlined'}
+                      onClick={() => setActiveTab(ScoreEnum.SCORE_15)}
+                    />
+                    <Chip
+                      label="KT 45'"
+                      color="info"
+                      size={'small'}
+                      variant={activeTab === ScoreEnum.SCORE_45 ? 'filled' : 'outlined'}
+                      onClick={() => setActiveTab(ScoreEnum.SCORE_45)}
+                    />
+                    <Chip
+                      label="Thi"
+                      color="info"
+                      size={'small'}
+                      variant={activeTab === ScoreEnum.SCORE_60 ? 'filled' : 'outlined'}
+                      onClick={() => setActiveTab(ScoreEnum.SCORE_60)}
+                    />
+                  </Box>
+                  <Box sx={{ textAlign: 'right', marginTop: 1 }}>
+                    <Typography>
+                      Điểm Trung Bình: <strong>{average.toFixed(2)}</strong>
+                    </Typography>
+                  </Box>
+                  <Box>
+                    {assessments
+                      .filter((assessment) => assessment.type === activeTab)
+                      .map((assessment: Assessment) => {
+                        return (
+                          <ScoreForm
+                            data={get(scoreBook, [`${activeTab}`, `${assessment.id}`], 0)}
+                            assessment={assessment}
+                            key={`${assessment.id}`}
+                            onChangeData={handleChangeData(activeTab)}
+                          />
+                        )
+                      })}
+                  </Box>
+                  <Box sx={{ textAlign: 'right', paddingTop: 1 }}>
+                    <Button
+                      variant="contained"
+                      size={'small'}
+                      startIcon={<AddIcon />}
+                      onClick={handleOpenAssessmentDialog}
+                    >
+                      Thêm bài kiểm tra
+                    </Button>
+                  </Box>
                 </Box>
-              </Box>
-            )}
+              )}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      )}
     </Drawer>
   )
 }

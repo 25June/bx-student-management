@@ -30,14 +30,11 @@ export const groupRollCallToSortedMonths = (
     return {}
   }
 
-  const formatRollCall = sortBy(
-    Object.keys(rollCall).map((key: string) => ({
-      key,
-      dateAsString: rollCall[key],
-      dateAsNumber: parseToNumber(rollCall[key]),
-      month: formatDisplayDropdown(rollCall[key]),
-    })),
-    ['number']
-  )
+  const formatRollCall = Object.keys(rollCall).map((key: string) => ({
+    key,
+    dateAsString: rollCall[key],
+    dateAsNumber: parseToNumber(rollCall[key]),
+    month: formatDisplayDropdown(rollCall[key]),
+  }))
   return groupBy(formatRollCall, ({ month }) => month)
 }
