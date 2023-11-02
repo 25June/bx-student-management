@@ -13,7 +13,7 @@ import StudentIcon from 'modules/common/StudentIcon'
 import HolyBibleIcon from 'modules/common/HolyBibleIcon'
 import HolyGrailIcon from 'modules/common/HolyGrailIcon'
 
-interface SingleScoreViewComponentProps {
+interface Props {
   student: Student
   onClickAction: (student: any, actionType: StudentActionType) => void
 }
@@ -27,7 +27,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }))
 
-const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComponentProps) => {
+const SingleInfoViewComponent = ({ student, onClickAction }: Props) => {
   const { disableUpdate } = useClassContext()
   return (
     <Item
@@ -91,22 +91,6 @@ const SingleInfoViewComponent = ({ student, onClickAction }: SingleScoreViewComp
           )}
         </Box>
       </Box>
-      {/*{student.transferHistory && (*/}
-      {/*  <Box sx={{ textAlign: 'left' }}>*/}
-      {/*    <Chip*/}
-      {/*      sx={{*/}
-      {/*        height: 'auto',*/}
-      {/*        '& .MuiChip-label': {*/}
-      {/*          display: 'block',*/}
-      {/*          whiteSpace: 'normal',*/}
-      {/*        },*/}
-      {/*      }}*/}
-      {/*      size={'small'}*/}
-      {/*      color={transferHistoryContent.color as any}*/}
-      {/*      label={transferHistoryContent.label}*/}
-      {/*    />*/}
-      {/*  </Box>*/}
-      {/*)}*/}
     </Item>
   )
 }

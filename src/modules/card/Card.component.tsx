@@ -1,25 +1,23 @@
 import React from 'react'
 import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@mui/material'
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import { StudentActionType } from 'constant'
-import { Student } from 'models'
-import { buildImageUrl, useIsMobile } from 'utils/common'
+import { Student } from 'models/student'
+import { buildImageUrl } from 'utils/common'
 import StudentIcon from 'modules/common/StudentIcon'
 import HolyBibleIcon from 'modules/common/HolyBibleIcon'
 import HolyGrailIcon from 'modules/common/HolyGrailIcon'
 import { restoreStudent } from 'services/student'
-import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
 
-const CardComponent = ({
-  student,
-  onClickAction,
-}: {
+interface Props {
   student: Student
-  onClickAction: (student: any, actionType: StudentActionType) => void
-}) => {
+  onClickAction: (student: Student, actionType: StudentActionType) => void
+}
+
+const CardComponent = ({ student, onClickAction }: Props) => {
   const { fetchStudents } = useStudentContext()
-  const isMobile = useIsMobile()
   const fullName = student.lastName.toString() + ' ' + student.firstName.toString()
   const avatar = buildImageUrl(student.avatarPath, student.gender)
   const { disableUpdate, classId } = useClassContext()
@@ -33,8 +31,8 @@ const CardComponent = ({
   return (
     <Card
       sx={{
-        maxWidth: isMobile ? 275 : 300,
-        minWidth: isMobile ? 275 : 300,
+        maxWidth: 275,
+        minWidth: 275,
         background: 'transparent',
         backdropFilter: 'blur(4px)',
         display: 'flex',
@@ -44,26 +42,22 @@ const CardComponent = ({
     >
       <CardMedia
         component="img"
-        height={isMobile ? 275 : 300}
+        height={275}
         src={avatar}
         alt="student-girl"
         sx={{ objectFit: 'contain' }}
         onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       />
       <CardContent
-        sx={{ maxHeight: 120, padding: isMobile ? 1 : 2, flex: 1 }}
+        sx={{ maxHeight: 120, padding: 1, flex: 1 }}
         onClick={() => onClickAction(student, StudentActionType.VIEW_STUDENT)}
       >
-        <Typography
-          gutterBottom={!isMobile}
-          variant={isMobile ? 'h6' : 'h5'}
-          sx={{ color: '#757575' }}
-        >
+        <Typography gutterBottom={false} variant={'h6'} sx={{ color: '#757575' }}>
           {student.saintName}
         </Typography>
         <Typography
-          gutterBottom={!isMobile}
-          variant={isMobile ? 'h6' : 'h5'}
+          gutterBottom={false}
+          variant={'h6'}
           sx={{ textTransform: 'capitalize', color: '#616161' }}
         >
           {fullName}
@@ -73,8 +67,8 @@ const CardComponent = ({
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
-          justifyContent: isMobile ? 'center' : 'space-around',
-          columnGap: isMobile ? 1 : 2,
+          justifyContent: 'center',
+          columnGap: 1,
           rowGap: 1,
         }}
         disableSpacing={true}

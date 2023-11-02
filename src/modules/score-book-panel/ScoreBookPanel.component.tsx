@@ -136,7 +136,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
             </Box>
             <Box>
               {scoreBook && (
-                <Box>
+                <>
                   <Box
                     sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}
                   >
@@ -198,7 +198,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
                       Thêm bài kiểm tra
                     </Button>
                   </Box>
-                </Box>
+                </>
               )}
             </Box>
           </Box>

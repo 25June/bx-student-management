@@ -31,7 +31,7 @@ export interface StudentRows extends Student {
   rollCalls: Record<string, string>
 }
 
-interface DiligentTableProps {
+interface Props {
   rows: StudentRows[]
   rollCallDates: RollCallDate[]
   openDiligentDialog: (date: string, id: string) => void
@@ -45,7 +45,7 @@ const DiligentTableComponent = ({
   openDiligentDialog,
   selectedRollCallDate,
   attendances,
-}: DiligentTableProps) => {
+}: Props) => {
   const { classId, semesterId, schoolYearId, disableUpdate } = useClassContext()
   const { openDialog } = useDialogContext()
   const isMobile = useIsMobile()

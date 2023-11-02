@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import ImageBoxComponent from 'modules/image-box/ImageBox.component'
 
-interface TableFullNameCellComponentProps {
+interface Props {
   avatarPath?: string
   saintName: string
   lastName: string
@@ -17,7 +17,7 @@ const TableFullNameCellComponent = ({
   firstName,
   lastName,
   gender,
-}: TableFullNameCellComponentProps) => {
+}: Props) => {
   return (
     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
       <ImageBoxComponent

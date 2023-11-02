@@ -4,15 +4,12 @@ import { formatDisplayTable } from 'utils/datetime'
 import EditIcon from '@mui/icons-material/Edit'
 import { RollCallDate } from 'utils/customHooks'
 
-interface AttendanceHeaderProps {
+interface Props {
   rollCallDates: RollCallDate[]
   openDiligentDialog: (date: string, id: string) => void
 }
 
-const AttendanceHeaderComponent = ({
-  rollCallDates = [],
-  openDiligentDialog,
-}: AttendanceHeaderProps) => {
+const AttendanceHeaderComponent = ({ rollCallDates = [], openDiligentDialog }: Props) => {
   const onOpenDiligentDialog = (
     event: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>,
     date: string,

@@ -124,115 +124,110 @@ const HomeComponent = () => {
   }
 
   return (
-    <Box>
-      <Box p={isMobile ? 1 : 2}>
-        <Typography variant={'h1'} sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }}>
-          Thông Tin Thiếu Nhi
-        </Typography>
+    <Box p={1}>
+      <Typography variant={'h1'} sx={{ textAlign: 'left', fontSize: '1rem' }}>
+        Thông Tin Thiếu Nhi
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 4,
+          marginTop: 1,
+          flexWrap: 'wrap',
+          gap: 1,
+        }}
+      >
+        <Box sx={{ width: '100%' }}>
+          <SearchComponent onChange={handleFilterStudentByName} key={classId} />
+        </Box>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: 1,
+          }}
+        >
+          <ToggleButtonGroup
+            color={'info'}
+            value={displayType}
+            exclusive={true}
+            onChange={handleChangeDisplay}
+          >
+            <ToggleButton value={DisplayType.TABLE} size="small">
+              <TableRowsIcon />
+            </ToggleButton>
+            <ToggleButton value={DisplayType.CARD} size="small">
+              <StyleIcon />
+            </ToggleButton>
+          </ToggleButtonGroup>
+          <IconButton
+            onClick={() => handleSwitchStudentViewMode(!viewDeletedStudent)}
+            color={viewDeletedStudent ? 'success' : 'error'}
+            sx={{ background: viewDeletedStudent ? green[100] : red[100] }}
+          >
+            {viewDeletedStudent ? <PlaylistAddCheckIcon /> : <PlaylistRemoveIcon />}
+          </IconButton>
+        </Box>
+      </Box>
+      {displayType === 'table' ? (
+        <>
+          {isMobile ? (
+            <>
+              {(filteredStudents || []).map((student) => (
+                <SingleInfoViewComponent
+                  key={student.id}
+                  student={student}
+                  onClickAction={handleClickAction}
+                />
+              ))}
+            </>
+          ) : (
+            <TableComponent
+              columns={studentColumns}
+              rows={filteredStudents || []}
+              onClickAction={handleClickAction}
+              renderActionMenu={renderStudentActions}
+            />
+          )}
+        </>
+      ) : (
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 4,
-            marginTop: 1,
-            flexWrap: isMobile ? 'wrap' : 'nowrap',
-            gap: isMobile ? 1 : 2,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: 2.5,
+            paddingLeft: 1,
+            paddingRight: 1,
           }}
         >
-          <Box sx={{ width: '100%' }}>
-            <SearchComponent onChange={handleFilterStudentByName} key={classId} />
-          </Box>
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: isMobile ? 1 : 2,
-            }}
-          >
-            <ToggleButtonGroup
-              color={'info'}
-              value={displayType}
-              exclusive={true}
-              onChange={handleChangeDisplay}
-            >
-              <ToggleButton value={DisplayType.TABLE} size="small">
-                <TableRowsIcon />
-              </ToggleButton>
-              <ToggleButton value={DisplayType.CARD} size="small">
-                <StyleIcon />
-              </ToggleButton>
-            </ToggleButtonGroup>
-            <IconButton
-              onClick={() => handleSwitchStudentViewMode(!viewDeletedStudent)}
-              color={viewDeletedStudent ? 'success' : 'error'}
-              sx={{ background: viewDeletedStudent ? green[100] : red[100] }}
-            >
-              {viewDeletedStudent ? <PlaylistAddCheckIcon /> : <PlaylistRemoveIcon />}
-            </IconButton>
-          </Box>
+          {(filteredStudents || []).map((student: Student) => (
+            <Box key={student.id} sx={{ display: 'flex', columnGap: 8, rowGap: 8 }}>
+              <CardComponent student={student} onClickAction={handleClickAction} />
+            </Box>
+          ))}
         </Box>
-        {displayType === 'table' ? (
-          <>
-            {isMobile ? (
-              <Box>
-                {(filteredStudents || []).map((student) => (
-                  <SingleInfoViewComponent
-                    key={student.id}
-                    student={student}
-                    onClickAction={handleClickAction}
-                  />
-                ))}
-              </Box>
-            ) : (
-              <TableComponent
-                columns={studentColumns}
-                rows={filteredStudents || []}
-                onClickAction={handleClickAction}
-                renderActionMenu={renderStudentActions}
-              />
-            )}
-          </>
-        ) : (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              gap: isMobile ? 2.5 : 5,
-              paddingLeft: 1,
-              paddingRight: 1,
-            }}
-          >
-            {(filteredStudents || []).map((student: Student) => (
-              <Box
-                key={student.id}
-                sx={{ display: 'flex', columnGap: isMobile ? 8 : 16, rowGap: isMobile ? 8 : 16 }}
-              >
-                <CardComponent student={student} onClickAction={handleClickAction} />
-              </Box>
-            ))}
-          </Box>
-        )}
-        <ScoreBookPanelComponent
-          isOpen={!!(selectedStudent?.id && isOpenScoreBook)}
-          onClose={handleCloseScoreBook}
-          studentId={selectedStudent?.id || ''}
-        />
-        <InfoPanelComponent
-          isOpen={!!(selectedStudent?.id && isOpenInfoPanel)}
-          student={selectedStudent}
-          onClose={() => setOpenInfoPanel(false)}
-          onClickAction={handleClickAction}
-        />
-        <DiligentPanelComponent
-          open={isOpenDiligentPanel}
-          onClose={() => setOpenDiligentPanel(false)}
-          student={selectedStudent}
-        />
-      </Box>
+      )}
+      <ScoreBookPanelComponent
+        isOpen={!!(selectedStudent?.id && isOpenScoreBook)}
+        onClose={handleCloseScoreBook}
+        studentId={selectedStudent?.id || ''}
+      />
+      <InfoPanelComponent
+        isOpen={!!(selectedStudent?.id && isOpenInfoPanel)}
+        student={selectedStudent}
+        onClose={() => setOpenInfoPanel(false)}
+        onClickAction={handleClickAction}
+      />
+      <DiligentPanelComponent
+        open={isOpenDiligentPanel}
+        onClose={() => setOpenDiligentPanel(false)}
+        student={selectedStudent}
+      />
     </Box>
   )
 }
