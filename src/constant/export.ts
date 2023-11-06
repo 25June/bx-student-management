@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { Class } from 'models/class'
 
 export const DILIGENT_BANNER_ROW = (dates: string[]) => {
   const colNumber = dates.length === 1 ? 2 : dates.length * 3 - 1
@@ -35,13 +36,13 @@ export const DILIGENT_BANNER_ROW = (dates: string[]) => {
   ]
 }
 
-export const DILIGENT_PREPARE_ROW = (className: string, dates: string[]) => {
+export const DILIGENT_PREPARE_ROW = (currentClass: Class, dates: string[]) => {
   const colNumber = dates.length === 1 ? 2 : dates.length * 3 - 1
 
   const emptyArr = Array.from(new Array(colNumber - 1)).map(() => null)
   return [
     {
-      value: `Lớp ${className}`,
+      value: `Lớp ${currentClass.name}`,
       fontWeight: 'bold',
       span: 3,
       align: 'center',
