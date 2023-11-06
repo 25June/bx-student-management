@@ -20,7 +20,7 @@ import AttendanceHeaderComponent from 'modules/diligent-table/AttendanceHeader.c
 import AttendanceCheckboxComponent from 'modules/diligent-table/AttendanceCheckbox.component'
 import TableFullNameCellComponent from 'modules/common/TableFullNameCell.component'
 import SingleDateViewComponent from 'modules/single-date-view/SingleDateView.component'
-import { RollCallDate } from 'utils/customHooks'
+import { RollCallDate } from 'models/diligent'
 import { useIsMobile } from 'utils/common'
 import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useDialogContext } from 'contexts/DialogContext'
@@ -54,7 +54,7 @@ const DiligentTableComponent = ({
     (studentId: string) =>
     ({ value, rollCallKey, isMissal }: OnSubmitAttendanceProps) => {
       if (disableUpdate) {
-        return Promise.reject('wrong class')
+        return Promise.reject(new Error('wrong class'))
       }
       if (rollCallKey) {
         return submitAttendance({

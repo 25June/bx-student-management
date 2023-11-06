@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { isEmpty, sortBy, groupBy } from 'lodash'
 import { formatDisplayDropdown, parseToNumber } from 'utils/datetime'
+import { RollCallDate } from 'models/diligent'
 
 export const useSortedRollCalls = (rollCall: Record<string, string> = {}) => {
   return useMemo(() => {
@@ -14,13 +15,6 @@ export const useSortedRollCalls = (rollCall: Record<string, string> = {}) => {
     }))
     return sortBy(formatRollCall, ['number'])
   }, [rollCall])
-}
-
-export interface RollCallDate {
-  key: string
-  dateAsString: string
-  dateAsNumber: number
-  month: string
 }
 
 export const groupRollCallToSortedMonths = (

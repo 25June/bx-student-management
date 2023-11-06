@@ -11,7 +11,6 @@ import { useStudentContext } from 'contexts/StudentContext'
 import { StudentScoreBooks } from 'models/ScoreBook'
 import { Assessment } from 'models/assessment'
 import { Student } from 'models/student'
-import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 import AssessmentSingleViewComponent from 'modules/assessment-single-view/AssessmentSingleView.component'
 import { AssessmentTableComponent } from 'modules/index'
 
@@ -51,7 +50,7 @@ const AssessmentComponent = () => {
   }
 
   return (
-    <Box>
+    <>
       <Box
         sx={{
           display: 'flex',
@@ -69,8 +68,8 @@ const AssessmentComponent = () => {
         </Typography>
       </Box>
       <Box p={isMobile ? 1 : 2}>
-        {assessments ? (
-          isMobile ? (
+        {assessments &&
+          (isMobile ? (
             <AssessmentSingleViewComponent
               assessments={assessments}
               onClickAction={openStudentDialog}
@@ -78,12 +77,9 @@ const AssessmentComponent = () => {
             />
           ) : (
             <AssessmentTableComponent rows={assessments} onClickAction={openStudentDialog} />
-          )
-        ) : (
-          <DiligentSkeleton />
-        )}
+          ))}
       </Box>
-    </Box>
+    </>
   )
 }
 

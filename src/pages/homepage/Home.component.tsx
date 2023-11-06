@@ -26,9 +26,9 @@ enum DisplayType {
 }
 
 const HomeComponent = () => {
-  const [isOpenInfoPanel, setOpenInfoPanel] = useState<boolean>(false)
-  const [isOpenScoreBook, setOpenScoreBook] = useState<boolean>(false)
-  const [isOpenDiligentPanel, setOpenDiligentPanel] = useState<boolean>(false)
+  const [isOpenInfoPanel, setIsOpenInfoPanel] = useState<boolean>(false)
+  const [isOpenScoreBook, setIsOpenScoreBook] = useState<boolean>(false)
+  const [isOpenDiligentPanel, setIsOpenDiligentPanel] = useState<boolean>(false)
   const [viewDeletedStudent, setViewDeletedStudent] = useState<boolean>(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<DisplayType>(DisplayType.TABLE)
@@ -72,18 +72,18 @@ const HomeComponent = () => {
     }
     if (type === StudentActionType.VIEW_SCORE_BOOK) {
       setSelectedStudent(data)
-      setOpenScoreBook(true)
+      setIsOpenScoreBook(true)
       return
     }
     if (type === StudentActionType.VIEW_STUDENT) {
       setSelectedStudent(data)
-      setOpenInfoPanel(true)
+      setIsOpenInfoPanel(true)
       return
     }
 
     if (type === StudentActionType.VIEW_STUDENT_DILIGENT) {
       setSelectedStudent(data)
-      setOpenDiligentPanel(true)
+      setIsOpenDiligentPanel(true)
       return
     }
     const student = students.find((std: Student) => std.id === data.id)
@@ -94,7 +94,7 @@ const HomeComponent = () => {
 
   const handleCloseScoreBook = useCallback(() => {
     setSelectedStudent(undefined)
-    setOpenScoreBook(false)
+    setIsOpenScoreBook(false)
   }, [])
 
   const handleFilterStudentByName = (value: string) => {
@@ -215,17 +215,17 @@ const HomeComponent = () => {
       <ScoreBookPanelComponent
         isOpen={!!(selectedStudent?.id && isOpenScoreBook)}
         onClose={handleCloseScoreBook}
-        studentId={selectedStudent?.id || ''}
+        studentId={selectedStudent?.id ?? ''}
       />
       <InfoPanelComponent
         isOpen={!!(selectedStudent?.id && isOpenInfoPanel)}
         student={selectedStudent}
-        onClose={() => setOpenInfoPanel(false)}
+        onClose={() => setIsOpenInfoPanel(false)}
         onClickAction={handleClickAction}
       />
       <DiligentPanelComponent
         open={isOpenDiligentPanel}
-        onClose={() => setOpenDiligentPanel(false)}
+        onClose={() => setIsOpenDiligentPanel(false)}
         student={selectedStudent}
       />
     </Box>

@@ -1,4 +1,4 @@
-import { RollCallDate } from 'utils/customHooks'
+import { RollCallDate } from 'models/diligent'
 
 export interface OverviewReport {
   gl: number

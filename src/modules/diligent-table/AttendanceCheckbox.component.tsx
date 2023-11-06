@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { get } from 'lodash'
 import { Box, Checkbox, Typography, IconButton, FormControlLabel } from '@mui/material'
-import { RollCallDate } from 'utils/customHooks'
+import { RollCallDate } from 'models/diligent'
 import { AttendanceProps, OnSubmitAttendanceProps } from 'models/diligent'
 import { amber, teal } from '@mui/material/colors'
 import { useDialogContext } from 'contexts/DialogContext'

@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
 import { formatDisplayTable } from 'utils/datetime'
 import EditIcon from '@mui/icons-material/Edit'
-import { RollCallDate } from 'utils/customHooks'
+import { RollCallDate } from 'models/diligent'
 
 interface Props {
   rollCallDates: RollCallDate[]

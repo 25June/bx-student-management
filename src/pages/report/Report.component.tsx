@@ -5,7 +5,7 @@ import { useClassContext } from 'contexts/ClassContext'
 // import { useAuthentication } from 'contexts/AuthContext'
 import ExportComponent from 'pages/import/Export.component'
 // import ImportComponent from 'pages/import/Import.component'
-import OverviewReportComponent from 'modules/report/Overview.component'
+import ExportDiligentComponent from 'pages/import/ExportDiligent.component'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -50,6 +50,7 @@ const ReportComponent = () => {
         <Tabs value={tabValue} onChange={handleChange}>
           {/* <Tab label="Nhập" value={1} disabled={user?.role !== Role.CTO} {...a11yProps(1)} /> */}
           <Tab label="Xuất" value={2} {...a11yProps(2)} />
+          <Tab label="Xuất Chuyên Cần" value={3} {...a11yProps(3)} />
           {/* <Tab label="Điểm Danh" value={3} {...a11yProps(3)} /> */}
           {/* <Tab label="Bảng Điểm" value={4} {...a11yProps(4)} /> */}
         </Tabs>
@@ -61,7 +62,7 @@ const ReportComponent = () => {
         {currentClass && <ExportComponent currentClass={currentClass} />}
       </CustomTabPanel>
       <CustomTabPanel value={tabValue} index={3}>
-        <OverviewReportComponent onViewDetail={() => {}} />
+        {currentClass && <ExportDiligentComponent currentClass={currentClass} />}
       </CustomTabPanel>
       {/* <CustomTabPanel value={tabValue} index={4}>
         <ScoreBookReport />

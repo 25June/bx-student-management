@@ -3,7 +3,7 @@ import writeXlsxFile from 'write-excel-file'
 import { format } from 'date-fns'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { getStudentByClassId } from 'services/student'
-import { Class } from 'models'
+import { Class } from 'models/class'
 
 interface Props {
   currentClass: Class
@@ -126,7 +126,9 @@ const ExportComponent = ({ currentClass }: Props) => {
       },
     ]
     const students = await getStudentByClassId(currentClass?.id || '')
-    const DATA_ROWS = students.map((stu, index) => {
+    const sortedStudent = students.sort((a, b) => a.firstName.localeCompare(b.firstName))
+
+    const DATA_ROWS = sortedStudent.map((stu, index) => {
       return [
         {
           alignVertical: 'top',

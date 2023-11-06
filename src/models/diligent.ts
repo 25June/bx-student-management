@@ -21,3 +21,10 @@ export interface NoteForm {
   adoration: boolean
   note: string
 }
+
+export interface RollCallDate {
+  key: string
+  dateAsString: string
+  dateAsNumber: number
+  month: string
+}
