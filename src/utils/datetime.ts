@@ -10,7 +10,7 @@ export const formatDateStoringDB = (date: string) => {
   return format(new Date(date), fullDateHyphenFormat)
 }
 
-export const formatDisplayTable = (date: string) => {
+export const formatDisplayDDMM = (date: string) => {
   return format(parse(date, fullDateInputHyphenFormat, new Date()), DayMonthSlashFormat)
 }
 

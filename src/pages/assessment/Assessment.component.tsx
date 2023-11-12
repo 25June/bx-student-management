@@ -8,7 +8,7 @@ import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { useDialogContext } from 'contexts/DialogContext'
 import { useStudentContext } from 'contexts/StudentContext'
-import { StudentScoreBooks } from 'models/ScoreBook'
+import { StudentScoreBook } from 'models/ScoreBook'
 import { Assessment } from 'models/assessment'
 import { Student } from 'models/student'
 import AssessmentSingleViewComponent from 'modules/assessment-single-view/AssessmentSingleView.component'
@@ -22,7 +22,7 @@ const AssessmentComponent = () => {
   const { studentScoreBooks } = useGetStudentScoreBooks()
   const { students } = useStudentContext()
 
-  const stuScoreBooks: StudentScoreBooks[] | Student[] = useMemo(() => {
+  const stuScoreBooks: StudentScoreBook[] | Student[] = useMemo(() => {
     return (students || []).map((stu) => {
       if (studentScoreBooks?.[stu.id]) {
         return {

@@ -4,7 +4,12 @@ import writeXlsxFile from 'write-excel-file'
 import { Class } from 'models/class'
 import { Student } from 'models/student'
 import { RollCallDate } from 'models/diligent'
-import { DILIGENT_BANNER_ROW, DILIGENT_PREPARE_ROW, DILIGENT_HEADER_ROW } from 'constant/export'
+import {
+  DILIGENT_BANNER_ROW,
+  DILIGENT_PREPARE_ROW,
+  DILIGENT_HEADER_ROW,
+  DILIGENT_COLUMNS_WIDTH,
+} from 'constant/export/diligent'
 import { useDiligentContext } from 'contexts/DiligentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { useEffect, useMemo } from 'react'
@@ -139,40 +144,11 @@ const ExportDiligentComponent = ({ currentClass }: Props) => {
           ...DILIGENT_HEADER_ROW(dates.map((date) => date.text)),
           ...DATA_ROWS,
         ]
-        const COLUMNS = [
-          {
-            width: 5,
-          },
-          {
-            width: 10,
-          },
-          {
-            width: 20,
-          },
-          {
-            width: 8,
-          },
-          ...dates
-            .map((d) => {
-              return [
-                {
-                  width: 5,
-                },
-                {
-                  width: 5,
-                },
-                {
-                  width: 15,
-                },
-              ]
-            })
-            .flat(),
-        ]
 
         return acc.concat({
           sheetName: rollCallDates[0].month,
           sheetValue: data,
-          column: COLUMNS,
+          column: DILIGENT_COLUMNS_WIDTH(dates.map((date) => date.text)),
         })
       }, [] as { sheetName: string; sheetValue: any; column: any[] }[])
 

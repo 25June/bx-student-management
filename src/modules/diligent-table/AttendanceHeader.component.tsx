@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
-import { formatDisplayTable } from 'utils/datetime'
+import { formatDisplayDDMM } from 'utils/datetime'
 import EditIcon from '@mui/icons-material/Edit'
 import { RollCallDate } from 'models/diligent'
 
@@ -40,7 +40,7 @@ const AttendanceHeaderComponent = ({ rollCallDates = [], openDiligentDialog }: P
             }}
           >
             <Typography variant={'body1'} sx={{ fontSize: '1rem' }}>
-              {formatDisplayTable(sortedRollCall.dateAsString)}
+              {formatDisplayDDMM(sortedRollCall.dateAsString)}
             </Typography>
             <IconButton
               aria-label="update"

@@ -14,8 +14,7 @@ export type ScoreBook = {
   score45: Record<string, number>
   score60: Record<string, number>
   updatedDate?: Timestamp
-  // for reporting chart
   schoolYear?: string
 }
 
-export type StudentScoreBooks = Student & ScoreBook
+export type StudentScoreBook = Student & ScoreBook

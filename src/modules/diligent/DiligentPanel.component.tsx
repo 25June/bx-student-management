@@ -5,7 +5,7 @@ import { ImageBoxComponent } from 'modules/index'
 import { Student } from 'models/student'
 import { OnSubmitAttendanceProps } from 'models/diligent'
 import { RollCallDate } from 'models/diligent'
-import { formatDisplayTable } from 'utils/datetime'
+import { formatDisplayDDMM } from 'utils/datetime'
 import { groupRollCallToSortedMonths } from 'utils/customHooks'
 import DiligentFormComponent from 'modules/diligent/DiligentForm.component'
 import { get, isEmpty, orderBy } from 'lodash'
@@ -113,7 +113,7 @@ const DiligentPanelComponent = ({ student, open, onClose }: Props) => {
                       }}
                     >
                       <FormLabel component="span" sx={{ flexGrow: 1 }}>
-                        {formatDisplayTable(dateAsString)}
+                        {formatDisplayDDMM(dateAsString)}
                       </FormLabel>
                       <DiligentFormComponent
                         onSubmitAttendance={onSubmitAttendance}

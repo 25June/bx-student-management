@@ -24,9 +24,8 @@ import { getDownloadLink } from 'services/storage'
 import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
 import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
 import { useStudentContext } from 'contexts/StudentContext'
-import { StudentScoreBooks } from 'models/ScoreBook'
+import { StudentScoreBook } from 'models/ScoreBook'
 import { Student } from 'models/student'
-
 
 interface SecondaryTextProps {
   bookDate: string
@@ -51,7 +50,14 @@ const SecondaryText = ({ bookDate, documents }: SecondaryTextProps) => {
   }
   return (
     <Box sx={{ display: 'flex', gap: 0.25, flexDirection: 'column' }}>
-      <Box fontWeight={500} fontSize={'0.825rem'} component={'span'} color={grey[500]} marginBottom={0.5} marginTop={0.5}>
+      <Box
+        fontWeight={500}
+        fontSize={'0.825rem'}
+        component={'span'}
+        color={grey[500]}
+        marginBottom={0.5}
+        marginTop={0.5}
+      >
         {bookDate}
       </Box>
       {documents?.map((doc) => (
@@ -75,8 +81,8 @@ const AssessmentItem = ({
   stuScoreBooks,
 }: {
   assessment: Assessment
-  onClickAction: (data: Assessment, actionType: AssessmentActionType) => void,
-  stuScoreBooks: StudentScoreBooks[] | Student[]
+  onClickAction: (data: Assessment, actionType: AssessmentActionType) => void
+  stuScoreBooks: StudentScoreBook[] | Student[]
 }) => {
   const { students } = useStudentContext()
   const { disableUpdate } = useClassContext()
@@ -88,7 +94,7 @@ const AssessmentItem = ({
           getScoreBookSummary({
             assessmentType: assessment.type,
             assessmentId: assessment.id,
-            studentScoreBooks: stuScoreBooks as StudentScoreBooks[],
+            studentScoreBooks: stuScoreBooks as StudentScoreBook[],
           })
         )
       })
@@ -154,7 +160,7 @@ const AssessmentItem = ({
 interface AssessmentSingleViewComponentProps {
   assessments: Assessment[]
   onClickAction: (data: Assessment | null, actionType: AssessmentActionType) => void
-  stuScoreBooks: StudentScoreBooks[] | Student[]
+  stuScoreBooks: StudentScoreBook[] | Student[]
 }
 
 const AssessmentSingleViewComponent = ({

@@ -1,4 +1,4 @@
-import { Assessment, KeyValueProp, Student, StudentScoreBooks } from 'models'
+import { Assessment, KeyValueProp, Student, StudentScoreBook } from 'models'
 import React, { useEffect, useMemo, useState } from 'react'
 import { get, sortBy } from 'lodash'
 import { blueGrey } from '@mui/material/colors'
@@ -29,16 +29,16 @@ const ScoreBookComponent = () => {
   const { openDialog } = useDialogContext()
 
   const { studentScoreBooks } = useGetStudentScoreBooks()
-  const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBooks>()
+  const [selectedScoreBook, setSelectedScoreBook] = useState<StudentScoreBook>()
   const [filteredStuScoreBooks, setFilteredStuScoreBooks] = useState<
-    StudentScoreBooks[] | Student[]
+    StudentScoreBook[] | Student[]
   >([])
 
   const [assessmentDates, setAssessmentDates] = useState<KeyValueProp[]>()
   const [selectedAssessmentDate, setSelectedAssessmentDate] = useState<Assessment>()
   const [selectedAssessmentType, setSelectedAssessmentType] = useState<AssessmentEnum>()
   const [scoreBookSummary, setScoreBookSummary] = useState<ScoreBookSummaryResponse>()
-  const stuScoreBooks: StudentScoreBooks[] | Student[] = useMemo(() => {
+  const stuScoreBooks: StudentScoreBook[] | Student[] = useMemo(() => {
     return (students || []).map((stu) => {
       if (studentScoreBooks?.[stu.id]) {
         return {
@@ -70,7 +70,7 @@ const ScoreBookComponent = () => {
           getScoreBookSummary({
             assessmentType: selectedAssessmentType,
             assessmentId: selectedAssessmentDate.id,
-            studentScoreBooks: stuScoreBooks as StudentScoreBooks[],
+            studentScoreBooks: stuScoreBooks as StudentScoreBook[],
           })
         )
       })

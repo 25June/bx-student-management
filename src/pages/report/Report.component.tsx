@@ -3,9 +3,10 @@ import { Box, Tabs, Tab } from '@mui/material'
 import { useState } from 'react'
 import { useClassContext } from 'contexts/ClassContext'
 // import { useAuthentication } from 'contexts/AuthContext'
-import ExportComponent from 'pages/import/Export.component'
+import ExportStudentComponent from 'pages/import/ExportStudent.component'
 // import ImportComponent from 'pages/import/Import.component'
 import ExportDiligentComponent from 'pages/import/ExportDiligent.component'
+import ExportScoreBookComponent from 'pages/import/ExportScoreBook.component'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -49,24 +50,23 @@ const ReportComponent = () => {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tabValue} onChange={handleChange}>
           {/* <Tab label="Nhập" value={1} disabled={user?.role !== Role.CTO} {...a11yProps(1)} /> */}
-          <Tab label="Xuất" value={2} {...a11yProps(2)} />
+          <Tab label="Xuất Danh Sách" value={2} {...a11yProps(2)} />
           <Tab label="Xuất Chuyên Cần" value={3} {...a11yProps(3)} />
-          {/* <Tab label="Điểm Danh" value={3} {...a11yProps(3)} /> */}
-          {/* <Tab label="Bảng Điểm" value={4} {...a11yProps(4)} /> */}
+          <Tab label="Xuất Bảng Điểm" value={4} {...a11yProps(4)} />
         </Tabs>
       </Box>
       {/* <CustomTabPanel value={tabValue} index={1}>
         <ImportComponent />
       </CustomTabPanel> */}
       <CustomTabPanel value={tabValue} index={2}>
-        {currentClass && <ExportComponent currentClass={currentClass} />}
+        {currentClass && <ExportStudentComponent currentClass={currentClass} />}
       </CustomTabPanel>
       <CustomTabPanel value={tabValue} index={3}>
         {currentClass && <ExportDiligentComponent currentClass={currentClass} />}
       </CustomTabPanel>
-      {/* <CustomTabPanel value={tabValue} index={4}>
-        <ScoreBookReport />
-      </CustomTabPanel> */}
+      <CustomTabPanel value={tabValue} index={4}>
+        {currentClass && <ExportScoreBookComponent currentClass={currentClass} />}
+      </CustomTabPanel>
     </Box>
   )
 }

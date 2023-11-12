@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StudentScoreBooks, Assessment, ScoreBook } from 'models'
+import { StudentScoreBook, Assessment, ScoreBook } from 'models'
 import {
   Box,
   Dialog,
@@ -18,7 +18,7 @@ import { useClassContext } from 'contexts/ClassContext'
 import ClearIcon from '@mui/icons-material/Clear'
 
 interface ScoreBookDialogComponentProps {
-  data?: StudentScoreBooks | null
+  data?: StudentScoreBook | null
   onClose: () => void
   isOpen: boolean
 }

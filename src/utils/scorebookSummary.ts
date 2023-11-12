@@ -1,10 +1,10 @@
 import { AssessmentEnum } from 'constant/common'
-import { StudentScoreBooks } from 'models'
+import { StudentScoreBook } from 'models'
 
 interface ScoreBookSummaryProps {
   assessmentType: AssessmentEnum
   assessmentId: string
-  studentScoreBooks: StudentScoreBooks[]
+  studentScoreBooks: StudentScoreBook[]
 }
 
 export interface ScoreBookSummaryResponse {

@@ -7,7 +7,7 @@ import {
   InputLabel,
   MenuItem,
 } from '@mui/material'
-import { formatDisplayTable } from 'utils/datetime'
+import { formatDisplayDDMM } from 'utils/datetime'
 import { KeyValueProp } from 'models/common'
 
 interface DateDropdownProps {
@@ -33,7 +33,7 @@ const DateDropdownComponent = ({
       <Select value={selectedDate} label="Ngày" onChange={dateChange} disabled={dates.length === 0}>
         {dates.map((d: KeyValueProp) => (
           <MenuItem value={d.value} key={d.key}>
-            {formatDisplayTable(d.value)}
+            {formatDisplayDDMM(d.value)}
           </MenuItem>
         ))}
       </Select>

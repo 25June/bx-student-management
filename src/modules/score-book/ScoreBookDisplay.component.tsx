@@ -6,15 +6,15 @@ import { blueGrey } from '@mui/material/colors'
 import Grow from '@mui/material/Grow'
 import TableComponent from 'modules/Table/Table.component'
 import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
-import { Assessment, Student, StudentScoreBooks } from 'models'
+import { Assessment, Student, StudentScoreBook } from 'models'
 import SingleScoreViewComponent from 'modules/single-score-view/SingleScoreView.component'
 import { get } from 'lodash'
 import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 import { useIsMobile } from 'utils/common'
 
 export interface ScoreBookDisplayComponentProps {
-  filteredStuScoreBooks: StudentScoreBooks[] | Student[]
-  setSelectedScoreBook: (data: StudentScoreBooks) => void
+  filteredStuScoreBooks: StudentScoreBook[] | Student[]
+  setSelectedScoreBook: (data: StudentScoreBook) => void
   selectedAssessmentDate?: Assessment
   selectedAssessmentType?: string
   handleUpdateScore: (
@@ -63,7 +63,7 @@ const ScoreBookDisplayComponent = ({
     <TableComponent
       columns={ScoreBookColumns}
       rows={filteredStuScoreBooks}
-      onClickAction={(data: StudentScoreBooks) => setSelectedScoreBook(data)}
+      onClickAction={(data: StudentScoreBook) => setSelectedScoreBook(data)}
       renderActionMenu={renderScoreBookActions}
     />
   )
