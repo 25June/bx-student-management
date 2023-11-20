@@ -1,19 +1,17 @@
 import React from 'react'
-import { Toolbar, IconButton, Typography, Avatar } from '@mui/material'
-import Box from '@mui/material/Box'
+import { Toolbar, IconButton, Typography, Avatar, Box, AppBar } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { SelectChangeEvent } from '@mui/material/Select'
 import { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar/AppBar'
 import { styled } from '@mui/material/styles'
-import MuiAppBar from '@mui/material/AppBar'
 import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
-import { useClassContext } from 'contexts/ClassContext'
-import { SelectChangeEvent } from '@mui/material/Select'
 import { useIsMobile } from 'utils/common'
 import Logo from 'static/images/logo/logo.svg'
+import { useClassContext } from 'contexts/ClassContext'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useAuthentication } from 'contexts/AuthContext'
 import ImageBoxComponent from 'modules/image-box/ImageBox.component'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 interface TopBarComponentProps {
   isOpen: boolean
@@ -25,7 +23,7 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean
 }
 
-const AppBar = styled(MuiAppBar, {
+const MuiAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
@@ -36,9 +34,10 @@ const AppBar = styled(MuiAppBar, {
 }))
 
 const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentProps) => {
-  const { classObj, setClassId } = useClassContext()
+  const { classObj, setClassId, classId } = useClassContext()
   const { students } = useStudentContext()
   const { user } = useAuthentication()
+  const color = classId.slice(0, 2)
   const isMobile = useIsMobile()
   const handleDrawerOpen = () => {
     setOpen(!isOpen)
@@ -49,7 +48,12 @@ const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentPro
   }
 
   return (
-    <AppBar position="fixed" open={isOpen}>
+    <MuiAppBar
+      color={`${color}Background` as any}
+      enableColorOnDark={true}
+      position="fixed"
+      open={isOpen}
+    >
       <Toolbar>
         <IconButton
           color="inherit"
@@ -122,7 +126,7 @@ const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentPro
           </IconButton>
         </Box>
       </Toolbar>
-    </AppBar>
+    </MuiAppBar>
   )
 }
 

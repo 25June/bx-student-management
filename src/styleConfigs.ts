@@ -31,6 +31,12 @@ declare module '@mui/material/styles' {
     bd?: PaletteOptions['primary']
     vd?: PaletteOptions['primary']
     dt?: PaletteOptions['primary']
+    ktBackground?: PaletteOptions['primary']
+    rlBackground?: PaletteOptions['primary']
+    tsBackground?: PaletteOptions['primary']
+    bdBackground?: PaletteOptions['primary']
+    vdBackground?: PaletteOptions['primary']
+    dtBackground?: PaletteOptions['primary']
     score5?: PaletteOptions['primary']
     score15?: PaletteOptions['primary']
     score45?: PaletteOptions['primary']
@@ -47,6 +53,17 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
     neutral: true
+  }
+}
+
+declare module '@mui/material/AppBar' {
+  interface AppBarPropsColorOverrides {
+    ktBackground: true
+    rlBackground: true
+    tsBackground: true
+    bdBackground: true
+    vdBackground: true
+    dtBackground: true
   }
 }
 
@@ -103,10 +120,22 @@ const theme = createTheme({
       dark: pink[300],
       contrastText: '#fff',
     },
+    ktBackground: {
+      main: pink[500],
+      light: pink[200],
+      dark: pink[700],
+      contrastText: '#fff',
+    },
     rl: {
       main: lightGreen[200],
       light: lightGreen[50],
       dark: lightGreen[300],
+      contrastText: '#fff',
+    },
+    rlBackground: {
+      main: lightGreen[500],
+      light: lightGreen[200],
+      dark: lightGreen[700],
       contrastText: '#fff',
     },
     ts: {
@@ -115,10 +144,22 @@ const theme = createTheme({
       dark: blue[300],
       contrastText: '#fff',
     },
+    tsBackground: {
+      main: blue[500],
+      light: blue[200],
+      dark: blue[700],
+      contrastText: '#fff',
+    },
     bd: {
-      main: amber[200],
+      main: amber[700],
       light: amber[50],
       dark: amber[300],
+      contrastText: '#fff',
+    },
+    bdBackground: {
+      main: amber[500],
+      light: amber[200],
+      dark: amber[700],
       contrastText: '#fff',
     },
     vd: {
@@ -127,10 +168,22 @@ const theme = createTheme({
       dark: brown[300],
       contrastText: '#fff',
     },
+    vdBackground: {
+      main: brown[500],
+      light: brown[200],
+      dark: brown[700],
+      contrastText: '#fff',
+    },
     dt: {
       main: red[200],
       light: red[50],
       dark: red[300],
+      contrastText: '#fff',
+    },
+    dtBackground: {
+      main: red[500],
+      light: red[200],
+      dark: red[700],
       contrastText: '#fff',
     },
     score5: {

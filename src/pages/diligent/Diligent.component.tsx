@@ -200,10 +200,7 @@ const DiligentComponent = () => {
             <ArrowBackIosNewIcon fontSize="inherit" />
           </IconButton>
         )}
-        <Typography
-          variant={'h1'}
-          sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem', marginBottom: 0 }}
-        >
+        <Typography variant={'h1'} sx={{ textAlign: 'left', fontSize: '1rem', marginBottom: 0 }}>
           Chuyên Cần
         </Typography>
       </Box>
