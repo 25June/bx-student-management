@@ -50,7 +50,6 @@ const ExportScoreBookComponent = ({ currentClass }: Props) => {
     score15 = sortBy(score15, 'bookDate')
     score45 = sortBy(score45, 'bookDate')
     score60 = sortBy(score60, 'bookDate')
-
     const DATA_ROWS = stuScoreBooks.map((stu: StudentScoreBook, index) => {
       return [
         {

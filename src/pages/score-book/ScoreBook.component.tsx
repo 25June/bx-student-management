@@ -1,6 +1,7 @@
 import { Assessment, KeyValueProp, Student, StudentScoreBook } from 'models'
 import React, { useEffect, useMemo, useState } from 'react'
 import { get, sortBy } from 'lodash'
+import { useLocation } from 'react-router-dom'
 import { blueGrey } from '@mui/material/colors'
 import { Typography, Box, Button } from '@mui/material'
 import { setNewStudentScore, useGetStudentScoreBooks } from 'services/scorebook'
@@ -22,6 +23,8 @@ import ScoreBookDisplayComponent, {
 } from 'modules/score-book/ScoreBookDisplay.component'
 
 const ScoreBookComponent = () => {
+  const { search } = useLocation()
+
   const { students } = useStudentContext()
   const { classId, schoolYearId, semesterId, disableUpdate } = useClassContext()
   const isMobile = useIsMobile()
@@ -54,6 +57,23 @@ const ScoreBookComponent = () => {
     if (assessments.length !== 0 && selectedAssessmentType) {
       handleSelectAssessmentType(selectedAssessmentType)
     }
+    if (assessments.length !== 0) {
+      const searchParams = new URLSearchParams(search)
+      const assessmentId = searchParams.get('assessmentId')
+      const type = searchParams.get('type')
+      if (type && assessmentId) {
+        const assessment = assessments.find((a) => a.id === assessmentId)
+        const formatAssessments = assessments
+          .filter((assessment) => assessment.type === type)
+          .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
+        setAssessmentDates(sortBy(formatAssessments, 'value'))
+
+        setSelectedAssessmentDate(assessment)
+        setSelectedAssessmentType(type as AssessmentEnum)
+        searchParams.delete('assessmentId')
+        searchParams.delete('type')
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assessments])
 
@@ -65,15 +85,13 @@ const ScoreBookComponent = () => {
 
   useEffect(() => {
     if (stuScoreBooks?.length !== 0 && selectedAssessmentType && selectedAssessmentDate) {
-      Promise.resolve().then(() => {
-        setScoreBookSummary(
-          getScoreBookSummary({
-            assessmentType: selectedAssessmentType,
-            assessmentId: selectedAssessmentDate.id,
-            studentScoreBooks: stuScoreBooks as StudentScoreBook[],
-          })
-        )
-      })
+      setScoreBookSummary(
+        getScoreBookSummary({
+          assessmentType: selectedAssessmentType,
+          assessmentId: selectedAssessmentDate.id,
+          studentScoreBooks: stuScoreBooks as StudentScoreBook[],
+        })
+      )
     }
   }, [stuScoreBooks, selectedAssessmentType, selectedAssessmentDate])
 
@@ -147,11 +165,7 @@ const ScoreBookComponent = () => {
 
   const handleChangeShowScoreDate = (updatedDate?: KeyValueProp) => {
     if (updatedDate) {
-      Promise.resolve().then(() => {
-        setSelectedAssessmentDate(
-          assessments.find((assessment) => assessment.id === updatedDate.key)
-        )
-      })
+      setSelectedAssessmentDate(assessments.find((assessment) => assessment.id === updatedDate.key))
     }
   }
 

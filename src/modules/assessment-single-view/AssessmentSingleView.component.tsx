@@ -1,31 +1,35 @@
 import React, { useState, useEffect } from 'react'
-import { Box, CircularProgress } from '@mui/material'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import Divider from '@mui/material/Divider'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import { Assessment } from 'models'
-import { Document } from 'models/assessment'
-import { AssessmentActionType } from 'constant'
-import { colorPalettes } from 'constant/common'
-import EditIcon from '@mui/icons-material/Edit'
+import {
+  Box,
+  CircularProgress,
+  Button,
+  Chip,
+  Avatar,
+  Typography,
+  IconButton,
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+  ListItemAvatar,
+} from '@mui/material'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useClassContext } from 'contexts/ClassContext'
-import { blueGrey, grey } from '@mui/material/colors'
-import Button from '@mui/material/Button'
-import Chip from '@mui/material/Chip'
 import DownloadIcon from '@mui/icons-material/Download'
+import EditIcon from '@mui/icons-material/Edit'
+import { blueGrey, grey } from '@mui/material/colors'
+import { Document, Assessment } from 'models/assessment'
+import { colorPalettes, AssessmentActionType } from 'constant/common'
+import { useClassContext } from 'contexts/ClassContext'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
-import { getDownloadLink } from 'services/storage'
 import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
 import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
 import { useStudentContext } from 'contexts/StudentContext'
 import { StudentScoreBook } from 'models/ScoreBook'
 import { Student } from 'models/student'
+import { downloadAssessment } from 'utils/assessment'
+import { useNavigate } from 'react-router-dom'
+import { Router } from 'routes'
 
 interface SecondaryTextProps {
   bookDate: string
@@ -35,17 +39,9 @@ interface SecondaryTextProps {
 const SecondaryText = ({ bookDate, documents }: SecondaryTextProps) => {
   const [downloading, setDownloading] = useState<boolean>(false)
   const handleDownloadAssessment = (event: any, doc: Document) => {
-    event.stopPropagation()
     setDownloading(true)
-    getDownloadLink(doc.path).then((url) => {
+    downloadAssessment(event, doc).then(() => {
       setDownloading(false)
-
-      const link = document.createElement('a')
-      link.setAttribute('href', url)
-      link.setAttribute('download', doc.name)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
     })
   }
   return (
@@ -84,6 +80,7 @@ const AssessmentItem = ({
   onClickAction: (data: Assessment, actionType: AssessmentActionType) => void
   stuScoreBooks: StudentScoreBook[] | Student[]
 }) => {
+  const navigate = useNavigate()
   const { students } = useStudentContext()
   const { disableUpdate } = useClassContext()
   const [scoreBookSummary, setScoreBookSummary] = useState<ScoreBookSummaryResponse>()
@@ -106,7 +103,7 @@ const AssessmentItem = ({
         alignItems={'flex-start'}
         disableGutters={true}
         secondaryAction={
-          <>
+          <Box sx={{ display: 'flex', gap: '0.5rem' }}>
             <IconButton
               color={'warning'}
               onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
@@ -121,7 +118,18 @@ const AssessmentItem = ({
             >
               <DeleteIcon />
             </IconButton>
-          </>
+            <IconButton>
+              <ArrowForwardIosIcon
+                fontSize={'inherit'}
+                color={'action'}
+                onClick={() =>
+                  navigate(
+                    `${Router.SCORE_BOOK}?assessmentId=${assessment.id}&type=${assessment.type}`
+                  )
+                }
+              />
+            </IconButton>
+          </Box>
         }
       >
         <ListItemAvatar>
@@ -149,6 +157,7 @@ const AssessmentItem = ({
         <ScoreBookSummaryInfoComponent
           onFilterStudentByGrade={() => null}
           totalStudents={students.length}
+          position="relative"
           {...scoreBookSummary}
         />
       )}
@@ -187,26 +196,23 @@ const AssessmentSingleViewComponent = ({
   }
 
   return (
-    <Box>
-      <List
-        disablePadding={true}
-        sx={{
-          width: '100%',
-          maxWidth: 360,
-          background: 'transparent',
-          backdropFilter: 'blur(2px)',
-        }}
-      >
-        {assessments.map((assessment) => (
-          <AssessmentItem
-            key={assessment.id}
-            assessment={assessment}
-            onClickAction={onClickAction}
-            stuScoreBooks={stuScoreBooks}
-          />
-        ))}
-      </List>
-    </Box>
+    <List
+      disablePadding={true}
+      sx={{
+        width: '100%',
+        background: 'transparent',
+        backdropFilter: 'blur(2px)',
+      }}
+    >
+      {assessments.map((assessment) => (
+        <AssessmentItem
+          key={assessment.id}
+          assessment={assessment}
+          onClickAction={onClickAction}
+          stuScoreBooks={stuScoreBooks}
+        />
+      ))}
+    </List>
   )
 }
 

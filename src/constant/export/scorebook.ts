@@ -89,9 +89,9 @@ export const SCOREBOOK_HEADER_ROW = ({
           align: 'center',
           span: assessments[index].length,
         },
-        ...Array.from(new Array(assessments[index].length - 1)).map(() => null),
+        ...Array.from(new Array(assessments[index].length - 1)).map<any>(() => null),
       ]
-      const itemCol = assessments[index].map((date: string) => {
+      const itemCol = assessments[index].map<any>((date: string) => {
         return {
           value: formatDisplayDDMM(date),
           fontWeight: 'bold',

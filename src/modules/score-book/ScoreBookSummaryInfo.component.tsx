@@ -4,9 +4,10 @@ import { ScoreBookSummaryResponse } from 'utils/scorebookSummary'
 import { blue, grey } from '@mui/material/colors'
 import { styled } from '@mui/material'
 
-interface ScoreBookSummaryInfoComponentProps extends ScoreBookSummaryResponse {
+interface Props extends ScoreBookSummaryResponse {
   totalStudents: number
   onFilterStudentByGrade: (data?: any) => void
+  position?: string
 }
 
 interface Level {
@@ -44,7 +45,8 @@ const ScoreBookSummaryInfoComponent = ({
   excellent,
   totalStudents,
   onFilterStudentByGrade,
-}: ScoreBookSummaryInfoComponentProps) => {
+  position = 'sticky',
+}: Props) => {
   const [selectedType, setSelectedType] = useState<Level>()
   const levels: Level[] = [
     {
@@ -95,9 +97,9 @@ const ScoreBookSummaryInfoComponent = ({
   return (
     <Box
       sx={{
-        position: 'sticky',
-        top: 64,
-        zIndex: 1,
+        position: position,
+        top: position === 'sticky' ? 64 : 0,
+        zIndex: position === 'sticky' ? 1 : 0,
         boxShadow: 3,
         borderRadius: 1,
         backgroundImage: 'linear-gradient(to top, rgba(255,255,255,0.8), rgba(255,255,255,1))',
@@ -135,7 +137,9 @@ const ScoreBookSummaryInfoComponent = ({
         })}
       </Box>
       <Box color={grey[700]}>
-        {selectedType ? `${selectedType?.score} em ${selectedType.text}` : `Có ${numOfStuCompleteTest}/${totalStudents} em làm bài`}
+        {selectedType
+          ? `${selectedType?.score} em ${selectedType.text}`
+          : `Có ${numOfStuCompleteTest}/${totalStudents} em làm bài`}
       </Box>
     </Box>
   )

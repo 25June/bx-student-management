@@ -38,13 +38,12 @@ type AssessmentForm = {
 
 const handleRemoveDocuments = (existingDocuments?: Document[], documents?: Document[]) => {
   if (existingDocuments && documents && existingDocuments.length !== documents.length) {
-    const documentPaths = documents.map(doc => doc.path)
-    const uniqItems = (documents || []).filter(doc => !documentPaths.includes(doc.path))
-    const removeList = uniqItems.map(doc => removeImage(doc.path))
+    const documentPaths = documents.map((doc) => doc.path)
+    const uniqItems = (documents || []).filter((doc) => !documentPaths.includes(doc.path))
+    const removeList = uniqItems.map((doc) => removeImage(doc.path))
     Promise.all(removeList).then(() => console.log('remove success'))
   }
 }
-
 
 const AssessmentFormDefaultValue = (data: Assessment | null) => {
   if (data) {
@@ -116,10 +115,13 @@ const AssessmentDialogComponent = ({
       return uploadFile(doc, setUploadFileProgress, false)
     })
     return Promise.all(promises).then((res) => {
-      return uploadDocuments.map((doc, index) => ({
-        name: doc.name,
-        path: res[index]
-      } as Document))
+      return uploadDocuments.map(
+        (doc, index) =>
+          ({
+            name: doc.name,
+            path: res[index],
+          } as Document)
+      )
     })
   }
 
@@ -133,7 +135,7 @@ const AssessmentDialogComponent = ({
         type: submitData.type,
         lesson: submitData.lesson,
         schoolYear: data.schoolYear,
-        documents: data.documents
+        documents: data.documents,
       }
 
       let documents: Document[] = []
@@ -157,11 +159,9 @@ const AssessmentDialogComponent = ({
         },
         onComplete: () => {
           setLoading(false)
-          setTimeout(() => {
-            onClose(false)
-            handleRemoveDocuments(existingDocs, updatedAssessment.documents)
-            onFetchAssessments(classId)
-          }, 20)
+          onClose(false)
+          handleRemoveDocuments(existingDocs, updatedAssessment.documents)
+          onFetchAssessments(classId)
         },
       })
       return
@@ -183,11 +183,9 @@ const AssessmentDialogComponent = ({
         },
         onComplete: () => {
           setLoading(false)
-          setTimeout(() => {
-            onClose(false)
-            onFetchAssessments(classId)
-            handleRemoveDocuments([], data.documents)
-          }, 20)
+          onClose(false)
+          onFetchAssessments(classId)
+          handleRemoveDocuments([], data.documents)
         },
       })
       return
@@ -307,27 +305,40 @@ const AssessmentDialogComponent = ({
                     setValue('uploadDocuments', Array.from(event.target.files) as File[])
                   }
                 }}
-                inputProps={{ multiple: true, accept: 'application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document' }}
+                inputProps={{
+                  multiple: true,
+                  accept:
+                    'application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                }}
               />
-              {uploadDocumentWatch && (uploadDocumentWatch || []).map((doc) => (
-                <Box key={doc.name} sx={{ marginBottom: 0.5 }}>
+              {uploadDocumentWatch &&
+                (uploadDocumentWatch || []).map((doc) => (
+                  <Box key={doc.name} sx={{ marginBottom: 0.5 }}>
+                    <Chip
+                      size={'small'}
+                      label={doc.name}
+                      color={'info'}
+                      onDelete={() =>
+                        setValue(
+                          'uploadDocuments',
+                          uploadDocumentWatch.filter((d) => d.name !== doc.name)
+                        )
+                      }
+                    />
+                  </Box>
+                ))}
+
+              {existingDocs &&
+                existingDocs.map((doc) => (
                   <Chip
                     size={'small'}
                     label={doc.name}
                     color={'info'}
-                    onDelete={() => setValue('uploadDocuments', uploadDocumentWatch.filter(d => d.name !== doc.name))}
+                    onDelete={() =>
+                      setExistingDocs(existingDocs.filter((d) => d.name !== doc.name))
+                    }
                   />
-                </Box>
-              ))}
-
-              {existingDocs && existingDocs.map((doc) => (
-                <Chip
-                  size={'small'}
-                  label={doc.name}
-                  color={'info'}
-                  onDelete={() => setExistingDocs(existingDocs.filter(d => d.name !== doc.name))}
-                />
-              ))}
+                ))}
             </Box>
           )}
         </DialogContent>

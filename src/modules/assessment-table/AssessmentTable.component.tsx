@@ -1,49 +1,43 @@
-import * as React from 'react'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import Button from '@mui/material/Button'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import { Assessment } from 'models'
-import { Box, Tooltip, Typography } from '@mui/material'
+import {
+  Table,
+  Menu,
+  Box,
+  Chip,
+  CircularProgress,
+  IconButton,
+  Tooltip,
+  Typography,
+  MenuItem,
+  Button,
+  TableRow,
+  Paper,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+} from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
-import { AssessmentActionType } from 'constant'
 import DeleteIcon from '@mui/icons-material/Delete'
-import MenuItem from '@mui/material/MenuItem'
-import Menu from '@mui/material/Menu'
-import { useState } from 'react'
-import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import DownloadIcon from '@mui/icons-material/Download'
+import { useState } from 'react'
+import { grey } from '@mui/material/colors'
+import { AssessmentActionType } from 'constant'
+import { Assessment, Document } from 'models/assessment'
 import { useIsMobile } from 'utils/common'
 import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
-import { grey } from '@mui/material/colors'
+import { get } from 'lodash'
+import { downloadAssessment, tableColumns } from 'utils/assessment'
 
-const tableColumns = [
-  {
-    value: 'lesson',
-    label: 'Bài học',
-  },
-  {
-    value: 'bookDate',
-    label: 'Ngày thực hiện',
-  },
-  {
-    value: 'type',
-    label: 'Bài kiểm tra',
-  },
-]
-
-interface AssessmentTableComponentProps {
+interface Props {
   rows: Assessment[]
   onClickAction: (data: Assessment, actionType: AssessmentActionType) => void
 }
 
-const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableComponentProps) => {
+const AssessmentTableComponent = ({ rows, onClickAction }: Props) => {
   const isMobile = useIsMobile()
+  const [downloading, setDownloading] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [open, setOpen] = useState(false)
   const [selectedRow, setSelectedRow] = useState<Assessment>()
@@ -51,6 +45,13 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
     setAnchorEl(event.currentTarget)
     setOpen(true)
     setSelectedRow(row)
+  }
+
+  const handleDownloadAssessment = (event: any, doc: Document) => {
+    setDownloading(true)
+    downloadAssessment(event, doc).then(() => {
+      setDownloading(false)
+    })
   }
 
   const tableBodyClass = isMobile
@@ -77,6 +78,7 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
             {tableColumns.map((col) => {
               return <TableCell key={col.value}>{col.label}</TableCell>
             })}
+            <TableCell key={'file'}>File</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
@@ -96,10 +98,23 @@ const AssessmentTableComponent = ({ rows, onClickAction }: AssessmentTableCompon
                       data-cell={col.label}
                       sx={tableBodyClass}
                     >
-                      {(assessment as any)[col.value]}
+                      {get(assessment, [col.value], '~')}
                     </TableCell>
                   )
                 })}
+                <TableCell key={`${row.id}-document`} data-cell={'document'}>
+                  {assessment.documents?.map((doc) => (
+                    <Box sx={{ width: 150 }} key={doc.path}>
+                      <Chip
+                        icon={downloading ? <CircularProgress size={'1rem'} /> : <DownloadIcon />}
+                        size={'small'}
+                        label={doc.name}
+                        color={'info'}
+                        onClick={(event: any) => handleDownloadAssessment(event, doc)}
+                      />
+                    </Box>
+                  ))}
+                </TableCell>
                 {isMobile ? (
                   <TableCell key={`${row.id}-action`} sx={actionClass}>
                     <Button

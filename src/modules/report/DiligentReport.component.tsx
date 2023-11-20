@@ -159,21 +159,19 @@ interface Props {
 
 const DiligentReport = ({ data, onViewDetail }: Props) => {
   return (
-    <Box>
-      <List
-        disablePadding={true}
-        sx={{
-          width: '100%',
-          maxWidth: '100%',
-          background: 'transparent',
-          backdropFilter: 'blur(2px)',
-        }}
-      >
-        {data.map((data) => (
-          <DiligentReportItem key={data.date.key} data={data} onViewDetail={onViewDetail} />
-        ))}
-      </List>
-    </Box>
+    <List
+      disablePadding={true}
+      sx={{
+        width: '100%',
+        maxWidth: '100%',
+        background: 'transparent',
+        backdropFilter: 'blur(2px)',
+      }}
+    >
+      {data.map((data) => (
+        <DiligentReportItem key={data.date.key} data={data} onViewDetail={onViewDetail} />
+      ))}
+    </List>
   )
 }
 

@@ -55,19 +55,19 @@ const AssessmentComponent = () => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          gap: isMobile ? 1 : 2,
-          padding: isMobile ? 1 : 2,
+          gap: 1,
+          padding: 1,
           width: '100%',
-          alignItems: isMobile ? 'flex-start' : 'center',
-          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: 'flex-start',
+          flexDirection: 'column',
           boxSizing: 'border-box',
         }}
       >
-        <Typography variant={'h1'} sx={{ fontSize: isMobile ? '1rem' : '2rem' }}>
+        <Typography variant={'h1'} sx={{ fontSize: '1rem' }}>
           Bài Kiểm Tra
         </Typography>
       </Box>
-      <Box p={isMobile ? 1 : 2}>
+      <Box p={1}>
         {assessments &&
           (isMobile ? (
             <AssessmentSingleViewComponent
