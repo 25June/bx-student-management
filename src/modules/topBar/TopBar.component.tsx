@@ -49,7 +49,7 @@ const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentPro
 
   return (
     <MuiAppBar
-      color={`${color}Background` as any}
+      color={color ? (`${color}Background` as any) : 'primary'}
       enableColorOnDark={true}
       position="fixed"
       open={isOpen}
