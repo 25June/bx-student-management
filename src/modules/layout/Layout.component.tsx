@@ -12,7 +12,7 @@ import { useAuthentication } from 'contexts/AuthContext'
 
 export const drawerWidth = 240
 const backgroundURL =
-  'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/email-images%2Fchristmas-tree-bg.png?alt=media&token=c45f52a4-d2d1-4eff-ad60-2b8695e9f4c7'
+  'https://ik.imagekit.io/rpynfcw1e/christmas-tree-bg.png?updatedAt=1700530844290'
 
 const LayoutComponent = ({ children }: PropsWithChildren) => {
   const [isOpen, setOpen] = useState<boolean>(false)
