@@ -12,6 +12,7 @@ import {
   getDocs,
 } from 'firebase/firestore'
 import { app } from '../firebase'
+import { useSnackbarContext } from 'contexts/SnackbarContext'
 
 const db = getFirestore(app)
 const AssessmentCollection = 'assessments'
@@ -21,7 +22,7 @@ export const updateAllValueOfAssessment = () => {
   const queryAssessments = query(assessmentRef)
   getDocs(queryAssessments).then((snapshot) => {
     snapshot.docs.forEach((snapshotDoc) => {
-      updateDoc(snapshotDoc.ref, { schoolYear: '2022-2023' }).then((result) => console.log(result))
+      updateDoc(snapshotDoc.ref, { schoolYear: '2022-2023' })
     })
 
     if (snapshot.empty) {
@@ -51,81 +52,88 @@ export const fetchAssessments = (classId: string, schoolYear: string) => {
 
 interface AddNewAssessmentProps {
   dataInput: Omit<Assessment, 'id'>
-  onSuccess: () => void
-  onError: () => void
-  onComplete: () => void
+  onSuccess?: () => void
+  onError?: () => void
+  onComplete?: () => void
 }
 
-export const addNewAssessment = ({
-  dataInput,
-  onSuccess,
-  onError,
-  onComplete,
-}: AddNewAssessmentProps) => {
-  const time = serverTimestamp() as Timestamp
-  const data = {
-    ...dataInput,
-    createdDate: time,
+export const useAddNewAssessment = () => {
+  const { showSnackbar } = useSnackbarContext()
+
+  return ({ dataInput, onSuccess, onError, onComplete }: AddNewAssessmentProps) => {
+    const time = serverTimestamp() as Timestamp
+    const data = {
+      ...dataInput,
+      createdDate: time,
+    }
+    addDoc(collection(db, AssessmentCollection), data)
+      .then(() => {
+        showSnackbar(`Thêm Bài Kiểm Tra Thành Công`, 'success')
+        onSuccess?.()
+      })
+      .catch((error) => {
+        console.error(error)
+        showSnackbar(`Thêm Bài Kiểm Tra Thất Bại`, 'error')
+        onError?.()
+      })
+      .finally(() => {
+        onComplete?.()
+      })
   }
-  addDoc(collection(db, AssessmentCollection), data)
-    .then(() => {
-      onSuccess()
-    })
-    .catch((error) => {
-      console.error(error)
-      onError()
-    })
-    .finally(() => {
-      onComplete()
-    })
 }
 
 interface EditAssessmentProps {
   dataInput: Assessment
-  onSuccess: () => void
-  onError: () => void
-  onComplete: () => void
+  onSuccess?: () => void
+  onError?: () => void
+  onComplete?: () => void
 }
 
 export const useEditAssessment = () => {
+  const { showSnackbar } = useSnackbarContext()
+
   return ({ dataInput, onSuccess, onError, onComplete }: EditAssessmentProps) => {
     const ref = doc(db, AssessmentCollection, dataInput.id)
     updateDoc(ref, { updatedDate: serverTimestamp(), ...dataInput })
-      .then((value) => {
-        console.info(value)
-        onSuccess()
+      .then(() => {
+        showSnackbar(`Cập Nhật Bài Kiểm Tra Thành Công`, 'success')
+        onSuccess?.()
       })
       .catch((error) => {
         console.error(error)
-        onError()
+        showSnackbar(`Cập Nhật Bài Kiểm Tra Thất Bại`, 'error')
+        onError?.()
       })
       .finally(() => {
-        onComplete()
+        onComplete?.()
       })
   }
 }
 
-interface DeleteAssessmentParams {
+interface DeleteAssessmentProps {
   id: string
-  onSuccess: () => void
-  onError: () => void
-  onComplete: () => void
+  onSuccess?: () => void
+  onError?: () => void
+  onComplete?: () => void
 }
 
 export const useDeleteAssessment = () => {
-  return ({ id, onSuccess, onError, onComplete }: DeleteAssessmentParams) => {
+  const { showSnackbar } = useSnackbarContext()
+
+  return ({ id, onSuccess, onError, onComplete }: DeleteAssessmentProps) => {
     const ref = doc(db, AssessmentCollection, id)
     updateDoc(ref, { isDeleted: true, updatedDate: serverTimestamp() })
-      .then((value) => {
-        console.info(value)
-        onSuccess()
+      .then(() => {
+        showSnackbar(`Xoá Bài Kiểm Tra Thành Công`, 'success')
+        onSuccess?.()
       })
       .catch((error) => {
         console.error(error)
-        onError()
+        showSnackbar(`Xoá Bài Kiểm Tra vào Thất Bại`, 'error')
+        onError?.()
       })
       .finally(() => {
-        onComplete()
+        onComplete?.()
       })
   }
 }

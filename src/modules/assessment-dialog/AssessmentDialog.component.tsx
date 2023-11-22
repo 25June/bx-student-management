@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import {
   Box,
   Button,
-  ButtonProps,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,21 +11,24 @@ import {
   CircularProgress,
   Chip,
 } from '@mui/material'
-import { AssessmentActionType } from 'constant'
+import { AssessmentActionType } from 'constant/common'
 import { Controller, useForm } from 'react-hook-form'
 import { Assessment, Document } from 'models/assessment'
-import { getToday } from 'utils'
-import { addNewAssessment, useDeleteAssessment, useEditAssessment } from 'services/assessment'
-import { useSnackbarContext } from 'contexts/SnackbarContext'
+import { useAddNewAssessment, useDeleteAssessment, useEditAssessment } from 'services/assessment'
 import { AssessmentEnum } from 'constant/common'
 import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
+import {
+  removeAssessmentDocuments,
+  AssessmentFormDefaultValue,
+  getButtonColor,
+} from 'utils/assessment'
 import { useClassContext } from 'contexts/ClassContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
-import { uploadFile, removeImage } from 'services/storage'
+import { uploadFile } from 'services/storage'
 import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
 
 type AssessmentForm = {
@@ -36,47 +38,11 @@ type AssessmentForm = {
   uploadDocuments?: File[] | null
 }
 
-const handleRemoveDocuments = (existingDocuments?: Document[], documents?: Document[]) => {
-  if (existingDocuments && documents && existingDocuments.length !== documents.length) {
-    const documentPaths = documents.map((doc) => doc.path)
-    const uniqItems = (documents || []).filter((doc) => !documentPaths.includes(doc.path))
-    const removeList = uniqItems.map((doc) => removeImage(doc.path))
-    Promise.all(removeList).then(() => console.log('remove success'))
-  }
-}
-
-const AssessmentFormDefaultValue = (data: Assessment | null) => {
-  if (data) {
-    return {
-      bookDate: data.bookDate,
-      type: data.type,
-      lesson: data.lesson,
-    }
-  }
-
-  return {
-    bookDate: getToday(),
-    type: AssessmentEnum.KT5,
-    lesson: '',
-    uploadDocument: null,
-  }
-}
-
 interface AssessmentDialogComponentProps {
   data: Assessment | null
   action: string
   onClose: (refreshData?: boolean) => void
   isOpen: boolean
-}
-
-const getButtonColor = (type: string): ButtonProps['color'] => {
-  if (type === AssessmentActionType.ADD_NEW_ASSESSMENT) {
-    return 'primary'
-  }
-  if (type === AssessmentActionType.EDIT_ASSESSMENT) {
-    return 'warning'
-  }
-  return 'error'
 }
 
 const AssessmentDialogComponent = ({
@@ -87,10 +53,9 @@ const AssessmentDialogComponent = ({
 }: AssessmentDialogComponentProps) => {
   const editAssessment = useEditAssessment()
   const deleteAssessment = useDeleteAssessment()
-  const { showSnackbar } = useSnackbarContext()
-  const { schoolYearId } = useClassContext()
+  const addNewAssessment = useAddNewAssessment()
+  const { schoolYearId, classId } = useClassContext()
   const { onFetchAssessments } = useAssessmentContext()
-  const { classId } = useClassContext()
   const [uploadFileProgress, setUploadFileProgress] = useState<number>(0)
 
   const { handleSubmit, control, reset, setValue, watch } = useForm<AssessmentForm>({
@@ -144,51 +109,27 @@ const AssessmentDialogComponent = ({
       }
       documents = (existingDocs || []).concat(documents)
 
-      editAssessment({
+      return editAssessment({
         dataInput: { ...updatedAssessment, documents },
-        onSuccess: () =>
-          showSnackbar(
-            `Cập Nhật Bài Kiểm Tra ${updatedAssessment.type} Thành Công vào ${updatedAssessment.bookDate}`,
-            'success'
-          ),
-        onError: () => {
-          showSnackbar(
-            `Cập Nhật Bài Kiểm Tra ${updatedAssessment.type} vào ${updatedAssessment.bookDate} Thất Bại`,
-            'error'
-          )
-        },
         onComplete: () => {
           setLoading(false)
           onClose(false)
-          handleRemoveDocuments(existingDocs, updatedAssessment.documents)
+          removeAssessmentDocuments(existingDocs, updatedAssessment.documents)
           onFetchAssessments(classId)
         },
       })
-      return
     }
     if (data?.id) {
       const deleteValue = data as Assessment
-      deleteAssessment({
+      return deleteAssessment({
         id: deleteValue.id,
-        onSuccess: () =>
-          showSnackbar(
-            `Xoá Bài Kiểm Tra ${deleteValue.type} Thành Công vào ${deleteValue.bookDate}`,
-            'success'
-          ),
-        onError: () => {
-          showSnackbar(
-            `Xoá Bài Kiểm Tra ${deleteValue.type} vào ${deleteValue.bookDate} Thất Bại`,
-            'error'
-          )
-        },
         onComplete: () => {
           setLoading(false)
           onClose(false)
           onFetchAssessments(classId)
-          handleRemoveDocuments([], data.documents)
+          removeAssessmentDocuments([], data.documents)
         },
       })
-      return
     }
     const newAssessment: Omit<Assessment, 'id'> = {
       classId,
@@ -203,19 +144,8 @@ const AssessmentDialogComponent = ({
       documents = await handleUploadFiles(submitData.uploadDocuments)
     }
 
-    addNewAssessment({
+    return addNewAssessment({
       dataInput: { ...newAssessment, documents },
-      onSuccess: () =>
-        showSnackbar(
-          `Thêm Bài Kiểm Tra ${newAssessment.type} Thành Công vào ${newAssessment.bookDate}`,
-          'success'
-        ),
-      onError: () => {
-        showSnackbar(
-          `Thêm Bài Kiểm Tra ${newAssessment.type} vào ${newAssessment.bookDate} Thất Bại`,
-          'error'
-        )
-      },
       onComplete: () => {
         setLoading(false)
         onClose(false)
@@ -224,7 +154,6 @@ const AssessmentDialogComponent = ({
         })
       },
     })
-    return
   }
 
   const handleChangeAssessmentType = (value: AssessmentEnum) => {

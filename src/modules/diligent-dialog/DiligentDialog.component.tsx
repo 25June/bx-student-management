@@ -55,7 +55,7 @@ const DiligentDialogComponent = ({
     }
 
     if (action === RollCallDateActionType.EDIT_STUDY_DATE) {
-      updateRollCallDate({
+      return updateRollCallDate({
         date: rollCallDate,
         id: rollCall?.id || '',
         classId,
@@ -66,16 +66,15 @@ const DiligentDialogComponent = ({
         onClose(true)
         return fetchRollCallDates?.({ classId, semesterId, schoolYearId })
       })
-      return
     }
 
-    addRollCallDate({ date: rollCallDate, classId, semesterId, schoolYearId }).finally(() => {
-      Promise.resolve().then(() => {
+    return addRollCallDate({ date: rollCallDate, classId, semesterId, schoolYearId }).finally(
+      () => {
         setLoading(false)
         onClose(true)
-      })
-      return fetchRollCallDates?.({ classId, semesterId, schoolYearId })
-    })
+        fetchRollCallDates?.({ classId, semesterId, schoolYearId })
+      }
+    )
   }
 
   return (
