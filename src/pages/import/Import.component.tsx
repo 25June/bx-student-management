@@ -7,7 +7,8 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import React, { useEffect, useState } from 'react'
-import { formatMockData, formatStudentTable } from 'utils'
+import { formatImportedData } from 'utils/common'
+import { formatStudentTable } from 'utils/formatDataForTable'
 import TableComponent from 'modules/Table/Table.component'
 import { studentColumns } from 'modules/Table/helpers'
 import { SelectChangeEvent } from '@mui/material/Select'
@@ -48,7 +49,7 @@ const ImportComponent = () => {
 
   const parseValue = (values: ImportProps) => {
     const formatToArray = JSON.parse(formatValue(values.value))
-    const formatData = formatMockData(formatToArray)
+    const formatData = formatImportedData(formatToArray)
     const formatStudents = formatStudentTable(formatData)
     setValue(formatStudents)
   }
@@ -113,7 +114,11 @@ const ImportComponent = () => {
         </form>
         {value.length !== 0 && <TableComponent columns={studentColumns} rows={value} />}
         <Box mt={2} mb={2}>
-          <ClassDropdownComponent useDarkMode={false} classObj={classObj} onChangeClass={handleChangeClass} />
+          <ClassDropdownComponent
+            useDarkMode={false}
+            classObj={classObj}
+            onChangeClass={handleChangeClass}
+          />
         </Box>
         <Button onClick={saveData} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
           Confirm Save Date

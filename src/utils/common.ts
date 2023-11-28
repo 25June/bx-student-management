@@ -4,12 +4,12 @@ import studentGirlLogo from 'static/images/cards/student-girl.png'
 import studentBoyLogo from 'static/images/cards/student-boy.png'
 import GLVLogo from 'static/images/cards/glv.png'
 
-export const mockDataFormatFirstName = (firstName: string): string => {
+const formatFirstName = (firstName: string): string => {
   const name = firstName.toLowerCase()
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
-export const mockDataFormatBirthday = (birthday?: string): string => {
+const formatBirthday = (birthday?: string): string => {
   if (birthday) {
     const splitBirthday = birthday.split('.')
     return `${splitBirthday[2]}-${splitBirthday[1]}-${splitBirthday[0]}`
@@ -17,20 +17,19 @@ export const mockDataFormatBirthday = (birthday?: string): string => {
   return ''
 }
 
-export const mockDataFormatPhone = (phone: string): string =>
-  phone ? phone.toString().replaceAll('.', '') : ''
+const formatPhone = (phone: string): string => (phone ? phone.toString().replaceAll('.', '') : '')
 
-export const formatMockData = (mockStudents: any[]): Student[] => {
+export const formatImportedData = (mockStudents: any[]): Student[] => {
   return mockStudents
     .filter((student) => student)
     .map(({ phone1, phone2, ...student }: any, index: number) => {
       return {
         ...student,
-        firstName: mockDataFormatFirstName(student.firstName),
-        birthday: student.birthday ? mockDataFormatBirthday(student.birthday) : '',
+        firstName: formatFirstName(student.firstName),
+        birthday: student.birthday ? formatBirthday(student.birthday) : '',
         phones: [
-          { name: 'Cha', number: mockDataFormatPhone(phone1) },
-          { name: 'Mẹ', number: mockDataFormatPhone(phone2) },
+          { name: 'Cha', number: formatPhone(phone1) },
+          { name: 'Mẹ', number: formatPhone(phone2) },
         ],
         id: `student-${index}`,
       } as Student
@@ -46,17 +45,17 @@ export const buildImageUrl = (
   if (!imagePath) {
     return isGLV ? GLVLogo : gender ? studentGirlLogo : studentBoyLogo
   }
-  // const prefix = 'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/'
+  // const prefix = process.env.REACT_APP_FIREBASE_STORAGE_URL
   // const postfix = '?alt=media&token=23812601-6493-46bc-b0fc-3d1164216a17'
   // const formatImage = imagePath.replaceAll('/', '%2F')
-  const prefix = 'https://ik.imagekit.io/rpynfcw1e/bx-management/'
+  const prefix = process.env.REACT_APP_IMAGE_KIT_URL
   const dimension = showFullScale ? '' : '?tr=w-500,h-500,fo-auto'
   const imageName = imagePath.replace('avatars/', '')
   return prefix + imageName + dimension
 }
 
 export const buildFileUrl = (filePath: string) => {
-  return `https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/` + filePath
+  return process.env.REACT_APP_FIREBASE_STORAGE_URL + filePath
 }
 
 export const getToday = () => {

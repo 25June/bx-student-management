@@ -1,60 +1,8 @@
 import { realtimeDB } from '../firebase'
 import { useState, useEffect } from 'react'
-import { Assessment } from 'models'
 import { ScoreBook } from 'models/ScoreBook'
-import { AssessmentEnum } from 'constant/common'
 import { onValue, ref, get, set, Unsubscribe } from 'firebase/database'
 import { useClassContext } from 'contexts/ClassContext'
-
-export const initDefaultScoreBook = (assessments: Assessment[]) => {
-  return assessments.reduce(
-    (acc, cur) => {
-      if (cur.type === AssessmentEnum.KT5) {
-        return {
-          ...acc,
-          score5: {
-            ...acc.score5,
-            [cur.id]: 0,
-          },
-        }
-      }
-      if (cur.type === AssessmentEnum.KT15) {
-        return {
-          ...acc,
-          score15: {
-            ...acc.score15,
-            [cur.id]: 0,
-          },
-        }
-      }
-      if (cur.type === AssessmentEnum.KT45) {
-        return {
-          ...acc,
-          score45: {
-            ...acc.score45,
-            [cur.id]: 0,
-          },
-        }
-      }
-      if (cur.type === AssessmentEnum.KT60) {
-        return {
-          ...acc,
-          score60: {
-            ...acc.score60,
-            [cur.id]: 0,
-          },
-        }
-      }
-      return acc
-    },
-    {
-      score5: {},
-      score15: {},
-      score45: {},
-      score60: {},
-    }
-  )
-}
 
 const scorebookPathName = (classId: string, year: string, semester: string) =>
   `scorebook/${classId}/${year}/${semester}`
@@ -156,7 +104,15 @@ export const setNewStudentScore = ({
   schoolYearId,
   type,
 }: SetNewStudentScoreProps) => {
-  if (typeof score === 'number' && assessmentId && semesterId && studentId && classId && schoolYearId && type) {
+  if (
+    typeof score === 'number' &&
+    assessmentId &&
+    semesterId &&
+    studentId &&
+    classId &&
+    schoolYearId &&
+    type
+  ) {
     return set(
       ref(
         realtimeDB,

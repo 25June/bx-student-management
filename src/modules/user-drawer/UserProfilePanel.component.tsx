@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography'
 import React from 'react'
 import EmailIcon from '@mui/icons-material/Email'
 import PhoneIcon from '@mui/icons-material/Phone'
-import { formatPhone } from 'utils'
+import { formatPhone } from 'utils/formatDataForTable'
 import { BaseClassObj, extendedColorPalettes, UserRoles } from 'constant/common'
 
 interface UserProfilePanelComponentProps {
@@ -55,13 +55,15 @@ const UserProfilePanelComponent = ({ profile, onClose }: UserProfilePanelCompone
         <Box textAlign={'center'} component={'h2'} mt={0} color={grey[800]}>
           {`${profile.firstName} ${profile.lastName}`}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 1 }}>
-          <Box
-            textAlign={'center'}
-            fontWeight={400}
-            fontSize={'0.825rem'}
-            color={grey[500]}
-          >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 1,
+          }}
+        >
+          <Box textAlign={'center'} fontWeight={400} fontSize={'0.825rem'} color={grey[500]}>
             {UserRoles[profile.role]?.title || ''}
           </Box>
           <Chip
@@ -79,11 +81,16 @@ const UserProfilePanelComponent = ({ profile, onClose }: UserProfilePanelCompone
             backgroundColor: blue[50],
             padding: '0.25rem',
             borderRadius: 10,
-            marginBottom: 1
+            marginBottom: 1,
           }}
         >
           <EmailIcon color={'info'} fontSize={'small'} />
-          <Typography fontSize={'0.75rem'} color={blue[700]} sx={{ wordBreak: 'break-word' }} fontWeight={700}>
+          <Typography
+            fontSize={'0.75rem'}
+            color={blue[700]}
+            sx={{ wordBreak: 'break-word' }}
+            fontWeight={700}
+          >
             {profile.email}
           </Typography>
         </Box>
@@ -95,7 +102,7 @@ const UserProfilePanelComponent = ({ profile, onClose }: UserProfilePanelCompone
             gap: '1rem',
             backgroundColor: amber[50],
             padding: '0.25rem',
-            borderRadius: 10
+            borderRadius: 10,
           }}
         >
           <PhoneIcon color={'warning'} fontSize={'small'} />

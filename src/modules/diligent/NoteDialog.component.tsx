@@ -53,10 +53,8 @@ const NoteDialogComponent = ({ onClose, isOpen, data, rollCallDateId, studentId 
         showSnackbar('Ghi chú chưa được lưu', 'error')
       })
       .finally(() => {
-        Promise.resolve().then(() => {
-          setLoading(false)
-          onClose(false)
-        })
+        setLoading(false)
+        onClose(false)
       })
   }
   return (

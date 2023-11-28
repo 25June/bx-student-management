@@ -9,9 +9,10 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import { getStudentScoreBook, initDefaultScoreBook, setNewStudentScore } from 'services/scorebook'
+import { getStudentScoreBook, setNewStudentScore } from 'services/scorebook'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
+import { initDefaultScoreBook } from 'constant/scorebook'
 import ScoreForm from '../common/ScoreForm.component'
 import { groupAssessments } from 'modules/Table/helpers'
 import { useClassContext } from 'contexts/ClassContext'
