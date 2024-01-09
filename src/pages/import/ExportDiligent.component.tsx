@@ -99,6 +99,15 @@ const ExportDiligentComponent = ({ currentClass }: Props) => {
                 const tl = get(attendances, [stu.id, key, 'tl'])
                 const gl = get(attendances, [stu.id, key, 'gl'])
                 const note = get(attendances, [stu.id, key, 'note'])
+                const givingNotice = get(attendances, [stu.id, key, 'givingNotice'], false)
+                const adoration = get(attendances, [stu.id, key, 'adoration'], false)
+                let finalNode = givingNotice ? 'Vắng có phép' : ''
+                if (note) {
+                  finalNode += ` - ${note}`
+                }
+                if (adoration) {
+                  finalNode += ` - Có chầu thánh thể`
+                }
                 return [
                   {
                     alignVertical: 'top',
@@ -127,8 +136,8 @@ const ExportDiligentComponent = ({ currentClass }: Props) => {
                     rightBorderStyle: 'thin',
                     topBorderStyle: 'thin',
                     bottomBorderStyle: 'thin',
-                    value: note || '',
-                    backgroundColor: note ? lightGreen[200] : '',
+                    value: finalNode,
+                    backgroundColor: finalNode ? lightGreen[200] : '',
                   },
                 ]
               })
