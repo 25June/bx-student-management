@@ -48,7 +48,7 @@ const ReportComponent = () => {
   return (
     <Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tabValue} onChange={handleChange}>
+        <Tabs value={tabValue} onChange={handleChange} variant="fullWidth">
           {/* <Tab label="Nhập" value={1} disabled={user?.role !== Role.CTO} {...a11yProps(1)} /> */}
           <Tab label="Xuất Danh Sách" value={2} {...a11yProps(2)} />
           <Tab label="Xuất Chuyên Cần" value={3} {...a11yProps(3)} />
