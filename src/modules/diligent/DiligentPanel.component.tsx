@@ -135,14 +135,14 @@ const DiligentPanelComponent = ({ student, open, onClose }: Props) => {
                     {summary.givingNotice}
                   </Typography>
                 </Box>
-                {summary.adoration && (
+                {summary.adoration ? (
                   <Box>
                     Chầu Thánh Thể:{' '}
                     <Typography component="span" fontWeight={500} color={blue[700]}>
                       {summary.adoration}
                     </Typography>
                   </Box>
-                )}
+                ) : null}
               </Box>
             </Box>
             {orderBy(Object.keys(groupRollDate), [], ['desc']).map((monthKey) => (
