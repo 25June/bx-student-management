@@ -1,5 +1,6 @@
 import { Chip, FormControl, FormLabel, Box, Drawer, Typography } from '@mui/material'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
+import { grey, blue } from '@mui/material/colors'
 import React, { useEffect, useState } from 'react'
 import { ImageBoxComponent } from 'modules/index'
 import { Student } from 'models/student'
@@ -55,6 +56,19 @@ const DiligentPanelComponent = ({ student, open, onClose }: Props) => {
     }
   }
   const attendance = get(attendances, [student?.id || ''], null)
+  const summary = attendance
+    ? Object.keys(attendance).reduce(
+        (acc, cur) => {
+          return {
+            gl: attendance[cur]?.gl ? acc.gl + 1 : acc.gl,
+            tl: attendance[cur]?.tl ? acc.tl + 1 : acc.tl,
+            givingNotice: attendance[cur]?.givingNotice ? acc.givingNotice + 1 : acc.givingNotice,
+            adoration: attendance[cur]?.adoration ? acc.adoration + 1 : acc.adoration,
+          }
+        },
+        { gl: 0, tl: 0, givingNotice: 0, adoration: 0 } as Record<string, number>
+      )
+    : { gl: 0, tl: 0, givingNotice: 0, adoration: 0 }
   return (
     <Drawer
       variant="temporary"
@@ -88,6 +102,48 @@ const DiligentPanelComponent = ({ student, open, onClose }: Props) => {
             </Box>
             <Box textAlign={'center'} component={'h3'} fontWeight={500} mt={0}>
               {`${student.lastName} ${student.firstName}`}
+            </Box>
+            <Box sx={{ border: `1px solid ${grey[300]}`, borderRadius: '10px', padding: '0.5rem' }}>
+              <Typography fontWeight={600} textAlign={'center'} marginBottom={'0.75rem'}>
+                Tổng kết
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-evenly',
+                  columnGap: '0.5rem',
+                  rowGap: '0.25rem',
+                  flexWrap: 'wrap',
+                  maxWidth: 325,
+                }}
+              >
+                <Box>
+                  Thánh lễ:{' '}
+                  <Typography component="span" fontWeight={500} color={blue[700]}>
+                    {summary.tl}
+                  </Typography>
+                </Box>
+                <Box>
+                  Giáo lý:{' '}
+                  <Typography component="span" fontWeight={500} color={blue[700]}>
+                    {summary.gl}
+                  </Typography>
+                </Box>
+                <Box>
+                  Vắng có phép:{' '}
+                  <Typography component="span" fontWeight={500} color={blue[700]}>
+                    {summary.givingNotice}
+                  </Typography>
+                </Box>
+                {summary.adoration && (
+                  <Box>
+                    Chầu Thánh Thể:{' '}
+                    <Typography component="span" fontWeight={500} color={blue[700]}>
+                      {summary.adoration}
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
             </Box>
             {orderBy(Object.keys(groupRollDate), [], ['desc']).map((monthKey) => (
               <Box key={monthKey}>

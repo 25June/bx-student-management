@@ -53,6 +53,94 @@ const ExportDiligentComponent = ({ currentClass }: Props) => {
       return
     }
 
+    const SUM_DATA_ROWS = sortedStudent.map((stu: Student, index) => {
+      const attendance = get(attendances, stu.id, null)
+      const summaryData = attendance
+        ? Object.keys(attendance).reduce(
+            (acc, cur) => {
+              return {
+                gl: attendance[cur]?.gl ? acc.gl + 1 : acc.gl,
+                tl: attendance[cur]?.tl ? acc.tl + 1 : acc.tl,
+                givingNotice: attendance[cur]?.givingNotice
+                  ? acc.givingNotice + 1
+                  : acc.givingNotice,
+                adoration: attendance[cur]?.adoration ? acc.adoration + 1 : acc.adoration,
+              }
+            },
+            { gl: 0, tl: 0, givingNotice: 0, adoration: 0 } as Record<string, number>
+          )
+        : { gl: 0, tl: 0, givingNotice: 0, adoration: 0 }
+      return [
+        {
+          alignVertical: 'top',
+          type: Number,
+          value: index + 1,
+          align: 'center',
+          borderStyle: 'thin',
+        },
+        {
+          alignVertical: 'top',
+          type: String,
+          value: stu.saintName || '',
+          borderStyle: 'thin',
+        },
+        {
+          alignVertical: 'top',
+          type: String,
+          value: stu.lastName,
+          leftBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+        },
+        {
+          alignVertical: 'top',
+          type: String,
+          value: stu.firstName,
+          fontWeight: 'bold',
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+        },
+        {
+          alignVertical: 'top',
+          align: 'center',
+          type: String,
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          value: summaryData.tl.toString(),
+        },
+        {
+          alignVertical: 'top',
+          align: 'center',
+          type: String,
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          value: summaryData.gl.toString(),
+        },
+        {
+          alignVertical: 'top',
+          wrap: true,
+          type: String,
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          value: `${summaryData.givingNotice} Phép`,
+        },
+      ]
+    })
+    const summary = {
+      sheetName: 'Tổng kết',
+      sheetValue: [
+        DILIGENT_BANNER_ROW(['Tổng kết']),
+        DILIGENT_PREPARE_ROW(currentClass, ['Tổng kết']),
+        ...DILIGENT_HEADER_ROW(['Tổng kết']),
+        ...SUM_DATA_ROWS,
+      ],
+      column: DILIGENT_COLUMNS_WIDTH(['Tổng kết']),
+    }
+
     const dataForEachMonth = Object.values(groupedMonth)
       .sort((a, b) => (a?.[0]?.month < b?.[0]?.month ? 1 : -1))
       .reduce((acc, rollCallDates: RollCallDate[]) => {
@@ -161,6 +249,7 @@ const ExportDiligentComponent = ({ currentClass }: Props) => {
         })
       }, [] as { sheetName: string; sheetValue: any; column: any[] }[])
 
+    dataForEachMonth.push(summary)
     await writeXlsxFile(
       dataForEachMonth.map((month) => month.sheetValue),
       {
