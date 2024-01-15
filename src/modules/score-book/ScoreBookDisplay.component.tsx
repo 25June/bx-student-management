@@ -4,13 +4,13 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { blueGrey } from '@mui/material/colors'
 import Grow from '@mui/material/Grow'
-import TableComponent from 'modules/Table/Table.component'
-import { renderScoreBookActions, ScoreBookColumns } from 'modules/Table/helpers'
 import { Assessment, Student, StudentScoreBook } from 'models'
 import SingleScoreViewComponent from 'modules/single-score-view/SingleScoreView.component'
 import { get } from 'lodash'
 import DiligentSkeleton from 'modules/diligent/DiligentSkeleton.component'
 import { useIsMobile } from 'utils/common'
+import ScorebookTable from 'modules/score-book-table/ScoreBookTable.component'
+import { useAssessmentContext } from 'contexts/AssessmentContext'
 
 export interface ScoreBookDisplayComponentProps {
   filteredStuScoreBooks: StudentScoreBook[] | Student[]
@@ -30,6 +30,8 @@ const ScoreBookDisplayComponent = ({
   selectedAssessmentDate,
 }: ScoreBookDisplayComponentProps) => {
   const isMobile = useIsMobile()
+  const { assessments } = useAssessmentContext()
+
   if (filteredStuScoreBooks.length === 0) {
     return <DiligentSkeleton />
   }
@@ -60,11 +62,9 @@ const ScoreBookDisplayComponent = ({
     )
   }
   return (
-    <TableComponent
-      columns={ScoreBookColumns}
-      rows={filteredStuScoreBooks}
-      onClickAction={(data: StudentScoreBook) => setSelectedScoreBook(data)}
-      renderActionMenu={renderScoreBookActions}
+    <ScorebookTable
+      assessments={assessments}
+      studentScoreBooks={filteredStuScoreBooks as StudentScoreBook[]}
     />
   )
 }
