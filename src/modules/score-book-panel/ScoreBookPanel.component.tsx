@@ -88,9 +88,11 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
     }
   }
 
-  const listScore: number[] = Object.values(
-    (scoreBook?.[activeTab as keyof ScoreBook] as any) || {}
-  )
+  const listScore: number[] = assessments
+    .filter((ass) => ass.type === activeTab)
+    .map((ass) => {
+      return get(scoreBook, [activeTab, ass.id], 0)
+    })
   const average =
     listScore.length !== 0 ? listScore.reduce((a, b) => a + b, 0) / listScore.length : 0
 

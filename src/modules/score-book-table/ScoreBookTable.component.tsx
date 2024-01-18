@@ -174,8 +174,8 @@ const ScorebookTable = ({ studentScoreBooks, assessments }: Props) => {
                       </TableCell>
                     )
                   }
-                  const score = row[col.field as keyof StudentScoreBook] || {}
-                  const assessmentByType = groupAssessments[col.field]
+                  const score = row[col.field as keyof StudentScoreBook] ?? {}
+                  const assessmentByType = groupAssessments[col.field] ?? []
                   return (
                     <TableCell key={`${row.id}-${col.field}`} data-cell={col.field}>
                       {assessmentByType.map((a) => (
