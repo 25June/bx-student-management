@@ -2,7 +2,7 @@ import { Button, Typography, Drawer, Box, Chip } from '@mui/material'
 import { get } from 'lodash'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import AddIcon from '@mui/icons-material/Add'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { getStudentScoreBook, setNewStudentScore } from 'services/scorebook'
 import { useGetStudentById } from 'services/student'
 import { fetchAssessments } from 'services/assessment'
@@ -32,7 +32,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
   const [activeTab, setActiveTab] = useState<string>('score5')
 
   const [scoreBook, setStudentScoreBook] = useState<ScoreBook>()
-  const handleFetchStudentScoreBook = useCallback(() => {
+  const handleFetchStudentScoreBook = () => {
     getStudentScoreBook({ classId, studentId, semesterId, schoolYearId })
       .then((value) => {
         if (value === 'EMPTY_DATA' && assessments?.length !== 0) {
@@ -45,9 +45,9 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
       .catch((error) => {
         console.error(error)
       })
-  }, [classId, studentId, semesterId, schoolYearId, assessments])
+  }
 
-  const handleOpenAssessmentDialog = useCallback(() => {
+  const handleOpenAssessmentDialog = () => {
     const assessmentCallBack = () => {
       setTimeout(() => {
         fetchAssessments(classId, schoolYearId).then((res) => {
@@ -61,13 +61,14 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
       null,
       assessmentCallBack
     )
-  }, [openDialog, classId, setAssessments, schoolYearId])
+  }
 
   useEffect(() => {
     if (studentId) {
       handleFetchStudentScoreBook()
     }
-  }, [handleFetchStudentScoreBook, studentId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [studentId, classId])
 
   const handleChangeData = (type: string) => (score: { score: number }, assessmentId: string) => {
     if (studentId) {
@@ -105,7 +106,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
       sx={{ width: '100%', maxWidth: 350 }}
     >
       {studentInfo && (
-        <Box pt={2} pr={2} pl={2} mb={5} key={studentId}>
+        <Box pt={2} pr={2} pl={2} mb={5} key={studentInfo.id}>
           <Box display={'flex'} alignItems={'center'} mb={2}>
             <Chip
               color={'default'}
@@ -177,7 +178,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
                       Điểm Trung Bình: <strong>{average.toFixed(2)}</strong>
                     </Typography>
                   </Box>
-                  <Box>
+                  <Box key={`${classId}-${studentId}`}>
                     {assessments
                       .filter((assessment) => assessment.type === activeTab)
                       .map((assessment: Assessment) => {
@@ -185,7 +186,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
                           <ScoreForm
                             data={get(scoreBook, [`${activeTab}`, `${assessment.id}`], 0)}
                             assessment={assessment}
-                            key={`${assessment.id}`}
+                            key={`${classId}-${studentId}-${assessment.id}`}
                             onChangeData={handleChangeData(activeTab)}
                           />
                         )

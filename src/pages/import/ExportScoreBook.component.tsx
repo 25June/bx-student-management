@@ -14,6 +14,7 @@ import { StudentScoreBook } from 'models/ScoreBook'
 import { useGetStudentScoreBooks } from 'services/scorebook'
 import { useStudentContext } from 'contexts/StudentContext'
 import { amber } from '@mui/material/colors'
+import { AssessmentEnum } from 'constant/common'
 
 interface Props {
   currentClass: Class
@@ -51,6 +52,38 @@ const ExportScoreBookComponent = ({ currentClass }: Props) => {
     score45 = sortBy(score45, 'bookDate')
     score60 = sortBy(score60, 'bookDate')
     const DATA_ROWS = stuScoreBooks.map((stu: StudentScoreBook, index) => {
+      const score5List = assessments
+        .filter((ass) => ass.type === AssessmentEnum.KT5)
+        .map((ass) => {
+          return get(stu, [AssessmentEnum.KT5, ass.id], 0)
+        })
+      const averageScore5 =
+        score5List.length !== 0 ? score5List.reduce((a, b) => a + b, 0) / score5List.length : 0
+
+      const score15List = assessments
+        .filter((ass) => ass.type === AssessmentEnum.KT15)
+        .map((ass) => {
+          return get(stu, [AssessmentEnum.KT15, ass.id], 0)
+        })
+      const averageScore15 =
+        score15List.length !== 0 ? score15List.reduce((a, b) => a + b, 0) / score15List.length : 0
+
+      const score45List = assessments
+        .filter((ass) => ass.type === AssessmentEnum.KT45)
+        .map((ass) => {
+          return get(stu, [AssessmentEnum.KT45, ass.id], 0)
+        })
+      const averageScore45 =
+        score45List.length !== 0 ? score45List.reduce((a, b) => a + b, 0) / score45List.length : 0
+
+      const score60List = assessments
+        .filter((ass) => ass.type === AssessmentEnum.KT60)
+        .map((ass) => {
+          return get(stu, [AssessmentEnum.KT60, ass.id], 0)
+        })
+      const averageScore60 =
+        score60List.length !== 0 ? score60List.reduce((a, b) => a + b, 0) / score60List.length : 0
+
       return [
         {
           alignVertical: 'top',
@@ -99,6 +132,18 @@ const ExportScoreBookComponent = ({ currentClass }: Props) => {
             ]
           })
           .flat(),
+        // average score5
+        {
+          alignVertical: 'top',
+          align: 'center',
+          fontWeight: 'bold',
+          type: Number,
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          value: averageScore5,
+          backgroundColor: averageScore5 >= 5 ? '' : amber[200],
+        },
         ...score15
           .map((assessment) => {
             const score = get(stu, ['score15', assessment.id])
@@ -116,6 +161,18 @@ const ExportScoreBookComponent = ({ currentClass }: Props) => {
             ]
           })
           .flat(),
+        // average score15
+        {
+          alignVertical: 'top',
+          align: 'center',
+          fontWeight: 'bold',
+          type: Number,
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          value: averageScore15,
+          backgroundColor: averageScore15 >= 5 ? '' : amber[200],
+        },
         ...score45
           .map((assessment) => {
             const score = get(stu, ['score45', assessment.id])
@@ -133,6 +190,18 @@ const ExportScoreBookComponent = ({ currentClass }: Props) => {
             ]
           })
           .flat(),
+        // average score45
+        {
+          alignVertical: 'top',
+          align: 'center',
+          fontWeight: 'bold',
+          type: Number,
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          value: averageScore45,
+          backgroundColor: averageScore45 >= 5 ? '' : amber[200],
+        },
         ...score60
           .map((assessment) => {
             const score = get(stu, ['score60', assessment.id])
@@ -150,6 +219,18 @@ const ExportScoreBookComponent = ({ currentClass }: Props) => {
             ]
           })
           .flat(),
+        // average score60
+        {
+          alignVertical: 'top',
+          align: 'center',
+          fontWeight: 'bold',
+          type: Number,
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          value: averageScore60,
+          backgroundColor: averageScore60 >= 5 ? '' : amber[200],
+        },
       ]
     })
 
@@ -169,7 +250,7 @@ const ExportScoreBookComponent = ({ currentClass }: Props) => {
     ]
 
     await writeXlsxFile(data as any, {
-      columns: SCOREBOOK_COLUMNS_WIDTH(assessments.map((a) => a.bookDate)),
+      columns: SCOREBOOK_COLUMNS_WIDTH([...assessments.map((a) => a.bookDate), '', '', '', '']),
       fileName: `Bang Diem ${currentClass?.name || 'file'}.xlsx`,
       fontFamily: 'Times New Roman',
       fontSize: 13,

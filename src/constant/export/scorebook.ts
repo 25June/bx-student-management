@@ -4,7 +4,9 @@ import { formatDisplayDDMM } from 'utils/datetime'
 
 export const SCOREBOOK_BANNER_ROW = (assessmentDates: string[]) => {
   const colNumber = assessmentDates.length === 1 ? 2 : assessmentDates.length
-  const emptyArr = Array.from(new Array(colNumber - 1)).map(() => null)
+  const averageCol = 4
+  const arrLength = colNumber - 1 + averageCol
+  const emptyArr = Array.from(new Array(arrLength)).map(() => null)
 
   return [
     {
@@ -19,7 +21,7 @@ export const SCOREBOOK_BANNER_ROW = (assessmentDates: string[]) => {
     {
       value: `Danh Sách Thiếu Nhi Giáo Lý`,
       fontWeight: 'bold',
-      span: colNumber - 1,
+      span: arrLength,
       align: 'center',
       alignVertical: 'center',
       wrap: true,
@@ -37,7 +39,9 @@ export const SCOREBOOK_BANNER_ROW = (assessmentDates: string[]) => {
 
 export const SCOREBOOK_PREPARE_ROW = (currentClass: Class, assessmentDates: string[]) => {
   const colNumber = assessmentDates.length === 1 ? 2 : assessmentDates.length
-  const emptyArr = Array.from(new Array(colNumber - 1)).map(() => null)
+  const averageCol = 4
+  const arrLength = colNumber - 1 + averageCol
+  const emptyArr = Array.from(new Array(arrLength)).map(() => null)
   return [
     {
       value: `Lớp ${currentClass?.name}`,
@@ -51,7 +55,7 @@ export const SCOREBOOK_PREPARE_ROW = (currentClass: Class, assessmentDates: stri
     {
       value: `Niên Khoá 2023-2024`,
       fontWeight: 'bold',
-      span: colNumber - 1,
+      span: arrLength,
       align: 'center',
       alignVertical: 'center',
       wrap: true,
@@ -90,6 +94,15 @@ export const SCOREBOOK_HEADER_ROW = ({
           span: assessments[index].length,
         },
         ...Array.from(new Array(assessments[index].length - 1)).map<any>(() => null),
+        {
+          value: 'TB',
+          fontWeight: 'bold',
+          rightBorderStyle: 'thin',
+          topBorderStyle: 'thin',
+          bottomBorderStyle: 'thin',
+          align: 'center',
+          rowSpan: 2,
+        },
       ]
       const itemCol = assessments[index].map<any>((date: string) => {
         return {
@@ -103,7 +116,7 @@ export const SCOREBOOK_HEADER_ROW = ({
       })
       return {
         dateCols: acc.dateCols.concat(...dateCol),
-        itemCols: acc.itemCols.concat(...itemCol),
+        itemCols: acc.itemCols.concat(...itemCol, null),
       }
     },
     { dateCols: [], itemCols: [] }
@@ -144,7 +157,7 @@ export const SCOREBOOK_HEADER_ROW = ({
     },
     ...dateCols,
   ]
-  const secondRow = [null, null, null, null, ...itemCols]
+  const secondRow = [null, null, null, null, ...itemCols, null]
   return [firstRow, secondRow]
 }
 
