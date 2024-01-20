@@ -42,7 +42,7 @@ export const AssessmentProvider = ({ children }: PropsWithChildren) => {
       handleFetchAssessments(classId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId])
+  }, [classId, schoolYearId, semesterId])
 
   const value = useMemo(() => {
     if (assessments) {

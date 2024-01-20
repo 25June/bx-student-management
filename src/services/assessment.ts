@@ -49,7 +49,8 @@ export const fetchAssessments = (classId: string, schoolYear: string, semesterId
   const queryAssessments = query(
     assessmentRef,
     where('classId', '==', classId),
-    where('schoolYear', '==', schoolYear)
+    where('schoolYear', '==', schoolYear),
+    where('semesterId', '==', semesterId)
   )
   return getDocs(queryAssessments).then((snapshot) => {
     if (snapshot.empty) {
@@ -57,7 +58,7 @@ export const fetchAssessments = (classId: string, schoolYear: string, semesterId
     }
     return snapshot.docs
       .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
-      .filter((assessment) => !assessment.isDeleted && assessment.semesterId === semesterId)
+      .filter((assessment) => !assessment.isDeleted)
       .sort((a, b) => (a.bookDate > b.bookDate ? -1 : 1))
   })
 }
