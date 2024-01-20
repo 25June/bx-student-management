@@ -165,14 +165,17 @@ export const UserRoles = [
 ]
 
 export type extendedColorPalettes = 'kt' | 'rl' | 'ts' | 'bd' | 'vd' | 'dt'
-
+export enum Semester {
+  HK1 = 'hk1',
+  HK2 = 'hk2',
+}
 export const Semesters = [
   {
-    key: 'hk1',
+    key: Semester.HK1,
     label: 'Học Kỳ 1',
   },
   {
-    key: 'hk2',
+    key: Semester.HK2,
     label: 'Học Kỳ 2',
   },
 ]

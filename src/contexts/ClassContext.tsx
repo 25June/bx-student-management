@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useEffect,
 } from 'react'
-import { BaseClasses, Role } from 'constant/common'
+import { BaseClasses, Role, Semester } from 'constant/common'
 import { Class } from 'models'
 import { useAuthentication } from 'contexts/AuthContext'
 
@@ -38,7 +38,7 @@ export const ClassProvider = ({ children }: PropsWithChildren) => {
   const { isSignedIn, user } = useAuthentication()
   const [classId, setClassId] = useState<string>('')
   const [schoolYearId, setSchoolYearId] = useState<string>('2023-2024')
-  const [semesterId, setSemesterId] = useState<string>('hk2')
+  const [semesterId, setSemesterId] = useState<string>(Semester.HK2)
   useEffect(() => {
     if (user?.classId) {
       setClassId(user.classId)
