@@ -52,11 +52,9 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
     console.log({ data })
     setLoading(true)
     Promise.resolve().then(() => {
-      setTimeout(() => {
-        setSchoolYearId(data.schoolYearId)
-        setSemesterId(data.semesterId)
-        setLoading(false)
-      }, 200)
+      setSchoolYearId(data.schoolYearId)
+      setSemesterId(data.semesterId)
+      setLoading(false)
       setTimeout(() => {
         onClose()
       }, 300)
@@ -83,9 +81,6 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
       <DialogContent dividers={true}>
         <Typography sx={{ marginBottom: '1rem' }}>
           Chọn Niên Khoá và Học Kỳ để lưu điểm các em thiếu nhi
-        </Typography>
-        <Typography sx={{ marginBottom: '1rem', fontSize: '0.75rem' }}>
-          <i>(Tính năng đang phát triển nên chưa cho dùng)</i>
         </Typography>
         <Box mb={3}>
           <SchoolYearsDropdownComponent
@@ -116,7 +111,7 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
           variant="contained"
           color={'primary'}
           startIcon={isLoading ? <CircularProgress size={'1rem'} /> : <CheckIcon />}
-          disabled={isLoading || true}
+          disabled={isLoading}
         >
           Lưu
         </Button>

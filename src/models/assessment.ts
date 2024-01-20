@@ -12,6 +12,7 @@ export type Assessment = {
   isDeleted?: boolean
   schoolYear: string
   documents?: Document[]
+  semesterId?: string
 }
 
 export type Document = {

@@ -16,7 +16,7 @@ import { AssessmentTableComponent } from 'modules/index'
 
 const AssessmentComponent = () => {
   const { assessments, setAssessments } = useAssessmentContext()
-  const { classId, disableUpdate, schoolYearId } = useClassContext()
+  const { classId, disableUpdate, schoolYearId, semesterId } = useClassContext()
   const { openDialog } = useDialogContext()
   const isMobile = useIsMobile()
   const { studentScoreBooks } = useGetStudentScoreBooks()
@@ -36,7 +36,7 @@ const AssessmentComponent = () => {
 
   const callback = (refreshData?: boolean): void => {
     if (refreshData) {
-      fetchAssessments(classId, schoolYearId).then((res) => {
+      fetchAssessments(classId, schoolYearId, semesterId).then((res) => {
         setAssessments(res)
       })
     }

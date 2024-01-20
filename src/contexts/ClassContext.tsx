@@ -38,7 +38,7 @@ export const ClassProvider = ({ children }: PropsWithChildren) => {
   const { isSignedIn, user } = useAuthentication()
   const [classId, setClassId] = useState<string>('')
   const [schoolYearId, setSchoolYearId] = useState<string>('2023-2024')
-  const [semesterId, setSemesterId] = useState<string>('hk1')
+  const [semesterId, setSemesterId] = useState<string>('hk2')
   useEffect(() => {
     if (user?.classId) {
       setClassId(user.classId)

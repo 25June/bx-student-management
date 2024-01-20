@@ -18,23 +18,34 @@ const db = getFirestore(app)
 const AssessmentCollection = 'assessments'
 const assessmentRef = collection(db, AssessmentCollection)
 
-export const updateAllValueOfAssessment = () => {
-  const queryAssessments = query(assessmentRef)
-  getDocs(queryAssessments).then((snapshot) => {
-    snapshot.docs.forEach((snapshotDoc) => {
-      updateDoc(snapshotDoc.ref, { schoolYear: '2022-2023' })
-    })
+// export const updateAllValueOfAssessment = () => {
+//   const queryAssessments = query(assessmentRef)
+//   getDocs(queryAssessments).then((snapshot) => {
+//     snapshot.docs.forEach((snapshotDoc) => {
+//       updateDoc(snapshotDoc.ref, { semesterId: 'hk1' })
+//         .then((res) => console.log({ status: 'success', res, id: snapshotDoc.id }))
+//         .catch((err) => console.log({ status: 'error', err, id: snapshotDoc.id }))
+//     })
 
-    if (snapshot.empty) {
-      return []
-    }
-    return snapshot.docs
-      .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
-      .filter((assessment) => !assessment.isDeleted)
-  })
-}
+//     if (snapshot.empty) {
+//       return []
+//     }
+//     return snapshot.docs
+//       .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
+//       .filter((assessment) => !assessment.isDeleted)
+//   })
+// }
 
-export const fetchAssessments = (classId: string, schoolYear: string) => {
+// export const getAllAssessments = () => {
+//   const queryAssessments = query(assessmentRef)
+//   return getDocs(queryAssessments)
+//     .then((snapshot) => {
+//       return snapshot.docs.map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id }))
+//     })
+//     .then((data) => console.log({ data }))
+// }
+
+export const fetchAssessments = (classId: string, schoolYear: string, semesterId: string) => {
   const queryAssessments = query(
     assessmentRef,
     where('classId', '==', classId),
@@ -46,7 +57,8 @@ export const fetchAssessments = (classId: string, schoolYear: string) => {
     }
     return snapshot.docs
       .map((snapshotDoc) => ({ ...snapshotDoc.data(), id: snapshotDoc.id } as Assessment))
-      .filter((assessment) => !assessment.isDeleted)
+      .filter((assessment) => !assessment.isDeleted && assessment.semesterId === semesterId)
+      .sort((a, b) => (a.bookDate > b.bookDate ? -1 : 1))
   })
 }
 

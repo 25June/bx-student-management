@@ -50,7 +50,7 @@ const ScoreBookPanelComponent = ({ isOpen, studentId, onClose }: Props) => {
   const handleOpenAssessmentDialog = () => {
     const assessmentCallBack = () => {
       setTimeout(() => {
-        fetchAssessments(classId, schoolYearId).then((res) => {
+        fetchAssessments(classId, schoolYearId, semesterId).then((res) => {
           setAssessments(res)
         })
       }, 100)

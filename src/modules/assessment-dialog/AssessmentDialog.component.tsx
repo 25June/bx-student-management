@@ -54,7 +54,7 @@ const AssessmentDialogComponent = ({
   const editAssessment = useEditAssessment()
   const deleteAssessment = useDeleteAssessment()
   const addNewAssessment = useAddNewAssessment()
-  const { schoolYearId, classId } = useClassContext()
+  const { schoolYearId, classId, semesterId } = useClassContext()
   const { onFetchAssessments } = useAssessmentContext()
   const [uploadFileProgress, setUploadFileProgress] = useState<number>(0)
 
@@ -137,6 +137,7 @@ const AssessmentDialogComponent = ({
       type: submitData.type,
       lesson: submitData.lesson,
       schoolYear: schoolYearId,
+      semesterId,
     }
 
     let documents: Document[] = []
@@ -257,17 +258,14 @@ const AssessmentDialogComponent = ({
                   </Box>
                 ))}
 
-              {existingDocs &&
-                existingDocs.map((doc) => (
-                  <Chip
-                    size={'small'}
-                    label={doc.name}
-                    color={'info'}
-                    onDelete={() =>
-                      setExistingDocs(existingDocs.filter((d) => d.name !== doc.name))
-                    }
-                  />
-                ))}
+              {existingDocs?.map((doc) => (
+                <Chip
+                  size={'small'}
+                  label={doc.name}
+                  color={'info'}
+                  onDelete={() => setExistingDocs(existingDocs.filter((d) => d.name !== doc.name))}
+                />
+              ))}
             </Box>
           )}
         </DialogContent>

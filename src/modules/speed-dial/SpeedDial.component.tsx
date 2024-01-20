@@ -39,7 +39,7 @@ const actions = [
 const SpeedDialComponent = () => {
   const { openDialog } = useDialogContext()
   const { setAssessments } = useAssessmentContext()
-  const { classId, disableUpdate, schoolYearId } = useClassContext()
+  const { classId, disableUpdate, schoolYearId, semesterId } = useClassContext()
 
   const [open, setOpen] = useState<boolean>(false)
   const handleOpen = useCallback(() => setOpen(true), [])
@@ -47,7 +47,7 @@ const SpeedDialComponent = () => {
 
   const assessmentCallBack = useCallback(() => {
     setTimeout(() => {
-      fetchAssessments(classId, schoolYearId).then((res) => {
+      fetchAssessments(classId, schoolYearId, semesterId).then((res) => {
         setAssessments(res)
       })
     }, 500)

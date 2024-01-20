@@ -97,7 +97,7 @@ const ScoreBookComponent = () => {
 
   const callback = (refreshData?: boolean): void => {
     if (refreshData) {
-      fetchAssessments(classId, schoolYearId).then((res) => {
+      fetchAssessments(classId, schoolYearId, semesterId).then((res) => {
         setAssessments(res)
       })
     }
