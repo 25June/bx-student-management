@@ -201,7 +201,8 @@ const DiligentComponent = () => {
           </IconButton>
         )}
         <Typography variant={'h1'} sx={{ textAlign: 'left', fontSize: '1rem', marginBottom: 0 }}>
-          Chuyên Cần
+          Chuyên Cần{' '}
+          {selectedDate && new Date(selectedDate.dateAsString).toLocaleDateString('en-AU')}
         </Typography>
       </Box>
       {!selectedDate && !selectedMonth ? (
@@ -220,7 +221,7 @@ const DiligentComponent = () => {
               width: '100%',
             }}
           >
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
+            {/* <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
               {rollCallDates && selectedMonth && (
                 <MonthDropdownComponent
                   selectedMonth={selectedMonth}
@@ -252,15 +253,15 @@ const DiligentComponent = () => {
                   )}
                 </>
               )}
-            </Box>
+            </Box> */}
             <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
-          {studentAttendanceCount && (
+          {/* {studentAttendanceCount && (
             <AttendanceCountComponent
               studentAttendanceCount={studentAttendanceCount}
               totalStudents={students?.length || 0}
             />
-          )}
+          )} */}
           {showSubmitAllButton && (
             <Box sx={{ padding: '0.5rem 0' }}>
               <Button
@@ -278,7 +279,7 @@ const DiligentComponent = () => {
               <DiligentSkeletonComponent />
             ) : (
               <DiligentTableComponent
-                rows={formatAttendances || []}
+                rows={formatAttendances}
                 rollCallDates={groupRollDate[selectedMonth || Object.keys(groupRollDate)[0]]}
                 openDiligentDialog={handleOpenDiligentDialog}
                 selectedRollCallDate={selectedDate}

@@ -9,6 +9,7 @@ interface DiligentFormComponentProps {
   GL: boolean
   onSubmitAttendance: (data: OnSubmitAttendanceProps) => void
   disabled: boolean
+  studentId: string
 }
 
 const DiligentFormComponent = ({
@@ -17,6 +18,7 @@ const DiligentFormComponent = ({
   GL,
   onSubmitAttendance,
   disabled,
+  studentId,
 }: DiligentFormComponentProps) => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexGrow: 2, gap: 1.5 }}>
@@ -34,10 +36,12 @@ const DiligentFormComponent = ({
               })
             }
             disabled={disabled}
+            id={`TL-${studentId}-${rollCallKey}`}
           />
         }
         label="Thánh Lễ"
         sx={{ margin: 0 }}
+        htmlFor={`TL-${studentId}-${rollCallKey}`}
       />
 
       <FormControlLabel
@@ -54,9 +58,11 @@ const DiligentFormComponent = ({
               })
             }
             disabled={disabled}
+            id={`GL-${studentId}-${rollCallKey}`}
           />
         }
         label={'Giáo Lý'}
+        htmlFor={`GL-${studentId}-${rollCallKey}`}
         sx={{ margin: 0 }}
       />
     </Box>

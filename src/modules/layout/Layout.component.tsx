@@ -45,7 +45,7 @@ const LayoutComponent = ({ children }: PropsWithChildren) => {
           component="main"
           sx={{
             pt: 8,
-            pb: isMobile ? 10 : 3,
+            pb: 1,
             width: isMobile ? 'calc(100% - 49px)' : 'calc(100% - 65px)',
             height: 'calc(100% - 64px)',
             pr: 1,

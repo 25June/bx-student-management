@@ -20,6 +20,9 @@ import TableComponent from 'modules/Table/Table.component'
 import SingleInfoViewComponent from 'modules/student/SingleInfoViewComponent'
 import DiligentPanelComponent from 'modules/diligent/DiligentPanel.component'
 
+import { FixedSizeList } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
+
 enum DisplayType {
   CARD = 'card',
   TABLE = 'table',
@@ -175,15 +178,40 @@ const HomeComponent = () => {
       {displayType === 'table' ? (
         <>
           {isMobile ? (
-            <>
-              {(filteredStudents || []).map((student) => (
+            <Box
+              sx={{
+                height: 'calc(100vh - 272px)',
+                '-webkit-mask': 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
+              }}
+            >
+              {/* {(filteredStudents || []).map((student) => (
                 <SingleInfoViewComponent
                   key={student.id}
                   student={student}
                   onClickAction={handleClickAction}
                 />
-              ))}
-            </>
+              ))} */}
+              <AutoSizer>
+                {({ height, width }: any) => (
+                  <FixedSizeList
+                    height={height}
+                    itemCount={(filteredStudents || []).length}
+                    itemSize={125}
+                    width={width}
+                  >
+                    {({ index, style }) => (
+                      <div style={style}>
+                        <SingleInfoViewComponent
+                          key={students[index].id}
+                          student={students[index]}
+                          onClickAction={handleClickAction}
+                        />
+                      </div>
+                    )}
+                  </FixedSizeList>
+                )}
+              </AutoSizer>
+            </Box>
           ) : (
             <TableComponent
               columns={studentColumns}

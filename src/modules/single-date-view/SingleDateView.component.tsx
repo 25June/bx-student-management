@@ -62,6 +62,7 @@ const SingleDateViewComponent = ({
           TL={!!get(attendance, [`${rollCallDate.key}`, 'tl'], false)}
           onSubmitAttendance={onSubmitAttendance}
           disabled={disableUpdate}
+          studentId={student.id}
         />
         <IconButton
           onClick={() =>

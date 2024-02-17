@@ -10,7 +10,7 @@ import {
   TableCell,
   TableBody,
   Grow,
-  Stack,
+  // Stack,
   Box,
   Typography,
   Button,
@@ -26,6 +26,8 @@ import { DialogType, RollCallDateActionType } from 'constant/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { Attendances, submitAttendance } from 'services/diligent'
+import { FixedSizeList } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 export interface StudentRows extends Student {
   rollCalls: Record<string, string>
@@ -97,7 +99,37 @@ const DiligentTableComponent = ({
     return (
       <Box sx={{ width: '100%' }}>
         <Grow in={!!selectedRollCallDate}>
-          <Stack spacing={2}>
+          <Box
+            sx={{
+              height: 'calc(100vh - 272px)',
+              '-webkit-mask': 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
+            }}
+          >
+            <AutoSizer>
+              {({ height, width }: any) => (
+                <FixedSizeList
+                  height={height}
+                  itemCount={(rows || []).length}
+                  itemSize={156}
+                  width={width}
+                >
+                  {({ index, style }) => (
+                    <div style={style}>
+                      <SingleDateViewComponent
+                        key={rows[index].id}
+                        student={rows[index]}
+                        rollCallDate={selectedRollCallDate}
+                        onSubmitAttendance={handleSubmitAttendance(rows[index].id)}
+                        attendance={attendances[rows[index].id]}
+                      />
+                    </div>
+                  )}
+                </FixedSizeList>
+              )}
+            </AutoSizer>
+          </Box>
+
+          {/* <Stack spacing={2}>
             {rows.map((row) => {
               return (
                 <SingleDateViewComponent
@@ -109,7 +141,7 @@ const DiligentTableComponent = ({
                 />
               )
             })}
-          </Stack>
+          </Stack> */}
         </Grow>
       </Box>
     )

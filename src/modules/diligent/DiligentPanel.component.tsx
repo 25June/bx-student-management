@@ -177,6 +177,7 @@ const DiligentPanelComponent = ({ student, open, onClose }: Props) => {
                         TL={!!get(attendance, [`${key}`, 'tl'], false)}
                         GL={!!get(attendance, [`${key}`, 'gl'], false)}
                         disabled={disableUpdate}
+                        studentId={student.id}
                       />
                     </FormControl>
                   )
