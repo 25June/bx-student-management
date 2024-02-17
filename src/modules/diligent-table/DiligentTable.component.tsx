@@ -102,7 +102,7 @@ const DiligentTableComponent = ({
           <Box
             sx={{
               height: 'calc(100vh - 272px)',
-              '-webkit-mask': 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
+              WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
             }}
           >
             <AutoSizer>

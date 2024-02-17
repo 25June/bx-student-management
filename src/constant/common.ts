@@ -135,7 +135,7 @@ export const UserRoles = [
     id: 0,
   },
   {
-    title: 'Giáo Lý Viên Chủ Nhiệm',
+    title: 'GLV Chủ Nhiệm',
     id: 1,
   },
   {

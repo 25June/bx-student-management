@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import List from '@mui/material/List'
+// import List from '@mui/material/List'
 import { Box } from '@mui/material'
 import { User } from 'models/user'
 import ListItem from '@mui/material/ListItem'
@@ -21,6 +21,9 @@ import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
 import { useAuthentication } from 'contexts/AuthContext'
 import { Role } from 'constant/common'
 import { grey } from '@mui/material/colors'
+
+import { FixedSizeList } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 interface PrimaryTextProps {
   saintName: string
@@ -93,7 +96,7 @@ const UserItem = ({
           secondary={<SecondaryText classId={user.classId || ''} role={user.role} />}
         />
       </ListItem>
-      <Divider variant="middle" component="li" />
+      <Divider variant="middle" />
     </Box>
   )
 }
@@ -123,7 +126,35 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
 
   return (
     <Box>
-      <List disablePadding={true} sx={{ width: '100%' }}>
+      <Box
+        sx={{
+          height: 'calc(100vh - 272px)',
+          WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
+        }}
+      >
+        <AutoSizer>
+          {({ height, width }: any) => (
+            <FixedSizeList
+              height={height}
+              itemCount={(users || []).length}
+              itemSize={80}
+              width={width}
+            >
+              {({ index, style }) => (
+                <div style={style}>
+                  <UserItem
+                    key={users[index].id}
+                    user={users[index]}
+                    onClickAction={onClickAction}
+                    onClickMenu={handleClickMenu}
+                  />
+                </div>
+              )}
+            </FixedSizeList>
+          )}
+        </AutoSizer>
+      </Box>
+      {/* <List disablePadding={true} sx={{ width: '100%' }}>
         {users.map((user) => (
           <UserItem
             key={user.id}
@@ -132,7 +163,7 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
             onClickMenu={handleClickMenu}
           />
         ))}
-      </List>
+      </List> */}
       {selectedRow && currentUser?.role === Role.CTO && (
         <Menu open={!!selectedRow} anchorEl={anchorEl} onClose={() => setSelectedRow(undefined)}>
           <MenuItem onClick={() => handleClickAction(UserAction.UPDATE_INFO)}>
