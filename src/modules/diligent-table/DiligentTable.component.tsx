@@ -101,6 +101,8 @@ const DiligentTableComponent = ({
         <Grow in={!!selectedRollCallDate}>
           <Box
             sx={{
+              background: 'transparent',
+              backdropFilter: 'blur(4px)',
               height: 'calc(100vh - 272px)',
               WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
             }}
@@ -128,20 +130,6 @@ const DiligentTableComponent = ({
               )}
             </AutoSizer>
           </Box>
-
-          {/* <Stack spacing={2}>
-            {rows.map((row) => {
-              return (
-                <SingleDateViewComponent
-                  key={row.id}
-                  student={row}
-                  rollCallDate={selectedRollCallDate}
-                  onSubmitAttendance={handleSubmitAttendance(row.id)}
-                  attendance={attendances[row.id]}
-                />
-              )
-            })}
-          </Stack> */}
         </Grow>
       </Box>
     )

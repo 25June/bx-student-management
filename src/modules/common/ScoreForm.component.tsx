@@ -23,17 +23,11 @@ const ScoreForm = ({
     reset,
     formState: { isDirty, errors },
     setError,
-    // setValue,
   } = useForm<{ score: number }>({
     defaultValues: data ? { score: data } : { score: 0 },
   })
   const isMobile = useIsMobile()
   const { disableUpdate } = useClassContext()
-
-  // useEffect(() => {
-  //   setValue('score', data)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [data])
 
   const onSubmit = (value: { score: number }) => {
     if (disableUpdate) {

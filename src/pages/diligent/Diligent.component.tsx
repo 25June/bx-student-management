@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Typography, IconButton, Button, SelectChangeEvent } from '@mui/material'
+import { Box, Typography, IconButton, SelectChangeEvent } from '@mui/material'
 // import EditIcon from '@mui/icons-material/Edit'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
@@ -20,8 +20,9 @@ import DiligentTableComponent from 'modules/diligent-table/DiligentTable.compone
 import SearchComponent from 'modules/common/Search.component'
 // import DateDropdownComponent from 'modules/common/DateDropdown.component'
 import DiligentSkeletonComponent from 'modules/diligent/DiligentSkeleton.component'
-// import AttendanceCountComponent from 'modules/diligent/AttendanceCountComponent'
 import OverviewReportComponent from 'modules/report/Overview.component'
+import { colors } from '@mui/material'
+import { PillProgress } from 'modules/progress-bar/LinearProgressWithLabel.component'
 
 const DiligentComponent = () => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
@@ -156,7 +157,9 @@ const DiligentComponent = () => {
       return
     }
     if (selectedDate?.key && students?.length !== 0 && classId) {
-      const confirmation = window.confirm('Xác nhận đánh dấu tất cả!')
+      const confirmation = window.confirm(
+        'Xác nhận điểm danh tất cả thiếu nhi có tham dự Giáo Lý và Thánh Lễ!'
+      )
       if (confirmation) {
         return submitAttendanceAllStudentsInClass({
           studentIds: students.map((stu) => stu.id),
@@ -256,22 +259,36 @@ const DiligentComponent = () => {
             </Box> */}
             <SearchComponent onChange={handleFilterStudentByName} />
           </Box>
-          {/* {studentAttendanceCount && (
-            <AttendanceCountComponent
-              studentAttendanceCount={studentAttendanceCount}
-              totalStudents={students?.length || 0}
-            />
-          )} */}
           {showSubmitAllButton && (
-            <Box sx={{ padding: '0.5rem 0' }}>
-              <Button
-                variant={'outlined'}
+            <Box
+              sx={{
+                padding: '0.5rem 0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '0.5rem',
+              }}
+            >
+              <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '0.5rem' }}>
+                <PillProgress
+                  label={`TL: ${studentAttendanceCount?.tl}`}
+                  value={studentAttendanceCount?.tl ?? 0}
+                  total={students?.length ?? 0}
+                />
+                <PillProgress
+                  label={`GL: ${studentAttendanceCount?.gl}`}
+                  value={studentAttendanceCount?.gl ?? 0}
+                  total={students?.length ?? 0}
+                />
+              </Box>
+              <IconButton
+                sx={{ border: `1px solid ${colors.blue[600]}`, borderRadius: '5px' }}
+                color="primary"
                 onClick={handleMarkAllStudentPresent}
-                endIcon={<DoneAllIcon />}
                 disabled={disableUpdate}
               >
-                Đánh dấu tất cả đều có mặt
-              </Button>
+                <DoneAllIcon />
+              </IconButton>
             </Box>
           )}
           <Box mt={2} mb={2}>

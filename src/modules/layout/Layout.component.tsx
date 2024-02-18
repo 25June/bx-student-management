@@ -5,12 +5,12 @@ import DrawerComponent from '../drawer/Drawer.component'
 import { useIsMobile } from 'utils/common'
 import SpeedDialComponent from 'modules/speed-dial/SpeedDial.component'
 import UserDrawerComponent from 'modules/user-drawer/UserDrawer.component'
-// import ChienConBackground from 'static/images/cards/chien-con-no-white-bg.svg'
+import ChienConBackground from 'static/images/cards/chien-con-no-white-bg.svg'
 import { useAuthentication } from 'contexts/AuthContext'
 
 export const drawerWidth = 240
-const backgroundURL =
-  'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/10005181-ai.png?alt=media&token=82881624-ed16-416a-bd0f-64758ce977c2'
+// const backgroundURL =
+//   'https://firebasestorage.googleapis.com/v0/b/bx-management.appspot.com/o/10005181-ai.png?alt=media&token=82881624-ed16-416a-bd0f-64758ce977c2'
 const LayoutComponent = ({ children }: PropsWithChildren) => {
   const [isOpen, setOpen] = useState<boolean>(false)
   const [openUserDrawer, setOpenUserDrawer] = useState<boolean>(false)
@@ -60,9 +60,9 @@ const LayoutComponent = ({ children }: PropsWithChildren) => {
 
       <Box
         component={'img'}
-        src={backgroundURL}
+        src={ChienConBackground}
         alt={'chien-con-background'}
-        sx={{ position: 'fixed', bottom: 8, right: 30, width: 200, height: 200, opacity: 0.75 }}
+        sx={{ position: 'fixed', bottom: 8, right: 30, width: 200, height: 200, opacity: 0.5 }}
       />
     </Box>
   )

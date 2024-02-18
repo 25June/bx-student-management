@@ -13,50 +13,7 @@ import { KeyValueProp } from 'models/common'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import IconButton from '@mui/material/IconButton'
 import { useClassContext } from 'contexts/ClassContext'
-
-const ProgressBarContainer = ({
-  title,
-  current,
-  total,
-  backgroundCurrent,
-  backgroundTotal,
-}: {
-  title: string
-  current: number
-  total: number
-  backgroundTotal: string
-  backgroundCurrent: string
-}) => {
-  return (
-    <Box
-      sx={{ gap: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-    >
-      <Box sx={{ width: 64 }}>
-        <Typography fontSize={'0.825rem'}>{title}</Typography>
-      </Box>
-      <Box
-        sx={{
-          flex: 1,
-          height: 20,
-          backgroundColor: backgroundTotal,
-          width: '100%',
-          borderRadius: '5px',
-        }}
-      >
-        <Box
-          sx={{
-            width: `${(current / total) * 100}%`,
-            backgroundColor: backgroundCurrent,
-            textAlign: 'right',
-            borderRadius: '5px',
-          }}
-        >
-          <Box sx={{ paddingRight: 1 }}>{current}</Box>
-        </Box>
-      </Box>
-    </Box>
-  )
-}
+import { ProgressBarContainer } from 'modules/progress-bar/LinearProgressWithLabel.component'
 
 const DiligentReportItem = ({
   data,

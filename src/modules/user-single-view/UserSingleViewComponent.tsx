@@ -128,6 +128,8 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
     <Box>
       <Box
         sx={{
+          background: 'transparent',
+          backdropFilter: 'blur(4px)',
           height: 'calc(100vh - 272px)',
           WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
         }}
@@ -154,16 +156,6 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
           )}
         </AutoSizer>
       </Box>
-      {/* <List disablePadding={true} sx={{ width: '100%' }}>
-        {users.map((user) => (
-          <UserItem
-            key={user.id}
-            user={user}
-            onClickAction={onClickAction}
-            onClickMenu={handleClickMenu}
-          />
-        ))}
-      </List> */}
       {selectedRow && currentUser?.role === Role.CTO && (
         <Menu open={!!selectedRow} anchorEl={anchorEl} onClose={() => setSelectedRow(undefined)}>
           <MenuItem onClick={() => handleClickAction(UserAction.UPDATE_INFO)}>
