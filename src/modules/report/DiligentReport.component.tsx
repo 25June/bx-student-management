@@ -18,9 +18,11 @@ import { ProgressBarContainer } from 'modules/progress-bar/LinearProgressWithLab
 const DiligentReportItem = ({
   data,
   onViewDetail,
+  openDiligentDialog,
 }: {
   data: OverviewReport
   onViewDetail: (date: KeyValueProp, month: string) => void
+  openDiligentDialog: (date: string, id: string) => void
 }) => {
   const { classId } = useClassContext()
   const splitDate = data.date.dateAsString.split('-')
@@ -30,6 +32,8 @@ const DiligentReportItem = ({
       <ListItem alignItems={'flex-start'} disableGutters={true}>
         <ListItemAvatar>
           <Avatar
+            onClick={() => openDiligentDialog(data.date.dateAsString, data.date.key)}
+            component={'div'}
             variant={'rounded'}
             sx={{
               width: 48,
@@ -112,9 +116,10 @@ const DiligentReportItem = ({
 interface Props {
   data: OverviewReport[]
   onViewDetail: (date: KeyValueProp, month: string) => void
+  openDiligentDialog: (date: string, id: string) => void
 }
 
-const DiligentReport = ({ data, onViewDetail }: Props) => {
+const DiligentReport = ({ data, onViewDetail, openDiligentDialog }: Props) => {
   return (
     <List
       disablePadding={true}
@@ -126,7 +131,12 @@ const DiligentReport = ({ data, onViewDetail }: Props) => {
       }}
     >
       {data.map((data) => (
-        <DiligentReportItem key={data.date.key} data={data} onViewDetail={onViewDetail} />
+        <DiligentReportItem
+          key={data.date.key}
+          data={data}
+          onViewDetail={onViewDetail}
+          openDiligentDialog={openDiligentDialog}
+        />
       ))}
     </List>
   )

@@ -16,6 +16,7 @@ import {
   TableContainer,
   TableHead,
 } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -29,6 +30,8 @@ import { getScoreName } from 'utils/getScoreName'
 import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 import { get } from 'lodash'
 import { downloadAssessment, tableColumns } from 'utils/assessment'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import { Router } from 'routes'
 
 interface Props {
   rows: Assessment[]
@@ -37,6 +40,8 @@ interface Props {
 
 const AssessmentTableComponent = ({ rows, onClickAction }: Props) => {
   const isMobile = useIsMobile()
+  const navigate = useNavigate()
+
   const [downloading, setDownloading] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [open, setOpen] = useState(false)
@@ -150,6 +155,15 @@ const AssessmentTableComponent = ({ rows, onClickAction }: Props) => {
                         <MoreVertIcon fontSize={'small'} />
                       </IconButton>
                     </Tooltip>
+                    <IconButton>
+                      <ArrowForwardIosIcon
+                        fontSize={'inherit'}
+                        color={'action'}
+                        onClick={() =>
+                          navigate(`${Router.SCORE_BOOK}?assessmentId=${row.id}&type=${row.type}`)
+                        }
+                      />
+                    </IconButton>
                   </TableCell>
                 )}
               </TableRow>

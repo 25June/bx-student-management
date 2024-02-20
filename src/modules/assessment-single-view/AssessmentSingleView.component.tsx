@@ -12,11 +12,12 @@ import {
   Divider,
   ListItemText,
   ListItemAvatar,
+  Grow,
 } from '@mui/material'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import DeleteIcon from '@mui/icons-material/Delete'
+// import DeleteIcon from '@mui/icons-material/Delete'
 import DownloadIcon from '@mui/icons-material/Download'
-import EditIcon from '@mui/icons-material/Edit'
+// import EditIcon from '@mui/icons-material/Edit'
 import { blueGrey, grey } from '@mui/material/colors'
 import { Document, Assessment } from 'models/assessment'
 import { colorPalettes, AssessmentActionType } from 'constant/common'
@@ -82,7 +83,7 @@ const AssessmentItem = ({
 }) => {
   const navigate = useNavigate()
   const { students } = useStudentContext()
-  const { disableUpdate } = useClassContext()
+  // const { disableUpdate } = useClassContext()
   const [scoreBookSummary, setScoreBookSummary] = useState<ScoreBookSummaryResponse>()
   useEffect(() => {
     if (stuScoreBooks?.length !== 0 && assessment) {
@@ -105,29 +106,13 @@ const AssessmentItem = ({
         secondaryAction={
           <Box sx={{ display: 'flex', gap: '0.5rem' }}>
             <IconButton
-              color={'warning'}
-              onClick={() => onClickAction(assessment, AssessmentActionType.EDIT_ASSESSMENT)}
-              disabled={disableUpdate}
+              onClick={() =>
+                navigate(
+                  `${Router.SCORE_BOOK}?assessmentId=${assessment.id}&type=${assessment.type}`
+                )
+              }
             >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              color={'error'}
-              onClick={() => onClickAction(assessment, AssessmentActionType.DELETE_ASSESSMENT)}
-              disabled={disableUpdate}
-            >
-              <DeleteIcon />
-            </IconButton>
-            <IconButton>
-              <ArrowForwardIosIcon
-                fontSize={'inherit'}
-                color={'action'}
-                onClick={() =>
-                  navigate(
-                    `${Router.SCORE_BOOK}?assessmentId=${assessment.id}&type=${assessment.type}`
-                  )
-                }
-              />
+              <ArrowForwardIosIcon fontSize={'inherit'} color={'action'} />
             </IconButton>
           </Box>
         }
@@ -153,14 +138,19 @@ const AssessmentItem = ({
           }
         />
       </ListItem>
-      {scoreBookSummary && (
-        <ScoreBookSummaryInfoComponent
-          onFilterStudentByGrade={() => null}
-          totalStudents={students.length}
-          position="relative"
-          {...scoreBookSummary}
-        />
-      )}
+      <Grow in={!!scoreBookSummary}>
+        <div>
+          {scoreBookSummary && (
+            <ScoreBookSummaryInfoComponent
+              onFilterStudentByGrade={() => null}
+              totalStudents={students.length}
+              position="relative"
+              {...scoreBookSummary}
+            />
+          )}
+        </div>
+      </Grow>
+
       <Divider variant="middle" component="li" />
     </>
   )

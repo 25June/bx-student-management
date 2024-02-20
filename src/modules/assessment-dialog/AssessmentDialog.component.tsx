@@ -10,6 +10,7 @@ import {
   TextField,
   CircularProgress,
   Chip,
+  IconButton,
 } from '@mui/material'
 import { AssessmentActionType } from 'constant/common'
 import { Controller, useForm } from 'react-hook-form'
@@ -30,6 +31,8 @@ import { useClassContext } from 'contexts/ClassContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
 import { uploadFile } from 'services/storage'
 import { LinearProgressComponent } from 'modules/progress-bar/LinearProgressWithLabel.component'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { useIsMobile } from 'utils/common'
 
 type AssessmentForm = {
   bookDate: string
@@ -54,7 +57,8 @@ const AssessmentDialogComponent = ({
   const editAssessment = useEditAssessment()
   const deleteAssessment = useDeleteAssessment()
   const addNewAssessment = useAddNewAssessment()
-  const { schoolYearId, classId, semesterId } = useClassContext()
+  const isMobile = useIsMobile()
+  const { schoolYearId, classId, semesterId, disableUpdate } = useClassContext()
   const { onFetchAssessments } = useAssessmentContext()
   const [uploadFileProgress, setUploadFileProgress] = useState<number>(0)
 
@@ -90,6 +94,27 @@ const AssessmentDialogComponent = ({
     })
   }
 
+  const onDeleteAssessment = () => {
+    if (data?.id) {
+      const confirmText = `Bạn có chắc chắn muốn xoá thông tin bài kiểm tra ${getScoreName(
+        data.type
+      )} vào ngày ${formatYYYMMDDToDDMMYYYY(data.bookDate)}`
+
+      if (window.confirm(confirmText)) {
+        const deleteValue = data as Assessment
+        return deleteAssessment({
+          id: deleteValue.id,
+          onComplete: () => {
+            setLoading(false)
+            onClose(false)
+            onFetchAssessments(classId)
+            removeAssessmentDocuments([], data.documents)
+          },
+        })
+      }
+    }
+  }
+
   const onSubmit = async (submitData: AssessmentForm) => {
     setLoading(true)
     if (action === AssessmentActionType.EDIT_ASSESSMENT && data?.id) {
@@ -116,18 +141,6 @@ const AssessmentDialogComponent = ({
           onClose(false)
           removeAssessmentDocuments(existingDocs, updatedAssessment.documents)
           onFetchAssessments(classId)
-        },
-      })
-    }
-    if (data?.id) {
-      const deleteValue = data as Assessment
-      return deleteAssessment({
-        id: deleteValue.id,
-        onComplete: () => {
-          setLoading(false)
-          onClose(false)
-          onFetchAssessments(classId)
-          removeAssessmentDocuments([], data.documents)
         },
       })
     }
@@ -275,25 +288,36 @@ const AssessmentDialogComponent = ({
               <LinearProgressComponent progress={uploadFileProgress} />
             </Box>
           )}
-          <Button
-            color={'neutral'}
-            onClick={() => onClose()}
-            variant="outlined"
-            type={'button'}
-            startIcon={<ClearIcon />}
-            disabled={isLoading}
+          <Box
+            sx={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', width: '100%' }}
           >
-            Huỷ
-          </Button>
-          <Button
-            variant="contained"
-            color={getButtonColor(action)}
-            type={'submit'}
-            startIcon={isLoading ? <CircularProgress size={'1rem'} /> : <CheckIcon />}
-            disabled={isLoading}
-          >
-            {action === AssessmentActionType.DELETE_ASSESSMENT ? 'Xoá' : 'Lưu'}
-          </Button>
+            {isMobile && (
+              <IconButton color={'error'} onClick={onDeleteAssessment} disabled={disableUpdate}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+            <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+              <Button
+                color={'neutral'}
+                onClick={() => onClose()}
+                variant="outlined"
+                type={'button'}
+                startIcon={<ClearIcon />}
+                disabled={isLoading}
+              >
+                Huỷ
+              </Button>
+              <Button
+                variant="contained"
+                color={getButtonColor(action)}
+                type={'submit'}
+                startIcon={isLoading ? <CircularProgress size={'1rem'} /> : <CheckIcon />}
+                disabled={isLoading}
+              >
+                {action === AssessmentActionType.DELETE_ASSESSMENT ? 'Xoá' : 'Lưu'}
+              </Button>
+            </Box>
+          </Box>
         </DialogActions>
       </form>
     </Dialog>

@@ -11,9 +11,10 @@ import { countStudentPresentPerDate } from 'utils/report'
 
 interface Props {
   onViewDetail: (date: KeyValueProp, month: string) => void
+  openDiligentDialog: (date: string, id: string) => void
 }
 
-const OverviewReportComponent = ({ onViewDetail }: Props) => {
+const OverviewReportComponent = ({ onViewDetail, openDiligentDialog }: Props) => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
   const { classId, semesterId, schoolYearId } = useClassContext()
   const { students } = useStudentContext()
@@ -42,7 +43,13 @@ const OverviewReportComponent = ({ onViewDetail }: Props) => {
   }, [rollCallDates, attendances, students])
   return (
     <Box sx={{ marginTop: '1rem' }}>
-      {groupDate.length !== 0 && <DiligentReport data={groupDate} onViewDetail={onViewDetail} />}
+      {groupDate.length !== 0 && (
+        <DiligentReport
+          data={groupDate}
+          onViewDetail={onViewDetail}
+          openDiligentDialog={openDiligentDialog}
+        />
+      )}
     </Box>
   )
 }

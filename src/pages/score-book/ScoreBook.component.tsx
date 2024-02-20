@@ -1,14 +1,14 @@
-import { Assessment, KeyValueProp, Student, StudentScoreBook } from 'models'
+import { Assessment, Student, StudentScoreBook } from 'models'
 import React, { useEffect, useMemo, useState } from 'react'
-import { get, sortBy } from 'lodash'
-import { useLocation } from 'react-router-dom'
+import { get } from 'lodash'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { blueGrey } from '@mui/material/colors'
-import { Typography, Box, Button } from '@mui/material'
+import { Typography, Box, Button, IconButton } from '@mui/material'
 import { setNewStudentScore, useGetStudentScoreBooks } from 'services/scorebook'
 import { fetchAssessments } from 'services/assessment'
 import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
 import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
-import { AssessmentActionType, AssessmentEnum, DialogType } from 'constant/common'
+import { AssessmentActionType, AssessmentEnum, BaseAssessments, DialogType } from 'constant/common'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
 import { useAssessmentContext } from 'contexts/AssessmentContext'
@@ -16,14 +16,17 @@ import { useDialogContext } from 'contexts/DialogContext'
 import SearchComponent from 'modules/common/Search.component'
 import ScoreBookSummaryInfoComponent from 'modules/score-book/ScoreBookSummaryInfo.component'
 import ScoreBookDialogComponent from 'modules/score-book-dialog/ScoreBookDialog.component'
-import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
-import DateDropdownComponent from 'modules/common/DateDropdown.component'
+// import AssessmentDropdownComponent from 'modules/common/AssessmentDropdown.component'
+// import DateDropdownComponent from 'modules/common/DateDropdown.component'
 import ScoreBookDisplayComponent, {
   ScoreBookDisplayComponentProps,
 } from 'modules/score-book/ScoreBookDisplay.component'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import { Router } from 'routes'
 
 const ScoreBookComponent = () => {
   const { search } = useLocation()
+  const navigate = useNavigate()
 
   const { students } = useStudentContext()
   const { classId, schoolYearId, semesterId, disableUpdate } = useClassContext()
@@ -37,7 +40,7 @@ const ScoreBookComponent = () => {
     StudentScoreBook[] | Student[]
   >([])
 
-  const [assessmentDates, setAssessmentDates] = useState<KeyValueProp[]>()
+  // const [assessmentDates, setAssessmentDates] = useState<KeyValueProp[]>()
   const [selectedAssessmentDate, setSelectedAssessmentDate] = useState<Assessment>()
   const [selectedAssessmentType, setSelectedAssessmentType] = useState<AssessmentEnum>()
   const [scoreBookSummary, setScoreBookSummary] = useState<ScoreBookSummaryResponse>()
@@ -63,10 +66,10 @@ const ScoreBookComponent = () => {
       const type = searchParams.get('type')
       if (type && assessmentId) {
         const assessment = assessments.find((a) => a.id === assessmentId)
-        const formatAssessments = assessments
-          .filter((assessment) => assessment.type === type)
-          .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
-        setAssessmentDates(sortBy(formatAssessments, 'value'))
+        // const formatAssessments = assessments
+        //   .filter((assessment) => assessment.type === type)
+        //   .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
+        // setAssessmentDates(sortBy(formatAssessments, 'value'))
 
         setSelectedAssessmentDate(assessment)
         setSelectedAssessmentType(type as AssessmentEnum)
@@ -154,20 +157,20 @@ const ScoreBookComponent = () => {
 
   const handleSelectAssessmentType = (value: AssessmentEnum) => {
     if (value && assessments) {
-      const formatAssessments = assessments
-        .filter((assessment) => assessment.type === value)
-        .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
-      setAssessmentDates(sortBy(formatAssessments, 'value'))
+      // const formatAssessments = assessments
+      //   .filter((assessment) => assessment.type === value)
+      //   .map((assessment) => ({ key: assessment.id, value: assessment.bookDate }))
+      // setAssessmentDates(sortBy(formatAssessments, 'value'))
       setSelectedAssessmentType(value)
       setSelectedAssessmentDate(undefined)
     }
   }
 
-  const handleChangeShowScoreDate = (updatedDate?: KeyValueProp) => {
-    if (updatedDate) {
-      setSelectedAssessmentDate(assessments.find((assessment) => assessment.id === updatedDate.key))
-    }
-  }
+  // const handleChangeShowScoreDate = (updatedDate?: KeyValueProp) => {
+  //   if (updatedDate) {
+  //     setSelectedAssessmentDate(assessments.find((assessment) => assessment.id === updatedDate.key))
+  //   }
+  // }
 
   const displayProps: ScoreBookDisplayComponentProps = {
     filteredStuScoreBooks,
@@ -178,61 +181,63 @@ const ScoreBookComponent = () => {
   }
 
   return (
-    <Box p={isMobile ? 1 : 2}>
+    <Box p={1}>
       <Box
         sx={{
           display: 'flex',
-          gap: isMobile ? 1 : 2,
+          gap: 1,
           width: '100%',
-          alignItems: isMobile ? 'flex-start' : 'center',
-          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: 'center',
         }}
       >
-        <Typography sx={{ textAlign: 'left', fontSize: isMobile ? '1rem' : '2rem' }} variant={'h1'}>
-          Bảng Điểm
+        {selectedAssessmentType && selectedAssessmentDate?.bookDate && (
+          <IconButton
+            onClick={() => {
+              setSelectedAssessmentType(undefined)
+              setSelectedAssessmentDate(undefined)
+              navigate(Router.ASSESSMENT)
+            }}
+            size="small"
+          >
+            <ArrowBackIosNewIcon fontSize="inherit" />
+          </IconButton>
+        )}
+        <Typography sx={{ textAlign: 'left', fontSize: '1rem', margin: 0 }} variant={'h1'}>
+          Bảng Điểm{' '}
+          {selectedAssessmentDate?.bookDate && selectedAssessmentType ? (
+            <Typography component={'span'}>
+              - {BaseAssessments.find((a) => a.id === selectedAssessmentType)?.name}{' '}
+              {selectedAssessmentDate?.bookDate
+                ? new Date(selectedAssessmentDate?.bookDate).toLocaleDateString('en-AU')
+                : ''}
+            </Typography>
+          ) : null}
         </Typography>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: isMobile ? 2 : 4,
-          marginTop: 1,
-          alignItems: isMobile ? 'flex-start' : 'center',
-          flexDirection: isMobile ? 'column' : 'row',
-          gap: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '100%',
-            gap: 2,
-          }}
-        >
-          <AssessmentDropdownComponent
-            assessmentType={selectedAssessmentType}
-            size={'small'}
-            onChangeAssessmentType={handleSelectAssessmentType}
-          />
-          <DateDropdownComponent
-            selectedDate={selectedAssessmentDate?.bookDate}
-            dates={assessmentDates}
-            onChangeDate={handleChangeShowScoreDate}
-          />
-        </Box>
-        <SearchComponent onChange={handleFilterStudentByName} />
-      </Box>
-      {scoreBookSummary && (
-        <ScoreBookSummaryInfoComponent
-          onFilterStudentByGrade={handleFilterStudentByGrade}
-          totalStudents={students.length}
-          {...scoreBookSummary}
-        />
-      )}
       {assessments.length !== 0 ? (
-        <ScoreBookDisplayComponent {...displayProps} />
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: isMobile ? 2 : 4,
+              marginTop: 1,
+              alignItems: isMobile ? 'flex-start' : 'center',
+              flexDirection: isMobile ? 'column' : 'row',
+              gap: 2,
+            }}
+          >
+            <SearchComponent onChange={handleFilterStudentByName} />
+          </Box>
+          {scoreBookSummary && (
+            <ScoreBookSummaryInfoComponent
+              onFilterStudentByGrade={handleFilterStudentByGrade}
+              totalStudents={students.length}
+              {...scoreBookSummary}
+            />
+          )}
+          <ScoreBookDisplayComponent {...displayProps} />
+        </>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
