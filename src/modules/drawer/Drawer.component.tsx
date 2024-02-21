@@ -132,15 +132,15 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
     return () => window.removeEventListener('scroll', eventHandler)
   }, [showScroll])
 
-  const handleScrollToTop = useCallback(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    })
-    setShowScroll(false)
-    Promise.resolve().then(() => setOpen(false))
-  }, [setOpen])
+  // const handleScrollToTop = useCallback(() => {
+  //   window.scrollTo({
+  //     top: 0,
+  //     left: 0,
+  //     behavior: 'smooth',
+  //   })
+  //   setShowScroll(false)
+  //   Promise.resolve().then(() => setOpen(false))
+  // }, [setOpen])
   const schoolYearLabel = `${SemesterObj[semesterId]} (${schoolYearId.slice(
     2,
     4
@@ -186,7 +186,7 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
         })}
         <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 96 }}>
           <ListItemButton
-            onClick={handleScrollToTop}
+            // onClick={handleScrollToTop}
             sx={{
               height: 48,
               justifyContent: isOpen ? 'initial' : 'center',
@@ -210,7 +210,7 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
             </ListItemText>
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 56 }}>
+        {/* <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 56 }}>
           <ListItemButton
             onClick={handleScrollToTop}
             sx={{
@@ -241,7 +241,7 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
               </>
             )}
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
 
         <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 16 }}>
           <ListItemButton

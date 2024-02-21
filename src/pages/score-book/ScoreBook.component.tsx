@@ -181,7 +181,7 @@ const ScoreBookComponent = () => {
   }
 
   return (
-    <Box p={1}>
+    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
       <Box
         sx={{
           display: 'flex',
@@ -236,7 +236,9 @@ const ScoreBookComponent = () => {
               {...scoreBookSummary}
             />
           )}
-          <ScoreBookDisplayComponent {...displayProps} />
+          <Box sx={{ flexGrow: 1 }}>
+            <ScoreBookDisplayComponent {...displayProps} />
+          </Box>
         </>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

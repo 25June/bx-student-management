@@ -92,7 +92,7 @@ const UserComponent = () => {
   }
 
   return (
-    <Box p={isMobile ? 1 : 2}>
+    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
       <Box
         sx={{
           display: 'flex',
@@ -128,7 +128,7 @@ const UserComponent = () => {
           </Button>
         )}
       </Box>
-      <Box>
+      <Box sx={{ flexGrow: 1, overflow: 'auto', height: '100%' }}>
         {isMobile ? (
           <UserSingleViewComponent users={filteredUsers || []} onClickAction={handleClickAction} />
         ) : (

@@ -17,11 +17,10 @@ import EditIcon from '@mui/icons-material/Edit'
 import PasswordIcon from '@mui/icons-material/Password'
 import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
 import { BaseClassObj, extendedColorPalettes, Role, UserAction, UserRoles } from 'constant/common'
-import { useIsMobile } from 'utils/common'
+import { useIsMobile, buildImageUrl } from 'utils/common'
 import { grey } from '@mui/material/colors'
 import Chip from '@mui/material/Chip'
 import { useAuthentication } from 'contexts/AuthContext'
-import { buildImageUrl } from 'utils/common'
 
 interface UserTableComponentProps {
   rows: User[]
@@ -51,21 +50,29 @@ const UserTableComponent = ({ rows, onClickAction }: UserTableComponentProps) =>
 
   const tableBodyClass = isMobile
     ? {
-      '&:before': { content: `attr(data-cell)`, fontWeight: 500 },
-      display: 'grid',
-      gridTemplateColumns: '10ch auto',
-      borderBottom: 0,
-    }
+        '&:before': { content: `attr(data-cell)`, fontWeight: 500 },
+        display: 'grid',
+        gridTemplateColumns: '10ch auto',
+        borderBottom: 0,
+      }
     : {}
 
   return (
-    <TableContainer component={Paper} sx={{ boxShadow: 3, border: `1px solid ${grey[300]}` }}>
-      <Table stickyHeader={true} sx={{ minWidth: isMobile ? 0 : 650 }} aria-label="simple table">
+    <TableContainer
+      component={Paper}
+      sx={{ boxShadow: 3, border: `1px solid ${grey[300]}`, height: '100%' }}
+    >
+      <Table
+        stickyHeader={true}
+        sx={{ minWidth: isMobile ? 0 : 650, height: '100%', paddingBottom: '3rem' }}
+        aria-label="simple table"
+      >
         <TableHead>
           <TableRow sx={{ display: isMobile ? 'none' : '' }}>
             <TableCell key={'avatarPath'}>Ảnh</TableCell>
             <TableCell key={'saintName'}>Tên Thánh</TableCell>
             <TableCell key={'lastName'}>Họ và</TableCell>
+            <TableCell key={'Email'}>Email</TableCell>
             <TableCell key={'firstName'}>Tên</TableCell>
             <TableCell key={'classId'}>Lớp</TableCell>
             <TableCell key={'role'}>Chức vụ</TableCell>

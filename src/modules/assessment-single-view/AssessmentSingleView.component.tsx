@@ -104,17 +104,13 @@ const AssessmentItem = ({
         alignItems={'flex-start'}
         disableGutters={true}
         secondaryAction={
-          <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-            <IconButton
-              onClick={() =>
-                navigate(
-                  `${Router.SCORE_BOOK}?assessmentId=${assessment.id}&type=${assessment.type}`
-                )
-              }
-            >
-              <ArrowForwardIosIcon fontSize={'inherit'} color={'action'} />
-            </IconButton>
-          </Box>
+          <IconButton
+            onClick={() =>
+              navigate(`${Router.SCORE_BOOK}?assessmentId=${assessment.id}&type=${assessment.type}`)
+            }
+          >
+            <ArrowForwardIosIcon fontSize={'inherit'} color={'action'} />
+          </IconButton>
         }
       >
         <ListItemAvatar>

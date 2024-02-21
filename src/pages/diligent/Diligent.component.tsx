@@ -178,7 +178,7 @@ const DiligentComponent = () => {
       studentAttendanceCount?.gl !== students?.length)
 
   return (
-    <Box p={1}>
+    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
       <Box
         sx={{
           display: 'flex',
@@ -214,7 +214,7 @@ const DiligentComponent = () => {
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              marginBottom: isMobile ? 2 : 4,
+              marginBottom: 1,
               marginTop: 1,
               alignItems: isMobile ? 'flex-start' : 'center',
               flexDirection: isMobile ? 'column' : 'row',
@@ -256,7 +256,7 @@ const DiligentComponent = () => {
               </IconButton>
             </Box>
           )}
-          <Box mt={2} mb={2}>
+          <Box mt={2} mb={2} sx={{ flexGrow: 1 }}>
             {!formatAttendances || formatAttendances.length === 0 ? (
               <DiligentSkeletonComponent />
             ) : (

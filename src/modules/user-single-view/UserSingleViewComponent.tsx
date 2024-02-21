@@ -125,12 +125,12 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
   }
 
   return (
-    <Box>
+    <>
       <Box
         sx={{
           background: 'transparent',
           backdropFilter: 'blur(4px)',
-          height: 'calc(100vh - 272px)',
+          height: '100%',
           WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
         }}
       >
@@ -143,7 +143,13 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
               width={width}
             >
               {({ index, style }) => (
-                <div style={style}>
+                <div
+                  style={{
+                    ...style,
+                    paddingTop: index === 0 ? '1rem' : 0,
+                    paddingBottom: index === users.length - 1 ? '3rem' : 0,
+                  }}
+                >
                   <UserItem
                     key={users[index].id}
                     user={users[index]}
@@ -184,7 +190,7 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
           </MenuItem>
         </Menu>
       )}
-    </Box>
+    </>
   )
 }
 

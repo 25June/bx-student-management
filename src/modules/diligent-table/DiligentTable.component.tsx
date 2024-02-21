@@ -97,13 +97,13 @@ const DiligentTableComponent = ({
 
   if (isMobile && selectedRollCallDate) {
     return (
-      <Box sx={{ width: '100%' }}>
-        <Grow in={!!selectedRollCallDate}>
+      <Box sx={{ width: '100%', height: '100%' }}>
+        <Grow in={true}>
           <Box
             sx={{
               background: 'transparent',
               backdropFilter: 'blur(2px)',
-              height: 'calc(100vh - 272px)',
+              height: '100%',
               WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
             }}
           >
@@ -116,7 +116,13 @@ const DiligentTableComponent = ({
                   width={width}
                 >
                   {({ index, style }) => (
-                    <div style={style}>
+                    <div
+                      style={{
+                        ...style,
+                        paddingTop: index === 0 ? '1rem' : 0,
+                        paddingBottom: index === rows.length - 1 ? '3rem' : 0,
+                      }}
+                    >
                       <SingleDateViewComponent
                         key={rows[index].id}
                         student={rows[index]}

@@ -127,7 +127,7 @@ const HomeComponent = () => {
   }
 
   return (
-    <Box p={1}>
+    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
       <Typography variant={'h1'} sx={{ textAlign: 'left', fontSize: '1rem' }}>
         Thông Tin Thiếu Nhi
       </Typography>
@@ -136,7 +136,7 @@ const HomeComponent = () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: 4,
+          marginBottom: 1,
           marginTop: 1,
           flexWrap: 'wrap',
           gap: 1,
@@ -175,14 +175,14 @@ const HomeComponent = () => {
           </IconButton>
         </Box>
       </Box>
-      {displayType === 'table' ? (
+      {displayType === DisplayType.TABLE ? (
         <>
           {isMobile ? (
             <Box
               sx={{
+                flexGrow: 1,
                 background: 'transparent',
                 backdropFilter: 'blur(4px)',
-                height: 'calc(100vh - 272px)',
                 WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
               }}
             >
@@ -195,7 +195,13 @@ const HomeComponent = () => {
                     width={width}
                   >
                     {({ index, style }) => (
-                      <div style={style}>
+                      <div
+                        style={{
+                          ...style,
+                          paddingTop: index === 0 ? '1rem' : 0,
+                          paddingBottom: index === students.length - 1 ? '3rem' : 0,
+                        }}
+                      >
                         <SingleInfoViewComponent
                           key={students[index].id}
                           student={students[index]}
@@ -219,10 +225,17 @@ const HomeComponent = () => {
       ) : (
         <Box
           sx={{
+            flexGrow: 1,
             display: 'flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
             justifyContent: 'center',
+            background: 'transparent',
+            backdropFilter: 'blur(4px)',
+            padding: '1rem 0 3.5rem 0',
+            // height: 'calc(100vh - 272px)',
+            WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
+            overflowY: 'auto',
             gap: 2.5,
             paddingLeft: 1,
             paddingRight: 1,

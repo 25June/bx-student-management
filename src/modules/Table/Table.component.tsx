@@ -121,7 +121,7 @@ const TableComponent = ({ rows, columns, onClickAction, renderActionMenu }: Tabl
   }
 
   return (
-    <Box>
+    <Box sx={{ flexGrow: 1 }}>
       <Paper>
         <TableContainer
           sx={{ maxHeight: 'calc(100vh - 240px)', width: '100%', overflow: 'auto' }}
