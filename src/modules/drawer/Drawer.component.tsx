@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   List,
@@ -22,7 +22,6 @@ import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
 import { DialogType, SemesterObj } from 'constant/common'
 import { useIsMobile } from 'utils/common'
-import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import { blue, grey } from '@mui/material/colors'
 import { debounce } from 'lodash'
 import SettingsIcon from '@mui/icons-material/Settings'
