@@ -14,15 +14,12 @@ import {
   CircularProgress,
   ToggleButtonGroup,
   ToggleButton,
+  Autocomplete,
 } from '@mui/material'
 import { StudentActionType } from 'constant/common'
 import { Student } from 'models/student'
 import { formatPhoneWithoutDot, formatPhone, splitFullName } from 'utils/formatDataForTable'
-import {
-  useAddNewStudent,
-  useDeleteStudent,
-  useUpdateStudent,
-} from 'services/student'
+import { useAddNewStudent, useDeleteStudent, useUpdateStudent } from 'services/student'
 import { removeImage, uploadFile } from 'services/storage'
 import { useIsMobile } from 'utils/common'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
@@ -32,7 +29,7 @@ import { getValues, StudentForm } from './helpers'
 import ClearIcon from '@mui/icons-material/Clear'
 import CheckIcon from '@mui/icons-material/Check'
 import { ImageBoxComponent, LinearProgressComponent } from 'modules'
-
+import { getAllSaintNames } from 'services/one-time-call/saintNames'
 
 interface StudentDialogComponentProps {
   isOpen: boolean
@@ -98,10 +95,15 @@ const StudentDialogComponent = ({
   const { classObj } = useClassContext()
   const [uploadImageProgress, setUploadImageProgress] = useState<number>(0)
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [saintNames, setSaintNames] = useState<string[]>([])
 
   const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: boolean) => {
     setValue('gender', newAlignment)
   }
+
+  useEffect(() => {
+    getAllSaintNames().then((names) => setSaintNames(names))
+  }, [])
 
   useEffect(() => {
     if (action === StudentActionType.EDIT_STUDENT) {
@@ -129,7 +131,6 @@ const StudentDialogComponent = ({
             fetchStudents(classObj?.id || '')
             onClose()
           }, 100)
-
         },
       })
     }
@@ -252,14 +253,21 @@ const StudentDialogComponent = ({
                   control={control}
                   name={'saintName'}
                   render={({ field }) => (
-                    <TextField
-                      sx={{ maxWidth: '70%' }}
-                      id="outlined-SaintName"
-                      label="Tên thánh"
-                      helperText="Ex: Maria, Giuse, Anna"
-                      margin="normal"
+                    <Autocomplete
+                      disablePortal
+                      id="autocomplete-outlined-SaintName"
+                      options={saintNames}
                       fullWidth={true}
-                      {...field}
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{ maxWidth: '70%' }}
+                          label="Tên thánh"
+                          helperText="Ex: Maria, Giuse, Anna"
+                          margin="normal"
+                          {...field}
+                          {...params}
+                        />
+                      )}
                     />
                   )}
                 />
