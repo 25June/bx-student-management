@@ -175,7 +175,7 @@ const ScoreBookComponent = () => {
   const displayProps: ScoreBookDisplayComponentProps = {
     filteredStuScoreBooks,
     selectedAssessmentType,
-    setSelectedScoreBook,
+    // setSelectedScoreBook,
     selectedAssessmentDate,
     handleUpdateScore,
   }

@@ -14,7 +14,7 @@ interface SingleScoreViewComponentProps {
   onChangeData: (submittedValue: { score: number }, assessmentId: string) => void
 }
 
-const Item = styled(Paper)(({ theme }) => ({
+export const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : 'transparent',
   ...theme.typography.body2,
   padding: theme.spacing(1),

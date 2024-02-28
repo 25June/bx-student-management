@@ -2,6 +2,8 @@ import React from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import ImageBoxComponent from 'modules/image-box/ImageBox.component'
+import IconButton from '@mui/material/IconButton'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 interface Props {
   avatarPath?: string
@@ -9,6 +11,7 @@ interface Props {
   lastName: string
   firstName: string
   gender: boolean
+  action?: () => void
 }
 
 const TableFullNameCellComponent = ({
@@ -17,6 +20,7 @@ const TableFullNameCellComponent = ({
   firstName,
   lastName,
   gender,
+  action,
 }: Props) => {
   return (
     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
@@ -33,6 +37,11 @@ const TableFullNameCellComponent = ({
           {`${(lastName + ' ' + firstName).toLowerCase()}`}
         </Typography>
       </Box>
+      {action ? (
+        <IconButton onClick={action}>
+          <ArrowForwardIosIcon fontSize={'inherit'} color={'action'} />
+        </IconButton>
+      ) : null}
     </Box>
   )
 }

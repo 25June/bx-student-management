@@ -20,7 +20,7 @@ import { useIsMobile } from 'utils/common'
 
 export interface ScoreBookDisplayComponentProps {
   filteredStuScoreBooks: StudentScoreBook[] | Student[]
-  setSelectedScoreBook: (data: StudentScoreBook) => void
+  // setSelectedScoreBook: (data: StudentScoreBook) => void
   selectedAssessmentDate?: Assessment
   selectedAssessmentType?: string
   handleUpdateScore: (
