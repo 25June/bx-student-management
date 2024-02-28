@@ -30,13 +30,20 @@ const SchoolYearsDropdownComponent = ({
   return (
     <FormControl fullWidth={true} size={size}>
       <InputLabel>Niên Khoá</InputLabel>
-      <Select value={schoolYearId} label="Niên Khoá" onChange={onChangeSchoolYear}>
-        {(schoolYears || []).map((c: SchoolYear) => (
-          <MenuItem value={c.id} key={c.duration}>
-            {c.duration}
-          </MenuItem>
-        ))}
-      </Select>
+      {schoolYears.length > 0 && (
+        <Select
+          defaultValue=""
+          value={schoolYearId}
+          label="Niên Khoá"
+          onChange={onChangeSchoolYear}
+        >
+          {schoolYears.map((c: SchoolYear) => (
+            <MenuItem value={c.id} key={c.duration}>
+              {c.duration}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
     </FormControl>
   )
 }

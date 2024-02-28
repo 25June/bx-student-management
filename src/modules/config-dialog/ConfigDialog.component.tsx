@@ -49,7 +49,6 @@ const ConfigDialogComponent = ({ onClose, isOpen }: ConfigDialogComponentProps) 
 
   const [isLoading, setLoading] = useState<boolean>(false)
   const onSubmit = (data: ConfigForm) => {
-    console.log({ data })
     setLoading(true)
     Promise.resolve().then(() => {
       setSchoolYearId(data.schoolYearId)
