@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useClassContext } from 'contexts/ClassContext'
 // import { useAuthentication } from 'contexts/AuthContext'
 import ExportStudentComponent from 'pages/import/ExportStudent.component'
-import ImportComponent from 'pages/import/Import.component'
+// import ImportComponent from 'pages/import/Import.component'
 import ExportDiligentComponent from 'pages/import/ExportDiligent.component'
 import ExportScoreBookComponent from 'pages/import/ExportScoreBook.component'
 
@@ -56,7 +56,8 @@ const ReportComponent = () => {
         </Tabs>
       </Box>
       <CustomTabPanel value={tabValue} index={1}>
-        <ImportComponent />
+        {/* <ImportComponent /> */}
+        <div></div>
       </CustomTabPanel>
       <CustomTabPanel value={tabValue} index={2}>
         {currentClass && <ExportStudentComponent currentClass={currentClass} />}
