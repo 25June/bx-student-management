@@ -130,7 +130,7 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
 
     return () => window.removeEventListener('scroll', eventHandler)
   }, [showScroll])
-
+  console.log('asdasd')
   // const handleScrollToTop = useCallback(() => {
   //   window.scrollTo({
   //     top: 0,
