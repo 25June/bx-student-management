@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { Typography, Drawer, Button, Box } from '@mui/material'
+import { Typography, Drawer, IconButton, Box } from '@mui/material'
 import SearchComponent from 'modules/common/Search.component'
-import AssignmentIcon from '@mui/icons-material/Assignment'
 import { getUsers, useSendPasswordResetEmail } from 'services/user'
 import { User } from 'models/user'
 import { useIsMobile, toLowerCaseNonAccentVietnamese } from 'utils/common'
@@ -14,6 +13,7 @@ import PermissionDialogComponent from 'modules/user-dialog/PermissionDialog.comp
 import UpdateInfoDialogComponent from 'modules/user-dialog/UpdateInfoDialog.component'
 import UserSingleViewComponent from 'modules/user-single-view/UserSingleViewComponent'
 import UserProfilePanelComponent from 'modules/user-drawer/UserProfilePanel.component'
+import CandleIcon from 'modules/common/CandleIcon'
 
 const UserComponent = () => {
   const isMobile = useIsMobile()
@@ -92,17 +92,10 @@ const UserComponent = () => {
   }
 
   return (
-    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          width: '100%',
-        }}
-      >
-        <Typography variant={'h1'} sx={{ fontSize: isMobile ? '1rem' : '2rem' }}>
-          Giáo Lý Viên
-        </Typography>
-      </Box>
+    <>
+      <Typography variant={'h1'} sx={{ fontSize: '1rem', textAlign: 'left' }}>
+        Giáo Lý Viên
+      </Typography>
       <Box
         sx={{
           display: 'flex',
@@ -111,24 +104,21 @@ const UserComponent = () => {
           gap: isMobile ? 1 : 2,
           marginTop: 1,
           alignItems: isMobile ? 'flex-start' : 'center',
-          flexDirection: isMobile ? 'column' : 'row',
         }}
       >
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ flexGrow: 1 }}>
           <SearchComponent onChange={handleFilterUserByName} label={'Tìm Tên GLV'} />
         </Box>
         {user?.role === Role.CTO && (
-          <Button
+          <IconButton
             sx={{ width: '100%', maxWidth: 'fit-content' }}
-            variant="contained"
-            startIcon={<AssignmentIcon />}
             onClick={() => openUserDialog(true)}
           >
-            Thêm GLV
-          </Button>
+            <CandleIcon color={'primary'} />
+          </IconButton>
         )}
       </Box>
-      <Box sx={{ flexGrow: 1, overflow: 'auto', height: '100%' }}>
+      <Box sx={{ flexGrow: 1, height: '100%', width: '100%', overflowY: 'auto' }}>
         {isMobile ? (
           <UserSingleViewComponent users={filteredUsers || []} onClickAction={handleClickAction} />
         ) : (
@@ -162,7 +152,7 @@ const UserComponent = () => {
           />
         )}
       </Drawer>
-    </Box>
+    </>
   )
 }
 

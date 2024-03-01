@@ -178,7 +178,7 @@ const DiligentComponent = () => {
       studentAttendanceCount?.gl !== students?.length)
 
   return (
-    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
+    <>
       <Box
         sx={{
           display: 'flex',
@@ -204,10 +204,14 @@ const DiligentComponent = () => {
         </Typography>
       </Box>
       {!selectedDate && !selectedMonth ? (
-        <OverviewReportComponent
-          onViewDetail={handleSelectDate}
-          openDiligentDialog={handleOpenDiligentDialog}
-        />
+        <Box
+          sx={{ flexGrow: 1, height: '100%', width: '100%', overflowY: 'auto', paddingBottom: 7 }}
+        >
+          <OverviewReportComponent
+            onViewDetail={handleSelectDate}
+            openDiligentDialog={handleOpenDiligentDialog}
+          />
+        </Box>
       ) : (
         <>
           <Box
@@ -256,7 +260,7 @@ const DiligentComponent = () => {
               </IconButton>
             </Box>
           )}
-          <Box mt={2} mb={2} sx={{ flexGrow: 1 }}>
+          <Box mt={2} mb={2} sx={{ flexGrow: 1, height: '100%', width: '100%', overflowY: 'auto' }}>
             {!formatAttendances || formatAttendances.length === 0 ? (
               <DiligentSkeletonComponent />
             ) : (
@@ -271,7 +275,7 @@ const DiligentComponent = () => {
           </Box>
         </>
       )}
-    </Box>
+    </>
   )
 }
 

@@ -127,7 +127,7 @@ const HomeComponent = () => {
   }
 
   return (
-    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
+    <>
       <Typography variant={'h1'} sx={{ textAlign: 'left', fontSize: '1rem' }}>
         Thông Tin Thiếu Nhi
       </Typography>
@@ -175,79 +175,80 @@ const HomeComponent = () => {
           </IconButton>
         </Box>
       </Box>
-      {displayType === DisplayType.TABLE ? (
-        <>
-          {isMobile ? (
-            <Box
-              sx={{
-                flexGrow: 1,
-                background: 'transparent',
-                backdropFilter: 'blur(4px)',
-                WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
-              }}
-            >
-              <AutoSizer>
-                {({ height, width }: any) => (
-                  <FixedSizeList
-                    height={height}
-                    itemCount={(filteredStudents || []).length}
-                    itemSize={125}
-                    width={width}
-                  >
-                    {({ index, style }) => (
-                      <div
-                        style={{
-                          ...style,
-                          paddingTop: index === 0 ? '1rem' : 0,
-                          paddingBottom: index === students.length - 1 ? '3rem' : 0,
-                        }}
-                      >
-                        <SingleInfoViewComponent
-                          key={students[index].id}
-                          student={students[index]}
-                          onClickAction={handleClickAction}
-                        />
-                      </div>
-                    )}
-                  </FixedSizeList>
-                )}
-              </AutoSizer>
-            </Box>
-          ) : (
-            <TableComponent
-              columns={studentColumns}
-              rows={filteredStudents || []}
-              onClickAction={handleClickAction}
-              renderActionMenu={renderStudentActions}
-            />
-          )}
-        </>
-      ) : (
-        <Box
-          sx={{
-            flexGrow: 1,
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            background: 'transparent',
-            backdropFilter: 'blur(4px)',
-            padding: '1rem 0 3.5rem 0',
-            // height: 'calc(100vh - 272px)',
-            WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
-            overflowY: 'auto',
-            gap: 2.5,
-            paddingLeft: 1,
-            paddingRight: 1,
-          }}
-        >
-          {(filteredStudents || []).map((student: Student) => (
-            <Box key={student.id} sx={{ display: 'flex', columnGap: 8, rowGap: 8 }}>
-              <CardComponent student={student} onClickAction={handleClickAction} />
-            </Box>
-          ))}
-        </Box>
-      )}
+      <Box sx={{ flexGrow: 1, height: '100%', width: '100%', overflowY: 'auto' }}>
+        {displayType === DisplayType.TABLE ? (
+          <>
+            {isMobile ? (
+              <Box
+                sx={{
+                  height: '100%',
+                  background: 'transparent',
+                  backdropFilter: 'blur(4px)',
+                  WebkitMask: 'linear-gradient(0deg,#0000,#000 5% 95%,#0000)',
+                }}
+              >
+                <AutoSizer>
+                  {({ height, width }: any) => (
+                    <FixedSizeList
+                      height={height}
+                      itemCount={(filteredStudents || []).length}
+                      itemSize={125}
+                      width={width}
+                    >
+                      {({ index, style }) => (
+                        <div
+                          style={{
+                            ...style,
+                            paddingTop: index === 0 ? '1rem' : 0,
+                            paddingBottom: index === students.length - 1 ? '3rem' : 0,
+                          }}
+                        >
+                          <SingleInfoViewComponent
+                            key={students[index].id}
+                            student={students[index]}
+                            onClickAction={handleClickAction}
+                          />
+                        </div>
+                      )}
+                    </FixedSizeList>
+                  )}
+                </AutoSizer>
+              </Box>
+            ) : (
+              <TableComponent
+                columns={studentColumns}
+                rows={filteredStudents || []}
+                onClickAction={handleClickAction}
+                renderActionMenu={renderStudentActions}
+              />
+            )}
+          </>
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              background: 'transparent',
+              backdropFilter: 'blur(4px)',
+              padding: '1rem 0 3.5rem 0',
+              overflowY: 'auto',
+              WebkitMask: 'linear-gradient(0deg,#0000,#000 1% 99%,#0000)',
+              gap: 2.5,
+              paddingLeft: 1,
+              paddingRight: 1,
+            }}
+          >
+            {(filteredStudents || []).map((student: Student) => (
+              <Box key={student.id} sx={{ display: 'flex', columnGap: 8, rowGap: 8 }}>
+                <CardComponent student={student} onClickAction={handleClickAction} />
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Box>
+
       <ScoreBookPanelComponent
         isOpen={!!(selectedStudent?.id && isOpenScoreBook)}
         onClose={handleCloseScoreBook}
@@ -264,7 +265,7 @@ const HomeComponent = () => {
         onClose={() => setIsOpenDiligentPanel(false)}
         student={selectedStudent}
       />
-    </Box>
+    </>
   )
 }
 

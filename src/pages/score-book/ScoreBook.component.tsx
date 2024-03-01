@@ -181,7 +181,7 @@ const ScoreBookComponent = () => {
   }
 
   return (
-    <Box p={1} sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 96px)' }}>
+    <>
       <Box
         sx={{
           display: 'flex',
@@ -236,12 +236,22 @@ const ScoreBookComponent = () => {
               {...scoreBookSummary}
             />
           )}
-          <Box sx={{ flexGrow: 1 }}>
+          <Box sx={{ flexGrow: 1, height: '100%', width: '100%', overflowY: 'auto' }}>
             <ScoreBookDisplayComponent {...displayProps} />
           </Box>
         </>
       ) : (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            height: '100%',
+            width: '100%',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
           <Typography textTransform={'capitalize'} variant={'caption'} color={blueGrey[700]}>
             <i>Chưa có bài kiểm tra nào, thêm ngay thôi</i>
           </Typography>
@@ -270,7 +280,7 @@ const ScoreBookComponent = () => {
           data={selectedScoreBook}
         />
       )}
-    </Box>
+    </>
   )
 }
 

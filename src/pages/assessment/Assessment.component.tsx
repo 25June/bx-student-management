@@ -67,7 +67,7 @@ const AssessmentComponent = () => {
           Bài Kiểm Tra
         </Typography>
       </Box>
-      <Box p={1}>
+      <Box sx={{ flexGrow: 1, height: '100%', width: '100%', overflowY: 'auto', paddingBottom: 7 }}>
         {assessments &&
           (isMobile ? (
             <AssessmentSingleViewComponent

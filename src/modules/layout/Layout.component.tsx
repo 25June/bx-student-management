@@ -44,13 +44,15 @@ const LayoutComponent = ({ children }: PropsWithChildren) => {
         <Box
           component="main"
           sx={{
-            pt: 8,
-            pb: 1,
+            pt: isMobile ? 9 : 10,
+            pb: 2,
             width: isMobile ? 'calc(100% - 49px)' : 'calc(100% - 65px)',
-            height: 'calc(100% - 64px)',
-            pr: 1,
-            pl: 1,
+            height: '100vh',
+            pr: 2,
+            pl: 2,
             boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {children}
