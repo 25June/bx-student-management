@@ -21,11 +21,11 @@ const LayoutComponent = ({ children }: PropsWithChildren) => {
       <Box
         sx={{
           width: '100vw',
+          height: `${window.innerHeight}px`,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
         }}
-        className="sreen-height"
       >
         <CircularProgress />
       </Box>
@@ -52,8 +52,8 @@ const LayoutComponent = ({ children }: PropsWithChildren) => {
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
+            height: `${window.innerHeight}px`,
           }}
-          className="sreen-height"
         >
           {children}
         </Box>
