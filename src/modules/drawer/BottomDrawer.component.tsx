@@ -14,22 +14,22 @@ import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
 const Menu = {
   LIST: {
     text: 'Cập nhật thông tin',
-    icon: () => <EditIcon />,
+    icon: () => <EditIcon color="primary" />,
     onClick: (action: (actionType: UserAction) => void) => action(UserAction.UPDATE_INFO),
   },
   DILIGENT: {
     text: 'Thay đổi mật khẩu',
-    icon: () => <PasswordIcon />,
+    icon: () => <PasswordIcon color="primary" />,
     onClick: (action: (actionType: UserAction) => void) => action(UserAction.CHANGE_PASSWORD),
   },
   SCORE: {
     text: 'Reset mật khẩu',
-    icon: () => <PasswordIcon />,
+    icon: () => <PasswordIcon color="primary" />,
     onClick: (action: (actionType: UserAction) => void) => action(UserAction.RESET_PASSWORD),
   },
   ASSESSMENT: {
     text: 'Cấp quyền',
-    icon: () => <SwitchAccessShortcutIcon />,
+    icon: () => <SwitchAccessShortcutIcon color="primary" />,
     onClick: (action: (actionType: UserAction) => void) => action(UserAction.RESET_PASSWORD),
   },
 }
@@ -41,19 +41,6 @@ interface Props {
 }
 
 const BottomDrawer = ({ onClickAction, open, onClose }: Props) => {
-  const toggleDrawer = (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return
-    }
-
-    onClose()
-  }
-
   return (
     <SwipeableDrawer
       disableBackdropTransition={true}
@@ -74,7 +61,7 @@ const BottomDrawer = ({ onClickAction, open, onClose }: Props) => {
                 }}
               >
                 <ListItemIcon>{icon()}</ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText color="primary" primary={text} />
               </ListItemButton>
             </ListItem>
           )
