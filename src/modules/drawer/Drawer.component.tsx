@@ -11,12 +11,6 @@ import {
   Theme,
   Typography,
 } from '@mui/material'
-// import AssignmentIcon from '@mui/icons-material/Assignment'
-// import CoPresentIcon from '@mui/icons-material/CoPresent'
-// import PermIdentityIcon from '@mui/icons-material/PermIdentity'
-// import ImportExportIcon from '@mui/icons-material/ImportExport'
-// import ScoreIcon from '@mui/icons-material/Score'
-// import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle'
 import MuiDrawer from '@mui/material/Drawer'
 import { drawerWidth } from '../layout/Layout.component'
 import { Router } from 'routes'
@@ -130,15 +124,6 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
 
     return () => window.removeEventListener('scroll', eventHandler)
   }, [showScroll])
-  // const handleScrollToTop = useCallback(() => {
-  //   window.scrollTo({
-  //     top: 0,
-  //     left: 0,
-  //     behavior: 'smooth',
-  //   })
-  //   setShowScroll(false)
-  //   Promise.resolve().then(() => setOpen(false))
-  // }, [setOpen])
   const schoolYearLabel = `${SemesterObj[semesterId]} (${schoolYearId.slice(
     2,
     4
@@ -208,38 +193,6 @@ const DrawerComponent = ({ isOpen, setOpen }: DrawerComponentProps) => {
             </ListItemText>
           </ListItemButton>
         </ListItem>
-        {/* <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 56 }}>
-          <ListItemButton
-            onClick={handleScrollToTop}
-            sx={{
-              height: 48,
-              justifyContent: isOpen ? 'initial' : 'center',
-              px: isMobile ? 1.5 : 2.5,
-              width: 48,
-            }}
-          >
-            {showScroll && (
-              <>
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: isOpen ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <ExpandLessRoundedIcon sx={{ background: blue[100], borderRadius: '50%' }} />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Lên Đầu Trang"
-                  sx={{
-                    opacity: isOpen ? 1 : 0,
-                    color: blue[500],
-                  }}
-                />
-              </>
-            )}
-          </ListItemButton>
-        </ListItem> */}
 
         <ListItem disablePadding={true} sx={{ position: 'absolute', bottom: 16 }}>
           <ListItemButton

@@ -1,29 +1,21 @@
 import React, { useState } from 'react'
-// import List from '@mui/material/List'
 import { Box } from '@mui/material'
 import { User } from 'models/user'
 import ListItem from '@mui/material/ListItem'
 import IconButton from '@mui/material/IconButton'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
-import { BaseClassObj, extendedColorPalettes, UserAction, UserRoles } from 'constant/common'
+import { BaseClassObj, extendedColorPalettes, UserAction, UserRoles, Role } from 'constant/common'
 import Typography from '@mui/material/Typography'
 import ListItemText from '@mui/material/ListItemText'
 import Divider from '@mui/material/Divider'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { buildImageUrl } from 'utils/common'
 import Chip from '@mui/material/Chip'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import EditIcon from '@mui/icons-material/Edit'
-import PasswordIcon from '@mui/icons-material/Password'
-import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut'
-import { useAuthentication } from 'contexts/AuthContext'
-import { Role } from 'constant/common'
 import { grey } from '@mui/material/colors'
-
 import { FixedSizeList } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import BottomDrawer from 'modules/drawer/BottomDrawer.component'
 
 interface PrimaryTextProps {
   saintName: string
@@ -108,10 +100,7 @@ interface UserSingleViewComponentProps {
 
 const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewComponentProps) => {
   const [selectedRow, setSelectedRow] = useState<User>()
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const { user: currentUser } = useAuthentication()
   const handleClickMenu = (e: React.MouseEvent<HTMLButtonElement>, row: User) => {
-    setAnchorEl(e.currentTarget)
     setSelectedRow(row)
   }
 
@@ -143,13 +132,7 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
               width={width}
             >
               {({ index, style }) => (
-                <div
-                  style={{
-                    ...style,
-                    paddingTop: index === 0 ? '1rem' : 0,
-                    paddingBottom: index === users.length - 1 ? '3rem' : 0,
-                  }}
-                >
+                <div style={style}>
                   <UserItem
                     key={users[index].id}
                     user={users[index]}
@@ -162,34 +145,11 @@ const UserSingleViewComponent = ({ users, onClickAction }: UserSingleViewCompone
           )}
         </AutoSizer>
       </Box>
-      {selectedRow && currentUser?.role === Role.CTO && (
-        <Menu open={!!selectedRow} anchorEl={anchorEl} onClose={() => setSelectedRow(undefined)}>
-          <MenuItem onClick={() => handleClickAction(UserAction.UPDATE_INFO)}>
-            <Box display={'flex'} alignItems={'center'} gap={2}>
-              <EditIcon fontSize="small" color={'info'} />
-              <Typography fontSize={'0.875rem'}>Cập nhật thông tin</Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={() => handleClickAction(UserAction.CHANGE_PASSWORD)}>
-            <Box display={'flex'} alignItems={'center'} gap={2}>
-              <PasswordIcon fontSize="small" color={'info'} />
-              <Typography fontSize={'0.875rem'}>Thay đổi mật khẩu</Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={() => handleClickAction(UserAction.RESET_PASSWORD)}>
-            <Box display={'flex'} alignItems={'center'} gap={2}>
-              <PasswordIcon fontSize="small" color={'info'} />
-              <Typography fontSize={'0.875rem'}>Reset mật khẩu</Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={() => handleClickAction(UserAction.GRANT_PERMISSION)}>
-            <Box display={'flex'} alignItems={'center'} gap={2}>
-              <SwitchAccessShortcutIcon fontSize="small" color={'info'} />
-              <Typography fontSize={'0.875rem'}>Cấp quyền</Typography>
-            </Box>
-          </MenuItem>
-        </Menu>
-      )}
+      <BottomDrawer
+        open={!!selectedRow}
+        onClose={() => setSelectedRow(undefined)}
+        onClickAction={handleClickAction}
+      />
     </>
   )
 }
