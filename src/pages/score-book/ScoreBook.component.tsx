@@ -6,7 +6,7 @@ import { blueGrey } from '@mui/material/colors'
 import { Typography, Box, Button, IconButton } from '@mui/material'
 import { setNewStudentScore, useGetStudentScoreBooks } from 'services/scorebook'
 import { fetchAssessments } from 'services/assessment'
-import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
+import { useIsMobile } from 'utils/common'
 import { getScoreBookSummary, ScoreBookSummaryResponse } from 'utils/scorebookSummary'
 import { AssessmentActionType, AssessmentEnum, BaseAssessments, DialogType } from 'constant/common'
 import { useStudentContext } from 'contexts/StudentContext'
@@ -28,7 +28,7 @@ const ScoreBookComponent = () => {
   const { search } = useLocation()
   const navigate = useNavigate()
 
-  const { students } = useStudentContext()
+  const { students, studentByKeywords } = useStudentContext()
   const { classId, schoolYearId, semesterId, disableUpdate } = useClassContext()
   const isMobile = useIsMobile()
   const { assessments, setAssessments } = useAssessmentContext()
@@ -118,10 +118,7 @@ const ScoreBookComponent = () => {
       }
 
       const filtered = stuScoreBooks.filter((stu) => {
-        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
-          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
-        )
-        return keywordArr.includes(value.toLowerCase())
+        return studentByKeywords[stu.id].includes(value)
       })
       setFilteredStuScoreBooks(filtered)
     }

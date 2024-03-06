@@ -68,16 +68,18 @@ interface SearchComponentProps {
 const SearchComponent = ({ onChange, label }: SearchComponentProps) => {
   const [value, setValue] = useState<string>('')
   const isMobile = useIsMobile()
-  const handleInputChange = debounce(
-    (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-      onChange(toLowerCaseNonAccentVietnamese(event.target.value))
-    },
-    300
-  )
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    onChange(toLowerCaseNonAccentVietnamese(event.target.value))
+    setValue(event.target.value)
+  }
 
   const handleReset = () => {
     onChange('')
     setValue('')
+    const searchBar = document.getElementById('search-bar') as HTMLInputElement
+    if (searchBar.value) {
+      searchBar.value = ''
+    }
   }
 
   return (
@@ -86,13 +88,10 @@ const SearchComponent = ({ onChange, label }: SearchComponentProps) => {
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
+        id={'search-bar'}
         placeholder={label || 'Tìm tên thiếu nhi'}
         inputProps={{ 'aria-label': 'search' }}
-        onChange={(event) => {
-          handleInputChange(event)
-          setValue(event.target.value)
-        }}
-        value={value}
+        onChange={debounce(handleInputChange, 500)}
         isMobile={isMobile}
       />
       {value && (

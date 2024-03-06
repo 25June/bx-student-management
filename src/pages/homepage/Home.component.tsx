@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Box, ToggleButtonGroup, Typography, ToggleButton, IconButton } from '@mui/material'
 import { green, red } from '@mui/material/colors'
 import { Student } from 'models/student'
-import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
+import { useIsMobile } from 'utils/common'
 import { useDialogContext } from 'contexts/DialogContext'
 import { useStudentContext } from 'contexts/StudentContext'
 import { useClassContext } from 'contexts/ClassContext'
@@ -35,7 +35,7 @@ const HomeComponent = () => {
   const [viewDeletedStudent, setViewDeletedStudent] = useState<boolean>(false)
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [displayType, setDisplayType] = React.useState<DisplayType>(DisplayType.TABLE)
-  const { students, deletedStudents } = useStudentContext()
+  const { students, deletedStudents, studentByKeywords } = useStudentContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
   const { classId, disableUpdate } = useClassContext()
@@ -106,12 +106,8 @@ const HomeComponent = () => {
         setFilteredStudents(students)
         return
       }
-
       const filtered = students.filter((stu) => {
-        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
-          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
-        )
-        return keywordArr.includes(value.toLowerCase())
+        return studentByKeywords[stu.id].includes(value)
       })
       setFilteredStudents(filtered)
     }
@@ -200,12 +196,12 @@ const HomeComponent = () => {
                           style={{
                             ...style,
                             paddingTop: index === 0 ? '1rem' : 0,
-                            paddingBottom: index === students.length - 1 ? '3rem' : 0,
+                            paddingBottom: index === filteredStudents.length - 1 ? '3rem' : 0,
                           }}
                         >
                           <SingleInfoViewComponent
-                            key={students[index].id}
-                            student={students[index]}
+                            key={filteredStudents[index].id}
+                            student={filteredStudents[index]}
                             onClickAction={handleClickAction}
                           />
                         </div>

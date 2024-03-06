@@ -9,7 +9,7 @@ import { useStudentContext } from 'contexts/StudentContext'
 import { useDialogContext } from 'contexts/DialogContext'
 import { useDiligentContext } from 'contexts/DiligentContext'
 import { countStudentPresent } from 'utils/diligentSummary'
-import { toLowerCaseNonAccentVietnamese, useIsMobile } from 'utils/common'
+import { useIsMobile } from 'utils/common'
 import { groupRollCallToSortedMonths } from 'utils/customHooks'
 import { RollCallDate } from 'models/diligent'
 import { Student } from 'models/student'
@@ -23,7 +23,7 @@ import { PillProgress } from 'modules/progress-bar/LinearProgressWithLabel.compo
 
 const DiligentComponent = () => {
   const { rollCallDates, fetchRollCallDates, attendances } = useDiligentContext()
-  const { students } = useStudentContext()
+  const { students, studentByKeywords } = useStudentContext()
   const { classId, semesterId, schoolYearId, disableUpdate } = useClassContext()
   const isMobile = useIsMobile()
   const { openDialog } = useDialogContext()
@@ -138,10 +138,7 @@ const DiligentComponent = () => {
       }
 
       const filtered = students.filter((stu) => {
-        const keywordArr = [...stu.lastName.split(' '), ...stu.firstName.split(' ')].map(
-          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
-        )
-        return keywordArr.includes(value.toLowerCase())
+        return studentByKeywords[stu.id].includes(value.toLowerCase())
       })
       setFilteredStudents(filtered)
     }

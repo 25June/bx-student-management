@@ -19,6 +19,7 @@ const UserComponent = () => {
   const isMobile = useIsMobile()
   const sendPasswordResetEmail = useSendPasswordResetEmail()
   const [users, setUsers] = useState<User[]>()
+  const [userKeywords, setUserKeywords] = useState<Record<string, string[]>>({})
   const [filteredUsers, setFilteredUsers] = useState<User[]>()
   const [isOpenUserDialog, openUserDialog] = useState<boolean>(false)
   const [isOpenChangePasswordDialog, openChangePasswordDialog] = useState<boolean>(false)
@@ -36,10 +37,7 @@ const UserComponent = () => {
       }
 
       const filtered = users.filter((user) => {
-        const keywordArr = [...user.lastName.split(' '), ...user.firstName.split(' ')].map(
-          (keyword) => toLowerCaseNonAccentVietnamese(keyword)
-        )
-        return keywordArr.includes(value.toLowerCase())
+        return userKeywords[user.id].includes(value.toLowerCase())
       })
       setFilteredUsers(filtered)
     }
@@ -50,6 +48,16 @@ const UserComponent = () => {
       if (res && res.length !== 0) {
         setUsers(res)
         setFilteredUsers(res)
+        setUserKeywords(
+          res.reduce((acc, cur) => {
+            return {
+              ...acc,
+              [cur.id]: [cur.saintName ?? '', cur.lastName, cur.firstName].map((keyword) =>
+                toLowerCaseNonAccentVietnamese(keyword)
+              ),
+            }
+          }, {})
+        )
       }
     })
   }, [])
