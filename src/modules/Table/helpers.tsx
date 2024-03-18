@@ -7,10 +7,16 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { AssessmentEnum, ScoreEnum } from 'constant/common'
 import { getScoreName } from 'utils/getScoreName'
+import { formatYYYMMDDToDDMMYYYY } from 'utils/datetime'
 
 export const studentColumns = [
   { field: 'fullName', headerName: 'Họ và Tên', disableSort: true },
-  { field: 'birthday', headerName: 'Ngày Sinh', render: (data: string) => data, disableSort: true },
+  {
+    field: 'birthday',
+    headerName: 'Ngày Sinh',
+    render: (data: string) => (data ? formatYYYMMDDToDDMMYYYY(data) : ''),
+    disableSort: true,
+  },
   { field: 'address', headerName: 'Địa Chỉ', render: (data: string) => data, disableSort: true },
   { field: 'grade', headerName: 'Văn Hoá', render: (data: string) => data, disableSort: true },
   {

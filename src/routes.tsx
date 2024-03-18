@@ -10,6 +10,7 @@ const UserComponent = lazy(() => import('pages/user/User.component'))
 const RegisterComponent = lazy(() => import('pages/register/Register.component'))
 const RegisterDashboardComponent = lazy(() => import('pages/register/RegisterDashBoard.component'))
 const ReportComponent = lazy(() => import('pages/report/Report.component'))
+const DashboardComponent = lazy(() => import('pages/dashboard/Dashboard.component'))
 
 export const Router = {
   SIGN_UP: '/sign-up',
@@ -22,6 +23,7 @@ export const Router = {
   USER: '/user',
   REGISTER: '/register',
   REGISTER_DASHBOARD: '/register-dashboard',
+  DASHBOARD: '/dashboard',
 }
 
 const ROUTES = [
@@ -29,6 +31,12 @@ const ROUTES = [
     name: 'Homepage',
     component: <HomeComponent />,
     path: Router.HOME,
+    isPrivate: true,
+  },
+  {
+    name: 'Dashboard',
+    component: <DashboardComponent />,
+    path: Router.DASHBOARD,
     isPrivate: true,
   },
   {

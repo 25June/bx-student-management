@@ -104,6 +104,7 @@ const TopBarComponent = ({ isOpen, setOpen, openUserDrawer }: TopBarComponentPro
                 classObj={classObj}
                 onChangeClass={handleChangeClassId}
                 size={'small'}
+                formVariant={'standard'}
               />
             </Box>
             <Typography

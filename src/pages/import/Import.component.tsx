@@ -17,6 +17,7 @@ import { useBatchAddStudents } from 'services/student'
 import { Class, Student } from 'models'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import ClassDropdownComponent from 'modules/class-dropdown/ClassDropdown.component'
+import { getAllSaintNames } from 'services/one-time-call/saintNames'
 
 type ImportProps = {
   value: string
@@ -74,6 +75,10 @@ const ImportComponent = () => {
     })
   }
 
+  const listall = () => {
+    getAllSaintNames().then((value) => console.log(value))
+  }
+
   const handleChangeClass = (e: SelectChangeEvent) => {
     const selectedClass = BaseClasses.find((c: Class) => c.id === (e.target.value as string))
     if (typeof selectedClass === 'undefined') {
@@ -122,6 +127,9 @@ const ImportComponent = () => {
         </Box>
         <Button onClick={saveData} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
           Confirm Save Date
+        </Button>
+        <Button onClick={listall} variant={'contained'} sx={{ mt: 2 }} disabled={!value}>
+          List all saint names in database
         </Button>
       </Box>
     </Box>
