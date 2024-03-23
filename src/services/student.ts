@@ -24,17 +24,18 @@ export const useGetStudents = () => {
   const [deletedStudents, setDeletedStudents] = useState<Student[]>([])
   const fetchStudents = (classId: string) => {
     const queryStudents = query(studentRef, where('class.id', '==', classId))
-    getDocs(
-      queryStudents
-    ).then((snapshot) => {
-      const groupStudents: { students: Student[]; deletedStudents: Student[] } = formatStudentSnapshot(snapshot.docs)
-      setStudents(groupStudents.students)
-      setDeletedStudents(groupStudents.deletedStudents)
-    },
+    getDocs(queryStudents).then(
+      (snapshot) => {
+        const groupStudents: { students: Student[]; deletedStudents: Student[] } =
+          formatStudentSnapshot(snapshot.docs)
+        setStudents(groupStudents.students)
+        setDeletedStudents(groupStudents.deletedStudents)
+      },
       (error) => {
         console.error(error)
         setStudents(null)
-      })
+      }
+    )
   }
 
   return { students, fetchStudents, deletedStudents }
@@ -45,15 +46,17 @@ export const getStudentByClassId = async (classId: string): Promise<Student[]> =
     return Promise.resolve([])
   }
   const queryStudents = query(studentRef, where('class.id', '==', classId))
-  return getDocs(
-    queryStudents
-  ).then((snapshot) => {
-    return snapshot.docs.filter(doc => !doc.data().isDeleted).map(doc => ({ ...doc.data(), id: doc.id })) as Student[]
-  },
+  return getDocs(queryStudents).then(
+    (snapshot) => {
+      return snapshot.docs
+        .filter((doc) => !doc.data().isDeleted)
+        .map((doc) => ({ ...doc.data(), id: doc.id })) as Student[]
+    },
     (error) => {
       console.error(error)
       return []
-    })
+    }
+  )
 }
 
 export const useGetStudentById = (id: string) => {
@@ -92,6 +95,7 @@ export const useAddNewStudent = () => {
     const data = {
       ...dataInput,
       createdDate: serverTimestamp(),
+      isDeleted: false,
     }
     addDoc(collection(fireStoreDB, StudentCollection), data)
       .then((value) => {
@@ -190,7 +194,7 @@ export const updateSpiritScore = (studentId: string, spiritScore: number) => {
   }
   const ref = doc(fireStoreDB, StudentCollection, studentId)
   return updateDoc(ref, {
-    spiritScore
+    spiritScore,
   })
 }
 
@@ -245,3 +249,20 @@ export const removeAllStudent = () => {
     console.log({ length: res.docs.length })
   })
 }
+
+export const getAllStudents = () => {
+  const queryStudents = query(studentRef)
+  return getDocs(queryStudents).then(
+    (snapshotDocs) => {
+      return snapshotDocs.docs.filter(
+        (snapshotDoc) => !snapshotDoc.data().isDeleted && !!snapshotDoc.data().class?.id
+      ).length
+    },
+    (error) => {
+      console.error(error)
+      return 0
+    }
+  )
+}
+
+export const getAllPresentStudent = () => {}

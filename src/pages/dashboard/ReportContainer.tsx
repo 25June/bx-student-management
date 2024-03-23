@@ -1,7 +1,6 @@
 import { Box, IconButton, Typography, Paper } from '@mui/material'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import { blue } from '@mui/material/colors'
-import { useEffect } from 'react'
 
 interface Props {
   title: string
@@ -78,7 +77,13 @@ const ReportContainer = ({ title, date, value, total, subtitle, icon }: Props) =
               lineHeight={'125%'}
             >
               {value}
-              <Typography fontFamily={'inherit'} component={'sub'} fontSize={'1rem'}>
+              <Typography
+                fontFamily={'inherit'}
+                component={'sub'}
+                fontSize={'1rem'}
+                letterSpacing={'0.05em'}
+                fontWeight={600}
+              >
                 /{total}
               </Typography>
             </Typography>

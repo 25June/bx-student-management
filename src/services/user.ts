@@ -1,12 +1,7 @@
 import { auth, fireStoreDB, realtimeDB } from '../firebase'
-import { update, ref, } from 'firebase/database'
+import { update, ref } from 'firebase/database'
 import { getDocs, query, collection, doc, updateDoc, setDoc, getDoc } from 'firebase/firestore'
-import {
-  sendPasswordResetEmail,
-  updatePassword,
-  getAuth,
-  signOut,
-} from 'firebase/auth'
+import { sendPasswordResetEmail, updatePassword, getAuth, signOut } from 'firebase/auth'
 import { useSnackbarContext } from 'contexts/SnackbarContext'
 import { User } from 'models/user'
 import { Router } from 'routes'
@@ -21,8 +16,10 @@ export const getUsers = () => {
     .then((snapshot) => {
       if (!snapshot.empty) {
         return snapshot.docs
-          .filter((snapshotDoc) => snapshotDoc.exists())
-          .sort((snapA, snapB) => (snapA.data()?.classId || '').localeCompare((snapB.data()?.classId || '')))
+          .filter((snapshotDoc) => snapshotDoc.exists() && !snapshotDoc.data().disabled)
+          .sort((snapA, snapB) =>
+            (snapA.data()?.classId || '').localeCompare(snapB.data()?.classId || '')
+          )
           .map((snapshotDoc) => {
             return { id: snapshotDoc.id, ...snapshotDoc.data() } as User
           })
@@ -37,7 +34,19 @@ export const getUsers = () => {
 
 export const useCreateUser = () => {
   const { showSnackbar } = useSnackbarContext()
-  return ({ firstName, lastName, email, classId, id }: { id: string, email: string, firstName: string, lastName: string, classId: string }) =>
+  return ({
+    firstName,
+    lastName,
+    email,
+    classId,
+    id,
+  }: {
+    id: string
+    email: string
+    firstName: string
+    lastName: string
+    classId: string
+  }) =>
     setDoc(userDocRef(id), { email, id: id, firstName, lastName, classId })
       .then(() => {
         showSnackbar(`Create ${email} in database success`, 'success')
@@ -140,7 +149,11 @@ export const getUserInfo = (id: string) => {
   })
 }
 
-export const grantPermissionForUser = async (id: string, oldClassId: string, newClassId: string) => {
+export const grantPermissionForUser = async (
+  id: string,
+  oldClassId: string,
+  newClassId: string
+) => {
   if (id) {
     update(ref(realtimeDB, `users/${id}`), { [oldClassId]: false, [newClassId]: true })
       .then(() => console.info(`Updated`, 'success'))

@@ -2,7 +2,7 @@ import { realtimeDB } from '../firebase'
 import { onValue, ref, set, get, update } from 'firebase/database'
 import { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { AttendanceType } from 'constant/common'
+import { AttendanceType, BaseClasses } from 'constant/common'
 import { AttendanceProps, NoteForm } from 'models/diligent'
 import { useClassContext } from 'contexts/ClassContext'
 
@@ -15,6 +15,7 @@ const rollCallPathName = (classId: string, year: string, semester: string) =>
 
 export type Attendances = Record<string, Record<string, AttendanceProps>>
 
+// realtime get
 export const useGetAttendanceByClassId = () => {
   const { classId, schoolYearId, semesterId } = useClassContext()
   const [attendances, setAttendances] = useState<Attendances | null>()
@@ -36,6 +37,18 @@ export const useGetAttendanceByClassId = () => {
   }, [classId, schoolYearId, semesterId])
 
   return { attendances, isLoading: typeof attendances === 'undefined' }
+}
+
+// one time get
+export const getAttendanceByClassId = ({ classId, schoolYearId, semesterId }: any) => {
+  return get(ref(realtimeDB, attendancePathName(classId, schoolYearId, semesterId))).then(
+    (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val()
+        return data
+      }
+    }
+  )
 }
 
 export interface AddRollCallDateProps {
@@ -107,6 +120,18 @@ export const fetchRollCallDates = ({
       })
   }
   return Promise.reject('Invalid Data')
+}
+
+export const fetchRollCallDatesOfAllClass = ({
+  schoolYearId,
+  semesterId,
+}: Omit<FetchRollCallDateProps, 'classId'>) => {
+  const promises = BaseClasses.map((c) => {
+    return fetchRollCallDates({ classId: c.id, schoolYearId, semesterId }).then((res) => {
+      return { value: res, c }
+    })
+  })
+  return Promise.all(promises)
 }
 
 interface SubmitAttendanceAllStudentsInClass {
