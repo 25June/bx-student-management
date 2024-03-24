@@ -73,7 +73,7 @@ const SignInComponent = () => {
         setSnackbarContent({ severity: 'success', message: `${user.email} Đăng nhập thành công` })
         setOpenSnackbar(true)
         setLoading(false)
-        setTimeout(() => navigate(Router.HOME), 100)
+        setTimeout(() => navigate(Router.DASHBOARD), 100)
       })
       .catch((error) => {
         console.error(error)

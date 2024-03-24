@@ -155,14 +155,12 @@ const AssessmentTableComponent = ({ rows, onClickAction }: Props) => {
                         <MoreVertIcon fontSize={'small'} />
                       </IconButton>
                     </Tooltip>
-                    <IconButton>
-                      <ArrowForwardIosIcon
-                        fontSize={'inherit'}
-                        color={'action'}
-                        onClick={() =>
-                          navigate(`${Router.SCORE_BOOK}?assessmentId=${row.id}&type=${row.type}`)
-                        }
-                      />
+                    <IconButton
+                      onClick={() =>
+                        navigate(`${Router.SCORE_BOOK}?assessmentId=${row.id}&type=${row.type}`)
+                      }
+                    >
+                      <ArrowForwardIosIcon fontSize={'inherit'} color={'action'} />
                     </IconButton>
                   </TableCell>
                 )}
