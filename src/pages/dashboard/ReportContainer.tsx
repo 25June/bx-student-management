@@ -1,6 +1,24 @@
 import { Box, Typography, Paper } from '@mui/material'
 // import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import { blue } from '@mui/material/colors'
+import { useClassContext } from 'contexts/ClassContext'
+import { styled } from '@mui/material/styles'
+import { Palette } from '@mui/material'
+
+const ImageContainer = styled('div', { shouldForwardProp: (props) => props !== 'color' })<{
+  color: string
+}>(({ theme, color }) => ({
+  width: 100,
+  minWidth: 100,
+  height: '100%',
+  minHeight: 100,
+  color: '#fff',
+  background: color ? (theme.palette as any)?.[color]?.main : blue[300],
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: '0px 0px 10px 0px',
+}))
 
 interface Props {
   title: string
@@ -13,7 +31,10 @@ interface Props {
 
 const ReportContainer = ({ title, date, value, total, subtitle, icon }: Props) => {
   // Interval to update the number every 1 second
+  const { classId } = useClassContext()
 
+  const color = classId.slice(0, 2)
+  console.log({ color })
   return (
     <Paper
       elevation={2}
@@ -92,22 +113,7 @@ const ReportContainer = ({ title, date, value, total, subtitle, icon }: Props) =
             {subtitle}
           </Typography>
         </Box>
-        <Box
-          sx={{
-            width: 100,
-            minWidth: 100,
-            height: '100%',
-            minHeight: 100,
-            color: '#fff',
-            background: blue[300],
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: '0px 0px 10px 0px',
-          }}
-        >
-          {icon}
-        </Box>
+        <ImageContainer color={color}>{icon}</ImageContainer>
       </Box>
     </Paper>
   )
