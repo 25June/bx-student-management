@@ -76,8 +76,10 @@ const DashboardComponent = () => {
           Object.keys(res),
           rollCallDate.c
         )
-        setGL((prev) => prev + value.gl ?? 0)
-        setTL((prev) => prev + value.tl ?? 0)
+        setTimeout(() => {
+          setGL((prev) => prev + value.gl ?? 0)
+          setTL((prev) => prev + value.tl ?? 0)
+        }, 1000)
       })
     }
   }

@@ -1,5 +1,5 @@
-import { Box, IconButton, Typography, Paper } from '@mui/material'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import { Box, Typography, Paper } from '@mui/material'
+// import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import { blue } from '@mui/material/colors'
 
 interface Props {
@@ -31,7 +31,7 @@ const ReportContainer = ({ title, date, value, total, subtitle, icon }: Props) =
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '0 0.5rem',
+          padding: '0.5rem 0.5rem',
         }}
       >
         <Box>{title}</Box>
@@ -45,9 +45,9 @@ const ReportContainer = ({ title, date, value, total, subtitle, icon }: Props) =
           }}
         >
           {date}
-          <IconButton size="small">
+          {/* <IconButton size="small">
             <CalendarMonthIcon />
-          </IconButton>
+          </IconButton> */}
         </Box>
       </Box>
       <Box

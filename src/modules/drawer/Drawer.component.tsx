@@ -29,6 +29,7 @@ import RiceIcon from 'modules/common/RiceIcon'
 // import BellIcon from 'modules/common/BellIcon'
 import PrayIcon from 'modules/common/PrayIcon'
 import CandleIcon from 'modules/common/CandleIcon'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 
 interface DrawerComponentProps {
   isOpen: boolean
@@ -36,6 +37,11 @@ interface DrawerComponentProps {
 }
 
 const Menu = {
+  DASHBOARD: {
+    text: 'Tổng Quan',
+    icon: (isActive: boolean) => <DashboardIcon color={isActive ? 'primary' : undefined} />,
+    to: Router.DASHBOARD,
+  },
   LIST: {
     text: 'Danh Sách',
     icon: (isActive: boolean) => <StudentIcon color={isActive ? 'primary' : undefined} />,
